@@ -438,7 +438,7 @@ function moneyFormatIndia($num)
             } else { //if not paid on due month. else part will show.
                 ?>
                 <tr>
-                    <td><?php echo $i++; ?></td>
+                    <td><?php echo $i; ?></td>
 
                     <?php if ($loanFrom['due_month'] == '1') { // For Monthly Due Method 
                     ?>
