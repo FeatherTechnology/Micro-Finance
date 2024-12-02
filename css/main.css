@@ -9406,3 +9406,8 @@ table.dataTable th {
 .dwnmrgn{
   margin-bottom: 20px !important;
 }
+
+/* company creation documents table width */
+.sorting_asc{
+  width: 10px !important;
+}
