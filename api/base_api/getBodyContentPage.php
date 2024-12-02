@@ -11,7 +11,6 @@ $response = '';
 ob_start(); // Start output buffering
 if ($current_page != '') {
     $qry = $pdo->prepare("SELECT sl.id, sl.sub_menu, sl.link FROM sub_menu_list sl INNER JOIN users u ON FIND_IN_SET(sl.id, u.screens) WHERE sl.link = :current_page AND u.id = :user_id");
-    // $qry = $pdo->prepare("SELECT COUNT(*) FROM sub_menu_list WHERE `link` = :current_page");
     $qry->execute(array(':current_page' => $current_page, ':user_id' => $user_id));
     $count = $qry->fetchColumn();
 

@@ -5,12 +5,14 @@
 session_start();
 $userid  = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : "";
 if ($userid != "") {
-	echo "<script>location.href='dashboard'</script>";
+	echo "<script>location.href='home.php'</script>";
 }
 
 include "include/common/dashboardhead.php";
 ?>
-
+<script>
+    localStorage.setItem('currentPage', 'dashboard');
+</script>
 
 <body class="authentication">
 
@@ -18,7 +20,7 @@ include "include/common/dashboardhead.php";
 		<div class="login-screen">
 			<div class="login-box">
 				<a href="#" class="login-logo">
-					<h3 style="color: #426A5A; font-weight: bolder;">GROUP FINANCE SOFTWARE</h3>
+					<h3 style="color: var(--primary-color); font-weight: bolder;">GROUP FINANCE SOFTWARE</h3>
 				</a>
 				<span class="text-danger" id="cinnocheck">
 				</span>
@@ -43,8 +45,6 @@ include "include/common/dashboardhead.php";
 	</form>
 
 </body>
-
-
 
 <?php include "include/common/dashboardfooter.php" ?>
 <script src="jsd/index.js"></script>

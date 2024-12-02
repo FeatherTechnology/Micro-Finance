@@ -21,10 +21,10 @@
                     <li class="dropdown"></li>
                     <li class="dropdown">
                         <div class="custom-search">
-                            <input type="text" id="search_input_" class="search-query" placeholder="Search here ...">
+                            <input type="text" id="search_input_" class="search-query" placeholder="Search here ..." onkeypress="if (event.key === 'Enter') {$('#search_screens').trigger('click');}">
                             <i id="search_screens" class="icon-search" style="color:white"></i>
                         </div>
-                        <div class="dropdown-menu dropdown-menu-right lrg" aria-labelledby="notifications">
+                        <div class="dropdown-menu dropdown-menu-right lrg" aria-labelledby="notifications" style="left: -52px;top: 43px;">
                             <div class="dropdown-menu-header">
                                 Results
                             </div>
@@ -44,7 +44,7 @@
                             <i class="icon-bell"></i>
                             <span class="count-label"></span>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right lrg" aria-labelledby="notifications">
+                        <div class="dropdown-menu dropdown-menu-right lrg" aria-labelledby="notifications" style="left: -238px;">
                             <div class="dropdown-menu-header">
                                 Notifications
                             </div>
@@ -55,20 +55,20 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" id="userSettings" class="user-settings" data-toggle="dropdown" aria-haspopup="true">
-                            <span class="user-name">Check</span>
+                            <span class="user-name show-username"></span>
                             <span class="avatar">
-                                <img src="img/user22.png" alt="avatar">
-                                <span class="status busy"></span>
+                                <img src="img/av1.png" alt="avatar">
+                                <span class="status online"></span>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userSettings">
                             <div class="header-profile-actions">
                                 <div class="header-user-profile">
                                     <div class="header-user">
-                                        <img src="img/user22.png" alt="Admin Template">
+                                        <img src="img/av1.png" alt="Admin Template">
                                     </div>
-                                    <h5>Check</h5>
-                                    <p>Check</p>
+                                    <h5 class="show-username"></h5>
+                                    <p class="show-username"></p>
                                 </div>
                                 <a href="#"><i class="icon-user1"></i> My Profile</a>
                                 <a href="logout.php"><i class="icon-log-out1"></i> Sign Out</a>
@@ -80,9 +80,9 @@
             </div>
         </header>
 
-        <br><br>
+        <br>
         <div class="page-header">
-            <div style="background-color:#426A5A; width:100%; padding:12px; color: #ffff; font-size: 20px; border-radius:5px;">
+            <div style="background-color:var(--primary-color); width:100%; padding:12px; color: #ffff; font-size: 20px; border-radius:5px;">
                 Group Finance<span id="pageHeaderName"></span>
             </div>
         </div><br>
