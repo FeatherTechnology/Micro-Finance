@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -10,7 +10,8 @@
 
 	<footer>
 		<?php include "include/common/dashboardfooter.php" ?>
-
+		<script src="jsd/leftbar.js"></script>
+		<script src="jsd/body.js"></script>
 	</footer>
 
 </body>

@@ -19,7 +19,7 @@ th, td{
 	text-align: center;
 }
 th{
-  background-color: #2f958bd9;
+  background-color: var(--primary-color);
   font-weight: bold;
   color: white;
 }
@@ -72,23 +72,23 @@ border-style: none;
   margin: 3px;
 }
 .inbutton{
-  background-color:#2f958bd9;
+  background-color:var(--primary-color);
   color:white;
   width:70%;
 }
 
 
-.modal{
+/* .modal{
   display: none;
   left: 50%;
-  transform: translate(-50%, 3%);
+  transform: translate(0%, 3%);
   width:50%;
   margin: auto;
-}
+} */
 
 /* Modal Content */
 .modal-content {
-  background-color: #2f958bd9;
+  background-color: var(--primary-color);
   margin: auto;
   border: 1px solid #888;
 }
@@ -107,10 +107,10 @@ border-style: none;
   cursor: pointer;
 }
 .trialbalance-th-color{
-  background-color: #2f958bd9;;
+  background-color: var(--primary-color);;
 }
 .TableHead{
-  background: #2f958bd9;;
+  background: var(--primary-color);;
 }
 .trialbalance-header{
   font-weight: bold;
@@ -136,3 +136,57 @@ border-style: none;
 .trialbalance_hasondate{
   justify-content: center;
 }   
+.modalBtnCss{
+  width: 50px;
+  height: calc(2.25rem + 2px);
+}
+.form-group-label-emptywith-input{
+  margin-top: 5px;
+}
+.int-grp-label-empty{
+  margin-top: 8px;
+}
+.card-head-btn{
+  float: right;
+}
+.overflow-x-cls{
+  overflow-x: scroll;
+}
+.radio-toggle-div-cls{
+  width: inherit !important;
+  height: inherit !important;
+}
+.radio-toggle-label-cls{
+  line-height: 1.5 !important;
+  width: inherit !important;
+}
+.bdy-cls{
+  padding-top: 0.5rem !important;
+}
+.int-grp{
+  margin-top: 8px;
+}
+.disabled-row {
+  opacity: 0.5;
+  pointer-events: none; /* Prevent interaction */
+}
+.lbl-style-cls{
+  font-weight: bold;
+  font-size:14px;
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+/*Media Query START*/
+@media (max-width: 1024px) {
+  .modalBtnCss {
+      width: 50px; /* Adjust this value as needed */
+  }
+}
+
+/* Optionally, add more media queries for other device sizes */
+@media (max-width: 768px) {
+  .modalBtnCss {
+      width: 50px; /* Adjust this value as needed */
+  }
+}
+/*Media Query END*/

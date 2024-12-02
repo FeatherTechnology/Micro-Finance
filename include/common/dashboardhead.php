@@ -1,7 +1,3 @@
-<!doctype html>
-<html lang="en">
-
-<head>
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,26 +10,26 @@
 	<!-- Title -->
 	<title>Group Finance</title>
 
-	<!-- *************
-			************ Common Css Files *************
-		************ -->
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="css/bootstrap.min.css" />
-	<!-- Icomoon Font Icons css -->
-	<link rel="stylesheet" href="fonts/style.css">
-	<!-- Master CSS -->
-	<link rel="stylesheet" href="css/main.css" />
-
 	<!-- ************************* Vendor Css Files *************-->
 	<link rel="stylesheet" href="vendor/customcss/customstyle.css" />
 	<link rel="stylesheet" href="vendor/customcss/tabstyle.css" />
+	<link rel="stylesheet" type="text/css" href="cssd/datatables.min.css" />
 
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+
+	<!-- Icomoon Font Icons css -->
+	<link rel="stylesheet" href="fonts/style.css">
+
+	<!-- Master CSS -->
+	<link rel="stylesheet" href="css/main.css" />
+
+	
 
 	<!-- Font awesome cdn -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-
-</head>
-
+	<!-- multiselect stylesheet -->
+	<link rel="stylesheet" href="vendor/multiselect/public/assets/styles/choices.min.css" />

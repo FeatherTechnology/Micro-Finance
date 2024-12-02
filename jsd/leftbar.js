@@ -1,5 +1,25 @@
 $(document).ready(function () {
+    // Define the mapping of current_page values to current_module values
+    const moduleMapping = {
+        'dashboard':'dashboard',
+    };
 
+    const current_page = localStorage.getItem('currentPage');
+    // Assign the current_module based on the current_page value
+    const current_module = moduleMapping[current_page] || 'dashboard';
+
+    // Call the function with the current module
+    setTimeout(() => {
+        toggleSidebarSubmenus(current_module);
+    }, 500);
+
+})
+
+$(function () {
+    getLeftbarMenuList();
+});
+
+function getLeftbarMenuList() {
     $.post('api/base_api/menulist.php', function (response) {
         if (response.length != 0) {
             // Call the function with the response
@@ -18,61 +38,11 @@ $(document).ready(function () {
             });
         }
     }, 'json')
-
-
-
-    // Define the mapping of current_page values to current_module values
-    const moduleMapping = {
-        'company_creation_list': 'master',
-        'company_creation': 'master',
-        'branch_creation_list': 'master',
-        'branch_creation': 'master',
-        'loan_category_creation_list': 'master',
-        'loan_category_creation': 'master',
-        'bank_creation_list': 'admin',
-        'bank_creation': 'admin',
-        'agent_creation_list': 'admin',
-        'agent_creation': 'admin',
-        'user_creation_list': 'admin',
-        'user_creation': 'admin',
-        'loan_entry_list': 'loan_entry',
-        'loan_entry': 'loan_entry',
-        'approval_list': 'approval',
-        'approval': 'approval',
-        'loan_issue_list': 'loan_issue',
-        'loan_issue': 'loan_issue',
-        'collection_list': 'collection',
-        'collection': 'collection',
-        'closed_list': 'closed',
-        'closed': 'closed',
-        'noc_list': 'noc',
-        'noc': 'noc',
-        'accounts': 'accounts',
-        'update_customer_list': 'update',
-        'update_customer': 'update',
-        'update_document_list': 'update',
-        'update_document': 'update',
-        'customer_data_list': 'customer_data',
-        'customer_data': 'customer_data',
-        'search_list': 'search',
-        'search': 'search',
-        'reports_list': 'reports',
-        'reports': 'reports',
-    };
-
-    const current_page = localStorage.getItem('currentPage');
-    // Assign the current_module based on the current_page value
-    const current_module = moduleMapping[current_page] || 'dashboard';
-
-    // Call the function with the current module
-    setTimeout(() => {
-        toggleSidebarSubmenus(current_module);
-    }, 1000);
-
-})
+}
 
 // Function to create the sidebar menu
 function createSidebarMenu(response) {
+    $('.sidebar-menu').empty();
     var sidebar = $('<ul></ul>');
 
     // Group submenus by main menu
@@ -96,7 +66,7 @@ function createSidebarMenu(response) {
         // Create submenu items
         grouped[mainMenu].forEach(function (subItem) {
             var subLi = $('<li></li>').appendTo(submenuUl);
-            var subLink = $('<a href="' + subItem.sub_menu_link + '"></a>').appendTo(subLi);
+            var subLink = $('<a href="' + subItem.sub_menu_link + '" class="clickevent"></a>').appendTo(subLi);
             subLink.append('<i class="icon-' + subItem.sub_menu_icon + '"></i>');
             subLink.append(subItem.sub_menu);
 
@@ -107,6 +77,19 @@ function createSidebarMenu(response) {
 
     // Append the sidebar to the DOM
     $('.sidebar-menu').append(sidebar);
+
+    $('.clickevent').each(function () {
+        $(this).on('click', function (event) {
+            event.preventDefault();
+            setlocalvariable(this);
+        });
+    });
+}
+
+function setlocalvariable(element) {
+    var hrefValue = $(element).attr('href');
+    localStorage.setItem('currentPage', hrefValue);
+    window.location.href = 'home.php';
 }
 
 function toggleSidebarSubmenus(current_module) {
@@ -119,10 +102,12 @@ function toggleSidebarSubmenus(current_module) {
         var parentLi = submenu.closest('li');
         if (parentLi && parentLi.classList.contains(current_module)) {
             // If it matches, show the submenu
-            submenu.style.display = 'block';
+            // submenu.style.display = 'block';
+            let mainmenu = submenu.closest('.sidebar-dropdown');
+            mainmenu.classList.add('active');
         } else {
             // If it doesn't match, hide the submenu
-            submenu.style.display = 'none';
+            // submenu.style.display = 'none';
         }
     });
 
@@ -132,10 +117,20 @@ function toggleSidebarSubmenus(current_module) {
     sidebarLinks.forEach(function (link) {
         var href = link.getAttribute('href');
         if (href === current_page) {
-            link.style.backgroundColor = '#646969d9';
+
+            // Assuming 'href' is the variable that contains the element with href="company_creation"
+            var selectedLink = document.querySelector('a[href="' + href + '"]');
+
+            // To change the background color of the "Master" link, we need to navigate up to the parent <a> element
+            var mainLink = selectedLink.closest('.sidebar-dropdown').querySelector('a');
+
+            // Set the background color of the 'Master' link
+            mainLink.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+
+            link.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
         }
     });
     if (current_page == 'dashboard') {
-        $('.dashboard').css('backgroundColor', '#646969d9');
+        $('.dashboard').css('backgroundColor', 'rgba(0, 0, 0, 0.2)');
     }
 }

@@ -42,7 +42,7 @@ body {
 /* On mouse-over */
 .sidenav a:hover,
 .dropdown-btn1:hover {
-    color: #426A5A;
+    color: var(--primary-color);
 }
 
 .sidenav a,
@@ -63,13 +63,13 @@ body {
 /* On mouse-over */
 .sidenav a:hover,
 .dropdown-btn:hover {
-    color: #426A5A;
+    color: var(--primary-color);
 }
 
 /* On mouse-over */
 .sidenav a:hover,
 .dropdown-btn1:hover {
-    color: #426A5A;
+    color: var(--primary-color);
 }
 
 /* Main content */
