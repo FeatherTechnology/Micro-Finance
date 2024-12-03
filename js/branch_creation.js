@@ -89,27 +89,7 @@ $(function () {
     getBranchTable()
     $('#pageHeaderName').html(' - Branch Creation <span style="float:right;">Branch Limit: 0</span>');
 });
-// function getBranchTable() {
-//     $.post('api/branch_creation/branch_creation_list.php', function (response) {
-//         var columnMapping = [
-//             'sno',
-//             'branch_code',
-//             'branch_name',
-//             'place',
-//             'state_name',
-//             'district_name',
-//             'mobile_number',
-//             'action'
-//         ];
-//         appendDataToTable('#branch_create', response, columnMapping);
-//         // setdtable('#branch_create');
 
-//     }, 'json')
-// }
-
-// $(function(){
-//     getBranchTable();
-// })
 function getBranchTable() {
     serverSideTable('#branch_create', '', 'api/branch_creation/branch_creation_list.php');
 }

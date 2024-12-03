@@ -29,7 +29,6 @@ if($companyid !=''){
     $result = 0; //update
 
 }else{
-    // $qry = $pdo->query("INSERT INTO `company_creation`(`company_name`, `address`, `state`, `district`, `taluk`, `place`, `pincode`, `website`, `mailid`, `mobile`, `whatsapp`, `landline_code`, `landline`, `insert_user_id`, `created_date`) VALUES ('$company_name','$address','$state','$district','$taluk','$place','$pincode','$website','$mailid','$mobile','$whatsapp','$landline_code', '$landline','$user_id', now())");
     $qry = $pdo->query("INSERT INTO `company_creation`( `company_name`, `address`, `state`, `district`, `taluk`, `place`, `pincode`, `website`, `mailid`, `mobile`, `whatsapp`, `landline_code`, `landline`, `pan`, `tan`, `tin`, `cin`, `License_No`, `gst`,  `insert_user_id`, `created_date`) VALUES ('$company_name','$address','$state','$district','$taluk','$place','$pincode','$website','$mailid','$mobile','$whatsapp','$landline_code', '$landline','$pan','$tan ','$tin','$cin','$License_No','$gst','$user_id', now())");
     $result = 1; //Insert
 }
