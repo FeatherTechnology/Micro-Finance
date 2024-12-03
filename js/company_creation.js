@@ -22,7 +22,15 @@ $(document).ready(function () {
         let document = $('#document')[0].files[0];
         let per_pic = $('#per_pic').val();
         var isValid = true;
-        if (document === undefined && per_pic === '') {
+        if(document_name===""){
+            isValid = false;
+            $('#doc_name').css('border', '1px solid #ff0000');
+        }
+        else{
+            $('#doc_name').css('border', '1px solid #cecece');
+
+        }
+        if (document === undefined && per_pic === '' ) {
             let isUploadValid = validateField('', 'document');
             let isHiddenValid = validateField('', 'per_pic');
             if (!isUploadValid || !isHiddenValid ) {
@@ -42,7 +50,7 @@ $(document).ready(function () {
             formData.append('document_name', document_name);
             formData.append('document', document);
             formData.append('per_pic', per_pic);
-        }
+       
         
         $.ajax({
             url: 'api/company_creation_files/submit_company_document.php', 
@@ -56,7 +64,7 @@ $(document).ready(function () {
                 if(response===1){
                     getDocNeedTable();
                     $('#doc_name').val(""); 
-                    $('#document')[0].files[0].val("");
+                    $('#document').val("");
                     $('#per_pic').val("");
                 }
                 else{
@@ -65,6 +73,7 @@ $(document).ready(function () {
                 
             },
         });
+    }
 
 
     });
@@ -179,7 +188,7 @@ function getDocNeedTable() {
             "action"
         ]
         appendDataToTable('#documents_table', response, loanCategoryColumn);
-        setdtable('#documents_table');
+        // setdtable('#documents_table');
     }, 'json');
 }
 
@@ -194,7 +203,7 @@ function getCompanyTable() {
             'action'
         ];
         appendDataToTable('#company_creation_table', response, columnMapping);
-        setdtable('#company_creation_table');
+        // setdtable('#company_creation_table');
 
         if (response.length > 0) {
             $('#add_company').hide();
@@ -205,6 +214,7 @@ function getCompanyTable() {
 }
 
 function swapTableAndCreation() {
+
     if ($('.company_table_content').is(':visible')) {
         $('.company_table_content').hide();
         $('.addcompanyBtn').hide();
