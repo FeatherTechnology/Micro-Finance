@@ -2,8 +2,11 @@ $(document).ready(function () {
     // Define the mapping of current_page values to current_module values
     const moduleMapping = {
         'dashboard':'dashboard',
-        'company_creation':'master',
-        'branch_creation':'master',
+        'company_creation': 'master',
+        'branch_creation': 'master',
+        'loan_category_creation': 'master',
+        'area_creation': 'master',
+        'customer_creation': 'profile',
     };
 
     const current_page = localStorage.getItem('currentPage');
