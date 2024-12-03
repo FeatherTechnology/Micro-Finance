@@ -249,6 +249,66 @@ function hideOverlay() {
 	overlayDiv.remove();
 }
 
+function setdtable(table_id) {
+	$(table_id).DataTable({
+		'processing': true,
+		'iDisplayLength': 10,
+		"lengthMenu": [
+			[10, 25, 50, -1],
+			[10, 25, 50, "All"]
+		],
+		"createdRow": function (row, data, dataIndex) {
+			$(row).find('td:first').html(dataIndex + 1);
+		},
+		"drawCallback": function (settings) {
+			this.api().column(0).nodes().each(function (cell, i) {
+				cell.innerHTML = i + 1;
+			});
+		},
+		dom: 'lBfrtip',
+		buttons: [{
+			extend: 'excel',
+		},
+		{
+			extend: 'colvis',
+			collectionLayout: 'fixed four-column',
+		}
+		],
+	}); // this will initialize all tables with dtable class in project as DataTable
+};
+
+///////////////////////////////////////////////////////////////////////////////////
+///Append Row in Table TBody after getting response from ajax. ///common for all table//// Just send table id, response from ajax, Column in table. 
+function appendDataToTable(tableSelector, response, columnMapping) {
+	$(tableSelector).DataTable().destroy();
+	let tableBody = $(tableSelector + ' tbody');
+	tableBody.empty(); // Clear any existing rows in the table body
+
+	// Iterate over the JSON data
+	$.each(response, function (index, item) {
+		// Create a new table row
+		var row = $('<tr>');
+		// Iterate over the column mapping
+		$.each(columnMapping, function (key, value) {
+			// Create a table cell with the data
+			if (value === 'sno') {
+				$('<td>').text(index + 1).appendTo(row); // Add serial number
+			} else if (item.hasOwnProperty(value)) {
+
+				if (value === 'action' || value === 'upload' || value === 'charts' || value === 'info') {
+					// If the key is 'action' or 'upload', insert the HTML content directly
+					$('<td>').html(item[value]).appendTo(row);
+				} else {
+					// Otherwise, insert the text content
+					$('<td>').text(item[value]).appendTo(row);
+				}
+			}
+		});
+		// Append the row to the table body
+		tableBody.append(row);
+	});
+}
+/////////////////////////////////////////////////////
 function serverSideTable(tableSelector, params, apiUrl) {
     $(tableSelector).DataTable().destroy(); // Destroy the previous table instance
     $(tableSelector).DataTable({
@@ -290,176 +350,6 @@ function serverSideTable(tableSelector, params, apiUrl) {
         }
     });
 }
-//Initializing datatable by calling this function for every table.
-function setdtable(table_id) {
-	$(table_id).DataTable({
-		'processing': true,
-		'iDisplayLength': 10,
-		"lengthMenu": [
-			[10, 25, 50, -1],
-			[10, 25, 50, "All"]
-		],
-		"createdRow": function (row, data, dataIndex) {
-			$(row).find('td:first').html(dataIndex + 1);
-		},
-		"drawCallback": function (settings) {
-			this.api().column(0).nodes().each(function (cell, i) {
-				cell.innerHTML = i + 1;
-			});
-		},
-		dom: 'lBfrtip',
-		buttons: [{
-			extend: 'excel',
-		},
-		{
-			extend: 'colvis',
-			collectionLayout: 'fixed four-column',
-		}
-		],
-	}); // this will initialize all tables with dtable class in project as DataTable
-};
-// function getUserAccess(callback) {
-//     $.ajax({
-//         url: 'api/user_creation_files/get_download_access.php', // Replace with your endpoint
-//         method: 'POST',
-//         dataType: 'json', // Expect JSON response
-//         success: function(response) {
-//             // Check if response contains download_access
-//             const downloadAccess = response.download_access || 0; // Default to 0 if not found
-//             callback(downloadAccess);
-//         },
-//     });
-// }
-
-//Initialize DataTable with user access controls
-// function setdtable(table_id) {
-//     // Fetch user access and initialize DataTable based on it
-//     getUserAccess(function(downloadAccess) {
-//         let buttons = [];
-
-//         // Add Excel button if download access is 1
-//         if (downloadAccess === 1) {
-//             buttons.push({
-//                 extend: 'excel',
-//                 title: "Export Data"
-//             });
-//         }
-
-//         // Add other buttons
-//         buttons.push({
-//             extend: 'colvis',
-//             collectionLayout: 'fixed four-column',
-//         });
-
-//         // Initialize DataTable with conditional buttons
-//         $(table_id).DataTable({
-//             'processing': true,
-//             'iDisplayLength': 10,
-//             "lengthMenu": [
-//                 [10, 25, 50, -1],
-//                 [10, 25, 50, "All"]
-//             ],
-//             "createdRow": function (row, data, dataIndex) {
-//                 $(row).find('td:first').html(dataIndex + 1);
-//             },
-//             "drawCallback": function (settings) {
-//                 this.api().column(0).nodes().each(function (cell, i) {
-//                     cell.innerHTML = i + 1;
-//                 });
-//             },
-//             dom: 'lBfrtip',
-//             buttons: buttons,
-//         });
-//     });
-// }
-///////////////////////////////////////////////////////////////////////////////////
-///Append Row in Table TBody after getting response from ajax. ///common for all table//// Just send table id, response from ajax, Column in table. 
-function appendDataToTable(tableSelector, response, columnMapping) {
-	$(tableSelector).DataTable().destroy();
-	let tableBody = $(tableSelector + ' tbody');
-	tableBody.empty(); // Clear any existing rows in the table body
-
-	// Iterate over the JSON data
-	$.each(response, function (index, item) {
-		// Create a new table row
-		var row = $('<tr>');
-		// Iterate over the column mapping
-		$.each(columnMapping, function (key, value) {
-			// Create a table cell with the data
-			if (value === 'sno') {
-				$('<td>').text(index + 1).appendTo(row); // Add serial number
-			} else if (item.hasOwnProperty(value)) {
-
-				if (value === 'action' || value === 'upload' || value === 'charts' || value === 'info') {
-					// If the key is 'action' or 'upload', insert the HTML content directly
-					$('<td>').html(item[value]).appendTo(row);
-				} else {
-					// Otherwise, insert the text content
-					$('<td>').text(item[value]).appendTo(row);
-				}
-			}
-		});
-		// Append the row to the table body
-		tableBody.append(row);
-	});
-}
-/////////////////////////////////////////////////////
-
-// / Function to initialize DataTable with conditional Excel button
-// function serverSideTable(tableSelector, params, apiUrl) {
-//     // Fetch user access and initialize DataTable based on it
-//     getUserAccess(function(downloadAccess) {
-//         let buttons = [];
-
-//         // Add Excel button if download access is 1
-//         if (downloadAccess === 1) {
-//             buttons.push({
-//                 extend: 'excel',
-//                 title: "Branch List"
-//             });
-//         }
-
-//         // Add other buttons
-//         buttons.push({
-//             extend: 'colvis',
-//             collectionLayout: 'fixed four-column',
-//         });
-
-//         // Destroy existing DataTable instance
-//         $(tableSelector).DataTable().destroy();
-
-//         // Initialize DataTable with conditional buttons
-//         $(tableSelector).DataTable({
-//             'order': [[0, "desc"]],
-//             'processing': true,
-//             'serverSide': true,
-//             'serverMethod': 'post',
-//             'ajax': {
-//                 'url': apiUrl,
-//                 'data': function (data) {
-//                     var search = $('input[type=search]').val();
-//                     data.search = search;
-//                     data.params = params;
-//                 }
-//             },
-//             dom: 'lBfrtip',
-//             buttons: buttons,
-//             "lengthMenu": [
-//                 [10, 25, 50, -1],
-//                 [10, 25, 50, "All"]
-//             ],
-//             'drawCallback': function () {
-//                 setDropdownScripts();
-//             }
-//         });
-//     });
-// }
-
-
-
-////////////////////////////////////////////////////
-
-
 
 //Swal alert section *************************
 function swalSuccess(title, text) {
