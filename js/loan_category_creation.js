@@ -140,21 +140,21 @@ $(document).ready(function () {
         });
 
         // if (isFormDataValid(schemeFormData)) {
-            if (isValid) {
-                $.post('api/loan_category_creation/submit_scheme.php', schemeFormData, function (response) {
-                    if (response == '0') {
-                        swalError('Warning', 'Processing Failed!');
-                    } else if (response == '1') {
-                        swalSuccess('Success', 'Scheme Updated Successfully!');
-                    } else if (response == '2') {
-                        swalSuccess('Success', 'Scheme Added Successfully!');
-                    } else if (response == '3') {
-                        swalError('Access Denied', 'Scheme Already Added.');
-                    }
-                    clearSchemeForm();
-                    getSchemeTable();
-                }, 'json');
-            }
+        if (isValid) {
+            $.post('api/loan_category_creation/submit_scheme.php', schemeFormData, function (response) {
+                if (response == '0') {
+                    swalError('Warning', 'Processing Failed!');
+                } else if (response == '1') {
+                    swalSuccess('Success', 'Scheme Updated Successfully!');
+                } else if (response == '2') {
+                    swalSuccess('Success', 'Scheme Added Successfully!');
+                } else if (response == '3') {
+                    swalError('Access Denied', 'Scheme Already Added.');
+                }
+                clearSchemeForm();
+                getSchemeTable();
+            }, 'json');
+        }
         // }
     });
 
@@ -209,15 +209,21 @@ $(document).ready(function () {
 
     $('#submit_loan_category_creation').click(function (event) {
         event.preventDefault();
-         // Fetching the value of due_method
-         let dueMethod = $('#due_method').val();
-
+    
+        // Fetching the value of profit_type
+        let profitType = $('#profit_type').val();
+        if (!profitType) {
+            let isProfitTypeNameValid = validateMultiSelectField('profit_type', profit_type);
+            return; // Stop the form submission if profitType is empty
+        }
+      
+        // Remove commas from loan_limit
         let formData = {
             loan_category: $('#loan_category').val(),
-            loan_limit: $('#loan_limit').val(),
-            due_method: dueMethod,
+            loan_limit: $('#loan_limit').val().replace(/,/g, ''),
+            due_method: $('#due_method').val(),
             due_type: $('#due_type').val(),
-            profit_type: $('#profit_type').val(),
+            profit_type: profitType,
             benefit_method: $('#benefit_method').val(),
             interest_rate_min: $('#interest_rate_min').val(),
             interest_rate_max: $('#interest_rate_max').val(),
@@ -232,13 +238,18 @@ $(document).ready(function () {
             scheme_name: $('#scheme_name').val(),
             id: $('#loan_cat_creation_id').val()
         };
+    
         let isValid = true;
+        let isLoanCalculationValid = true;
+        let isLoanSchemeValid = true;
     
-        // Validate Loan Calculation Card
-        let isLoanCalculationValid = validateLoanCalculationCard();
-    
-        // Validate Loan Scheme Card
-        let isLoanSchemeValid = validateLoanSchemeCard();
+        // Check which profit type(s) are selected
+        if (profitType.includes('1')) {
+            isLoanCalculationValid = validateLoanCalculationCard(); // Validate loan calculation card
+        }
+        if (profitType.includes('2')) {
+            isLoanSchemeValid = validateLoanSchemeCard(); // Validate loan scheme card
+        }
     
         // Validate main form fields
         if (!validateField($('#loan_category').val(), 'loan_category')) {
@@ -247,9 +258,13 @@ $(document).ready(function () {
         if (!validateField($('#loan_limit').val(), 'loan_limit')) {
             isValid = false;
         }
-        let isProfitTypeNameValid = validateMultiSelectField('profit_type', profit_type);
-        // Proceed with form submission if either Loan Calculation or Loan Scheme card is fully valid
-        if (isValid && isProfitTypeNameValid && (isLoanCalculationValid || isLoanSchemeValid)) {
+    
+        // Validate profit_type (multi-select field)
+       // let isProfitTypeNameValid = validateMultiSelectField('profit_type', profit_type);
+    
+        // Proceed with form submission if valid
+        if (isValid && isProfitTypeNameValid && isLoanCalculationValid && isLoanSchemeValid) {
+            // If profit_type and scheme_name are arrays, convert them to comma-separated strings
             if (Array.isArray(formData.scheme_name)) {
                 formData.scheme_name = formData.scheme_name.join(",");
             }
@@ -272,30 +287,24 @@ $(document).ready(function () {
                 $('.add_loancategory_btn').show();
                 $('#loan_category_creation_content').hide();
                 $('.back_to_loancategory_btn').hide();
-        
-               // swapTableAndCreation(); // Change to table content
             });
         }
     });
+    
 
+    ///////////////////////////////////// EDIT Screen START   /////////////////////////////////////
  
     
-    ///////////////////////////////////// EDIT Screen START   /////////////////////////////////////
     $(document).on('click', '.loanCatCreationActionBtn', function () {
         var id = $(this).attr('value'); // Get value attribute
         $.post('api/loan_category_creation/loan_category_creation_data.php', { id }, function (response) {
             console.log(response); // Log the response to verify
-    
+            
             $('#loan_cat_creation_id').val(id);
             $('#loan_category2').val(response[0].loan_category);
-            $('#loan_limit').val(response[0].loan_limit);
-    
-            // Handling profit_type for multi-select
-            $('#profit_type').val(response[0].profit_type.toString());
-            // var profitType = response[0].profit_type;
-            // $('#profit_type').val(profitType); // Set the value of the select element
-            // $('#profit_type1').val(profitType); // Set the value of the hidden input
-    
+            
+            $('#loan_limit').val(moneyFormatIndia(response[0].loan_limit));
+            // Populate other fields
             $('#due_method').val(response[0].due_method);
             $('#due_type').val(response[0].due_type);
             $('#benefit_method').val(response[0].benefit_method);
@@ -310,18 +319,23 @@ $(document).ready(function () {
             $('#overdue_penalty').val(response[0].overdue_penalty);
             $('#penalty_type').val(response[0].penalty_type);
             $('#scheme_name2').val(response[0].scheme_name);
-    
+            
+            // Populate profit_type dynamically
+            var profitTypes = response[0].profit_type.split(','); // Populate other fields
+    profitType(); // Reinitialize Choices.js for profit_type
+    profit_type.setChoiceByValue(profitTypes); // Set the selected values
             setTimeout(() => {
                 getLoanCategoryDropdown();
                 getSchemeDropdown();
-                
             }, 1000);
-    
+            
             swapTableAndCreation(); // Switch the view to the table
         }, 'json');
     });
     
     
+
+
     ///////////////////////////////////// EDIT Screen END  /////////////////////////////////////
     ///////////////////////////////////// Delete Screen START  /////////////////////////////////////
     $(document).on('click', '.loanCatCreationDeleteBtn', function () {
@@ -339,10 +353,11 @@ $(document).ready(function () {
 
 //OnLoad/////
 $(function () {
-    setdtable('#loan_scheme_table');
+    //setdtable('#loan_scheme_table');
     getLoanCategoryDropdown();
     getLoanCategoryCreationTable();
-    getSchemeDropdown();
+   // getSchemeDropdown();
+    profitType();
 });
 
 function getLoanCategoryCreationTable() {
@@ -360,9 +375,9 @@ function getLoanCategoryCreationTable() {
 }
 function validateLoanCalculationCard() {
     let valid = true;
-  //  valid &= validateField($('#due_type').val(), 'due_type');
-  valid &= validateField($('#due_method').val(), 'due_method');
-  valid &= validateField($('#benefit_method').val(), 'benefit_method');
+    //  valid &= validateField($('#due_type').val(), 'due_type');
+    valid &= validateField($('#due_method').val(), 'due_method');
+    valid &= validateField($('#benefit_method').val(), 'benefit_method');
     valid &= validateField($('#interest_rate_min').val(), 'interest_rate_min');
     valid &= validateField($('#interest_rate_max').val(), 'interest_rate_max');
     valid &= validateField($('#due_period_min').val(), 'due_period_min');
@@ -393,8 +408,6 @@ function swapTableAndCreation() {
         $('.add_loancategory_btn').show();
         $('#loan_category_creation_content').hide();
         $('.back_to_loancategory_btn').hide();
-
-        getSchemeDropdown();
     }
 }
 
@@ -453,7 +466,7 @@ function getSchemeListTable(scheme_id) {
     if (Array.isArray(scheme_id)) {
         scheme_id = scheme_id.join(",");
     }
-    
+
     $.post('api/loan_category_creation/get_scheme_list_based_scheme_dropdown.php', { scheme_id }, function (response) {
         let schemeColumn = [
             "sno",
@@ -468,9 +481,9 @@ function getSchemeListTable(scheme_id) {
             "processing_fee_max",
             "overdue_penalty_percent"
         ]
-        
+
         appendDataToTable('#loan_scheme_table', response, schemeColumn);
-        setTimeout(function() {
+        setTimeout(function () {
             setdtable('#loan_scheme_table');
         }, 0);
     }, 'json');
@@ -502,6 +515,7 @@ function getSchemeDropdown() {
         getSchemeListTable(selectedSchemeId);
     }, 'json');
 }
+
 
 function deleteLoanCategory(id) {
     $.post('api/loan_category_creation/delete_loan_category.php', { id }, function (response) {
@@ -572,20 +586,37 @@ function clearLoanCategory() {
 
 function clearLoanCategoryCreationForm() {
     // Reset all input fields except the ones specified
-    $('input:not(#due_type, #profit_method, #doc_charge_type, #processing_fee_type, #doc_charge_type_percent, #doc_charge_type_rupee, #processing_fee_type_percent, #processing_fee_type_rupee)').val('');
+    $('input:not(#due_type, #profit_method, #doc_charge_type, #processing_fee_type, #doc_charge_type_percent, #processing_fee_type_percent)').val('');
+    
     // Reset all select fields to their first option
     $('select').each(function () {
         $(this).val($(this).find('option:first').val());
     });
-  $('#loan_limit, #interest_rate_min, #interest_rate_max, #due_period_min, #due_period_max, #doc_charge_min, #doc_charge_max, #processing_fee_min, #processing_fee_max, #overdue_penalty').css('border', '1px solid #cecece');
-    // Reset all select fields to their first option
+
+    // Reset styles to default
+    $('#loan_limit, #interest_rate_min, #interest_rate_max, #due_period_min, #due_period_max, #doc_charge_min, #doc_charge_max, #processing_fee_min, #processing_fee_max, #overdue_penalty').css('border', '1px solid #cecece');
     $('#loan_category_creation select').css('border', '1px solid #cecece');
     $('#profit_type').closest('.choices').find('.choices__inner').css('border', '1px solid #cecece');
-    scheme_choices.clearInput();
+    
+    scheme_choices.clearInput(); // Clear input in scheme dropdown
+
+    // Remove active items from profit_type (Choices.js)
     if (typeof profit_type !== 'undefined') {
-        profit_type.removeActiveItems(); // Removes all selected items in profit_type
+        profit_type.removeActiveItems(); // Remove all selected items
     }
-    getSchemeDropdown();
+
+    getSchemeDropdown(); // Call to get the scheme dropdown
+    profitType();
+}
+function profitType(){
+     // Reinitialize Choices.js for profit_type with both options
+     if (typeof profit_type !== 'undefined') {
+        profit_type.clearStore();
+        profit_type.setChoices([
+            { value: '1', label: 'Calculation', selected: false },
+            { value: '2', label: 'Scheme', selected: false }
+        ], 'value', 'label', false); // false to avoid replacing current options
+    }
 }
 
 function checkMinMaxValue(minSelector, maxSelector) {

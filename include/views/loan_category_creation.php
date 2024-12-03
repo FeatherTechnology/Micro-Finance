@@ -60,7 +60,7 @@
                                     <div class="col-lg-3 col-md-4">
                                         <div class="form-group">
                                             <label for="loan_limit">Loan Limit</label><span class="text-danger">*</span>
-                                            <input type="number" class="form-control" id="loan_limit" name="loan_limit" tabindex="3" placeholder="Enter Loan Limit">
+                                            <input type="text" class="form-control" id="loan_limit" name="loan_limit" tabindex="3" placeholder="Enter Loan Limit">
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-4">
@@ -69,8 +69,6 @@
                                             <input type="hidden" id="profit_type1">
                                             <select class="form-control" id="profit_type" name="profit_type" tabindex="4" multiple>
                                                 <option value="">Select Profit Type</option>
-                                                <option value="1">Calculation</option>
-                                                <option value="2">Scheme</option>
                                             </select>
                                         </div>
                                     </div>

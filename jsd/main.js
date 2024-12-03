@@ -313,55 +313,46 @@ function appendDataToTable(tableSelector, response, columnMapping) {
 
 // / Function to initialize DataTable with conditional Excel button
 function serverSideTable(tableSelector, params, apiUrl) {
-    // Fetch user access and initialize DataTable based on it
-    getUserAccess(function(downloadAccess) {
-        let buttons = [];
-
-        // Add Excel button if download access is 1
-        if (downloadAccess === 1) {
-            buttons.push({
+    $(tableSelector).DataTable().destroy(); // Destroy the previous table instance
+    $(tableSelector).DataTable({
+        'processing': true,          // Enable processing indicator
+        'serverSide': true,          // Enable server-side processing
+        'serverMethod': 'post',      // Use POST method for the request
+        'ajax': {
+            'url': apiUrl,           // URL for the AJAX request
+            'data': function (data) { // Custom data sent to the server
+                var search = $(tableSelector + '_search').val(); // Custom search input
+                data.search = search;
+                data.params = params;  // Additional params
+            }
+        },
+        dom: 'lBfrtip',               // DOM layout for buttons and table controls
+        buttons: [
+            {
                 extend: 'excel',
                 title: "Branch List"
-            });
-        }
-
-        // Add other buttons
-        buttons.push({
-            extend: 'colvis',
-            collectionLayout: 'fixed four-column',
-        });
-
-        // Destroy existing DataTable instance
-        $(tableSelector).DataTable().destroy();
-
-        // Initialize DataTable with conditional buttons
-        $(tableSelector).DataTable({
-            'order': [[0, "desc"]],
-            'processing': true,
-            'serverSide': true,
-            'serverMethod': 'post',
-            'ajax': {
-                'url': apiUrl,
-                'data': function (data) {
-                    var search = $('input[type=search]').val();
-                    data.search = search;
-                    data.params = params;
-                }
             },
-            dom: 'lBfrtip',
-            buttons: buttons,
-            "lengthMenu": [
-                [10, 25, 50, -1],
-                [10, 25, 50, "All"]
-            ],
-            'drawCallback': function () {
-                setDropdownScripts();
+            {
+                extend: 'colvis',
+                collectionLayout: 'fixed four-column',
             }
-        });
+        ],
+        "lengthMenu": [
+            [10, 25, 50, -1],
+            [10, 25, 50, "All"]
+        ],
+        'order': [], // Allow default sorting (clicking on column header toggles between asc/desc)
+        
+        'drawCallback': function () {
+            setDropdownScripts(); // Custom function for dropdowns (assuming you have one)
+
+            let new_id = tableSelector.split("#").pop();
+            $(tableSelector + '_filter input')
+                .attr('id', new_id + '_search') // Add ID to the search input
+                .addClass('custo-search'); // Add a custom class to search input
+        }
     });
 }
-
-
 
 ////////////////////////////////////////////////////
 

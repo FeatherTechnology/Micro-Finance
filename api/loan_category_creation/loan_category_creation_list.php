@@ -13,7 +13,7 @@ if ($qry->rowCount() > 0) {
     while ($loanCatCreationInfo = $qry->fetch(PDO::FETCH_ASSOC)) {
         // Assign the human-readable status
         $loanCatCreationInfo['status'] = $status_arr[$loanCatCreationInfo['status']];
-
+        $loanCatCreationInfo['loan_limit'] =moneyFormatIndia($loanCatCreationInfo['loan_limit']) ;
         // Add action buttons with appropriate ID
         $loanCatCreationInfo['action'] = "<span class='icon-border_color loanCatCreationActionBtn' value='" . $loanCatCreationInfo['id'] . "'></span> 
                                           <span class='icon-trash-2 loanCatCreationDeleteBtn' value='" . $loanCatCreationInfo['id'] . "'></span>";
