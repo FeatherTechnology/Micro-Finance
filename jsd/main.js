@@ -249,8 +249,6 @@ function hideOverlay() {
 	overlayDiv.remove();
 }
 
-
-// Initialize DataTable with user access controls
 function setdtable(table_id) {
 	$(table_id).DataTable({
 		'processing': true,
@@ -278,6 +276,7 @@ function setdtable(table_id) {
 		],
 	}); // this will initialize all tables with dtable class in project as DataTable
 };
+
 ///////////////////////////////////////////////////////////////////////////////////
 ///Append Row in Table TBody after getting response from ajax. ///common for all table//// Just send table id, response from ajax, Column in table. 
 function appendDataToTable(tableSelector, response, columnMapping) {
@@ -310,52 +309,6 @@ function appendDataToTable(tableSelector, response, columnMapping) {
 	});
 }
 /////////////////////////////////////////////////////
-
-// / Function to initialize DataTable with conditional Excel button
-function serverSideTable(tableSelector, params, apiUrl) {
-    $(tableSelector).DataTable().destroy(); // Destroy the previous table instance
-    $(tableSelector).DataTable({
-        'processing': true,          // Enable processing indicator
-        'serverSide': true,          // Enable server-side processing
-        'serverMethod': 'post',      // Use POST method for the request
-        'ajax': {
-            'url': apiUrl,           // URL for the AJAX request
-            'data': function (data) { // Custom data sent to the server
-                var search = $(tableSelector + '_search').val(); // Custom search input
-                data.search = search;
-                data.params = params;  // Additional params
-            }
-        },
-        dom: 'lBfrtip',               // DOM layout for buttons and table controls
-        buttons: [
-            {
-                extend: 'excel',
-                title: "Branch List"
-            },
-            {
-                extend: 'colvis',
-                collectionLayout: 'fixed four-column',
-            }
-        ],
-        "lengthMenu": [
-            [10, 25, 50, -1],
-            [10, 25, 50, "All"]
-        ],
-        'order': [], // Allow default sorting (clicking on column header toggles between asc/desc)
-        
-        'drawCallback': function () {
-            setDropdownScripts(); // Custom function for dropdowns (assuming you have one)
-
-            let new_id = tableSelector.split("#").pop();
-            $(tableSelector + '_filter input')
-                .attr('id', new_id + '_search') // Add ID to the search input
-                .addClass('custo-search'); // Add a custom class to search input
-        }
-    });
-}
-
-////////////////////////////////////////////////////
-
 
 
 //Swal alert section *************************
