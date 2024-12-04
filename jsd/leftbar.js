@@ -6,7 +6,10 @@ $(document).ready(function () {
         'branch_creation': 'master',
         'loan_category_creation': 'master',
         'area_creation': 'master',
+        'bank_creation': 'admin',
+        'user_creation': 'admin',
         'customer_creation': 'profile',
+        'centre_creation': 'profile',
     };
 
     const current_page = localStorage.getItem('currentPage');
