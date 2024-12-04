@@ -7,6 +7,8 @@ $(document).ready(function () {
         'loan_category_creation': 'master',
         'area_creation': 'master',
         'customer_creation': 'profile',
+        'bank_creation': 'admin',
+        'user_creation': 'admin',
     };
 
     const current_page = localStorage.getItem('currentPage');
