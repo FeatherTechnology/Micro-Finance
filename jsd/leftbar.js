@@ -9,6 +9,7 @@ $(document).ready(function () {
         'customer_creation': 'profile',
         'bank_creation': 'admin',
         'user_creation': 'admin',
+        'loan_entry':'loan_entry'
     };
 
     const current_page = localStorage.getItem('currentPage');

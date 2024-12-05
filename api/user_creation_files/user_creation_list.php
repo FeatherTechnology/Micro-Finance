@@ -9,13 +9,13 @@ $qry = $pdo->query("SELECT
     r.role, 
     d.designation, 
     GROUP_CONCAT(DISTINCT bc.branch_name ORDER BY bc.branch_name SEPARATOR ', ') AS branch_names,
-    c.centre_name
+    GROUP_CONCAT(DISTINCT c.centre_name ORDER BY c.centre_name SEPARATOR ', ') AS centre_name
 FROM 
     users u 
 LEFT JOIN 
     branch_creation bc ON FIND_IN_SET(bc.id, u.branch)
 LEFT JOIN 
-    centre_creation c ON FIND_IN_SET(c.id, u.id)
+    centre_creation c ON FIND_IN_SET(c.id, u.centre_name)
 LEFT JOIN
 	role r ON u.role = r.id
 LEFT JOIN 

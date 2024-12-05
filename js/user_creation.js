@@ -39,7 +39,7 @@ $(document).ready(function () {
         });
         if (role != '') {
             if (isValid) {
-                $.post('api/user_creation_files/submit_role.php', { role, id }, function (response) {
+                $.post('api/user_creation_files/submit_role.php', { role, id}, function (response) {
                     if (response == '0') {
                         swalError('Warning', 'Role Already Exists!');
                     } else if (response == '1') {
@@ -161,7 +161,6 @@ $(document).ready(function () {
         let isCentreValid = validateMultiSelectField('centre', centre);
         let isLoanCategoryValid = validateMultiSelectField('loan_category', loan_category);
 
-        // if (isFormDataValid(userFormData)) {
         if (isValid && isBranchNameValid && isCentreValid && isLoanCategoryValid) {
             if (selectedSubmenuIds.length > 0) {
                 $.post('api/user_creation_files/submit_user_creation.php', userFormData, function (response) {
@@ -188,7 +187,6 @@ $(document).ready(function () {
                 swalError('Warning', 'Please fill out mandatory fields!');
             }
         }
-        // }
     });
 
     $(document).on('click', '.userActionBtn', function () {
@@ -214,7 +212,7 @@ $(document).ready(function () {
                 getRoleDropdown(response[0].role);
                 getDesignationDropdown(response[0].designation);
                 getBranchName(response[0].branch);
-                getCentreName(response[0].Centre_name);
+                getCentreName(response[0].centre_name);
                 getLoanCategoryName(response[0].loan_category);
             }, 1000);
 
@@ -284,7 +282,7 @@ $(document).ready(function () {
 
         // Reset Choices.js multiselect
         branch_name.removeActiveItems();
-        line_name.removeActiveItems();
+        centre.removeActiveItems();
         loan_category.removeActiveItems();
 
         // Uncheck and reset all checkboxes
@@ -300,13 +298,9 @@ $(document).ready(function () {
         $('#download_access').css('border', '1px solid #cecece');
         $('#branch_name').closest('.choices').find('.choices__inner').css('border', '1px solid #cecece');
         $('#loan_category').closest('.choices').find('.choices__inner').css('border', '1px solid #cecece');
-        $('#line_name').closest('.choices').find('.choices__inner').css('border', '1px solid #cecece');
+        $('#centre').closest('.choices').find('.choices__inner').css('border', '1px solid #cecece');
     });
 
-    $('#branch_name').change(function () {
-        let branchId = $(this).val();
-        getCentreName(branchId);
-    });
 
 }); //Document END.
 
@@ -571,15 +565,11 @@ function getBranchName(branch_edit_it) {
     }, 'json');
 }
 
-function getCentreName(CentreId) {
-    if (Array.isArray(CentreId)) {
-        CentreId = CentreId.join(",");
-    }
-    $.post('api/user_creation_files/get_centre_name.php', { CentreId }, function (response) {
+function getCentreName(centre_edit_it) {
+    $.post('api/user_creation_files/get_centre_name.php', function (response) {
         centre.clearStore();
         $.each(response, function (index, val) {
             let selected = '';
-            let centre_edit_it = $('#centre_edit_it').val();
             if (centre_edit_it.includes(val.id)) {
                 selected = 'selected';
             }
@@ -617,17 +607,6 @@ function getLoanCategoryName(loan_cat_edit_it) {
     }, 'json');
 }
 
-// Function to check if all values in an object are not empty
-// function isFormDataValid(formData) {
-//     for (let key in formData) {
-//         if (key != 'id' && key != 'address' && key != 'place' && key != 'email' && key != 'mobile_no') {
-//             if (formData[key] == '' || formData[key] == null || formData[key] == undefined) {
-//                 return false;
-//             }
-//         }
-//     }
-//     return true;
-// }
 
 function deleteUser(id) {
     $.post('api/user_creation_files/delete_user.php', { id }, function (response) {

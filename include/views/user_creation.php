@@ -175,15 +175,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <!-- <div class="col-sm-4 col-md-4 col-lg-4">
-                                        <div class="form-group">
-                                            <label for="line_name">Line Name</label><span class="text-danger">*</span>
-                                            <input type="hidden" id="line_edit_it">
-                                            <select class="form-control" id="line_name" name="line_name" tabindex="16" multiple>
-                                                <option value="">Select Line Name</option>
-                                            </select>
-                                        </div>
-                                    </div> -->
+                                
                                     <div class="col-sm-4 col-md-4 col-lg-4">
                                         <div class="form-group">
                                             <label for="loan_category">Loan Category</label><span class="text-danger">*</span>

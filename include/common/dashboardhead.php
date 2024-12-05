@@ -8,7 +8,7 @@
 	<link rel="shortcut icon" href="img/fav.png" />
 
 	<!-- Title -->
-	<title>Group Finance</title>
+	<title>Finance</title>
 
 	<!-- ************************* Vendor Css Files *************-->
 	<link rel="stylesheet" href="vendor/customcss/customstyle.css" />
