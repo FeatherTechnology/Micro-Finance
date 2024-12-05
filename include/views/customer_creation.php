@@ -92,7 +92,7 @@
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <label for="area">Area</label>
+                                            <label for="area">Area</label><span class="text-danger">*</span>
                                             <input type="hidden" id="area_edit">
                                             <select type="text" class="form-control" id="area" name="area" tabindex="9">
                                                 <option value="">Select Area</option>
