@@ -209,33 +209,33 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                <div class="col-md-3 col-sm-4">
-                                <div class="form-group">
-                                    <label for="overdue_penalty">Overdue Penalty</label><span class="text-danger">*</span>
-                                    <input type="hidden" id="penalty_type" value="percent">
-                                    <div class="input-group int-grp-label-empty">
-                                        <div class="btn-group btn-group-toggle mb-1 radio-toggle-div-cls" data-toggle="buttons">
-                                            <label class="btn btn-outline-primary active radio-toggle-label-cls penalty-type" id="label_penalty_type_percent">
-                                                <input type="radio" class="form-control" name="penalty_type" id="penalty_type_percent" value="percent" tabindex="8" checked>%
-                                            </label>
-                                            <label class="btn btn-outline-primary radio-toggle-label-cls penalty-type" id="label_penalty_type_rupee">
-                                                <input type="radio" class="form-control" name="penalty_type" id="penalty_type_rupee" value="rupee" tabindex="9"> ₹
-                                            </label>
+                                    <div class="col-md-3 col-sm-4">
+                                        <div class="form-group">
+                                            <label for="overdue_penalty">Overdue Penalty</label><span class="text-danger">*</span>
+                                            <input type="hidden" id="penalty_type" value="percent">
+                                            <div class="input-group int-grp-label-empty">
+                                                <div class="btn-group btn-group-toggle mb-1 radio-toggle-div-cls" data-toggle="buttons">
+                                                    <label class="btn btn-outline-primary active radio-toggle-label-cls calculation-type" id="label_calculation_percent">
+                                                        <input type="radio" class="form-control" name="penalty_type" id="penalty_type_percent" value="percent" tabindex="8" checked>%
+                                                    </label>
+                                                    <label class="btn btn-outline-primary radio-toggle-label-cls calculation-type" id="label_calculation_rupee">
+                                                        <input type="radio" class="form-control" name="penalty_type" id="penalty_type_rupee" value="rupee" tabindex="9"> ₹
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="form-group">
-                                    <label for="overdue_penalty"> </label>
-                                    <div class="input-group int-grp-label-empty">
-                                        <input type="number" class="form-control form-group-label-emptywith-input" id="overdue_penalty" name="overdue_penalty" tabindex="10" placeholder="Enter Overdue Penalty">
-                                        <div class="input-group-append form-group-label-emptywith-input">
-                                            <span class="input-group-text penalty-span-val">%</span>
+                                    <div class="col-md-3 col-sm-4">
+                                        <div class="form-group">
+                                            <label for="overdue_penalty"> </label>
+                                            <div class="input-group int-grp-label-empty">
+                                                <input type="number" class="form-control form-group-label-emptywith-input" id="overdue_penalty" name="overdue_penalty" tabindex="10" placeholder="Enter Overdue Penalty">
+                                                <div class="input-group-append form-group-label-emptywith-input">
+                                                    <span class="input-group-text calculation-span-val">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
                                 </div>
                             </div>
                         </div>
@@ -262,7 +262,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 overflow-x-cls">
                                         <table id="loan_scheme_table" class="custom-table">
                                             <thead>
                                                 <tr>
@@ -270,8 +270,10 @@
                                                     <th>Scheme</th>
                                                     <th>Due Method</th>
                                                     <th>Benefit Method</th>
-                                                    <th>Interest Rate</th>
-                                                    <th>Due Period</th>
+                                                    <th>Interest Rate Min</th>
+                                                    <th>Interest Rate Max</th>
+                                                    <th>Due Period Min</th>
+                                                    <th>Due Period Max</th>
                                                     <th>Document Charge Min</th>
                                                     <th>Document Charge Max</th>
                                                     <th>Processing Fee Min</th>
@@ -400,114 +402,124 @@
                         <h5 class="card-title">Condition Info</h5>
                         <div class="row">
                             <!-- Fields -->
-                             
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label for="scheme_interest_rate">Interest Rate</label><span class="text-danger">*</span>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" id="scheme_interest_rate" name="scheme_interest_rate" tabindex="5" placeholder="Enter Min Interest Rate">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">%</span>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Fields -->
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_interest_rate_min">Interest Rate</label><span class="text-danger">*</span>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control scheme_interest_minmax" id="scheme_interest_rate_min" name="scheme_interest_rate_min" tabindex="1" placeholder="Enter Min Interest Rate">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_interest_rate_max"> </label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-group-label-emptywith-input scheme_interest_minmax" id="scheme_interest_rate_max" name="scheme_interest_rate_max" tabindex="1" placeholder="Enter Max Interest Rate">
+                                                <div class="input-group-append form-group-label-emptywith-input">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label for="scheme_due_period">Due Period</label><span class="text-danger">*</span>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" id="scheme_due_period" name="scheme_due_period" tabindex="6" placeholder="Enter Min Due Period">
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_due_period_min">Due Period</label><span class="text-danger">*</span>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control scheme_due_period_minmax" id="scheme_due_period_min" name="scheme_due_period_min" tabindex="1" placeholder="Enter Min Due Period">
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label for="scheme_overdue_penalty">Overdue Penalty</label><span class="text-danger">*</span>
-                                    <div class="input-group">
-                                        <input type="number" class="form-control" id="scheme_overdue_penalty" name="scheme_overdue_penalty" tabindex="7" placeholder="Enter Overdue Penalty">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">%</span>
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_due_period_max"> </label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-group-label-emptywith-input scheme_due_period_minmax" id="scheme_due_period_max" name="scheme_due_period_max" tabindex="1" placeholder="Enter Max Due Period">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label for="scheme_doc_charge_min">Document Charge</label><span class="text-danger">*</span>
-                                    <input type="hidden" id="doc_charge_type" value="percent">
-                                    <div class="input-group int-grp-label-empty">
-                                        <div class="btn-group btn-group-toggle mb-1 radio-toggle-div-cls" data-toggle="buttons">
-                                            <label class="btn btn-outline-primary active radio-toggle-label-cls doc-type" id="label_doc_charge_type_percent">
-                                                <input type="radio" class="form-control" name="doc_charge_type" id="doc_charge_type_percent" value="percent" tabindex="8" checked>%
-                                            </label>
-                                            <label class="btn btn-outline-primary radio-toggle-label-cls doc-type" id="label_doc_charge_type_rupee">
-                                                <input type="radio" class="form-control" name="doc_charge_type" id="doc_charge_type_rupee" value="rupee" tabindex="9"> ₹
-                                            </label>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_doc_charge_min">Document Charge</label><span class="text-danger">*</span>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control scheme_doc_minmax" id="scheme_doc_charge_min" name="scheme_doc_charge_min" tabindex="1" placeholder="Enter Min Document Charge">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_doc_charge_max"> </label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-group-label-emptywith-input scheme_doc_minmax" id="scheme_doc_charge_max" name="scheme_doc_charge_max" tabindex="1" placeholder="Enter Max Document Charge">
+                                                <div class="input-group-append form-group-label-emptywith-input">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label for="scheme_doc_charge_min"> </label>
-                                    <div class="input-group int-grp-label-empty">
-                                        <input type="number" class="form-control form-group-label-emptywith-input scheme_doc_minmax" id="scheme_doc_charge_min" name="scheme_doc_charge_min" tabindex="10" placeholder="Enter Min Document Charge">
-                                        <div class="input-group-append form-group-label-emptywith-input">
-                                            <span class="input-group-text doc-span-val">%</span>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_processing_fee_min">Processing Fee</label><span class="text-danger">*</span>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control scheme_processing_minmax" id="scheme_processing_fee_min" name="scheme_processing_fee_min" tabindex="1" placeholder="Enter Min Processing Fee">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_processing_fee_max"> </label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-group-label-emptywith-input scheme_processing_minmax" id="scheme_processing_fee_max" name="scheme_processing_fee_max" tabindex="1" placeholder="Enter Max Processing Fee">
+                                                <div class="input-group-append form-group-label-emptywith-input">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label for="scheme_doc_charge_max"> </label>
-                                    <div class="input-group int-grp-label-empty">
-                                        <input type="number" class="form-control form-group-label-emptywith-input scheme_doc_minmax" id="scheme_doc_charge_max" name="scheme_doc_charge_max" tabindex="11" placeholder="Enter Max Document Charge">
-                                        <div class="input-group-append form-group-label-emptywith-input">
-                                            <span class="input-group-text doc-span-val">%</span>
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_overdue_penalty">Overdue Penalty</label><span class="text-danger">*</span>
+                                            <input type="hidden" id="scheme_penalty_type" value="percent">
+                                            <div class="input-group int-grp-label-empty">
+                                                <div class="btn-group btn-group-toggle mb-1 radio-toggle-div-cls" data-toggle="buttons">
+                                                    <label class="btn btn-outline-primary active radio-toggle-label-cls scheme-penalty-type" id="label_scheme_type_percent">
+                                                        <input type="radio" class="form-control" name="scheme_penalty_type" id="scheme_type_percent" value="percent" tabindex="8" checked>%
+                                                    </label>
+                                                    <label class="btn btn-outline-primary radio-toggle-label-cls scheme-penalty-type" id="label_scheme_type_rupee">
+                                                        <input type="radio" class="form-control" name="scheme_penalty_type" id="scheme_type_rupee" value="rupee" tabindex="9"> ₹
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label>Processing Fee</label><span class="text-danger">*</span>
-                                    <input type="hidden" id="processing_fee_type" value="percent">
-                                    <div class="input-group int-grp-label-empty">
-                                        <div class="btn-group btn-group-toggle mb-1 radio-toggle-div-cls" data-toggle="buttons">
-                                            <label class="btn btn-outline-primary active radio-toggle-label-cls processing-type">
-                                                <input type="radio" name="processing_fee_type" id="processing_fee_type_percent" value="percent" tabindex="12" checked>%
-                                            </label>
-                                            <label class="btn btn-outline-primary radio-toggle-label-cls processing-type">
-                                                <input type="radio" name="processing_fee_type" id="processing_fee_type_rupee" value="rupee" tabindex="13"> ₹
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label for="scheme_processing_fee_min"> </label>
-                                    <div class="input-group int-grp-label-empty">
-                                        <input type="number" class="form-control form-group-label-emptywith-input scheme_processing_minmax" id="scheme_processing_fee_min" name="scheme_processing_fee_min" tabindex="14" placeholder="Enter Min Processing Fee">
-                                        <div class="input-group-append form-group-label-emptywith-input">
-                                            <span class="input-group-text processing-span-val">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4">
-                                <div class="form-group">
-                                    <label for="scheme_processing_fee_max"> </label>
-                                    <div class="input-group int-grp-label-empty">
-                                        <input type="number" class="form-control form-group-label-emptywith-input scheme_processing_minmax" id="scheme_processing_fee_max" name="scheme_processing_fee_max" tabindex="15" placeholder="Enter Max Processing Fee">
-                                        <div class="input-group-append form-group-label-emptywith-input">
-                                            <span class="input-group-text processing-span-val">%</span>
+                                    <div class="col-md-5 col-sm-5">
+                                        <div class="form-group">
+                                            <label for="scheme_overdue_penalty"> </label>
+                                            <div class="input-group int-grp-label-empty">
+                                                <input type="number" class="form-control form-group-label-emptywith-input" id="scheme_overdue_penalty" name="scheme_overdue_penalty" tabindex="10" placeholder="Enter Overdue Penalty">
+                                                <div class="input-group-append form-group-label-emptywith-input">
+                                                    <span class="input-group-text scheme-penalty-span-val">%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -532,8 +544,10 @@
                                     <th>Scheme</th>
                                     <th>Due Method</th>
                                     <th>Benefit Method</th>
-                                    <th>Interest Rate</th>
-                                    <th>Due Period</th>
+                                    <th>Interest Rate Min</th>
+                                    <th>Interest Rate Max</th>
+                                    <th>Due Period Min</th>
+                                    <th>Due Period Max</th>
                                     <th>Document Charge Min</th>
                                     <th>Document Charge Max</th>
                                     <th>Processing Fee Min</th>

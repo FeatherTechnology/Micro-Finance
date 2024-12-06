@@ -41,6 +41,7 @@
         <div class="row gutters">
             <div class="col-12">
                 <!--- -------------------------------------- Loan Info ------------------------------- -->
+
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Loan Info</div>
@@ -55,23 +56,62 @@
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="loan_category_calc"> Loan Category</label><span class="text-danger">*</span>
-                                    <input type="hidden" id="loan_category_calc2">
-                                    <select class="form-control" id="loan_category_calc" name="loan_category_calc" tabindex="2">
-                                        <option value="">Select Loan Category</option>
+                                    <label for="Centre_id"> Centre ID</label><span class="text-danger">*</span>
+                                    <input type="hidden" id="Centre_id_edit">
+                                    <select class="form-control" id="Centre_id" name="Centre_id" tabindex="2">
+                                        <option value="">Select Centre ID</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="category_info_calc">Category Info</label>
-                                    <textarea class="form-control" id="category_info_calc" name="category_info_calc" tabindex="3"></textarea>
+                                    <label for="centre_no"> Centre Number</label>
+                                    <input class="form-control" id="centre_no" name="centre_no" tabindex="3" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
+                                    <label for="centre_name"> Centre Name</label>
+                                    <input class="form-control" id="centre_name" name="centre_name" tabindex="4" readonly>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="centre_mobile"> Mobile Number</label>
+                                    <input class="form-control" id="centre_mobile" name="centre_mobile" tabindex="5" readonly>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="loan_category_calc"> Loan Category</label><span class="text-danger">*</span>
+                                    <input type="hidden" id="loan_category_calc2">
+                                    <select class="form-control" id="loan_category_calc" name="loan_category_calc" tabindex="6">
+                                        <option value="">Select Loan Category</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="category_info_calc">Category Info</label>
+                                    <textarea class="form-control" id="category_info_calc" name="category_info_calc" tabindex="3"></textarea>
+                                </div>
+                            </div> -->
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
                                     <label for="loan_amount_calc"> Loan Amount</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" id="loan_amount_calc" name="loan_amount_calc" tabindex="4">
+                                    <input type="number" class="form-control" id="loan_amount_calc" name="loan_amount_calc" tabindex="7">
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="total_cus"> Total No Of Customer</label><span class="text-danger">*</span>
+                                    <input type="number" class="form-control" id="total_cus" name="total_cus" tabindex="8">
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="loan_amount_per_cus"> Loan Amount Per Customer</label>
+                                    <input type="number" class="form-control" id="loan_amount_per_cus" name="loan_amount_per_cus" tabindex="9" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
@@ -80,14 +120,15 @@
                                     <input type="hidden" id="profit_name_edit">
                                     <select class="form-control" id="profit_type_calc" name="profit_type_calc" tabindex="5">
                                         <option value="">Select Profit Type</option>
-                                        <option value="0">Calculation</option>
-                                        <option value="1">Scheme</option>
+                                        <option value="1">Calculation</option>
+                                        <option value="2">Scheme</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <!--- -------------------------------------- Loan Info END ------------------------------- -->
                 <!--- -------------------------------------- Calculation - Scheme START ------------------------------- -->
                 <div class="card" id="profit_type_calc_scheme" style="display: none;">
@@ -99,7 +140,7 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 calc" style="display:none">
                                 <div class="form-group">
                                     <label for="due_method_calc">Due Method</label><span class="text-danger">*</span>
-                                    <select class="form-control" id="due_method_calc" name="due_method_calc" tabindex="6">
+                                    <select class="form-control" id="due_method_calc" name="due_method_calc" tabindex="6" readonly>
                                         <option value="">Select Due Method</option>
                                         <option value="1">Monthly</option>
                                         <option value="2">Weekly</option>
@@ -109,7 +150,7 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 calc" style="display:none">
                                 <div class="form-group">
                                     <label for="profit_method_calc">Benefit Method</label><span class="text-danger">*</span>
-                                    <select class="form-control" id="profit_method_calc" name="profit_method_calc" tabindex="7">
+                                    <select class="form-control " id="profit_method_calc" name="profit_method_calc" tabindex="7" readonly>
                                         <option value="">Select Benefit Method</option>
                                         <option value="1">Pre Benefit</option>
                                         <option value="2">After Benefit</option>
@@ -146,7 +187,7 @@
                                 <div class="form-group">
                                     <label for="scheme_date_calc">Date</label><span class="text-danger">*</span>
                                     <input type="hidden" id="date_name_edit">
-                                    <select class="form-control" id="scheme_date_calc" name="scheme_date_calc" tabindex="3">
+                                    <select class="form-control to_clear" id="scheme_date_calc" name="scheme_date_calc" tabindex="3">
                                         <option value="">Select Date</option>
                                     </select>
                                 </div>
@@ -273,7 +314,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label for="customer_mapping">Customer Mapping</label><span class="text-danger">*</span>
                                     <select class="form-control" id="customer_mapping" name="customer_mapping" tabindex="25">
@@ -284,7 +325,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <label for="add_customer">Customer Name</label><span class="text-danger">*</span>
                                     <select class="form-control" id="add_customer" name="add_customer" tabindex="25">
@@ -292,9 +333,15 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12 align-self-end">
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
                                 <div class="form-group">
-                                    <input type="button" class="btn btn-primary modalBtnCss" id="submit_cus_map" name="submit_cus_map" value="Add" tabindex="19">
+                                    <label for="designation">Designation</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control" id="designation" name="designation" tabindex="26">
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 align-self-end">
+                                <div class="form-group">
+                                    <input type="button" class="btn btn-primary modalBtnCss" id="submit_cus_map" name="submit_cus_map" value="Add" tabindex="28">
                                 </div>
                             </div>
                         </div>
