@@ -2,12 +2,13 @@
 require '../../ajaxconfig.php';
 @session_start();
 $user_id = $_SESSION['user_id'];
-
+$loan_status =[1=>'Process',2=>'Created'];
 $column = array(
     'lelc.id',
     'lelc.loan_id',
     'lc.loan_category',
     'cc.centre_id',
+    'cc.centre_no',
     'cc.centre_name',
     'cc.mobile1',
     'anc.areaname',
@@ -15,11 +16,11 @@ $column = array(
     'lelc.loan_status', 
     'lelc.id'
 );
-$query = "SELECT lelc.id,lelc.loan_id,lc.loan_category,cc.centre_id,cc.centre_name,cc.mobile1, anc.areaname, bc.branch_name, lelc.loan_status
+$query = "SELECT lelc.id as loan_calc_id,lelc.loan_id,lc.loan_category,cc.centre_id,cc.centre_no,cc.centre_name,cc.mobile1, anc.areaname, bc.branch_name, lelc.loan_status
  FROM loan_entry_loan_calculation lelc 
  LEFT JOIN loan_category_creation lcc ON lelc.loan_category = lcc.id
  LEFT JOIN loan_category lc ON lcc.loan_category = lc.id
- LEFT JOIN centre_creation cc ON lelc .centre_id = cc.centre_id
+ LEFT JOIN centre_creation cc ON lelc.centre_id = cc.centre_id
  LEFT JOIN area_name_creation anc ON cc.area = anc.id
 LEFT JOIN branch_creation bc ON cc.branch = bc.id
 WHERE lelc.insert_login_id = '$user_id' AND (lelc.loan_status = '1' OR lelc.loan_status = '2') ";
@@ -31,6 +32,7 @@ if (isset($_POST['search'])) {
                       OR lc.loan_category LIKE '%" . $search . "%'
                       OR cc.centre_id LIKE '%" . $search . "%'
                       OR cc.centre_name LIKE '%" . $search . "%'
+                      OR cc.centre_no LIKE '%" . $search . "%'
                       OR cc.mobile1 LIKE '%" . $search . "%'
                       OR anc.areaname LIKE '%" . $search . "%'
                       OR bc.branch_name LIKE '%" . $search . "%'
@@ -67,19 +69,21 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';
     $sub_array[] = isset($row['loan_category']) ? $row['loan_category'] : '';
     $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';
+    $sub_array[] = isset($row['centre_no']) ? $row['centre_no'] : '';
     $sub_array[] = isset($row['centre_name']) ? $row['centre_name'] : '';
     $sub_array[] = isset($row['mobile1']) ? $row['mobile1'] : '';
     $sub_array[] = isset($row['areaname']) ? $row['areaname'] : '';
     $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
-    $sub_array[] = isset($row['loan_status']) ? $row['loan_status'] : '';
+    $sub_array[] = isset($loan_status[$row['loan_status']]) ? $loan_status[$row['loan_status']] : '';
+
     $action= "<div class='dropdown'>
                 <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
                <div class='dropdown-content'>";
     if ($row['loan_status'] == '1' || $row['loan_status'] == '2') {
-        $action .= "<a href='#' class='edit-loan-entry' value='" . $row['id'] . "' data-id='" . $row['loan_calc_id'] . "' title='Edit details'>Edit</a>";
+        $action .= "<a href='#' class='edit-loan-entry' value='" . $row['loan_calc_id'] . "' title='Edit details'>Edit</a>";
     }
     if ($row['loan_status'] == '2') {
-        $action  .= "<a href='#' class='move-loan-entry' value='" . $row['cus_sts_id'] . "' title='Move'>Move</a>";
+        $action  .= "<a href='#' class='move-loan-entry' value='" . $row['loan_calc_id'] . "' title='Move'>Move</a>";
     }
     $action .= "</div></div>";
     $sub_array[] = $action;

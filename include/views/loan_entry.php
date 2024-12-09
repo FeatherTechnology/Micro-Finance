@@ -90,12 +90,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="category_info_calc">Category Info</label>
-                                    <textarea class="form-control" id="category_info_calc" name="category_info_calc" tabindex="3"></textarea>
-                                </div>
-                            </div> -->
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="loan_amount_calc"> Loan Amount</label><span class="text-danger">*</span>

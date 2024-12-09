@@ -41,10 +41,10 @@ if ($qry) {
         // Update status based on the count
         if ($current_mapping_count >= $total_members) {
             // Update status to 2 if count matches or exceeds
-            $statusUpdateStmt = $pdo->query("UPDATE `loan_entry_loan_calculation` SET status = '2' WHERE loan_id = '$loan_id'");
+            $statusUpdateStmt = $pdo->query("UPDATE `loan_entry_loan_calculation` SET loan_status = '2' WHERE loan_id = '$loan_id'");
         } else {
             // Update status to 1 if count does not match
-            $statusUpdateStmt = $pdo->query("UPDATE `loan_entry_loan_calculation` SET status = '1' WHERE loan_id = '$loan_id'");
+            $statusUpdateStmt = $pdo->query("UPDATE `loan_entry_loan_calculation` SET loan_status = '1' WHERE loan_id = '$loan_id'");
         }
 
         // Check if status update was successful

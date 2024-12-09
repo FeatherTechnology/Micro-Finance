@@ -1,2 +1,2 @@
-1 => Loan Created
-2 => Loan Created with(Total Member == Customer Mapping)
+1 => Loan Created(Process)
+2 => Loan Created with(Total Member == Customer Mapping)(Created)
