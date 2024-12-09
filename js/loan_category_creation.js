@@ -31,25 +31,26 @@ $(document).ready(function () {
         checkMinMaxValue('#processing_fee_min', '#processing_fee_max');
     });
 
-    $('.doc-type').click(function () {
-        let typeValue = $(this).find('input').val();
-        let type = (typeValue == 'percent') ? '%' : '₹';
-        $('.doc-span-val').text(type);
-        $('#doc_charge_type').val(typeValue);
+    $('.scheme-penalty-type').click(function () {
+        let typeValueScheme = $(this).find('input').val();
+        let typeScheme = (typeValueScheme == 'percent') ? '%' : '₹';
+        $('.scheme-penalty-span-val').text(typeScheme);
+        $('#scheme_penalty_type').val(typeValueScheme);
     });
-    $('.penalty-type').click(function () {
-        let typeValue = $(this).find('input').val();
-        let type = (typeValue == 'percent') ? '%' : '₹';
-        $('.penalty-span-val').text(type);
-        $('#penalty_type').val(typeValue);
-    });
-    $('.processing-type').click(function () {
-        let processingTypeValue = $(this).find('input').val();
-        let processingType = (processingTypeValue == 'percent') ? '%' : '₹';
-        $('.processing-span-val').text(processingType);
-        $('#processing_fee_type').val(processingTypeValue);
-    });
+    $('.calculation-type').click(function () {
+        let typeValue = $(this).find('input').val(); 
+        let type = (typeValue == 'percent') ? '%' : '₹'; 
+        $('.calculation-span-val').text(type); 
+        $('#penalty_type').val(typeValue); 
 
+    });
+    
+    $('.scheme_interest_minmax').change(function () {
+        checkMinMaxValue('#scheme_interest_rate_min', '#scheme_interest_rate_max');
+    });
+    $('.scheme_due_period_minmax').change(function () {
+        checkMinMaxValue('#scheme_due_period_min', '#scheme_due_period_max');
+    });
     $('.scheme_doc_minmax').change(function () {
         checkMinMaxValue('#scheme_doc_charge_min', '#scheme_doc_charge_max');
     });
@@ -118,18 +119,19 @@ $(document).ready(function () {
             addSchemeName: $('#add_scheme_name').val(),
             schemeDueMethod: $('#scheme_due_method').val(),
             schemeBenefitMethod: $('#scheme_ben_method').val(),
-            schemeInterestRate: $('#scheme_interest_rate').val(),
-            schemeDuePeriod: $('#scheme_due_period').val(),
+            schemeMinInterestRate: $('#scheme_interest_rate_min').val(),
+            schemeMaxInterestRate: $('#scheme_interest_rate_max').val(),
+            schemeMinDuePeriod: $('#scheme_due_period_min').val(),
+            schemeMaxDuePeriod: $('#scheme_due_period_max').val(),
             schemeOverduePenalty: $('#scheme_overdue_penalty').val(),
-            docChargeType: $('#doc_charge_type').val(),
+            schemePenaltyType: $('#scheme_penalty_type').val(),
             schemeDocChargeMin: $('#scheme_doc_charge_min').val(),
             schemeDocChargeMax: $('#scheme_doc_charge_max').val(),
-            processingFeeType: $('#processing_fee_type').val(),
             schemeProcessingFeeMin: $('#scheme_processing_fee_min').val(),
             schemeProcessingFeeMax: $('#scheme_processing_fee_max').val(),
             id: $('#add_scheme_id').val()
         }
-        var data = ['add_scheme_name', 'scheme_due_method', 'scheme_ben_method', 'scheme_interest_rate', 'scheme_due_period', 'scheme_overdue_penalty', 'doc_charge_type', 'scheme_doc_charge_min', 'scheme_doc_charge_max', 'processing_fee_type', 'scheme_processing_fee_min', 'scheme_processing_fee_max']
+        var data = ['add_scheme_name', 'scheme_due_method', 'scheme_ben_method', 'scheme_interest_rate_min', 'scheme_interest_rate_max','scheme_due_period_min','scheme_due_period_max', 'scheme_overdue_penalty', 'scheme_doc_charge_min', 'scheme_doc_charge_max', 'scheme_processing_fee_min', 'scheme_processing_fee_max']
 
         var isValid = true;
         data.forEach(function (entry) {
@@ -166,37 +168,28 @@ $(document).ready(function () {
             $('#add_scheme_name').val(response[0].scheme_name);
             $('#scheme_due_method').val(response[0].due_method);
             $('#scheme_ben_method').val(response[0].benefit_method);
-            $('#scheme_interest_rate').val(response[0].interest_rate_percent);
-            $('#scheme_due_period').val(response[0].due_period_percent);
+            $('#scheme_interest_rate_min').val(response[0].interest_rate_percent_min);
+            $('#scheme_interest_rate_max').val(response[0].interest_rate_percent_max);
+            $('#scheme_due_period_min').val(response[0].due_period_percent_min);
+            $('#scheme_due_period_max').val(response[0].due_period_percent_max);
             $('#scheme_overdue_penalty').val(response[0].overdue_penalty_percent);
-            $('#doc_charge_type').val(response[0].doc_charge_type);
+            $('#scheme_penalty_type').val(response[0].scheme_penalty_type);
             $('#scheme_doc_charge_min').val(response[0].doc_charge_min);
             $('#scheme_doc_charge_max').val(response[0].doc_charge_max);
-            $('#processing_fee_type').val(response[0].processing_fee_type);
             $('#scheme_processing_fee_min').val(response[0].processing_fee_min);
             $('#scheme_processing_fee_max').val(response[0].processing_fee_max);
 
             // Toggle the appropriate radio button based on the hidden input value
-            if (response[0].doc_charge_type === 'percent') {
-                $('#doc_charge_type_percent').prop('checked', true).closest('label').addClass('active');
-                $('#doc_charge_type_rupee').prop('checked', false).closest('label').removeClass('active');
-                $('.doc-span-val').text('%');
-            } else if (response[0].doc_charge_type === 'rupee') {
-                $('#doc_charge_type_rupee').prop('checked', true).closest('label').addClass('active');
-                $('#doc_charge_type_percent').prop('checked', false).closest('label').removeClass('active');
-                $('.doc-span-val').text('₹');
+            if (response[0].scheme_penalty_type === 'percent') {
+                $('#scheme_type_percent').prop('checked', true).closest('label').addClass('active');
+                $('#scheme_type_rupee').prop('checked', false).closest('label').removeClass('active');
+                $('.scheme-penalty-span-val').text('%');
+            } else if (response[0].scheme_penalty_type === 'rupee') {
+                $('#scheme_type_rupee').prop('checked', true).closest('label').addClass('active');
+                $('#scheme_type_percent').prop('checked', false).closest('label').removeClass('active');
+                $('.scheme-penalty-span-val').text('₹');
             }
-
-            if (response[0].processing_fee_type === 'percent') {
-                $('#processing_fee_type_percent').prop('checked', true).closest('label').addClass('active');
-                $('#processing_fee_type_rupee').prop('checked', false).closest('label').removeClass('active');
-                $('.processing-span-val').text('%');
-            } else if (response[0].processing_fee_type === 'rupee') {
-                $('#processing_fee_type_rupee').prop('checked', true).closest('label').addClass('active');
-                $('#processing_fee_type_percent').prop('checked', false).closest('label').removeClass('active');
-                $('.processing-span-val').text('₹');
-            }
-
+          
         }, 'json');
     });
 
@@ -209,14 +202,14 @@ $(document).ready(function () {
 
     $('#submit_loan_category_creation').click(function (event) {
         event.preventDefault();
-    
+            let isValid = true;
         // Fetching the value of profit_type
         let profitType = $('#profit_type').val();
         if (!profitType) {
-            let isProfitTypeNameValid = validateMultiSelectField('profit_type', profit_type);
+            let isValid = validateMultiSelectField('profit_type', profit_type);
             return; // Stop the form submission if profitType is empty
         }
-      
+      let PenaltyType = $('#penalty_type').val();
         // Remove commas from loan_limit
         let formData = {
             loan_category: $('#loan_category').val(),
@@ -234,12 +227,11 @@ $(document).ready(function () {
             processing_fee_min: $('#processing_fee_min').val(),
             processing_fee_max: $('#processing_fee_max').val(),
             overdue_penalty: $('#overdue_penalty').val(),
-            penalty_type: $('#penalty_type').val(),
+            penalty_type: PenaltyType,
             scheme_name: $('#scheme_name').val(),
             id: $('#loan_cat_creation_id').val()
         };
-    
-        let isValid = true;
+        console.log(PenaltyType);
         let isLoanCalculationValid = true;
         let isLoanSchemeValid = true;
     
@@ -263,7 +255,7 @@ $(document).ready(function () {
        // let isProfitTypeNameValid = validateMultiSelectField('profit_type', profit_type);
     
         // Proceed with form submission if valid
-        if (isValid && isProfitTypeNameValid && isLoanCalculationValid && isLoanSchemeValid) {
+        if (isValid  && isLoanCalculationValid && isLoanSchemeValid) {
             // If profit_type and scheme_name are arrays, convert them to comma-separated strings
             if (Array.isArray(formData.scheme_name)) {
                 formData.scheme_name = formData.scheme_name.join(",");
@@ -297,9 +289,7 @@ $(document).ready(function () {
     
     $(document).on('click', '.loanCatCreationActionBtn', function () {
         var id = $(this).attr('value'); // Get value attribute
-        $.post('api/loan_category_creation/loan_category_creation_data.php', { id }, function (response) {
-            console.log(response); // Log the response to verify
-            
+        $.post('api/loan_category_creation/loan_category_creation_data.php', { id }, function (response) {  
             $('#loan_cat_creation_id').val(id);
             $('#loan_category2').val(response[0].loan_category);
             
@@ -318,8 +308,18 @@ $(document).ready(function () {
             $('#processing_fee_max').val(response[0].processing_fee_max);
             $('#overdue_penalty').val(response[0].overdue_penalty);
             $('#penalty_type').val(response[0].penalty_type);
+           let penalty= $('#penalty_type').val();
             $('#scheme_name2').val(response[0].scheme_name);
-            
+            if (penalty=== 'percent') {
+                $('#penalty_type_percent').prop('checked', true).closest('label').addClass('active');
+                $('#penalty_type_rupee').prop('checked', false).closest('label').removeClass('active');
+                $('.calculation-span-val').text('%');
+            } else if (penalty === 'rupee') {
+                $('#penalty_type_rupee').prop('checked', true).closest('label').addClass('active');
+                $('#penalty_type_percent').prop('checked', false).closest('label').removeClass('active');
+                $('.calculation-span-val').text('₹');
+            }
+           
             // Populate profit_type dynamically
             var profitTypes = response[0].profit_type.split(','); // Populate other fields
     profitType(); // Reinitialize Choices.js for profit_type
@@ -448,8 +448,10 @@ function getSchemeTable() {
             "scheme_name",
             "due_method",
             "benefit_method",
-            "interest_rate_percent",
-            "due_period_percent",
+            "interest_rate_percent_min",
+            "interest_rate_percent_max",
+            "due_period_percent_min",
+            "due_period_percent_max",
             "doc_charge_min",
             "doc_charge_max",
             "processing_fee_min",
@@ -473,13 +475,15 @@ function getSchemeListTable(scheme_id) {
             "scheme_name",
             "due_method",
             "benefit_method",
-            "interest_rate_percent",
-            "due_period_percent",
+            "interest_rate_percent_min",
+            "interest_rate_percent_max",
+            "due_period_percent_min",
+            "due_period_percent_max",
             "doc_charge_min",
             "doc_charge_max",
             "processing_fee_min",
             "processing_fee_max",
-            "overdue_penalty_percent"
+            "overdue_penalty_percent",
         ]
 
         appendDataToTable('#loan_scheme_table', response, schemeColumn);
@@ -562,15 +566,10 @@ function deleteLoanCategoryCreation(id) {
 function clearSchemeForm() {
     $('#add_scheme_id').val('0');
     $('#add_scheme_details').trigger('reset');
-
-    $('#doc_charge_type_percent').prop('checked', true).closest('label').addClass('active');
-    $('#doc_charge_type_rupee').prop('checked', false).closest('label').removeClass('active');
-    $('.doc-span-val').text('%');
-    $('#processing_fee_type_percent').prop('checked', true).closest('label').addClass('active');
-    $('#processing_fee_type_rupee').prop('checked', false).closest('label').removeClass('active');
-    $('.processing-span-val').text('%');
-    $('#doc_charge_type').val('percent');
-    $('#processing_fee_type').val('percent');
+    $('#scheme_type_percent').prop('checked', true).closest('label').addClass('active');
+    $('#scheme_type_rupee').prop('checked', false).closest('label').removeClass('active');
+    $('.scheme-penalty-span-val').text('%');
+    $('#scheme_penalty_type').val('percent');
     $('#add_scheme_details input').css('border', '1px solid #cecece');
     $('#add_scheme_details select').css('border', '1px solid #cecece');
     $('#scheme_name').closest('.choices').find('.choices__inner').css('border', '1px solid #cecece');
@@ -586,7 +585,7 @@ function clearLoanCategory() {
 
 function clearLoanCategoryCreationForm() {
     // Reset all input fields except the ones specified
-    $('input:not(#due_type, #profit_method, #doc_charge_type, #processing_fee_type, #doc_charge_type_percent, #processing_fee_type_percent)').val('');
+    $('input:not(#due_type, #profit_method, #penalty_type_percent, #penalty_type_rupee, #scheme_penalty_type, #scheme_type_rupee, #scheme_type_percent)').val('');
     
     // Reset all select fields to their first option
     $('select').each(function () {
@@ -597,7 +596,10 @@ function clearLoanCategoryCreationForm() {
     $('#loan_limit, #interest_rate_min, #interest_rate_max, #due_period_min, #due_period_max, #doc_charge_min, #doc_charge_max, #processing_fee_min, #processing_fee_max, #overdue_penalty').css('border', '1px solid #cecece');
     $('#loan_category_creation select').css('border', '1px solid #cecece');
     $('#profit_type').closest('.choices').find('.choices__inner').css('border', '1px solid #cecece');
-    
+    $('#penalty_type_percent').prop('checked', true).closest('label').addClass('active');
+    $('#penalty_type_rupee').prop('checked', false).closest('label').removeClass('active');
+    $('.calculation-span-val').text('%');
+    $('#penalty_type').val('percent');
     scheme_choices.clearInput(); // Clear input in scheme dropdown
 
     // Remove active items from profit_type (Choices.js)
@@ -632,14 +634,3 @@ function checkMinMaxValue(minSelector, maxSelector) {
     }
 }
 
-// Function to check if all values in an object are not empty
-// function isFormDataValid(formData) {
-//     for (let key in formData) {
-//         if (key != 'id') {
-//             if (formData[key] == '' || formData[key] == null || formData[key] == undefined) {
-//                 return false;
-//             }
-//         }
-//     }
-//     return true;
-// }
