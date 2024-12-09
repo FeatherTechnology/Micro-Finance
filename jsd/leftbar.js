@@ -9,7 +9,9 @@ $(document).ready(function () {
         'bank_creation': 'admin',
         'user_creation': 'admin',
         'customer_creation': 'profile',
+        'loan_entry':'loan_entry'
         'centre_creation': 'profile',
+
     };
 
     const current_page = localStorage.getItem('currentPage');
