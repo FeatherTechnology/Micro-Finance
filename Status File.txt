@@ -1,0 +1,2 @@
+1 => Loan Created
+2 => Loan Created with(Total Member == Customer Mapping)

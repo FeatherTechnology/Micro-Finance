@@ -264,7 +264,7 @@ function deleteAreaCreation(id) {
             swalSuccess('Success', 'Area creation Deleted Successfully');
             getAreaCreationTable();
         } else if (response == '2') {
-            swalError('Access Denied', 'Used in User Creation');
+            swalError('Access Denied', 'Used in Centre Creation and Customer Creation');
         } else {
             swalError('Warning', 'Area Creation Delete Failed!');
         }
