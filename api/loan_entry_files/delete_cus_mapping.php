@@ -11,13 +11,13 @@ if ($groupIdResult) {
     $loan_id = $groupIdResult['loan_id'];
 
     // Check the current status of the group
-    $statusQuery = $pdo->query("SELECT status FROM `loan_entry_loan_calculation` WHERE loan_id = '$loan_id'");
+    $statusQuery = $pdo->query("SELECT loan_status FROM `loan_entry_loan_calculation` WHERE loan_id = '$loan_id'");
     $statusResult = $statusQuery->fetch(PDO::FETCH_ASSOC);
 
     if ($statusResult) {
         $status = $statusResult['status'];
 
-        if ($status == '3') {
+        if ($status == '2') {
             // Return error if status is 3
             echo json_encode(2); // Indicate that deletion is not allowed
             exit;

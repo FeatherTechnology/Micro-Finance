@@ -11,27 +11,32 @@ if (isset($_POST['add_customer'], $_POST['loan_id_calc'], $_POST['customer_mappi
     $add_customer = intval($_POST['add_customer']); // Ensuring add_customer is an integer
     $loan_id_calc = $pdo->quote($_POST['loan_id_calc']); // Properly quoting for SQL injection protection
     $customer_mapping = intval($_POST['customer_mapping']); // Assuming customer_mapping is also an integer
-    $total_members = intval($_POST['total_members']);
-// Check the current count of customer mappings for the group
-$stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping WHERE loan_id = $loan_id_calc");
-$current_count = $stmt->fetchColumn();
+    $total_cus = intval($_POST['total_cus']);
+    $designation = $pdo->quote($_POST['designation']);
 
-// Add the new group to the mapping
-if ($current_count < $total_members) {
-    // Insert query
-    $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, cus_id, customer_mapping, inserted_login_id, created_on) VALUES ($loan_id_calc, $add_customer, $customer_mapping, '$user_id', NOW())");
+    // Check the current count of customer mappings for the group
+    $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping WHERE loan_id = $loan_id_calc");
+    $current_count = $stmt->fetchColumn();
 
-    // Check if the query was successful
-    if ($qry) {
-        $response['result'] = 1; // Success
+    // Add the new group to the mapping only if the current count is less than the total allowed
+    if ($current_count < $total_cus) {
+        // Insert query
+        $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, cus_id, customer_mapping, designation, inserted_login_id, created_on) 
+                            VALUES ($loan_id_calc, $add_customer, $customer_mapping, $designation, '$user_id', NOW())");
+
+        // Check if the query was successful
+        if ($qry) {
+            $response['result'] = 1; // Success
+        } else {
+            $response['result'] = 2; // Failure
+        }
     } else {
-        $response['result'] = 2; // Failure
+        // Customer mapping limit exceeded
+        $response = ['result' => 3, 'message' => 'Customer Mapping Limit is Exceeded'];
     }
-}
 } else {
-    // Customer mapping limit exceeded
-    $response = ['result' => 3, 'message' => 'Customer Mapping Limit is Exceeded'];
-} 
+    $response = ['result' => 2, 'message' => 'Required parameters missing'];
+}
 
 // Close connection
 $pdo = null;

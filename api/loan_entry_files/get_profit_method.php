@@ -1,13 +1,15 @@
 <?php
 require "../../ajaxconfig.php";
 
-$id = $_POST['id'];
-$profitType = $_POST['profitType'];
+$scheme_id = $_POST['scheme_id'];
+
 
 // Initialize the $response variable
 $response = [];
-
-$qry = $pdo->query("SELECT * FROM loan_category_creation WHERE id ='$id' AND FIND_IN_SET('$profitType', profit_type)");
+$qry = $pdo->query("SELECT s.due_method, s.benefit_method
+FROM `scheme` s
+WHERE s.id = '$scheme_id'
+GROUP BY s.id ");
 
 if($qry->rowCount() > 0) {
     // Fetch the results if available

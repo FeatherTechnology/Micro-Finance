@@ -79,7 +79,14 @@ function getCentreDetails(id) {
         $("#centre_mobile").val(response[0].mobile1);
     }, "json");
 }
+$(function () {
+    getLoanEntryTable();
+});
 
+function getLoanEntryTable() {
+    serverSideTable('#loan_entry_table', '', 'api/loan_entry/loan_entry_list.php');
+    // setDropdownScripts();   
+}
 /////////////////////////////////////////////////////////////// Loan Calculation START //////////////////////////////////////////////////////////////////////
 $(document).ready(function () {
 
@@ -116,7 +123,8 @@ $(document).ready(function () {
         let add_customer = $('#add_customer').val().trim(); // Trim to remove any extra spaces
         let loan_id_calc = $('#loan_id_calc').val().trim();
         let customer_mapping = $('#customer_mapping').val().trim();
-        let total_members = $('#total_members').val().trim();
+        let total_cus = $('#total_cus').val().trim();
+        let designation = $('#designation').val();
         // Fields that are required for validation
         var isValid = true;
 
@@ -132,16 +140,16 @@ $(document).ready(function () {
                 add_customer: add_customer,
                 loan_id_calc: loan_id_calc,
                 customer_mapping: customer_mapping,
-                total_members: total_members,
+                total_cus: total_cus,
+                designation: designation,
             }, function (response) {
                 let result = response.result;
 
                 if (result === 1) {
                     // Success: Refresh the customer mapping table and clear inputs
                     getCusMapTable();
-                    $('#customer_mapping').val(''); // Clear customer_mapping field
                     $('#add_customer').val(''); // Clear add_customer field
-                    $('#loan_id_calc').val(''); // Clear loan_id_calc field
+                    $('#designation').val(''); // Clear loan_id_calc field
                     // Reset borders
                     $('#loan_id_calc, #add_customer').css('border', '1px solid #cecece');
                 } else if (result === 2) {
@@ -180,9 +188,19 @@ $(document).ready(function () {
             $('.scheme_date').hide();
             getLoanCatDetails(id, profitType);
         } else if (profitType == '2') { // Scheme
-            CalculationMethod(id, profitType)
+            dueMethodScheme(id,profitType);
             $('.calc').show();
             $('.scheme').show();
+            $('.scheme_day').hide();
+            $('.scheme_date').hide();
+            $('#due_method_calc').each(function () {
+                $(this).val($(this).find('option:first').val());
+        
+            });
+            $('#profit_method_calc').each(function () {
+                $(this).val($(this).find('option:first').val());
+        
+            });
         } else {
             $('#profit_type_calc_scheme').hide();
         }
@@ -204,7 +222,7 @@ $(document).ready(function () {
         // Check both profitType and dueMethodCalc values
         if (profitType == '2' && schemeDueMethod == '2') {
             $('.scheme_day').show();
-            dueMethodScheme(schemeDueMethod, loanCatId);
+          //  dueMethodScheme(schemeDueMethod, loanCatId);
         } else {
 
             $('.scheme_day').hide();
@@ -214,7 +232,7 @@ $(document).ready(function () {
 
         if (profitType == '2' && schemeDueMethod == '1') {
             $('.scheme_date').show();
-            dueMethodScheme(schemeDueMethod, loanCatId);
+          //  dueMethodScheme(schemeDueMethod, loanCatId);
             getDateDropDown()
         } else {
 
@@ -228,6 +246,7 @@ $(document).ready(function () {
     $('#scheme_name_calc').change(function () { //Scheme Name change event
         let scheme_id = $(this).val();
         schemeCalAjax(scheme_id);
+        CalculationMethod(scheme_id)
         $('#due_startdate_calc').val('');
         $('#maturity_date_calc').val('');
     });
@@ -241,7 +260,6 @@ $(document).ready(function () {
 
         if (loan_amt != '' && int_rate != '' && due_period != '' && doc_charge != '' && proc_fee != '') {
             let benefit_method = $('#profit_method_calc').val(); //If Changes not found in profit method, calculate loan amt for monthly basis
-            console.log(benefit_method);
             if (benefit_method == 1 || benefit_method == 'Pre Benefit') {
                 getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee)
 
@@ -398,9 +416,9 @@ $(document).ready(function () {
 function callLoanCaculationFunctions() {
     getLoanCategoryName();
     // getCustomerList();
-    // setTimeout(() => {
-    //     getCusMapTable();
-    // }, 500);
+    setTimeout(() => {
+        getCusMapTable();
+     }, 500);
     let loan_calc_id = $('#loan_calculation_id').val();
     getAutoGenLoanId(loan_calc_id);
     let cus_profile_id = $('#customer_profile_id').val();
@@ -413,7 +431,12 @@ function getAutoGenLoanId(id) {
         $('#loan_id_calc').val(response);
     }, 'json');
 }
+$('#customer_mapping').change(function () {
+    let customer_mapping = $(this).val();
+        getCustomerList(customer_mapping);
+        $('#profit_type_calc').val('').trigger('change');
 
+});
 // function getLoanCategoryName() {
 //     $.post('api/common_files/get_loan_category_creation.php', function (response) {
 //         let appendLoanCatOption = '';
@@ -515,23 +538,43 @@ function clearCalcSchemeFields(type) {
     }
 }
 
+function dueMethodScheme(id, profitType) {
+    $.post('api/common_files/get_due_method_scheme.php', { id, profitType }, function (response) {
+        if (response && response.length > 0) {
+            clearCalcSchemeFields('1'); // Clear fields
+            
+            // Initialize options with default
+            let appendSchemeNameOption = '<option value="">Select Scheme Name</option>';
 
-function dueMethodScheme(schemeDueMethod, loanCatId) {
-    $.post('api/common_files/get_due_method_scheme.php', { schemeDueMethod, loanCatId }, function (response) {
-        clearCalcSchemeFields('1') //to clear fields.
-        let appendSchemeNameOption = '';
-        appendSchemeNameOption += '<option value="">Select Scheme Name</option>';
-        $.each(response, function (index, val) {
-            let selected = '';
-            let scheme_edit_it = $('#scheme_name_edit').val();
-            if (val.id == scheme_edit_it) {
-                selected = 'selected';
-            }
-            appendSchemeNameOption += '<option value="' + val.id + '" ' + selected + '>' + val.scheme_name + '</option>';
-        });
-        $('#scheme_name_calc').empty().append(appendSchemeNameOption);
-    }, 'json');
-    let profitType = $('#profit_type_calc').val(); // Get the current profit type value
+            // Iterate through the response and append options
+            $.each(response, function (index, val) {
+                let selected = '';
+                let scheme_edit_it = $('#scheme_name_edit').val();
+
+                // If the scheme matches the edit value, mark it as selected
+                if (val.id == scheme_edit_it) {
+                    selected = 'selected';
+                }
+                
+                // Build the option elements
+                appendSchemeNameOption += '<option value="' + val.id + '" ' + selected + '>' + val.scheme_name + '</option>';
+            });
+
+            // Set the options once after the loop
+            $('#scheme_name_calc').empty().append(appendSchemeNameOption);
+
+        } else {
+            swalError('Warning', "No scheme is found");
+            $('#profit_type_calc_scheme').hide(); // Hide scheme if no response
+        }
+    }, 'json').fail(function () {
+        swalError('Warning', "No scheme is found");
+        $('#profit_type_calc_scheme').hide(); // Hide scheme in case of failure
+    });
+
+
+        // let profitType = $('#profit_type_calc').val(); // Get the current profit type value
+        let schemeDueMethod = $('#due_method_calc').val();
     if (profitType == '2' && schemeDueMethod == '2') {
         $('.scheme_day').show();
 
@@ -547,10 +590,12 @@ function dueMethodScheme(schemeDueMethod, loanCatId) {
         $('.scheme_date').hide();
         $('.scheme_date_calc').val('');
     }
+
 }
 
-function CalculationMethod(id, profitType) {
-    $.post('api/loan_entry_files/get_profit_method.php', { id, profitType }, function (response) {
+
+function CalculationMethod(scheme_id) {
+    $.post('api/loan_entry_files/get_profit_method.php', {scheme_id }, function (response) {
         // Check if the response is null, empty, or not valid
         if (response && response.length > 0) {
             // Set the values of the form fields based on the response
@@ -1101,8 +1146,7 @@ function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee
 //         $(this).val($(this).find('option:first').val());
 //     });
 // }
-function getCustomerList() {
-    let customer_mapping = $('#customer_mapping').val().trim();
+function getCustomerList(customer_mapping) {
     $.post('api/loan_entry_files/get_customer_list.php',{customer_mapping}, function (response) {
         let cusOptn = '';
         cusOptn = '<option value="">Select Customer Name</option>';
@@ -1112,35 +1156,36 @@ function getCustomerList() {
         $('#add_customer').empty().append(cusOptn);
     }, 'json');
 }
-// function getCusMapTable() {
-//     let loan_id_calc = $('#loan_id_calc').val();
-//     $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, function (response) {
-//         let cusMapColumn = [
-//             "sno",
-//             "cus_id",
-//             "first_name",
-//             "cus_data",
-//             "aadhar_number",
-//             "mobile1",
-//             "areaname",
-//             "action",
-//             "designation"
-//         ]
-//         appendDataToTable('#cus_mapping_table', response, cusMapColumn);
-//         setdtable('#cus_mapping_table');
-//     }, 'json');
-// }
-// function removeCusMap(id) {
-//     $.post('api/loan_entry_files/delete_cus_mapping.php', { id }, function (response) {
-//         if (response == 1) {
-//             swalSuccess('Success', 'Customer mapping removed successfully.')
+function getCusMapTable() {
+    let loan_id_calc = $('#loan_id_calc').val();
+    $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, function (response) {
+        let cusMapColumn = [
+            "sno",
+            "cus_id",
+            "first_name",
+            "cus_data",
+            "aadhar_number",
+            "mobile1",
+            "areaname",
+             "designation",
+            "action"
+           
+        ]
+        appendDataToTable('#cus_mapping_table', response, cusMapColumn);
+        setdtable('#cus_mapping_table');
+    }, 'json');
+}
+function removeCusMap(id) {
+    $.post('api/loan_entry_files/delete_cus_mapping.php', { id }, function (response) {
+        if (response == 1) {
+            swalSuccess('Success', 'Customer mapping removed successfully.')
 
-//             getCusMapTable();
-//         } else {
-//             swalError('Alert', 'Customer mapping remove failed.')
-//         }
-//     }, 'json');
-// }
+            getCusMapTable();
+        } else {
+            swalError('Alert', 'Customer mapping remove failed.')
+        }
+    }, 'json');
+}
 // function loanCalculationEdit(id) {
 //     $.post('api/loan_entry/loan_calculation/loan_calculation_data.php', { id }, function (response) {
 //         if (response.length > 0) {
