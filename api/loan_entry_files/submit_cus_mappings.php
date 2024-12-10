@@ -26,9 +26,24 @@ if (isset($_POST['add_customer'], $_POST['loan_id_calc'], $_POST['customer_mappi
 
         // Check if the query was successful
         if ($qry) {
-            $response['result'] = 1; // Success
+            // Check if count now equals total members
+            $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping WHERE loan_id = $loan_id_calc");
+            $current_count = $stmt->fetchColumn();
+    
+            if ($current_count == $total_cus) {
+                // Update the status in the group_creation table
+                $update_stmt = $pdo->query("UPDATE `loan_entry_loan_calculation` SET loan_status = '2' WHERE loan_id = $loan_id_calc");
+                if ($update_stmt) {
+                    $response['result'] = 1; // Success
+                } else {
+                    $response['result'] = 2; // Failure
+                }
+            } else {
+                $response['result'] = 1; // Success, but not yet full
+            }
         } else {
-            $response['result'] = 2; // Failure
+            // Failure during insertion
+            $response['result'] = 2;
         }
     } else {
         // Customer mapping limit exceeded

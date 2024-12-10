@@ -1,2 +1,6 @@
 1 => Loan Created(Process)
 2 => Loan Created with(Total Member == Customer Mapping)(Created)
+3=>IN Approval
+4 = Approve in Approval || In Loan Issue;
+5 = Cancel in Approval;
+6 = Revoke in Approval;

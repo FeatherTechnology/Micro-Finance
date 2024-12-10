@@ -15,9 +15,9 @@ if ($groupIdResult) {
     $statusResult = $statusQuery->fetch(PDO::FETCH_ASSOC);
 
     if ($statusResult) {
-        $status = $statusResult['status'];
+        $status = $statusResult['loan_status'];
 
-        if ($status == '2') {
+        if ($status == '3') {
             // Return error if status is 3
             echo json_encode(2); // Indicate that deletion is not allowed
             exit;
@@ -35,7 +35,7 @@ if ($qry) {
         $current_mapping_count = $mappingCountStmt->fetchColumn();
 
         // Get the total number of members for the group
-        $totalMembersStmt = $pdo->query("SELECT total_members FROM `loan_entry_loan_calculation` WHERE loan_id = '$loan_id'");
+        $totalMembersStmt = $pdo->query("SELECT total_customer FROM `loan_entry_loan_calculation` WHERE loan_id = '$loan_id'");
         $total_members = $totalMembersStmt->fetchColumn();
 
         // Update status based on the count

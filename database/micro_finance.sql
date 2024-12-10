@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2024 at 06:42 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.29
+-- Generation Time: Dec 10, 2024 at 01:20 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,34 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `group_finance`
+-- Database: `micro_finance`
 --
+
+DELIMITER $$
+--
+-- Procedures
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Add_Menu` (IN `menu_name` VARCHAR(100), IN `menu_link` VARCHAR(100), IN `menu_icon` VARCHAR(100))   BEGIN
+    INSERT INTO menu_list (menu, link,icon) VALUES (menu_name, menu_link,menu_icon);
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Add_Sub_Menu` (IN `main_menu_id` INT, IN `sub_menu_name` VARCHAR(100), IN `sub_menu_link` VARCHAR(100), IN `sub_menu_icon` VARCHAR(100))   BEGIN
+    DECLARE menu_exists INT;
+    
+    -- Check if the main_menu_id exists in the menu_list table
+    SELECT COUNT(*) INTO menu_exists FROM menu_list WHERE id = main_menu_id;
+    
+    IF menu_exists = 1 THEN
+        -- Insert into sub_menu_list table with a valid main_menu_id
+        INSERT INTO sub_menu_list (main_menu, sub_menu, link,icon) VALUES (main_menu_id, sub_menu_name, sub_menu_link,sub_menu_icon);
+        SELECT 'Sub menu added successfully.';
+    ELSE
+        SELECT 'Main menu does not exist. Cannot add sub menu.';
+    END IF;
+    
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -36,7 +62,7 @@ CREATE TABLE `area_creation` (
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT current_timestamp(),
   `update_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `area_creation`
@@ -60,7 +86,7 @@ CREATE TABLE `area_name_creation` (
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `area_name_creation`
@@ -90,7 +116,7 @@ CREATE TABLE `bank_creation` (
   `delete_login_id` varchar(100) DEFAULT NULL,
   `created_date` datetime DEFAULT NULL,
   `updated_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -118,7 +144,7 @@ CREATE TABLE `branch_creation` (
   `update_login_id` int(11) NOT NULL,
   `created_date` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `branch_creation`
@@ -127,6 +153,37 @@ CREATE TABLE `branch_creation` (
 INSERT INTO `branch_creation` (`id`, `company_name`, `branch_code`, `branch_name`, `address`, `state`, `district`, `taluk`, `place`, `pincode`, `email_id`, `mobile_number`, `whatsapp`, `landline_code`, `landline`, `insert_login_id`, `update_login_id`, `created_date`, `updated_date`) VALUES
 (1, 'Th', 'T-101', 'Pondy', 'kk ', 2, 1, 1, 'Pondy', '605110', 'hhh', '', '7765443333', '665', '756455', 1, 0, '2024-12-03 16:16:21', NULL),
 (7, 'Feather Technology', 'F-102', 'pondi', 'Bussy Street', 2, 39, 315, 'Puducherry', '65001', 'feath', '8764531321', '9879846545', '54445', '54564654', 1, 0, '2024-12-03 17:59:16', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `centre_creation`
+--
+
+CREATE TABLE `centre_creation` (
+  `id` int(11) NOT NULL,
+  `centre_id` varchar(100) NOT NULL,
+  `centre_no` varchar(100) NOT NULL,
+  `centre_name` varchar(100) NOT NULL,
+  `mobile1` varchar(100) NOT NULL,
+  `mobile2` varchar(100) NOT NULL,
+  `area` varchar(255) NOT NULL,
+  `branch` int(11) NOT NULL,
+  `pic` varchar(100) DEFAULT NULL,
+  `insert_login_id` int(11) NOT NULL,
+  `update_login_id` int(11) DEFAULT NULL,
+  `created_on` date NOT NULL,
+  `updated_on` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `centre_creation`
+--
+
+INSERT INTO `centre_creation` (`id`, `centre_id`, `centre_no`, `centre_name`, `mobile1`, `mobile2`, `area`, `branch`, `pic`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(1, 'M-101', '7867867', 'VSI-1', '8678567657', '', '9', 7, '', 1, 1, '2024-12-04', '2024-12-10'),
+(2, 'M-102', '123', 'Sasd', '6787686786', '', '9', 1, '', 1, NULL, '2024-12-05', NULL),
+(3, 'M-103', '5464564', 'Gh', '7897675675', '', '9', 1, '', 1, 1, '2024-12-09', '2024-12-09');
 
 -- --------------------------------------------------------
 
@@ -160,7 +217,7 @@ CREATE TABLE `company_creation` (
   `update_user_id` int(11) DEFAULT NULL,
   `created_date` datetime DEFAULT current_timestamp(),
   `updated_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `company_creation`
@@ -179,14 +236,14 @@ CREATE TABLE `company_document` (
   `s_no` int(50) NOT NULL,
   `document_name` varchar(250) DEFAULT NULL,
   `file` varchar(250) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `company_document`
 --
 
 INSERT INTO `company_document` (`s_no`, `document_name`, `file`) VALUES
-(1, 'assignment', '674ef7310c4d1.jpg');
+(2, 'Aadhar card', '67581a2a573ed.png');
 
 -- --------------------------------------------------------
 
@@ -218,7 +275,16 @@ CREATE TABLE `customer_creation` (
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` date DEFAULT NULL,
   `updated_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `customer_creation`
+--
+
+INSERT INTO `customer_creation` (`id`, `cus_id`, `aadhar_number`, `cus_data`, `cus_status`, `first_name`, `last_name`, `dob`, `age`, `area`, `mobile1`, `mobile2`, `whatsapp`, `occupation`, `occ_detail`, `address`, `native_address`, `pic`, `multiple_loan`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(3, 'C-102', '312312312312', 'New', '', 'Dheepa', 'S B', '2001-01-04', 23, '9', '8787687686', '', '8787687686', 'Teacher', 'ssv school', 'Pondy', 'Pondy', '', '0', 1, NULL, '2024-12-04', NULL),
+(4, 'C-103', '867876867867', 'New', '', 'Ravi ', '', '0000-00-00', 0, '9', '8909008908', '', '', '', '', '', '', '', '1', 1, NULL, '2024-12-05', NULL),
+(6, 'C-104', '123123123213', 'New', '', 'Muthu', '', '0000-00-00', 0, '9', '7567567567', '', '7567567567', '', '', '', '', '', '1', 1, NULL, '2024-12-10', NULL);
 
 -- --------------------------------------------------------
 
@@ -239,7 +305,7 @@ CREATE TABLE `customer_status` (
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` date NOT NULL,
   `updated_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -252,7 +318,7 @@ CREATE TABLE `districts` (
   `state_id` int(11) NOT NULL,
   `district_name` varchar(50) NOT NULL,
   `status` int(11) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `districts`
@@ -302,6 +368,65 @@ INSERT INTO `districts` (`id`, `state_id`, `district_name`, `status`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `document_info`
+--
+
+CREATE TABLE `document_info` (
+  `id` int(11) NOT NULL,
+  `loan_id` varchar(100) NOT NULL,
+  `doc_id` varchar(100) NOT NULL,
+  `cus_id` int(11) NOT NULL,
+  `doc_name` varchar(100) NOT NULL,
+  `doc_type` int(11) NOT NULL,
+  `count` int(11) NOT NULL,
+  `remark` varchar(100) DEFAULT NULL,
+  `upload` varchar(100) NOT NULL DEFAULT '0',
+  `insert_login_id` int(11) NOT NULL,
+  `update_login_id` int(11) DEFAULT NULL,
+  `created_on` date DEFAULT NULL,
+  `updated_on` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `document_info`
+--
+
+INSERT INTO `document_info` (`id`, `loan_id`, `doc_id`, `cus_id`, `doc_name`, `doc_type`, `count`, `remark`, `upload`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(6, 'L-102', 'D-103', 5, 'Aadhar card', 2, 1, '', '675823c7c1a10.png', 1, NULL, '2024-12-10', NULL),
+(7, 'L-101', 'D-104', 8, 'Aadhar card', 1, 2, '1dsf', '', 1, NULL, '2024-12-10', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `family_info`
+--
+
+CREATE TABLE `family_info` (
+  `id` int(11) NOT NULL,
+  `cus_id` varchar(100) NOT NULL,
+  `fam_name` varchar(100) NOT NULL,
+  `fam_relationship` varchar(100) NOT NULL,
+  `fam_age` varchar(100) NOT NULL,
+  `fam_occupation` varchar(100) NOT NULL,
+  `fam_aadhar` varchar(100) NOT NULL,
+  `fam_mobile` varchar(100) NOT NULL,
+  `insert_login_id` int(11) NOT NULL,
+  `update_login_id` int(11) NOT NULL,
+  `created_on` date DEFAULT NULL,
+  `updated_on` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `family_info`
+--
+
+INSERT INTO `family_info` (`id`, `cus_id`, `fam_name`, `fam_relationship`, `fam_age`, `fam_occupation`, `fam_aadhar`, `fam_mobile`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(3, 'C-101', 'gfhfgh', 'Father', '21', 'Teacher', '654645645645', '6798908909', 1, 1, '2024-12-04', '2024-12-04'),
+(4, 'C-102', 'Anbu', 'Mother', '', '', '564564564564', '8766576576', 1, 0, '2024-12-04', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `loan_category`
 --
 
@@ -312,14 +437,16 @@ CREATE TABLE `loan_category` (
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` date DEFAULT NULL,
   `updated_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `loan_category`
 --
 
 INSERT INTO `loan_category` (`id`, `loan_category`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(4, 'Personal', 1, NULL, '2024-12-03', NULL);
+(4, 'Personal', 1, NULL, '2024-12-03', NULL),
+(5, 'Car', 1, NULL, '2024-12-05', NULL),
+(6, 'Bike', 1, NULL, '2024-12-06', NULL);
 
 -- --------------------------------------------------------
 
@@ -351,15 +478,93 @@ CREATE TABLE `loan_category_creation` (
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` date DEFAULT NULL,
   `updated_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `loan_category_creation`
 --
 
 INSERT INTO `loan_category_creation` (`id`, `loan_category`, `loan_limit`, `profit_type`, `due_method`, `due_type`, `benefit_method`, `interest_rate_min`, `interest_rate_max`, `due_period_min`, `due_period_max`, `doc_charge_min`, `doc_charge_max`, `processing_fee_min`, `processing_fee_max`, `overdue_penalty`, `penalty_type`, `scheme_name`, `status`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(5, 4, '2000000', '1,2', '1', 'EMI', '1', '2', '6', '2', '3', '2', '3', '2', '3', '2', '', '2', 1, 1, 1, '2024-12-03', '2024-12-03'),
-(6, 4, '9000000', '1,2', '1', 'EMI', '1', '5', '6', '2', '3', '2', '3', '2', '3', '2', '', '1', 1, 1, 1, '2024-12-03', '2024-12-03');
+(5, 4, '2000000', '1,2', '1', 'EMI', '1', '2', '6', '2', '3', '2', '3', '2', '3', '2', 'rupee', '1,2', 1, 1, 1, '2024-12-03', '2024-12-05'),
+(6, 5, '9000000', '1,2', '1', 'EMI', '1', '5', '6', '2', '3', '2', '3', '2', '3', '2', 'percent', '1,2', 1, 1, 1, '2024-12-03', '2024-12-05'),
+(7, 5, '2000000', '2', '1', 'EMI', '', '', '', '', '', '', '', '', '', '', '', '1', 1, 1, 1, '2024-12-05', '2024-12-05'),
+(8, 6, '500000', '2,1', '1', 'EMI', '2', '1', '2', '1', '2', '2', '3', '2', '3', '40', 'rupee', '4', 1, 1, 1, '2024-12-06', '2024-12-06');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `loan_cus_mapping`
+--
+
+CREATE TABLE `loan_cus_mapping` (
+  `id` int(11) NOT NULL,
+  `loan_id` varchar(100) NOT NULL,
+  `cus_id` int(11) NOT NULL,
+  `customer_mapping` int(11) NOT NULL,
+  `designation` varchar(100) DEFAULT NULL,
+  `issue_status` varchar(100) DEFAULT NULL,
+  `inserted_login_id` int(11) NOT NULL,
+  `created_on` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `loan_cus_mapping`
+--
+
+INSERT INTO `loan_cus_mapping` (`id`, `loan_id`, `cus_id`, `customer_mapping`, `designation`, `issue_status`, `inserted_login_id`, `created_on`) VALUES
+(5, 'L-102', 4, 1, '', NULL, 1, '2024-12-10'),
+(6, 'L-102', 6, 1, '', NULL, 1, '2024-12-10'),
+(8, 'L-101', 3, 1, '', NULL, 1, '2024-12-10'),
+(9, 'L-101', 4, 3, 'dsfs', NULL, 1, '2024-12-10');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `loan_entry_loan_calculation`
+--
+
+CREATE TABLE `loan_entry_loan_calculation` (
+  `id` int(11) NOT NULL,
+  `centre_id` varchar(100) NOT NULL,
+  `loan_id` varchar(50) NOT NULL,
+  `loan_category` int(11) NOT NULL,
+  `loan_amount` int(50) DEFAULT NULL,
+  `total_customer` int(50) DEFAULT NULL,
+  `loan_amt_per_cus` int(50) DEFAULT NULL,
+  `profit_type` varchar(50) DEFAULT NULL,
+  `due_month` varchar(50) DEFAULT NULL,
+  `benefit_method` varchar(100) DEFAULT NULL,
+  `scheme_day_calc` int(11) DEFAULT NULL,
+  `interest_rate` int(150) NOT NULL,
+  `due_period` int(100) NOT NULL,
+  `doc_charge` int(100) NOT NULL,
+  `processing_fees` int(100) NOT NULL,
+  `scheme_name` varchar(150) DEFAULT NULL,
+  `scheme_date` varchar(150) DEFAULT NULL,
+  `loan_amount_calc` int(150) NOT NULL,
+  `principal_amount_calc` int(150) NOT NULL,
+  `intrest_amount_calc` int(11) NOT NULL,
+  `total_amount_calc` int(11) NOT NULL,
+  `due_amount_calc` int(11) NOT NULL,
+  `document_charge_cal` int(11) NOT NULL,
+  `processing_fees_cal` int(100) DEFAULT NULL,
+  `net_cash_calc` int(150) DEFAULT NULL,
+  `due_start` date DEFAULT NULL,
+  `due_end` date DEFAULT NULL,
+  `loan_status` int(11) NOT NULL DEFAULT 0,
+  `insert_login_id` int(11) NOT NULL,
+  `update_login_id` int(11) DEFAULT NULL,
+  `created_on` date DEFAULT NULL,
+  `updated_on` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `loan_entry_loan_calculation`
+--
+
+INSERT INTO `loan_entry_loan_calculation` (`id`, `centre_id`, `loan_id`, `loan_category`, `loan_amount`, `total_customer`, `loan_amt_per_cus`, `profit_type`, `due_month`, `benefit_method`, `scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`, `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_status`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(1, 'M-101', 'L-101', 6, 100000, 2, 50000, '1', '1', '1', 0, 5, 2, 2, 3, '', '', 100000, 100000, 10000, 110000, 55000, 2000, 3000, 95000, '2024-12-10', '2025-01-10', 4, 1, 1, '2024-12-10', '2024-12-10'),
+(2, 'M-101', 'L-102', 6, 700000, 2, 350000, '2', '2', '1', 4, 1, 2, 1, 2, '2', '6', 700000, 700000, 14000, 714000, 357000, 7000, 14000, 679000, '2024-12-10', '2024-12-19', 2, 1, 1, '2024-12-10', '2024-12-10');
 
 -- --------------------------------------------------------
 
@@ -372,7 +577,7 @@ CREATE TABLE `menu_list` (
   `menu` varchar(100) NOT NULL,
   `link` varchar(100) NOT NULL,
   `icon` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='All Main Menu''s will be placed here';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All Main Menu''s will be placed here';
 
 --
 -- Dumping data for table `menu_list`
@@ -383,9 +588,9 @@ INSERT INTO `menu_list` (`id`, `menu`, `link`, `icon`) VALUES
 (2, 'Master', 'master', 'camera1'),
 (3, 'Administration', 'admin', 'layers'),
 (4, 'Profile', 'profile', 'archive'),
-(5, 'Approval', 'approval', 'user-check'),
-(6, 'Loan Issue', 'loan_issue', 'wallet'),
-(7, 'Collection', 'collection', 'credit'),
+(5, 'Loan Entry', 'loan_entry', 'user-check'),
+(6, 'Approval', 'approval', 'wallet'),
+(7, 'Loan Issue', 'loan_issue', 'credit'),
 (8, 'Closed', 'closed', 'uninstall'),
 (9, 'NOC', 'noc', 'export'),
 (10, 'Accounts', 'accounts', 'domain'),
@@ -394,6 +599,36 @@ INSERT INTO `menu_list` (`id`, `menu`, `link`, `icon`) VALUES
 (13, 'Search', 'search', 'magnifying-glass'),
 (14, 'Reports', 'reports', 'assignment_turned_in'),
 (15, 'Bulk Upload', 'bulk_upload', 'cloud_upload');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `representative_info`
+--
+
+CREATE TABLE `representative_info` (
+  `id` int(11) NOT NULL,
+  `centre_id` varchar(100) NOT NULL,
+  `rep_name` varchar(100) NOT NULL,
+  `rep_aadhar` varchar(100) NOT NULL,
+  `rep_occupation` varchar(100) DEFAULT NULL,
+  `rep_mobile` varchar(100) NOT NULL,
+  `designation` varchar(100) DEFAULT NULL,
+  `remark` varchar(100) DEFAULT NULL,
+  `insert_login_id` int(11) NOT NULL,
+  `update_login_id` int(11) DEFAULT NULL,
+  `created_on` date NOT NULL,
+  `updated_on` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `representative_info`
+--
+
+INSERT INTO `representative_info` (`id`, `centre_id`, `rep_name`, `rep_aadhar`, `rep_occupation`, `rep_mobile`, `designation`, `remark`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(5, 'M-101', 'ghfg', '567567567567', '', '7898987786', '', '', 1, NULL, '2024-12-04', NULL),
+(6, 'M-102', 'Kumar', '123567567567', '', '6786786786', '', '', 1, NULL, '2024-12-05', NULL),
+(7, 'M-103', 'Kamal', '757657567567', '', '8676575675', '', '', 1, NULL, '2024-12-09', NULL);
 
 -- --------------------------------------------------------
 
@@ -408,7 +643,7 @@ CREATE TABLE `role` (
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` date DEFAULT NULL,
   `updated_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -421,28 +656,30 @@ CREATE TABLE `scheme` (
   `scheme_name` varchar(150) NOT NULL,
   `due_method` varchar(50) NOT NULL,
   `benefit_method` varchar(20) NOT NULL,
-  `interest_rate_percent` varchar(10) NOT NULL,
-  `due_period_percent` varchar(10) NOT NULL,
+  `interest_rate_percent_min` varchar(10) NOT NULL,
+  `interest_rate_percent_max` varchar(10) NOT NULL,
+  `due_period_percent_min` varchar(10) NOT NULL,
+  `due_period_percent_max` varchar(10) NOT NULL,
   `overdue_penalty_percent` varchar(10) NOT NULL,
-  `doc_charge_type` varchar(10) NOT NULL,
+  `scheme_penalty_type` varchar(10) NOT NULL,
   `doc_charge_min` varchar(10) NOT NULL,
   `doc_charge_max` varchar(10) NOT NULL,
-  `processing_fee_type` varchar(10) NOT NULL,
   `processing_fee_min` varchar(10) NOT NULL,
   `processing_fee_max` varchar(10) NOT NULL,
   `insert_login_id` int(11) NOT NULL,
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` date DEFAULT NULL,
   `updated_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `scheme`
 --
 
-INSERT INTO `scheme` (`id`, `scheme_name`, `due_method`, `benefit_method`, `interest_rate_percent`, `due_period_percent`, `overdue_penalty_percent`, `doc_charge_type`, `doc_charge_min`, `doc_charge_max`, `processing_fee_type`, `processing_fee_min`, `processing_fee_max`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, '2A', '1', '1', '1', '22', '2', 'rupee', '100', '200', 'rupee', '150', '200', 1, 1, '2024-12-03', '2024-12-03'),
-(2, 'Daily', '2', '1', '1', '2', '2', 'percent', '2', '3', 'percent', '2', '3', 1, NULL, '2024-12-03', NULL);
+INSERT INTO `scheme` (`id`, `scheme_name`, `due_method`, `benefit_method`, `interest_rate_percent_min`, `interest_rate_percent_max`, `due_period_percent_min`, `due_period_percent_max`, `overdue_penalty_percent`, `scheme_penalty_type`, `doc_charge_min`, `doc_charge_max`, `processing_fee_min`, `processing_fee_max`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(1, '2A', '1', '1', '1', '3', '10', '30', '2', 'rupee', '1', '2', '1', '2', 1, 1, '2024-12-03', '2024-12-06'),
+(2, 'Daily', '2', '1', '1', '3', '2', '8', '2', 'percent', '2', '3', '2', '3', 1, NULL, '2024-12-03', NULL),
+(4, 'LT', '1', '2', '1', '2', '1', '12', '3', 'percent', '1', '2', '1', '2', 1, 1, '2024-12-06', '2024-12-06');
 
 -- --------------------------------------------------------
 
@@ -454,7 +691,7 @@ CREATE TABLE `states` (
   `id` int(11) NOT NULL,
   `state_name` varchar(50) NOT NULL,
   `status` int(11) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `states`
@@ -476,7 +713,7 @@ CREATE TABLE `sub_menu_list` (
   `sub_menu` varchar(100) NOT NULL,
   `link` varchar(100) NOT NULL,
   `icon` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='All Sub menu of the project should be placed here';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All Sub menu of the project should be placed here';
 
 --
 -- Dumping data for table `sub_menu_list`
@@ -491,12 +728,12 @@ INSERT INTO `sub_menu_list` (`id`, `main_menu`, `sub_menu`, `link`, `icon`) VALU
 (6, 3, 'Bank Creation', 'bank_creation', 'store_mall_directory'),
 (7, 3, 'User Creation', 'user_creation', 'person_add'),
 (8, 4, 'Customer Creation', 'customer_creation', 'group_add'),
-(9, 4, 'Loan Entry', 'loan_entry', 'local_library'),
-(10, 5, 'Approval', 'approval', 'offline_pin'),
-(11, 6, 'Loan Issue', 'loan_issue', 'credit-card'),
-(12, 7, 'Collection', 'collection', 'devices_other'),
-(13, 8, 'Closed', 'closed', 'circle-with-cross'),
-(14, 9, 'NOC', 'noc', 'book'),
+(9, 4, 'Centre Creation', 'centre_creation', 'local_library'),
+(10, 4, 'Customer Data', 'customer_data', 'offline_pin'),
+(11, 4, 'Centre Summary', 'centre_summary', 'credit-card'),
+(12, 5, 'Loan Entry', 'loan_entry', 'devices_other'),
+(13, 6, 'Approval', 'approval', 'circle-with-cross'),
+(14, 7, 'Loan Issue', 'loan_issue', 'book'),
 (15, 10, 'Accounts', 'accounts', 'rate_review'),
 (16, 10, 'Bank Clearance', 'bank_clearance', 'assignment'),
 (17, 10, 'Balance Sheet', 'balance_sheet', 'colours'),
@@ -522,7 +759,7 @@ CREATE TABLE `taluks` (
   `district_id` int(11) NOT NULL,
   `taluk_name` varchar(50) NOT NULL,
   `status` int(11) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `taluks`
@@ -878,14 +1115,14 @@ CREATE TABLE `users` (
   `update_login_id` varchar(100) NOT NULL,
   `created_on` date NOT NULL,
   `updated_on` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='All the users will be stored here with screen access details';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='All the users will be stored here with screen access details';
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `user_code`, `role`, `designation`, `address`, `place`, `email`, `mobile`, `user_name`, `password`, `branch`, `loan_category`, `line`, `collection_access`, `download_access`, `screens`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, 'Super Admin', 'US-001', 1, 1, '', '', '', '', 'admin', '123', '1,2,3', '3,4', '1,2,6,8,10', 1, 1, '1,2,3,4,5,6,7,8', '1', '1', '2024-06-13', '2024-09-17');
+(1, 'Super Admin', 'US-001', 1, 1, '', '', '', '', 'admin', '123', '1,2,3', '3,4,5,6,7,8', '1,2,6,8,10', 1, 1, '1,2,3,4,5,6,7,8,9,12,13,14', '1', '1', '2024-06-13', '2024-09-17');
 
 --
 -- Indexes for dumped tables
@@ -896,7 +1133,8 @@ INSERT INTO `users` (`id`, `name`, `user_code`, `role`, `designation`, `address`
 --
 ALTER TABLE `area_creation`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `branch` (`branch_id`);
+  ADD KEY `branch` (`branch_id`),
+  ADD KEY `area_id` (`area_id`);
 
 --
 -- Indexes for table `area_name_creation`
@@ -919,6 +1157,14 @@ ALTER TABLE `branch_creation`
   ADD KEY `state_id` (`state`),
   ADD KEY `district_id` (`district`),
   ADD KEY `taluk_id` (`taluk`);
+
+--
+-- Indexes for table `centre_creation`
+--
+ALTER TABLE `centre_creation`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `branch_id` (`branch`),
+  ADD KEY `area_id` (`area`);
 
 --
 -- Indexes for table `company_creation`
@@ -956,6 +1202,18 @@ ALTER TABLE `districts`
   ADD KEY `State id` (`state_id`);
 
 --
+-- Indexes for table `document_info`
+--
+ALTER TABLE `document_info`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `family_info`
+--
+ALTER TABLE `family_info`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `loan_category`
 --
 ALTER TABLE `loan_category`
@@ -969,9 +1227,28 @@ ALTER TABLE `loan_category_creation`
   ADD KEY `Loan Category` (`loan_category`);
 
 --
+-- Indexes for table `loan_cus_mapping`
+--
+ALTER TABLE `loan_cus_mapping`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cus_id` (`cus_id`);
+
+--
+-- Indexes for table `loan_entry_loan_calculation`
+--
+ALTER TABLE `loan_entry_loan_calculation`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `menu_list`
 --
 ALTER TABLE `menu_list`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `representative_info`
+--
+ALTER TABLE `representative_info`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1044,6 +1321,12 @@ ALTER TABLE `branch_creation`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
+-- AUTO_INCREMENT for table `centre_creation`
+--
+ALTER TABLE `centre_creation`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `company_creation`
 --
 ALTER TABLE `company_creation`
@@ -1053,13 +1336,13 @@ ALTER TABLE `company_creation`
 -- AUTO_INCREMENT for table `company_document`
 --
 ALTER TABLE `company_document`
-  MODIFY `s_no` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `s_no` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `customer_creation`
 --
 ALTER TABLE `customer_creation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `customer_status`
@@ -1074,22 +1357,52 @@ ALTER TABLE `districts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
+-- AUTO_INCREMENT for table `document_info`
+--
+ALTER TABLE `document_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `family_info`
+--
+ALTER TABLE `family_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `loan_category`
 --
 ALTER TABLE `loan_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `loan_category_creation`
 --
 ALTER TABLE `loan_category_creation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `loan_cus_mapping`
+--
+ALTER TABLE `loan_cus_mapping`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `loan_entry_loan_calculation`
+--
+ALTER TABLE `loan_entry_loan_calculation`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `menu_list`
 --
 ALTER TABLE `menu_list`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `representative_info`
+--
+ALTER TABLE `representative_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `role`
@@ -1101,7 +1414,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `scheme`
 --
 ALTER TABLE `scheme`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `states`
@@ -1146,6 +1459,13 @@ ALTER TABLE `branch_creation`
   ADD CONSTRAINT `taluk_id` FOREIGN KEY (`taluk`) REFERENCES `taluks` (`id`);
 
 --
+-- Constraints for table `centre_creation`
+--
+ALTER TABLE `centre_creation`
+  ADD CONSTRAINT `area_id` FOREIGN KEY (`area`) REFERENCES `area_creation` (`area_id`) ON UPDATE NO ACTION,
+  ADD CONSTRAINT `branch_id` FOREIGN KEY (`branch`) REFERENCES `branch_creation` (`id`) ON UPDATE NO ACTION;
+
+--
 -- Constraints for table `company_creation`
 --
 ALTER TABLE `company_creation`
@@ -1170,6 +1490,12 @@ ALTER TABLE `districts`
 --
 ALTER TABLE `loan_category_creation`
   ADD CONSTRAINT `Loan Category` FOREIGN KEY (`loan_category`) REFERENCES `loan_category` (`id`) ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `loan_cus_mapping`
+--
+ALTER TABLE `loan_cus_mapping`
+  ADD CONSTRAINT `cus_id` FOREIGN KEY (`cus_id`) REFERENCES `customer_creation` (`id`) ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `sub_menu_list`

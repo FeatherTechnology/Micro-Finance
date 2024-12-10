@@ -354,7 +354,7 @@ function existingCustmerProfile(aadhar_number) {
             $('.cus_status_div').hide();
 
             getFamilyInfoTable()
-            getAutoGenCusId(id)
+            getAutoGenCusId('')
             getAreaName()
 
             $('#per_pic').val('');

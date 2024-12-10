@@ -51,7 +51,7 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="loan_id_calc"> Loan ID</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" id="loan_id_calc" name="loan_id_calc" tabindex="1" value="LD" readonly>
+                                    <input type="text" class="form-control" id="loan_id_calc" name="loan_id_calc" tabindex="1" value="L" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
@@ -104,7 +104,7 @@
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="loan_amount_per_cus"> Loan Amount Per Customer</label>
+                                    <label for="loan_amount_per_cus"> Loan Amount Per Customer</label><span class="text-danger">*</span>
                                     <input type="number" class="form-control" id="loan_amount_per_cus" name="loan_amount_per_cus" tabindex="9" readonly>
                                 </div>
                             </div>
