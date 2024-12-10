@@ -20,7 +20,7 @@ include "include/common/dashboardhead.php";
 		<div class="login-screen">
 			<div class="login-box">
 				<a href="#" class="login-logo">
-					<h3 style="color: var(--primary-color); font-weight: bolder;">GROUP FINANCE SOFTWARE</h3>
+					<h3 style="color: var(--primary-color); font-weight: bolder;">FINANCE SOFTWARE</h3>
 				</a>
 				<span class="text-danger" id="cinnocheck">
 				</span>
