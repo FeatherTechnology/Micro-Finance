@@ -279,8 +279,8 @@
                         <div class="row">
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="loan_date_calc">Loan date</label><span class="text-danger">*</span>
-                                    <input type="date" class="form-control" id="loan_date_calc" name="loan_date_calc" tabindex="15" readonly>
+                                    <label for="loan_date_calc">Loan Date</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control" id="loan_date_calc" name="loan_date_calc" tabindex="15" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
@@ -307,64 +307,24 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="balance_net_cash">Balance Net Cash</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" id="balance_net_cash" name="balance_net_cash" tabindex="18" readonly>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="payment_mode">Payment Mode</label><span class="text-danger">*</span>
-                                    <select type="text" class="form-control" id="payment_mode" name="payment_mode" tabindex="19">
-                                        <option value=""> Select Payment Mode</option>
-                                        <option value="1"> Cash </option>
-                                        <option value="2"> Bank Transfer </option>
-                                        <option value="3"> Cheque </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 transaction" style="display:none">
-                                <div class="form-group">
-                                    <label for="transaction_id">Transaction ID</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" id="transaction_id" name="transaction_id" tabindex="20">
-                                </div>
-                            </div>
 
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 checque" style="display:none">
-                                <div class="form-group">
-                                    <label for="chequeno">Cheque number</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" id="chequeno" name="chequeno" tabindex="21">
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 cash_issue" style="display:none">
-                                <div class="form-group">
-                                    <label for="issue_amount">Issue Amount</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" id="issue_amount" name="issue_amount" tabindex="22">
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="issue_date">Issue date</label><span class="text-danger">*</span>
-                                    <input type="date" class="form-control" id="issue_date" name="issue_date" tabindex="23" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="issue_person"> Issue Person </label><span class="text-danger">*</span>
-                                    <select type="text" class="form-control" id="issue_person" name="issue_person" tabindex="24">
-                                        <option value=""> Select Issue Person </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="issue_relationship">Relationship</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="issue_relationship" id="issue_relationship" tabindex="25" placeholder="Relationship" readonly>
-                                </div>
-                            </div>
-
+                            <table id="issue_info_table" class="table custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.NO</th>
+                                        <th>Customer ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Net Cash</th>
+                                        <th>Payment Mode</th>
+                                        <th>Issue Type</th>
+                                        <th>Issue Date</th>
+                                        <th width="180">Issue Amount</th>
+                                        <th>Action</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

@@ -62,31 +62,21 @@ $sno = isset($_POST['start']) ? $_POST['start'] + 1 : 1;
 $data = [];
 
 foreach ($result as $row) {
-    // Fetch all customer IDs mapped to the group
- // Ensure that loan_id is properly referenced and handled
-$customer_mapping_query = "SELECT id FROM loan_cus_mapping WHERE loan_id = :loan_id";
+
+// Refactored query to check the issue status for all customers in one query
+$customer_mapping_query = "SELECT issue_status 
+                           FROM loan_cus_mapping 
+                           WHERE loan_id = :loan_id";
 $customer_mapping_stmt = $pdo->prepare($customer_mapping_query);
 $customer_mapping_stmt->execute(['loan_id' => $row['loan_id']]);
-$customer_ids = $customer_mapping_stmt->fetchAll(PDO::FETCH_COLUMN);
+$payment_status = $customer_mapping_stmt->fetchAll(PDO::FETCH_COLUMN);
 
-    // Check if all customers have Paid status
-    $all_paid = true;
-    foreach ($customer_ids as $cus_id) {
-        // Enclose the loan_id in single quotes
-        $payment_status_query = "SELECT issue_status FROM loan_cus_mapping WHERE loan_id = '" . $row['loan_id'] . "' AND id = " . $cus_id;
-        
-        // Execute the query
-        $payment_status_stmt = $pdo->query($payment_status_query);
-        $payment_status = $payment_status_stmt->fetchColumn();
-    
-        if ($payment_status !== 'Issued') {
-            $all_paid = false;
-            break;
-        }
-    }
+// Check if any customer has 'Issued' status
+$issue_status = in_array('Issued', $payment_status) ? 'Pending' : 'In Issue';
 
-    // Determine the collection status
-    $issue_status = $all_paid ? 'In Issue' : 'Pending';
+// Adding the issue status to the response data
+$sub_array[] = $issue_status;
+
 
     $sub_array = [];
     $sub_array[] = $sno++;

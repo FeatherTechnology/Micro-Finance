@@ -4,3 +4,4 @@
 4 = Approve in Approval || In Loan Issue;
 5 = Cancel in Approval;
 6 = Revoke in Approval;
+7=Loan Issued/Collection
