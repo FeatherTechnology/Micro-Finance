@@ -17,7 +17,7 @@ $column = array(
     'lelc.id'
 );
 
-$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, lc.loan_category, cc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, lelc.loan_amount, lelc.loan_status
+$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, lc.loan_category, cc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, lelc.loan_amount, lelc.loan_status,lelc.loan_date
           FROM loan_entry_loan_calculation lelc
           LEFT JOIN loan_category_creation lcc ON lelc.loan_category = lcc.id
           LEFT JOIN loan_category lc ON lcc.loan_category = lc.id
@@ -63,21 +63,17 @@ $data = [];
 
 foreach ($result as $row) {
 
-// Refactored query to check the issue status for all customers in one query
-$customer_mapping_query = "SELECT issue_status 
-                           FROM loan_cus_mapping 
-                           WHERE loan_id = :loan_id";
-$customer_mapping_stmt = $pdo->prepare($customer_mapping_query);
-$customer_mapping_stmt->execute(['loan_id' => $row['loan_id']]);
-$payment_status = $customer_mapping_stmt->fetchAll(PDO::FETCH_COLUMN);
 
+    // Check if loan_date is empty or null
+    if (empty($row['loan_date'])) {
+        $issue_status = 'In Issue';
+    } else {
+        $issue_status = 'Pending';
+    }
+
+    // Add the issue status to the response data
+    $sub_array[] = $issue_status;
 // Check if any customer has 'Issued' status
-$issue_status = in_array('Issued', $payment_status) ? 'Pending' : 'In Issue';
-
-// Adding the issue status to the response data
-$sub_array[] = $issue_status;
-
-
     $sub_array = [];
     $sub_array[] = $sno++;
     $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';

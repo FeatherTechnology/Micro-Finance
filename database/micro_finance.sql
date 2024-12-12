@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 10, 2024 at 01:20 PM
+-- Generation Time: Dec 12, 2024 at 07:24 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -166,7 +166,7 @@ CREATE TABLE `centre_creation` (
   `centre_no` varchar(100) NOT NULL,
   `centre_name` varchar(100) NOT NULL,
   `mobile1` varchar(100) NOT NULL,
-  `mobile2` varchar(100) NOT NULL,
+  `mobile2` varchar(100) DEFAULT NULL,
   `area` varchar(255) NOT NULL,
   `branch` int(11) NOT NULL,
   `pic` varchar(100) DEFAULT NULL,
@@ -282,30 +282,11 @@ CREATE TABLE `customer_creation` (
 --
 
 INSERT INTO `customer_creation` (`id`, `cus_id`, `aadhar_number`, `cus_data`, `cus_status`, `first_name`, `last_name`, `dob`, `age`, `area`, `mobile1`, `mobile2`, `whatsapp`, `occupation`, `occ_detail`, `address`, `native_address`, `pic`, `multiple_loan`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(3, 'C-102', '312312312312', 'New', '', 'Dheepa', 'S B', '2001-01-04', 23, '9', '8787687686', '', '8787687686', 'Teacher', 'ssv school', 'Pondy', 'Pondy', '', '0', 1, NULL, '2024-12-04', NULL),
+(3, 'C-102', '312312312312', 'Existing', 'Additional', 'Dheepa', 'S B', '2001-01-04', 23, '9', '8787687686', '', '8787687686', 'Teacher', 'ssv school', 'Pondy', 'Pondy', '', '0', 1, 1, '2024-12-04', '2024-12-12'),
 (4, 'C-103', '867876867867', 'New', '', 'Ravi ', '', '0000-00-00', 0, '9', '8909008908', '', '', '', '', '', '', '', '1', 1, NULL, '2024-12-05', NULL),
-(6, 'C-104', '123123123213', 'New', '', 'Muthu', '', '0000-00-00', 0, '9', '7567567567', '', '7567567567', '', '', '', '', '', '1', 1, NULL, '2024-12-10', NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `customer_status`
---
-
-CREATE TABLE `customer_status` (
-  `id` int(11) NOT NULL,
-  `cus_id` varchar(100) NOT NULL,
-  `cus_profile_id` int(11) NOT NULL,
-  `loan_calculation_id` int(11) DEFAULT NULL,
-  `status` int(11) NOT NULL,
-  `sub_status` int(11) DEFAULT NULL,
-  `closed_date` date DEFAULT NULL,
-  `remark` varchar(255) DEFAULT NULL,
-  `insert_login_id` int(11) NOT NULL,
-  `update_login_id` int(11) DEFAULT NULL,
-  `created_on` date NOT NULL,
-  `updated_on` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(6, 'C-104', '123123123213', 'Existing', 'Renewal', 'Muthu', '', '0000-00-00', 0, '9', '7567567567', '7896786786', '7567567567', '', '', '', 'Pondy', '', '1', 1, 1, '2024-12-10', '2024-12-12'),
+(10, 'C-105', '456456456456', 'Existing', '', 'Raghu', '', '0000-00-00', 0, '9', '7867867855', '', '', '', '', 'Pondy', 'Pondy', '', '1', 1, 1, '2024-12-12', '2024-12-12'),
+(12, 'C-106', '546345634564', 'Existing', '', 'Ramya', '', '0000-00-00', 0, '9', '7867867867', '', '', '', '', '', '', '', '0', 1, 1, '2024-12-12', '2024-12-12');
 
 -- --------------------------------------------------------
 
@@ -411,7 +392,7 @@ CREATE TABLE `family_info` (
   `fam_aadhar` varchar(100) NOT NULL,
   `fam_mobile` varchar(100) NOT NULL,
   `insert_login_id` int(11) NOT NULL,
-  `update_login_id` int(11) NOT NULL,
+  `update_login_id` int(11) DEFAULT NULL,
   `created_on` date DEFAULT NULL,
   `updated_on` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -512,10 +493,11 @@ CREATE TABLE `loan_cus_mapping` (
 --
 
 INSERT INTO `loan_cus_mapping` (`id`, `loan_id`, `cus_id`, `customer_mapping`, `designation`, `issue_status`, `inserted_login_id`, `created_on`) VALUES
-(5, 'L-102', 4, 1, '', NULL, 1, '2024-12-10'),
-(6, 'L-102', 6, 1, '', NULL, 1, '2024-12-10'),
-(8, 'L-101', 3, 1, '', NULL, 1, '2024-12-10'),
-(9, 'L-101', 4, 3, 'dsfs', NULL, 1, '2024-12-10');
+(5, 'L-102', 4, 1, '', '', 1, '2024-12-10'),
+(8, 'L-101', 3, 1, '', '', 1, '2024-12-10'),
+(9, 'L-101', 4, 3, 'dsfs', '', 1, '2024-12-10'),
+(11, 'L-102', 6, 1, '', NULL, 1, '2024-12-11'),
+(12, 'L-103', 10, 1, '', NULL, 1, '2024-12-12');
 
 -- --------------------------------------------------------
 
@@ -551,6 +533,7 @@ CREATE TABLE `loan_entry_loan_calculation` (
   `net_cash_calc` int(150) DEFAULT NULL,
   `due_start` date DEFAULT NULL,
   `due_end` date DEFAULT NULL,
+  `loan_date` date DEFAULT NULL,
   `loan_status` int(11) NOT NULL DEFAULT 0,
   `insert_login_id` int(11) NOT NULL,
   `update_login_id` int(11) DEFAULT NULL,
@@ -562,9 +545,41 @@ CREATE TABLE `loan_entry_loan_calculation` (
 -- Dumping data for table `loan_entry_loan_calculation`
 --
 
-INSERT INTO `loan_entry_loan_calculation` (`id`, `centre_id`, `loan_id`, `loan_category`, `loan_amount`, `total_customer`, `loan_amt_per_cus`, `profit_type`, `due_month`, `benefit_method`, `scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`, `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_status`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, 'M-101', 'L-101', 6, 100000, 2, 50000, '1', '1', '1', 0, 5, 2, 2, 3, '', '', 100000, 100000, 10000, 110000, 55000, 2000, 3000, 95000, '2024-12-10', '2025-01-10', 4, 1, 1, '2024-12-10', '2024-12-10'),
-(2, 'M-101', 'L-102', 6, 700000, 2, 350000, '2', '2', '1', 4, 1, 2, 1, 2, '2', '6', 700000, 700000, 14000, 714000, 357000, 7000, 14000, 679000, '2024-12-10', '2024-12-19', 2, 1, 1, '2024-12-10', '2024-12-10');
+INSERT INTO `loan_entry_loan_calculation` (`id`, `centre_id`, `loan_id`, `loan_category`, `loan_amount`, `total_customer`, `loan_amt_per_cus`, `profit_type`, `due_month`, `benefit_method`, `scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`, `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_date`, `loan_status`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(1, 'M-101', 'L-101', 6, 100000, 2, 50000, '1', '1', '1', 0, 5, 2, 2, 3, '', '', 100000, 100000, 10000, 110000, 55000, 2000, 3000, 95000, '2025-01-10', '2025-02-10', '2024-12-12', 8, 1, 1, '2024-12-10', '2024-12-12'),
+(2, 'M-102', 'L-102', 6, 700000, 2, 350000, '2', '2', '1', 4, 1, 2, 1, 2, '2', '6', 700000, 700000, 14000, 714000, 357000, 7000, 14000, 679000, '2024-12-10', '2024-12-19', NULL, 9, 1, 1, '2024-12-10', '2024-12-11'),
+(3, 'M-103', 'L-103', 5, 120000, 1, 120000, '1', '1', '1', 0, 2, 2, 2, 2, '', '', 120000, 120000, 4800, 124800, 62400, 2400, 2400, 115200, '2024-12-12', '2025-01-12', NULL, 2, 1, 1, '2024-12-12', '2024-12-12');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `loan_issue`
+--
+
+CREATE TABLE `loan_issue` (
+  `id` int(11) NOT NULL,
+  `cus_mapping_id` varchar(255) NOT NULL,
+  `loan_id` varchar(11) NOT NULL,
+  `loan_amnt` int(11) NOT NULL,
+  `net_cash` int(11) NOT NULL,
+  `payment_mode` int(11) NOT NULL,
+  `issue_type` varchar(100) NOT NULL,
+  `issue_amount` int(100) NOT NULL,
+  `transaction_id` varchar(50) DEFAULT NULL,
+  `cheque_no` varchar(50) DEFAULT NULL,
+  `issue_date` date NOT NULL,
+  `insert_login_id` int(11) NOT NULL,
+  `update_login_id` int(11) DEFAULT NULL,
+  `created_on` datetime DEFAULT NULL,
+  `updated_on` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `loan_issue`
+--
+
+INSERT INTO `loan_issue` (`id`, `cus_mapping_id`, `loan_id`, `loan_amnt`, `net_cash`, `payment_mode`, `issue_type`, `issue_amount`, `transaction_id`, `cheque_no`, `issue_date`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(1, '8', 'L-101', 100000, 47500, 1, '1', 43000, NULL, NULL, '2024-12-12', 1, NULL, '2024-12-12 09:58:18', NULL);
 
 -- --------------------------------------------------------
 
@@ -1188,13 +1203,6 @@ ALTER TABLE `customer_creation`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `customer_status`
---
-ALTER TABLE `customer_status`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `cus_profile_id` (`cus_profile_id`);
-
---
 -- Indexes for table `districts`
 --
 ALTER TABLE `districts`
@@ -1237,6 +1245,12 @@ ALTER TABLE `loan_cus_mapping`
 -- Indexes for table `loan_entry_loan_calculation`
 --
 ALTER TABLE `loan_entry_loan_calculation`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `loan_issue`
+--
+ALTER TABLE `loan_issue`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1342,13 +1356,7 @@ ALTER TABLE `company_document`
 -- AUTO_INCREMENT for table `customer_creation`
 --
 ALTER TABLE `customer_creation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `customer_status`
---
-ALTER TABLE `customer_status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `districts`
@@ -1384,13 +1392,19 @@ ALTER TABLE `loan_category_creation`
 -- AUTO_INCREMENT for table `loan_cus_mapping`
 --
 ALTER TABLE `loan_cus_mapping`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `loan_entry_loan_calculation`
 --
 ALTER TABLE `loan_entry_loan_calculation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `loan_issue`
+--
+ALTER TABLE `loan_issue`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `menu_list`
@@ -1472,12 +1486,6 @@ ALTER TABLE `company_creation`
   ADD CONSTRAINT `District ids` FOREIGN KEY (`district`) REFERENCES `districts` (`id`),
   ADD CONSTRAINT `State ids` FOREIGN KEY (`state`) REFERENCES `states` (`id`),
   ADD CONSTRAINT `Taluk ids` FOREIGN KEY (`taluk`) REFERENCES `taluks` (`id`);
-
---
--- Constraints for table `customer_status`
---
-ALTER TABLE `customer_status`
-  ADD CONSTRAINT `cus_profile_id` FOREIGN KEY (`cus_profile_id`) REFERENCES `customer_creation` (`id`) ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `districts`

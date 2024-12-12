@@ -503,7 +503,13 @@ function issueList() {
                     </select>
                 `;
                 var netcashCalc = item.individual_amount ? moneyFormatIndia(item.individual_amount) : '';
-                var status = (item.issue_status === '' || item.issue_status === null) ? 'In Issue' : (item.issue_status === 'Issued' ? 'Issued' : 'Pending');
+                var loan_date = $('#loan_date_calc').val(); // Get the loan date
+                if (loan_date !== '' && loan_date !== null) {
+                    var status ='In Issue'
+                } else {
+                    var status = (item.issue_status === 'Issued' ? 'Issued' : 'Pending');
+                }
+             //   var status = (item.issue_status === '' || item.issue_status === null) ? 'In Issue' : (item.issue_status === 'Issued' ? 'Issued' : 'Pending');
 
                 var actionHtml = `<input type="checkbox" class="form-check-input" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'disabled' : ''} />`; // Checkbox disabled if Issued
 

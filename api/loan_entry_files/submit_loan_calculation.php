@@ -81,6 +81,11 @@ if ($id == '') {
 }
 // Check if the query was successful
 if ($qry) {
+    if ($id == '') {
+        $last_id = $pdo->lastInsertId();
+    } else {
+        $last_id = ''; // No new ID for updates
+    }
     // If insertion or update was successful, check if the customer mapping count is now equal to total members
     $mappingCountStmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping WHERE loan_id = '$loan_id_calc'");
     $current_mapping_count = $mappingCountStmt->fetchColumn();
@@ -98,7 +103,6 @@ if ($qry) {
         $result = 1; // Success, but mapping count not yet full
     }
 
-    $last_id = $pdo->lastInsertId();
 } else {
     $result = 0; // Failure
     $last_id = '';
