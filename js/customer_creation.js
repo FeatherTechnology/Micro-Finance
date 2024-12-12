@@ -8,14 +8,9 @@ $(document).ready(function () {
         getAreaName()
         getFamilyInfoTable()
         }, 1000);
+        $('.cus_status_div').hide();
         $('#imgshow').attr('src', 'img/avatar.png');
-        let cus_data = $('#cus_data').val();
-        if (cus_data == 'Existing') {
-            $('.cus_status_div').show();  
-        } else {
-            $('.cus_status_div').hide();
-        
-        }
+
     });
     $('#pic').change(function () {
         let pic = $('#pic')[0];
@@ -317,13 +312,8 @@ function editCustomerCreation(id) {
         if (response[0].cus_data == 'Existing') {
             $('.cus_status_div').show();
             checkAdditionalRenewal(response[0].cus_id);
-            $('#data_checking_div').show();
-            $('#checking_hide').show();
         } else {
             $('.cus_status_div').hide();
-            $('#data_checking_div').hide();
-            $('#checking_hide').hide();
-            $('#data_checking_table_div').hide();
         }
         let path = "uploads/customer_creation/cus_pic/";
         $('#per_pic').val(response[0].pic);
@@ -354,7 +344,7 @@ function existingCustmerProfile(aadhar_number) {
             $('.cus_status_div').hide();
 
             getFamilyInfoTable()
-            getAutoGenCusId(id)
+            getAutoGenCusId('')
             getAreaName()
 
             $('#per_pic').val('');
