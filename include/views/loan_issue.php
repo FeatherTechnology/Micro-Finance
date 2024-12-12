@@ -315,6 +315,7 @@
                                         <th>Customer ID</th>
                                         <th>Customer Name</th>
                                         <th>Net Cash</th>
+                                        <th>Issued Amount</th>
                                         <th>Payment Mode</th>
                                         <th>Issue Type</th>
                                         <th>Issue Date</th>

@@ -21,14 +21,14 @@ if ($customer_mapping == 1) {
               LEFT JOIN loan_cus_mapping lcm ON cc.id = lcm.cus_id
               LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
               LEFT JOIN area_name_creation anc ON cc.area = anc.id
-              WHERE lelc.loan_status = 8";
+              WHERE lelc.loan_status IN (8,9) AND cc.customer_status !=2";
     
 } elseif ($customer_mapping == 3) {
     // Fetch customers who are in loan_cus_mapping table (additional conditions can be applied here)
     $query = "SELECT cc.id, cc.cus_id, cc.first_name, cc.last_name, cc.mobile1, anc.areaname 
               FROM customer_creation cc
               INNER JOIN loan_cus_mapping lcm ON cc.id = lcm.cus_id
-              LEFT JOIN area_name_creation anc ON cc.area = anc.id WHERE cc.multiple_loan = 1 group by cc.id";
+              LEFT JOIN area_name_creation anc ON cc.area = anc.id WHERE cc.multiple_loan = 1 AND cc.customer_status !=2 group by cc.id";
 }
 
 try {

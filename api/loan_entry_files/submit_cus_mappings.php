@@ -9,13 +9,15 @@ if (isset($_POST['add_customer'], $_POST['loan_id_calc'], $_POST['customer_mappi
     
     $user_id = $_SESSION['user_id'];
     $add_customer = intval($_POST['add_customer']); // Ensuring add_customer is an integer
+    $centre_id = $_POST['centre_id']; // Direct use of the variable (no quoting needed)
     $loan_id_calc = $_POST['loan_id_calc']; // Direct use of the variable (no quoting needed)
     $customer_mapping = intval($_POST['customer_mapping']); // Assuming customer_mapping is also an integer
     $total_cus = intval($_POST['total_cus']);
     $designation = $_POST['designation']; // No need to quote for simple string use
 
     // Check if the customer is already mapped to the same loan_id
-    $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping WHERE loan_id = '$loan_id_calc' AND cus_id = $add_customer");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm LEFT JOIN loan_entry_loan_calculation lelc 
+                             ON lcm.loan_id = lelc.loan_id  WHERE lcm.cus_id = $add_customer AND lelc.centre_id = '$centre_id'" );
     $existing_mapping = $stmt->fetchColumn();
 
     if ($existing_mapping > 0) {
@@ -59,9 +61,31 @@ if (isset($_POST['add_customer'], $_POST['loan_id_calc'], $_POST['customer_mappi
             $response = ['result' => 3, 'message' => 'Customer Mapping Limit is Exceeded'];
         }
     }
+    if ($customer_mapping == 2) {
+        // Check if any loan has a status between 1 and 7 (inclusive)
+        $stmt = $pdo->query("SELECT lcm.id 
+                             FROM loan_cus_mapping lcm
+                             LEFT JOIN loan_entry_loan_calculation lelc 
+                             ON lcm.loan_id = lelc.loan_id 
+                             WHERE lelc.loan_status >= 1 AND lelc.loan_status < 8 and lcm.cus_id ='$add_customer'");
+                             
+        $rowCount = $stmt->rowCount();
+
+        if ($rowCount == 0) {
+            $update_stmt = $pdo->query("UPDATE customer_creation 
+            SET cus_data = 'Existing', cus_status = 'Renewal' 
+            WHERE id = '$add_customer'");
+        } else {
+          
+              $update_stmt = $pdo->query("UPDATE customer_creation 
+              SET cus_data = 'Existing', cus_status = 'Additional' 
+              WHERE id = '$add_customer'");                            
+        }
+    }
 } else {
     $response = ['result' => 2, 'message' => 'Required parameters missing'];
 }
+
 
 // Close connection
 $pdo = null;

@@ -15,9 +15,10 @@ foreach ($result as $row) {
 
     // Query to check if the centre_id exists in loan_entry_loan_calculation table
     $loan_qry = $pdo->query("
-        SELECT loan_id, loan_status 
-        FROM `loan_entry_loan_calculation` 
-        WHERE centre_id = '$centre_id'
+        SELECT lelc.loan_id, lelc.loan_status, cs.sub_status
+        FROM loan_entry_loan_calculation lelc
+        LEFT JOIN closed_status cs ON lelc.centre_id = cs.centre_id
+        WHERE lelc.centre_id = '$centre_id'
     ");
 
     // If the centre_id is not present in loan_entry_loan_calculation table, it should be shown
@@ -32,14 +33,20 @@ foreach ($result as $row) {
         $can_show = false; // Default to not show the centre_id
 
         while ($loan_row = $loan_qry->fetch(PDO::FETCH_ASSOC)) {
+            // If sub_status is 2, mark as not_show and break out of the loop
+            if ($loan_row['sub_status'] == 2) {
+                $can_show = false;
+                break; // No need to check further
+            }
+
             // If loan_status is 5 or 6 and loan_id > 9, mark as can_show
-            if (in_array($loan_row['loan_status'], [5, 6]) && $loan_row['loan_id'] > 9) {
+            if (in_array($loan_row['loan_status'], [5, 6]) || $loan_row['loan_status'] >= 9) {
                 $can_show = true;
                 break; // No need to check further once the condition is met
             }
 
             // If loan_status is in [1, 2, 3, 4, 7, 8, 9], mark as not_show
-            if (in_array($loan_row['loan_status'], [1, 2, 3, 4, 7, 8, 9])) {
+            if (in_array($loan_row['loan_status'], [1, 2, 3, 4, 7, 8])) {
                 $can_show = false;
                 break; // No need to check further once the condition is met
             }

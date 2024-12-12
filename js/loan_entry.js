@@ -45,6 +45,7 @@ function swapTableAndCreation() {
 $("#Centre_id").change(function () {
     if ($(this).val() != "") {
         getCentreDetails($(this).val());
+        getCentreMapTable($(this).val())
         $("#Centre_id_edit").val($(this).val());
     } else {
         $("#centre_no").val("");
@@ -97,39 +98,45 @@ $(document).ready(function () {
     /////////////////////////////////////////////////////////submit customer Mapping Start///////////////////////////////////////////////////
     $('#submit_cus_map').click(function (event) {
         event.preventDefault(); // Prevent the default form submission
-    
+        let centre_id = $('#Centre_id').val()
         let add_customer = $('#add_customer').val().trim(); // Trim to remove any extra spaces
         let loan_id_calc = $('#loan_id_calc').val().trim();
         let customer_mapping = $('#customer_mapping').val().trim();
         let total_cus = $('#total_cus').val().trim();
         let designation = $('#designation').val();
-    
+
         // Fields that are required for validation
         var isValid = true;
-    
+
         // Validate add_customer
         if (!add_customer) {
             validateField(add_customer, 'add_customer'); // Assuming validateField sets a warning
             isValid = false;
         }
-    
+
         // Validate total_cus
         if (!total_cus) {
             swalError('Warning', 'Please fill the total members.');
             isValid = false;
         }
-    
+        // Validate total_cus
+        if (!centre_id) {
+            swalError('Warning', 'Please select the centre ID.');
+            isValid = false;
+        }
+
         // Submit only if all fields are valid
         if (isValid) {
             $.post('api/loan_entry_files/submit_cus_mappings.php', {
                 add_customer: add_customer,
+                centre_id : centre_id,
                 loan_id_calc: loan_id_calc,
                 customer_mapping: customer_mapping,
                 total_cus: total_cus,
                 designation: designation,
             }, function (response) {
                 let result = response.result;
-    
+
                 if (result === 1) {
                     // Success: Refresh the customer mapping table and clear inputs
                     getCusMapTable();
@@ -151,7 +158,7 @@ $(document).ready(function () {
             }, 'json');
         }
     });
-    
+
     $(document).on('click', '.cusMapDeleteBtn', function () {
         let id = $(this).attr('value');
         swalConfirm('Delete', 'Do you want to remove this customer mapping?', removeCusMap, id, '');
@@ -864,6 +871,24 @@ function getCusMapTable() {
         setdtable('#cus_mapping_table');
     }, 'json');
 }
+function getCentreMapTable(id) {
+    $.post('api/loan_entry_files/get_centre_map_details.php', { id }, function (response) {
+        let cusMapColumn = [
+            "sno",
+            "cus_id",
+            "first_name",
+            "customer_mapping",
+            "aadhar_number",
+            "mobile1",
+            "areaname",
+            "designation",
+            "action"
+
+        ]
+        appendDataToTable('#cus_mapping_table', response, cusMapColumn);
+        setdtable('#cus_mapping_table');
+    }, 'json');
+}
 function removeCusMap(id) {
     $.post('api/loan_entry_files/delete_cus_mapping.php', { id }, function (response) {
         if (response == 1) {
@@ -957,7 +982,7 @@ function getCentreId() {
             if (Centre_id_edit) {
                 appendLoanCatOption += '<option value="' + val.centre_id + '" ' + selected + ">" + val.centre_id + "</option>";
             }
-            
+
             // For the normal page, include only the "can_show" centre_ids
             if (val.status === "can_show" && !Centre_id_edit) {
                 appendLoanCatOption += '<option value="' + val.centre_id + '" ' + selected + ">" + val.centre_id + "</option>";

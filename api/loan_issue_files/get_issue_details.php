@@ -12,11 +12,14 @@ $query = "SELECT
               lcm.issue_status,
               cc.first_name,
               lelc.net_cash_calc,
-              lelc.total_customer
+              lelc.total_customer,
+              lelc.loan_date,
+               COALESCE(SUM(ls.issue_amount), 0) as issued_amount
           FROM loan_cus_mapping lcm
           JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
           JOIN customer_creation cc ON lcm.cus_id = cc.id
-          WHERE lcm.loan_id = '$loan_id'";
+          LEFT JOIN loan_issue ls ON lcm.id = ls.cus_mapping_id
+          WHERE lcm.loan_id = '$loan_id' GROUP BY cc.cus_id";
 
 // Execute the query
 $result = $pdo->query($query);
