@@ -44,5 +44,6 @@ try {
     // Handle any errors
     echo json_encode(['error' => $e->getMessage()]);
 }
-
+// Close connection
+$pdo = null;
 ?>

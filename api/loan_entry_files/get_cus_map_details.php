@@ -8,7 +8,6 @@ $cus_map_arr = array();
 $loan_id_calc = isset($_POST['loan_id_calc']) ? $_POST['loan_id_calc'] : ''; // Ensure the variable is set
 
 // Customer mapping array
-$cus_mapping = [1 => 'New', 2 => 'Renewal', 3 => 'Additional'];
 
 // Check if loan_id_calc is not empty or invalid
 if ($loan_id_calc != '') {
@@ -24,7 +23,7 @@ if ($loan_id_calc != '') {
         // Fetch the results and process them
         while ($gcm_info = $qry->fetch(PDO::FETCH_ASSOC)) {
             // Map the customer mapping to its corresponding label
-            $gcm_info['customer_mapping'] = isset($cus_mapping[$gcm_info['customer_mapping']]) ? $cus_mapping[$gcm_info['customer_mapping']] : 'Unknown';
+          //  $gcm_info['customer_mapping'] = isset($cus_mapping[$gcm_info['customer_mapping']]) ? $cus_mapping[$gcm_info['customer_mapping']] : '';
             
             // Add the delete button action
             $gcm_info['action'] = "<span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'></span>";

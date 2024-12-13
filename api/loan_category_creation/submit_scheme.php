@@ -27,11 +27,24 @@ if ($id != '0' && $id != '') {
 } else {
     $qry = $pdo->query("SELECT * FROM `scheme` WHERE REPLACE(TRIM(scheme_name), ' ', '') = REPLACE(TRIM('$add_scheme_name'), ' ', '') ");
     if ($qry->rowCount() > 0) {
-        $result = '3'; //already Exists.
+        $result = [
+            'status' => '3', // Error
+            'scheme_id' => null
+        ];
     } else {
-        $qry = $pdo->query("INSERT INTO `scheme`(`scheme_name`, `due_method`, `benefit_method`, `interest_rate_percent_min`, `interest_rate_percent_max`,`due_period_percent_min`,`due_period_percent_max`, `overdue_penalty_percent`, `scheme_penalty_type`, `doc_charge_min`, `doc_charge_max`, `processing_fee_min`, `processing_fee_max`, `insert_login_id`, `created_on`) VALUES ('$add_scheme_name','$scheme_due_method','$schemeBenefitMethod','$scheme_interest_rate_min','$scheme_interest_rate_max','$scheme_due_period_min','$scheme_due_period_max','$scheme_overdue_penalty','$scheme_penalty_type','$scheme_doc_charge_min','$scheme_doc_charge_max','$scheme_processing_fee_min','$scheme_processing_fee_max','$user_id',now())");
+        $qry = $pdo->query("INSERT INTO `scheme`(`scheme_name`, `due_method`, `benefit_method`, `interest_rate_percent_min`, `interest_rate_percent_max`,`due_period_percent_min`,`due_period_percent_max`, `overdue_penalty_percent`, `scheme_penalty_type`, `doc_charge_min`, `doc_charge_max`, `processing_fee_min`, `processing_fee_max`,`scheme_status`, `insert_login_id`, `created_on`) VALUES ('$add_scheme_name','$scheme_due_method','$schemeBenefitMethod','$scheme_interest_rate_min','$scheme_interest_rate_max','$scheme_due_period_min','$scheme_due_period_max','$scheme_overdue_penalty','$scheme_penalty_type','$scheme_doc_charge_min','$scheme_doc_charge_max','$scheme_processing_fee_min','$scheme_processing_fee_max','1','$user_id',now())");
         if ($qry) {
-            $result = '2'; //Insert.
+            // Get the inserted ID
+            $lastInsertId = $pdo->lastInsertId();
+            $result = [
+                'status' => '2', // Inserted successfully
+                'scheme_id' => $lastInsertId // Return the inserted scheme ID
+            ];
+        } else {
+            $result = [
+                'status' => '0', // Error
+                'scheme_id' => null
+            ];
         }
     }
 }
