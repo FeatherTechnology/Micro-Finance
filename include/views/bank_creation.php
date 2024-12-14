@@ -81,7 +81,7 @@
                                 <div class="form-group">
                                     <label for="under_branch">Under Branch</label>&nbsp;<span class="text-danger">*</span>
                                     <input type="hidden" id="branch_name2">
-                                    <select class="" id="under_branch" name="under_branch" tabindex='8' multiple>
+                                    <select class="" id="under_branch" name="under_branch" tabindex='7' multiple>
                                         <option value=''>Select Branch name</option>
                                     </select>
                                 </div>
@@ -93,8 +93,8 @@
             <div class="col-md-12 ">
                 <div class="text-right">
 
-                    <button type="submit" name="submit_bank_creation" id="submit_bank_creation" class="btn btn-primary" value="Submit" tabindex="9"><span class="icon-check"></span>&nbsp;Submit</button>
-                    <button type="reset" class="btn btn-outline-secondary" tabindex="10">Clear</button>
+                    <button type="submit" name="submit_bank_creation" id="submit_bank_creation" class="btn btn-primary" value="Submit" tabindex="8"><span class="icon-check"></span>&nbsp;Submit</button>
+                    <button type="reset" class="btn btn-outline-secondary" tabindex="9">Clear</button>
                 </div>
             </div>
         </div>

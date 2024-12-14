@@ -16,7 +16,7 @@ if ($qry->rowCount() > 0) {
         $result = 1; //update
 
     } else {
-        $pdo->query("INSERT INTO `role`(`role`, `insert_login_id`, `created_on`) VALUES ('$role','$user_id', $currentDate)");
+        $pdo->query("INSERT INTO `role`(`role`, `insert_login_id`, `created_on`) VALUES ('$role','$user_id', '$currentDate')");
         $result = 2; //Insert
     }
 }

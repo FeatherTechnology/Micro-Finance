@@ -29,7 +29,7 @@ try {
         }
     } else {
         // Use prepared statements for insert
-        $stmt = $pdo->query("INSERT INTO `bank_creation`(`bank_name`, `bank_short_name`, `account_number`, `ifsc_code`, `branch_name`, `gpay`, `under_branch`, `insert_login_id`,`created_date`) VALUES ('$bank_name','$bank_short_name','$account_number','$ifsc_code','$branch_name','$gpay', '$under_branch','$user_id','$created_date')");
+        $stmt = $pdo->query("INSERT INTO `bank_creation`(`bank_name`, `bank_short_name`, `account_number`, `ifsc_code`, `branch_name`, `gpay`, `under_branch`,`status`, `insert_login_id`,`created_date`) VALUES ('$bank_name','$bank_short_name','$account_number','$ifsc_code','$branch_name','$status','$gpay', '$under_branch','$user_id','$created_date')");
 
         if ($stmt) {
             $response = 'Success'; // Insert successful

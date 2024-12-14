@@ -148,37 +148,37 @@
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="pan">PAN</label>
-                                            <input type="text" class="form-control" id="pan" name="pan" placeholder="Enter PAN Number" tabindex="8">
+                                            <input type="text" class="form-control" id="pan" name="pan" placeholder="Enter PAN Number" tabindex="14">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="tan">TAN</label>
-                                            <input type="text" class="form-control" id="tan" name="tan" placeholder="Enter TAN Number" tabindex="9">
+                                            <input type="text" class="form-control" id="tan" name="tan" placeholder="Enter TAN Number" tabindex="15">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="tin">TIN</label>
-                                            <input type="text" class="form-control" id="tin" name="tin" placeholder="Enter TIN Number"  tabindex="10">
+                                            <input type="text" class="form-control" id="tin" name="tin" placeholder="Enter TIN Number"  tabindex="16">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="cin">CIN</label>
-                                            <input type="text" class="form-control" id="cin" name="cin" placeholder="Enter CIN Number"  tabindex="11">
+                                            <input type="text" class="form-control" id="cin" name="cin" placeholder="Enter CIN Number"  tabindex="17">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="License_No">License No</label>
-                                            <input type="text" class="form-control" id="License_No" name="License_No" placeholder="Enter License  Number"  tabindex="12">
+                                            <input type="text" class="form-control" id="License_No" name="License_No" placeholder="Enter License  Number"  tabindex="18">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="gst">GST</label>
-                                            <input type="text" class="form-control" id="gst" name="gst" placeholder="Enter GST Number"  tabindex="13">
+                                            <input type="text" class="form-control" id="gst" name="gst" placeholder="Enter GST Number"  tabindex="19">
                                         </div>
                                     </div>
                                  
@@ -197,20 +197,20 @@
                         <div class="row">
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                             <label for="doc_name">Document Name</label>
-                            <input type="text" class="form-control" id="doc_name" name="doc_name" tabindex="14">
+                            <input type="text" class="form-control" id="doc_name" name="doc_name" tabindex="20">
                             </div>
                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12">
                                 <div class="form-group">
                                     <label for="document">Choose Document</label>
                                     <img id='imgshow' style="display:none" class="img_show" src='img\avatar.png' />
-                                    <input type="file" class="form-control" id="document" name="document" tabindex="15">
+                                    <input type="file" class="form-control" id="document" name="document" tabindex="21">
                                     <input type="hidden" class="personal_info_disble" id="per_pic">
                                 </div>
                             </div>
                             <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-12">
                                 <div class="form-group">
                                     <label for="submit_document"> </label>
-                                    <input type="button" class="btn btn-primary modalBtnCss" id="submit_document" name="submit_document" value="Add" tabindex="16" style="margin: 16px;">
+                                    <input type="button" class="btn btn-primary modalBtnCss" id="submit_document" name="submit_document" value="Add" tabindex="22" style="margin: 16px;">
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12"></div>
@@ -238,8 +238,8 @@
                                                         <!----------------------------- card start  Document ------------------------------>
 
                         <div class="col-12 mt-3 text-right">
-                            <button name="submit_company_creation" id="submit_company_creation" class="btn btn-primary" tabindex="14"><span class="icon-check"></span>&nbsp;Submit</button>
-                            <button type="reset" class="btn btn-outline-secondary" tabindex="15">Clear</button>
+                            <button name="submit_company_creation" id="submit_company_creation" class="btn btn-primary" tabindex="23"><span class="icon-check"></span>&nbsp;Submit</button>
+                            <button type="reset" class="btn btn-outline-secondary" tabindex="24">Clear</button>
                         </div>
 
                     </div>
