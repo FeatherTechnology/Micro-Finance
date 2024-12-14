@@ -168,7 +168,7 @@
                                     </div>
                                     <div class="col-sm-4 col-md-4 col-lg-4">
                                         <div class="form-group">
-                                            <label for="centre">centre</label><span class="text-danger">*</span>
+                                            <label for="centre">Centre</label><span class="text-danger">*</span>
                                             <input type="hidden" id="centre_edit_it">
                                             <select class="form-control" id="centre" name="centre" tabindex="16" multiple>
                                                 <option value="">Select centre Name</option>
@@ -189,7 +189,7 @@
                                         <div class="form-group">
                                             <label for="collection_access">Collection Access</label><span class="text-danger">*</span>
                                             <input type="hidden" id="loan_cat_edit_it">
-                                            <select class="form-control" id="collection_access" name="collection_access" tabindex="17" >
+                                            <select class="form-control" id="collection_access" name="collection_access" tabindex="18" >
                                                 <option value="">Select Collection Access</option>
                                                 <option value="1">YES</option>
                                                 <option value="2">NO</option>
@@ -199,7 +199,7 @@
                                     <div class="col-sm-4 col-md-4 col-lg-4">
                                         <div class="form-group">
                                             <label for="download_access">Download Access</label><span class="text-danger">*</span>
-                                            <select class="form-control" id="download_access" name="download_access" tabindex="18" >
+                                            <select class="form-control" id="download_access" name="download_access" tabindex="19" >
                                                 <option value="">Select Download Access</option>
                                                 <option value="1">YES</option>
                                                 <option value="2">NO</option>
@@ -223,8 +223,8 @@
                         <!--- ---------------------- Screen Mapping END  ----------------------------- -->
 
                         <div class="col-12 mt-3 text-right">
-                            <button name="submit_user_creation" id="submit_user_creation" class="btn btn-primary" tabindex="51"><span class="icon-check"></span>&nbsp;Submit</button>
-                            <button type="reset" class="btn btn-outline-secondary" id="reset_btn" tabindex="52">Clear</button>
+                            <button name="submit_user_creation" id="submit_user_creation" class="btn btn-primary" tabindex="20"><span class="icon-check"></span>&nbsp;Submit</button>
+                            <button type="reset" class="btn btn-outline-secondary" id="reset_btn" tabindex="21">Clear</button>
                         </div>
 
                     </div>
@@ -332,7 +332,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-dismiss="modal" tabindex="17" onclick="getDesignationDropdown()">Close</button>
+                <button class="btn btn-secondary" data-dismiss="modal" tabindex="4" onclick="getDesignationDropdown()">Close</button>
             </div>
         </div>
     </div>
