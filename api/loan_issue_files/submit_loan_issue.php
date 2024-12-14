@@ -6,7 +6,7 @@ $user_id = $_SESSION['user_id'];
 // Get the loan details and loan issue data from the POST request
 $loan_id = isset($_POST['loan_id']) ? $_POST['loan_id'] : '';
 $loan_amnt_calc = isset($_POST['loan_amnt_calc']) ? $_POST['loan_amnt_calc'] : '';
-$loan_date = date('Y-m-d', strtotime($_POST['loan_date']));
+$loan_date = DateTime::createFromFormat('d/m/Y', $_POST['loan_date'])->format('Y-m-d');
 $due_startdate_calc = isset($_POST['due_startdate_calc']) ? $_POST['due_startdate_calc'] : '';
 $maturity_date_calc = isset($_POST['maturity_date_calc']) ? $_POST['maturity_date_calc'] : '';
 $loan_issue_data = isset($_POST['loan_issue_data']) ? $_POST['loan_issue_data'] : [];
@@ -21,7 +21,8 @@ foreach ($loan_issue_data as $issue) {
     $issue_amount = $issue['issue_amount'];
     $net_cash = $issue['net_cash'];
     $issue_date = $issue['issue_date'];
-    $formatted_issue_date = date('Y-m-d', strtotime($issue_date));
+    $formatted_issue_date = DateTime::createFromFormat('d/m/Y', $issue_date)->format('Y-m-d');
+    
     $qry1 = $pdo->query("INSERT INTO loan_issue 
         (cus_mapping_id, loan_id, loan_amnt, net_cash, payment_mode, issue_type, issue_amount, issue_date, insert_login_id, created_on) 
         VALUES 

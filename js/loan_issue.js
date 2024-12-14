@@ -111,7 +111,7 @@ $(document).ready(function () {
             var id = row.find('.form-check-input').data('id');
             var paymentType = row.find('.payment-type').val();
             var issueType = row.find('.issue-type').val();
-            var issueAmount = row.find('.issue-amount').val();
+            var issueAmount = row.find('.issue-amount').val().replace(/,/g, '');
             var netCashCalc = row.find('.netcash').text().replace(/,/g, ''); // Remove commas
             var issueDate = formattedDate;
             // Only collect data if the checkbox is checked
@@ -123,7 +123,7 @@ $(document).ready(function () {
                     issue_amount: issueAmount,
                     net_cash: netCashCalc,
                     issue_date: issueDate
-                    
+
                 });
             }
         });
@@ -317,9 +317,8 @@ function loanInfo() {
         } else {
             // If loan_date is empty or null, these fields can be editable
             $('#due_startdate_calc').prop('readonly', false);
-            $('#maturity_date_calc').prop('readonly', false);
         }
-        
+
 
         $('#due_startdate_calc').val(response[0].due_start);
         $('#maturity_date_calc').val(response[0].due_end);
@@ -344,135 +343,6 @@ var year = currentDate.getFullYear(); // Get the year
 
 var formattedDate = day + '/' + month + '/' + year; // Format as dd-mm-yyyy
 
-// function issueList() {
-//     let loan_id = $('#loan_id').val();
-
-//     $.ajax({
-//         url: 'api/loan_issue_files/get_issue_details.php',
-//         type: 'POST',
-//         dataType: 'json',
-//         data: {
-//             loan_id: loan_id,
-//         },
-//         success: function (response) {
-//             var tbody = $('#issue_info_table tbody');
-//             tbody.empty(); // Clear existing rows
-
-//             var hasRows = false;
-
-//             $.each(response, function (index, item) {
-//                 var paymentTypeOptions = `
-//                     <select class="form-control payment-type" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'disabled' : ''}>
-//                         <option value="1" ${item.payment_type == 1 ? 'selected' : ''}>Single</option>
-//                         <option value="2" ${item.payment_type == 2 ? 'selected' : ''}>Split</option>
-//                     </select>
-//                 `;
-//                 var issueTypeOptions = `
-//                     <select class="form-control issue-type" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'disabled' : ''}>
-//                         <option value="1" ${item.issue_type == 1 ? 'selected' : ''}>Cash</option>
-//                         <option value="2" ${item.issue_type == 2 ? 'selected' : ''}>Bank Transfer</option>
-//                     </select>
-//                 `;
-//                 var netcashCalc = item.net_cash_calc ? moneyFormatIndia(item.net_cash_calc) : '';
-//                 var status = (item.issue_status === '' || item.issue_status === null) ? 'In Issue' : (item.issue_status === 'Issued' ? 'Issued' : 'Pending');
-
-//                 var actionHtml = `<input type="checkbox" class="form-check-input" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'disabled' : ''} />`; // Checkbox disabled if Issued
-
-//                 // Add input field in Issue Amount column
-//                 var issueAmountInput = `
-//                     <input type="number" class="form-control issue-amount" 
-//                         value="${item.issue_amount}" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'readonly' : ''} />
-//                 `;
-
-//                 var row = '<tr>' +
-//                     '<td>' + (index + 1) + '</td>' +
-//                     '<td>' + item.cus_id + '</td>' +
-//                     '<td>' + item.first_name + '</td>' +
-//                     '<td>' + netcashCalc + '</td>' +
-//                     '<td>' + paymentTypeOptions + '</td>' +  // Payment Type dropdown
-//                     '<td>' + issueTypeOptions + '</td>' +    // Issue Type dropdown
-//                     '<td>' + formattedDate + '</td>' +         // Current date in Issue Date column
-//                     '<td>' + issueAmountInput + '</td>' +    // Issue Amount input field
-//                     '<td>' + actionHtml + '</td>' +
-//                     '<td>' + status + '</td>' +
-//                     '</tr>';
-
-//                 tbody.append(row);
-//                 hasRows = true;
-//             });
-
-//             if (!hasRows) {
-//                 tbody.append('<tr><td colspan="10">No data available</td></tr>'); // Update colspan to 10
-//             }
-
-//             // Checkbox change event
-//             $('.form-check-input').on('change', function () {
-//                 var isChecked = $(this).is(':checked');
-//                 var id = $(this).data('id');
-//                 var paymentType = $('.payment-type[data-id="' + id + '"]').val();
-//                 var issueType = $('.issue-type[data-id="' + id + '"]').val();
-//                 var issueAmount = $('.issue-amount[data-id="' + id + '"]').val();
-//                 var loan_date = $('#loan_date_calc').val(); // Get the loan date
-
-//                 if (paymentType === '' || issueType === '' || issueAmount === '') {
-//                     swalError('Warning', "Please fill Issue Amount!");
-//                     $(this).prop('checked', false);
-//                     return;
-//                 }
-
-//                 if (!loan_date) {
-//                     loan_date = $('#loan_date_calc').val(formattedDate);  // Use the current formatted date
-//                 }
-//             });
-
-//             // Issue Amount input change event
-//             $('.issue-amount').on('input', function () {
-//                 var enteredAmount = parseFloat($(this).val());
-//                 var netCashAmount = parseFloat($(this).closest('tr').find('td').eq(3).text().replace(/[^0-9.-]+/g, "")); // Net Cash column value
-
-//                 var id = $(this).data('id');
-//                 var $this = $(this);
-
-//                 function checkBalance(id) {
-//                     $.ajax({
-//                         url: 'api/loan_issue_files/get_balance_amount.php',
-//                         type: 'POST',
-//                         data: { "id": id },
-//                         dataType: 'json',
-//                         success: function (response) {
-//                             if (response && response.issue_amount !== undefined) {
-//                                 let balanceAmount = response.issue_amount;
-//                                 let remainingAmount = netCashAmount - balanceAmount;
-//                                 let moneyAmount = moneyFormatIndia(remainingAmount);
-//                                 if (balanceAmount === '0' || balanceAmount === 0) {
-//                                     if (enteredAmount > netCashAmount) {
-//                                         swalError('Warning', 'Entered Issue Amount is greater than Net Cash');
-//                                         $this.val('');
-//                                     }
-//                                 } else {
-//                                     if (enteredAmount > remainingAmount) {
-//                                         swalError('Warning', 'Entered Issue Amount is greater than Balance Amount ' + moneyAmount);
-//                                         $this.val('');
-//                                     }
-//                                 }
-//                             } else {
-//                                 console.error('Balance amount not found in response');
-//                             }
-//                         },
-//                         error: function (xhr, status, error) {
-//                             console.error('AJAX Error:', status, error);
-//                         }
-//                     });
-//                 }
-
-//                 checkBalance(id);
-//             });
-//         },
-//         error: function (xhr, status, error) {
-//             console.error('AJAX Error: ' + status + error);
-//         }
-//     });
-// }
 function issueList() {
     let loan_id = $('#loan_id').val();
 
@@ -503,27 +373,29 @@ function issueList() {
                     </select>
                 `;
                 var netcashCalc = item.individual_amount ? moneyFormatIndia(item.individual_amount) : '';
-                var loan_date = $('#loan_date_calc').val(); // Get the loan date
-                if (loan_date !== '' && loan_date !== null) {
-                    var status ='In Issue'
+                var issuedAmount = item.issued_amount ? moneyFormatIndia(item.issued_amount) : '0';
+                var loan_date = item.loan_date; // Get the loan date
+                if (loan_date === '' || loan_date === null || loan_date === undefined) {
+                    var status = 'In Issue';
                 } else {
                     var status = (item.issue_status === 'Issued' ? 'Issued' : 'Pending');
                 }
-             //   var status = (item.issue_status === '' || item.issue_status === null) ? 'In Issue' : (item.issue_status === 'Issued' ? 'Issued' : 'Pending');
 
                 var actionHtml = `<input type="checkbox" class="form-check-input" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'disabled' : ''} />`; // Checkbox disabled if Issued
-
-                // Add input field in Issue Amount column
-                var issueAmountInput = `
-                    <input type="number" class="form-control issue-amount" 
-                        value="${item.issue_amount}" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'readonly' : ''} />
-                `;
+                let issueAmountInput;
+                let remainingAmount = parseFloat(item.individual_amount) - parseFloat(item.issued_amount || 0);
+                let Amount = moneyFormatIndia(remainingAmount)
+                issueAmountInput = `
+                        <input type="text" class="form-control issue-amount" 
+                            value="${Amount}" readonly data-id="${item.id}"   ${item.issue_status === 'Issued' ? 'readonly' : ''}/>
+                    `;
 
                 var row = '<tr>' +
                     '<td>' + (index + 1) + '</td>' +
                     '<td>' + item.cus_id + '</td>' +
                     '<td>' + item.first_name + '</td>' +
                     '<td class="netcash">' + netcashCalc + '</td>' +
+                    '<td class="issued-amount">' + issuedAmount + '</td>' +
                     '<td>' + paymentTypeOptions + '</td>' +  // Payment Type dropdown
                     '<td>' + issueTypeOptions + '</td>' +    // Issue Type dropdown
                     '<td>' + formattedDate + '</td>' +         // Current date in Issue Date column
@@ -539,6 +411,38 @@ function issueList() {
             if (!hasRows) {
                 tbody.append('<tr><td colspan="10">No data available</td></tr>'); // Update colspan to 10
             }
+            $('.payment-type').on('change', function () {
+                var id = $(this).data('id');
+                var paymentType = $(this).val();
+                var row = $(this).closest('tr');
+                var issueAmountInput;
+
+                // Get the net cash and issued amount for the current row
+                var netCashAmount = parseFloat(row.find('.netcash').text().replace(/[^0-9.-]+/g, ""));
+                var issuedAmount = parseFloat(row.find('.issued-amount').text().replace(/[^0-9.-]+/g, ""));
+
+                // Find if the issue status is 'Issued' from the current row
+                var issueStatus = row.find('.issue-status').text().trim(); // Assuming issue status is in a cell with class "issue-status"
+
+                if (paymentType == 1) { // Single payment
+                    let remainingAmount = netCashAmount - issuedAmount;
+                    let Amount = moneyFormatIndia(remainingAmount)
+                    issueAmountInput = `
+                        <input type="text" class="form-control issue-amount" 
+                            value="${Amount}" readonly data-id="${id}" />
+                    `;
+                } else { // Split payment
+                    // Clear the value for split payment, allowing the user to enter a new value
+                    issueAmountInput = `
+                        <input type="number" class="form-control issue-amount" 
+                            value="" data-id="${id}" ${issueStatus === 'Issued' ? 'readonly' : ''} />
+                    `;
+                }
+
+                // Update the Issue Amount input field
+                row.find('.issue-amount').replaceWith(issueAmountInput);
+            });
+
 
             // Checkbox change event
             $('.form-check-input').on('change', function () {
@@ -560,14 +464,12 @@ function issueList() {
                 }
             });
 
-            // Issue Amount input change event
-            $('.issue-amount').on('input', function () {
+            $(document).on('input', '.issue-amount', function () {
                 var enteredAmount = parseFloat($(this).val());
                 var netCashAmount = parseFloat($(this).closest('tr').find('td').eq(3).text().replace(/[^0-9.-]+/g, "")); // Net Cash column value
-
                 var id = $(this).data('id');
                 var $this = $(this);
-
+            
                 function checkBalance(id) {
                     $.ajax({
                         url: 'api/loan_issue_files/get_balance_amount.php',
@@ -599,9 +501,10 @@ function issueList() {
                         }
                     });
                 }
-
+            
                 checkBalance(id);
             });
+            
         },
         error: function (xhr, status, error) {
             console.error('AJAX Error: ' + status + error);

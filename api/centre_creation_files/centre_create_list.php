@@ -25,11 +25,15 @@ if (isset($_POST['search'])) {
     }
 }
 
+// Add ordering condition
 if (isset($_POST['order'])) {
+    // Order by column from DataTables request
     $query .= " ORDER BY " . $column[$_POST['order']['0']['column']] . ' ' . $_POST['order']['0']['dir'];
 } else {
-    $query .= ' ';
+    // Default ordering by gc.grp_id in descending order
+    $query .= " ORDER BY cc.centre_id DESC";
 }
+
 $query1 = '';
 if (isset($_POST['length']) && $_POST['length'] != -1) {
     $query1 = ' LIMIT ' . intval($_POST['start']) . ', ' . intval($_POST['length']);
