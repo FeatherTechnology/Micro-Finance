@@ -91,7 +91,6 @@ $(document).ready(function () {
         let loan_id = $('#loan_id').val();
         let loan_amnt_calc = $('#loan_amnt_calc').val().replace(/,/g, '');
         let loan_date = $('#loan_date_calc').val();
-        console.log(loan_date)
         let due_startdate_calc = $('#due_startdate_calc').val();
         let maturity_date_calc = $('#maturity_date_calc').val();
         var isValid = true;
