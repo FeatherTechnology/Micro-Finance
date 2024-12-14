@@ -23,7 +23,6 @@ if ($loan_id_calc != '') {
         // Fetch the results and process them
         while ($gcm_info = $qry->fetch(PDO::FETCH_ASSOC)) {
             // Map the customer mapping to its corresponding label
-          //  $gcm_info['customer_mapping'] = isset($cus_mapping[$gcm_info['customer_mapping']]) ? $cus_mapping[$gcm_info['customer_mapping']] : '';
             
             // Add the delete button action
             $gcm_info['action'] = "<span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'></span>";
