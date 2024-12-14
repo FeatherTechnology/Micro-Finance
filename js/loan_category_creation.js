@@ -1,9 +1,3 @@
-//Scheme Name Multi select initialization
-// const scheme_choices = new Choices('#scheme_name', {
-//     removeItemButton: true,
-//     noChoicesText: 'Select Scheme Name',
-//     allowHTML: true
-// });
 const profit_type = new Choices('#profit_type', {
     removeItemButton: true,
     noChoicesText: 'Select Profit Type',
@@ -228,7 +222,6 @@ $(document).ready(function () {
         }
     
         // Validate profit_type (multi-select field)
-       // let isProfitTypeNameValid = validateMultiSelectField('profit_type', profit_type);
     
         // Proceed with form submission if valid
         if (isValid  && isLoanCalculationValid && isLoanSchemeValid) {
