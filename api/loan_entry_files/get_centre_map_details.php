@@ -5,8 +5,7 @@ require "../../ajaxconfig.php";
 $cus_map_arr = array();
 $id=$_POST['id'];
 
-// Customer mapping array
-$cus_mapping = [1 => 'New', 2 => 'Renewal', 3 => 'Additional'];
+
 
 // Check if loan_id_calc is not empty or invalid
 if ($id != '') {
@@ -16,15 +15,13 @@ if ($id != '') {
                           JOIN customer_creation cc ON gcm.cus_id = cc.id 
                           LEFT JOIN area_name_creation anc ON cc.area = anc.id  
                           LEFT JOIN loan_entry_loan_calculation lelc ON gcm.loan_id = lelc.loan_id
-                          WHERE lelc.centre_id = '$id' AND cc.customer_status !=2");
+                          WHERE lelc.centre_id = '$id' AND (cc.customer_status IS NULL OR cc.customer_status = '' OR cc.customer_status = 1)");
 
     // Check if the query returns any rows
     if ($qry->rowCount() > 0) {
         // Fetch the results and process them
         while ($gcm_info = $qry->fetch(PDO::FETCH_ASSOC)) {
             // Map the customer mapping to its corresponding label
-            $gcm_info['customer_mapping'] = isset($cus_mapping[$gcm_info['customer_mapping']]) ? $cus_mapping[$gcm_info['customer_mapping']] : 'Unknown';
-            
             // Add the delete button action
             $gcm_info['action'] = "<span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'></span>";
 

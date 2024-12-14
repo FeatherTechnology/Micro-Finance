@@ -1,8 +1,9 @@
 <?php
 require('../../ajaxconfig.php');
-
+@session_start();
+$user_id = $_SESSION['user_id'];
 // Query to fetch all centre_id from centre_creation
-$qry = $pdo->query("SELECT id, centre_id FROM `centre_creation`");
+$qry = $pdo->query("SELECT cc.id, cc.centre_id FROM centre_creation cc JOIN users u ON FIND_IN_SET(cc.id, u.centre_name) where u.id='$user_id'");
 if ($qry->rowCount() > 0) {
     $result = $qry->fetchAll(PDO::FETCH_ASSOC);
 }

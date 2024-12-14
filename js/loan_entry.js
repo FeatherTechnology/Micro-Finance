@@ -32,7 +32,10 @@ function swapTableAndCreation() {
         $("#add_loan").hide();
         $("#loan_entry_content").show();
         $("#back_btn").show();
-        getCentreId();
+        setTimeout(() => {
+            getCentreId();
+        }, 1000);
+
         getLoanCategoryName();
     } else {
         $(".loan_table_content").show();
@@ -54,10 +57,12 @@ $("#Centre_id").change(function () {
     }
 });
 $("#total_cus").on("blur", function () {
-    let loam_amount = $("#loan_amount_calc").val();
+    let loan_amount = $("#loan_amount_calc").val();
     let total_cus = $("#total_cus").val();
-    let loan_amount_per_cus = loam_amount / total_cus;
+    let loan_amount_per_cus = loan_amount / total_cus;
+    loan_amount_per_cus = Math.round(loan_amount_per_cus); // Round off the value
     $('#loan_amount_per_cus').val(loan_amount_per_cus);
+
 });
 
 function getCentreDetails(id) {
@@ -96,80 +101,19 @@ $(document).ready(function () {
         }
     });
     /////////////////////////////////////////////////////////submit customer Mapping Start///////////////////////////////////////////////////
-    // $('#submit_cus_map').click(function (event) {
-    //     event.preventDefault(); // Prevent the default form submission
-    //     let centre_id = $('#Centre_id').val()
-    //     let add_customer = $('#add_customer').val().trim(); // Trim to remove any extra spaces
-    //     let loan_id_calc = $('#loan_id_calc').val().trim();
-    //     let customer_mapping = $('#customer_mapping').val().trim();
-    //     let total_cus = $('#total_cus').val().trim();
-    //     let designation = $('#designation').val();
 
-    //     // Fields that are required for validation
-    //     var isValid = true;
-
-    //     // Validate add_customer
-    //     if (!add_customer) {
-    //         validateField(add_customer, 'add_customer'); // Assuming validateField sets a warning
-    //         isValid = false;
-    //     }
-
-    //     // Validate total_cus
-    //     if (!total_cus) {
-    //         swalError('Warning', 'Please fill the total members.');
-    //         isValid = false;
-    //     }
-    //     // Validate total_cus
-    //     if (!centre_id) {
-    //         swalError('Warning', 'Please select the centre ID.');
-    //         isValid = false;
-    //     }
-
-    //     // Submit only if all fields are valid
-    //     if (isValid) {
-    //         $.post('api/loan_entry_files/submit_cus_mappings.php', {
-    //             add_customer: add_customer,
-    //             centre_id : centre_id,
-    //             loan_id_calc: loan_id_calc,
-    //             customer_mapping: customer_mapping,
-    //             total_cus: total_cus,
-    //             designation: designation,
-    //         }, function (response) {
-    //             let result = response.result;
-
-    //             if (result === 1) {
-    //                 // Success: Refresh the customer mapping table and clear inputs
-    //                 getCusMapTable();
-    //                 $('#add_customer').val(''); // Clear add_customer field
-    //                 $('#designation').val(''); // Clear loan_id_calc field
-    //                 $('#customer_mapping').val(''); // Clear loan_id_calc field
-    //                 // Reset borders
-    //                 $('#loan_id_calc, #add_customer').css('border', '1px solid #cecece');
-    //             } else if (result === 2) {
-    //                 // Failure: Show error message
-    //                 swalError('Error', 'An error occurred while processing the request.');
-    //             } else if (result === 3) {
-    //                 // Limit Exceeded: Show warning message
-    //                 swalError('Warning', response.message);
-    //             } else if (result === 4) {
-    //                 // Customer already mapped: Show warning
-    //                 swalError('Warning', response.message);
-    //             }
-    //         }, 'json');
-    //     }
-    // });
     $('#submit_cus_map').click(function (event) {
         event.preventDefault(); // Prevent the default form submission
-    
+
         let centre_id = $('#Centre_id').val();
         let add_customer = $('#add_customer').val().trim(); // Trim to remove any extra spaces
         let loan_id_calc = $('#loan_id_calc').val();
         let customer_mapping = $('#customer_mapping').val().trim(); // Get the customer_mapping value
         let total_cus = $('#total_cus').val().trim(); // Total members limit
         let designation = $('#designation').val().trim(); // Get the designation value
-    
+
         var isValid = true;
-    
+
         // Validate fields
         if (!add_customer) {
             validateField(add_customer, 'add_customer');
@@ -187,7 +131,7 @@ $(document).ready(function () {
             swalError('Warning', 'Please select the centre ID.');
             isValid = false;
         }
-    
+
         // Proceed only if all fields are valid
         if (isValid) {
             // Check if the number of customers already mapped is greater than or equal to total_cus
@@ -199,7 +143,7 @@ $(document).ready(function () {
                 $('#customer_mapping').val('');
                 return; // Stop the process if customer count exceeds total_cus
             }
-    
+
             // Check if the customer already exists in the table
             let customerExists = false;
             $('#cus_mapping_table tbody tr').each(function () {
@@ -207,7 +151,7 @@ $(document).ready(function () {
                     customerExists = true;
                 }
             });
-    
+
             if (customerExists) {
                 swalError('Warning', 'Customer is already mapped to this loan.');
                 $('#add_customer').val('');
@@ -215,7 +159,7 @@ $(document).ready(function () {
                 $('#customer_mapping').val('');
                 return; // Stop the process if customer is already mapped
             }
-    
+
             // If customer doesn't exist and count is within the limit, submit the data
             $.post('api/loan_entry_files/submit_cus_mappings.php', {
                 add_customer: add_customer,
@@ -226,12 +170,12 @@ $(document).ready(function () {
                 designation: designation
             }, function (response) {
                 let result = response.result;
-    
+
                 if (result === 1) {
                     // Success: Fetch the new customer details from the response and append to the table
                     let customer = response.customer_data; // Assuming the response contains customer data in this format
                     let customerMappingText = $("#customer_mapping option:selected").text(); // Get the selected text for Customer Mapping
-    
+
                     // Append the data to the table
                     let newRow = `
                         <tr data-id="${customer.id}"> <!-- Add customer.id as data-id -->
@@ -248,9 +192,9 @@ $(document).ready(function () {
                             </td>
                         </tr>
                     `;
-    
+
                     $('#cus_mapping_table tbody').append(newRow);
-    
+
                     // Clear the form fields after successful submission
                     $('#add_customer').val('');
                     $('#designation').val('');
@@ -264,19 +208,8 @@ $(document).ready(function () {
             }, 'json');
         }
     });
-    
-    // Function to remove row
-    function removeCusMap(id) {
-        // Find the row with the matching ID and remove it
-        $('#cus_mapping_table tbody tr').each(function() {
-            if ($(this).attr('data-id') == id) {
-                $(this).remove(); // Remove the row
-                swalSuccess('Success', 'Customer mapping removed successfully.')
-                return false; // Exit the loop once the row is removed
-            }
-        });
-    }
-    
+
+
     // Event listener for delete button click
     $(document).on('click', '.cusMapDeleteBtn', function () {
         let id = $(this).attr('value'); // Get the customer ID from the button
@@ -464,16 +397,16 @@ $(document).ready(function () {
         event.preventDefault();
         $('#refresh_cal').trigger('click'); //For calculate once again if user missed to refresh calculation
         var customerMappingData = [];
-        $('#cus_mapping_table tbody tr').each(function() {
+        $('#cus_mapping_table tbody tr').each(function () {
             var cus_id = $(this).data('id'); // Retrieve the customer.id from data-id attribute
             var cus_mapping = $(this).find('.cus_mapping').text(); // Use .text() instead of .val() for non-input elements
-       var designation = $(this).find('.designation').text(); // Use .text() to get the content of the td
-            
+            var designation = $(this).find('.designation').text(); // Use .text() to get the content of the td
+
             customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation });
         });
-       
-        
-        
+
+
+
         let formData = {
             'loan_id_calc': $('#loan_id_calc').val(),
             'Centre_id': $('#Centre_id').val(),
@@ -941,15 +874,6 @@ function isFormDataValid(formData) {
     return isValid;
 }
 
-// function changeInttoBen() {
-//     let dueType = document.getElementById('due_type_calc');
-//     let intLabel = document.querySelector('label[for="interest_amnt_calc"]');
-//     if (dueType.value == 'Interest') {
-//         intLabel.textContent = 'Benefit Amount';
-//     } else {
-//         intLabel.textContent = 'Interest Amount';
-//     }
-// }
 
 function clearLoanCalcForm() {
     // Clear input fields except those with IDs 'loan_id_calc' and 'loan_date_calc'
@@ -999,39 +923,47 @@ function getCusMapTable() {
 
         ]
         appendDataToTable('#cus_mapping_table', response, cusMapColumn);
-        setdtable('#cus_mapping_table');
     }, 'json');
 }
-// function getCentreMapTable(id) {
-//     $.post('api/loan_entry_files/get_centre_map_details.php', { id }, function (response) {
-//         let cusMapColumn = [
-//             "sno",
-//             "cus_id",
-//             "first_name",
-//             "customer_mapping",
-//             "aadhar_number",
-//             "mobile1",
-//             "areaname",
-//             "designation",
-//             "action"
+function getCentreMapTable(id) {
+    $.post('api/loan_entry_files/get_centre_map_details.php', { id }, function (response) {
+        let cusMapColumn = [
+            "sno",
+            "cus_id",
+            "first_name",
+            "customer_mapping",
+            "aadhar_number",
+            "mobile1",
+            "areaname",
+            "designation",
+            "action"
 
-//         ]
-//         appendDataToTable('#cus_mapping_table', response, cusMapColumn);
-//         setdtable('#cus_mapping_table');
-//     }, 'json');
-// }
-// function removeCusMap(id) {
-//     $.post('api/loan_entry_files/delete_cus_mapping.php', { id }, function (response) {
-//         if (response == 1) {
-//             swalSuccess('Success', 'Customer mapping removed successfully.')
+        ]
+        appendDataToTable('#cus_mapping_table', response, cusMapColumn);
+    }, 'json');
+}
+// Function to remove row
+function removeCusMap(id) {
+    // Find the row with the matching ID and remove it
+    $('#cus_mapping_table tbody tr').each(function () {
+        if ($(this).attr('data-id') == id) {
+            $(this).remove(); // Remove the row
+            swalSuccess('Success', 'Customer mapping removed successfully.')
+            return false; // Exit the loop once the row is removed
+        }
+    });
+    $.post('api/loan_entry_files/delete_cus_mapping.php', { id }, function (response) {
+        if (response == 1) {
+            swalSuccess('Success', 'Customer mapping removed successfully.')
 
-//             getCusMapTable();
-//             getLoanEntryTable();
-//         } else {
-//             swalError('Alert', 'Customer mapping remove failed.')
-//         }
-//     }, 'json');
-// }
+            getCusMapTable();
+            getLoanEntryTable();
+        } else {
+            swalError('Alert', 'Customer mapping remove failed.')
+        }
+    }, 'json');
+}
+
 function loanCalculationEdit(id) {
     $.post('api/loan_entry_files/loan_calculation_data.php', { id }, function (response) {
         if (response.length > 0) {
@@ -1099,6 +1031,7 @@ function getCentreId() {
 
         // Get the Centre_id_edit value to pre-select the correct option in edit mode
         let Centre_id_edit = $("#Centre_id_edit").val();
+        let centreEditOptionAdded = false;
 
         // Loop through each response item
         $.each(response, function (index, val) {
@@ -1107,18 +1040,25 @@ function getCentreId() {
             // Check if the current value matches the Centre_id_edit, and if so, mark it as selected
             if (val.centre_id == Centre_id_edit) {
                 selected = "selected";
+                centreEditOptionAdded = true; // Track that Centre_id_edit was added
             }
 
-            // For the edit page, include both "can_show" and "not_show" centre_ids
-            if (Centre_id_edit) {
-                appendLoanCatOption += '<option value="' + val.centre_id + '" ' + selected + ">" + val.centre_id + "</option>";
-            }
-
-            // For the normal page, include only the "can_show" centre_ids
-            if (val.status === "can_show" && !Centre_id_edit) {
-                appendLoanCatOption += '<option value="' + val.centre_id + '" ' + selected + ">" + val.centre_id + "</option>";
+            // Append the Centre_id_edit option directly, bypassing validation for edit mode
+            if (val.centre_id == Centre_id_edit) {
+                appendLoanCatOption += `<option value="${val.centre_id}" ${selected}>${val.centre_id}</option>`;
+            } else if (val.status === "can_show" && !Centre_id_edit) {
+                // Only append the "can_show" centre_ids in normal mode (non-edit mode)
+                appendLoanCatOption += `<option value="${val.centre_id}">${val.centre_id}</option>`;
+            } else if (val.status === "can_show" && Centre_id_edit) {
+                // Ensure that can_show options are added in edit mode as well, but without re-adding the Centre_id_edit
+                appendLoanCatOption += `<option value="${val.centre_id}">${val.centre_id}</option>`;
             }
         });
+
+        // If Centre_id_edit wasn't in the response, still add it manually
+        if (!centreEditOptionAdded && Centre_id_edit) {
+            appendLoanCatOption += `<option value="${Centre_id_edit}" selected>${Centre_id_edit}</option>`;
+        }
 
         // Empty the dropdown and append the options
         $("#Centre_id").empty().append(appendLoanCatOption);

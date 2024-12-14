@@ -117,6 +117,26 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
             $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, centre_id, cus_id, customer_mapping, designation, inserted_login_id, created_on) 
                                 VALUES ('$loan_id_calc', '$Centre_id', '$cus_id', '$cus_mapping', '$designation', '$user_id', NOW())");
         }
+        if ($cus_mapping == 'Renewal') {
+            // Check if any loan has a status between 1 and 7 (inclusive)
+            $stmt = $pdo->query("SELECT lcm.id 
+                                 FROM loan_cus_mapping lcm
+                                 LEFT JOIN loan_entry_loan_calculation lelc 
+                                 ON lcm.loan_id = lelc.loan_id 
+                                 WHERE lelc.loan_status >= 1 AND lelc.loan_status < 8 and lcm.cus_id = '$cus_id'AND lcm.loan_id !='$loan_id_calc'");
+        
+            $rowCount = $stmt->rowCount();
+        
+            if ($rowCount == 0) {
+                $pdo->query("UPDATE customer_creation 
+                             SET cus_data = 'Existing', cus_status = 'Renewal' 
+                             WHERE id = '$cus_id'");
+            } else {
+                $pdo->query("UPDATE customer_creation 
+                             SET cus_data = 'Existing', cus_status = 'Additional' 
+                             WHERE id = '$cus_id'");
+            }
+        }
     }
 } else {
     echo json_encode(['result' => 0, 'message' => 'Customer mapping data is missing or invalid']);

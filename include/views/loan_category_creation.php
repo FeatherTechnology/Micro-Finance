@@ -250,15 +250,6 @@
                             <div class="card-body bdy-cls">
                                 <div class="row mb-3">
                                     <!-- Fields -->
-                                    <!-- <div class="col-md-3 col-sm-4">
-                                        <div class="form-group">
-                                            <label for="scheme_name">Scheme Name</label><span class="text-danger">*</span>
-                                            <input type="hidden" id="scheme_name2">
-                                            <select class="form-control" id="scheme_name" name="scheme_name" tabindex="16" multiple>
-                                                <option value="">Select Scheme Name</option>
-                                            </select>
-                                        </div>
-                                    </div> -->
                                     <div class="col-md-3 col-sm-4">
                                         <div class="form-group">
                                             <label for="add_scheme_name">Scheme Name</label><span class="text-danger">*</span>
@@ -421,30 +412,7 @@
                                     </div>
 
                                 </div>
-                                <!-- <div class="row">
-                                    <div class="col-12 overflow-x-cls">
-                                        <table id="loan_scheme_table" class="custom-table">
-                                            <thead>
-                                                <tr>
-                                                    <th width='20'>S.No.</th>
-                                                    <th>Scheme</th>
-                                                    <th>Due Method</th>
-                                                    <th>Benefit Method</th>
-                                                    <th>Interest Rate Min</th>
-                                                    <th>Interest Rate Max</th>
-                                                    <th>Due Period Min</th>
-                                                    <th>Due Period Max</th>
-                                                    <th>Document Charge Min</th>
-                                                    <th>Document Charge Max</th>
-                                                    <th>Processing Fee Min</th>
-                                                    <th>Processing Fee Max</th>
-                                                    <th>Overdue Penalty</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody> </tbody>
-                                        </table>
-                                    </div>
-                                </div> -->
+                            
                                 <div class="row">
                                     <div class="col-12 overflow-x-cls">
                                         <table id="scheme_modal_table" class="custom-table">

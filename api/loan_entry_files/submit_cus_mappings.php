@@ -14,7 +14,13 @@ if (isset($_POST['add_customer'], $_POST['loan_id_calc'], $_POST['customer_mappi
     $customer_mapping = intval($_POST['customer_mapping']); // Assuming customer_mapping is also an integer
     $total_cus = intval($_POST['total_cus']);
     $designation = $_POST['designation']; // No need to quote for simple string use
+    $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$add_customer' AND lcm.centre_id = '$centre_id'");
+    $existing_mapping = $stmt->fetchColumn();
 
+    if ($existing_mapping > 0) {
+        // Customer is already mapped to the same loan_id, send warning
+        $response = ['result' => 4, 'message' => 'The customer is already mapped to this loan.'];
+    }else{
             // Insert the new customer mapping
             $qry = $pdo->query("SELECT cc.id,cc.cus_id, cc.first_name, cc.aadhar_number, cc.mobile1, anc.areaname
                                 FROM customer_creation cc
@@ -32,28 +38,8 @@ if (isset($_POST['add_customer'], $_POST['loan_id_calc'], $_POST['customer_mappi
                 // Failure during insertion
                 $response['result'] = 2;
             }
-        
-
-    if ($customer_mapping == 2) {
-        // Check if any loan has a status between 1 and 7 (inclusive)
-        $stmt = $pdo->query("SELECT lcm.id 
-                             FROM loan_cus_mapping lcm
-                             LEFT JOIN loan_entry_loan_calculation lelc 
-                             ON lcm.loan_id = lelc.loan_id 
-                             WHERE lelc.loan_status >= 1 AND lelc.loan_status < 8 and lcm.cus_id = '$add_customer'");
-
-        $rowCount = $stmt->rowCount();
-
-        if ($rowCount == 0) {
-            $pdo->query("UPDATE customer_creation 
-                         SET cus_data = 'Existing', cus_status = 'Renewal' 
-                         WHERE id = '$add_customer'");
-        } else {
-            $pdo->query("UPDATE customer_creation 
-                         SET cus_data = 'Existing', cus_status = 'Additional' 
-                         WHERE id = '$add_customer'");
         }
-    }
+        
 } else {
     $response = ['result' => 2, 'message' => 'Required parameters missing'];
 }

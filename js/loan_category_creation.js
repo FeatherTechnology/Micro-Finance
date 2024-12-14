@@ -174,43 +174,7 @@ $(document).ready(function () {
         return;
 
     })
-    $(document).on('click', '.schemeActionBtn', function () {
-        var id = $(this).attr('value'); // Get value attribute
-        $.post('api/loan_category_creation/get_scheme_data.php', { id }, function (response) {
-            $('#add_scheme_id').val(id);
-            $('#add_scheme_name').val(response[0].scheme_name);
-            $('#scheme_due_method').val(response[0].due_method);
-            $('#scheme_ben_method').val(response[0].benefit_method);
-            $('#scheme_interest_rate_min').val(response[0].interest_rate_percent_min);
-            $('#scheme_interest_rate_max').val(response[0].interest_rate_percent_max);
-            $('#scheme_due_period_min').val(response[0].due_period_percent_min);
-            $('#scheme_due_period_max').val(response[0].due_period_percent_max);
-            $('#scheme_overdue_penalty').val(response[0].overdue_penalty_percent);
-            $('#scheme_penalty_type').val(response[0].scheme_penalty_type);
-            $('#scheme_doc_charge_min').val(response[0].doc_charge_min);
-            $('#scheme_doc_charge_max').val(response[0].doc_charge_max);
-            $('#scheme_processing_fee_min').val(response[0].processing_fee_min);
-            $('#scheme_processing_fee_max').val(response[0].processing_fee_max);
-
-            // Toggle the appropriate radio button based on the hidden input value
-            if (response[0].scheme_penalty_type === 'percent') {
-                $('#scheme_type_percent').prop('checked', true).closest('label').addClass('active');
-                $('#scheme_type_rupee').prop('checked', false).closest('label').removeClass('active');
-                $('.scheme-penalty-span-val').text('%');
-            } else if (response[0].scheme_penalty_type === 'rupee') {
-                $('#scheme_type_rupee').prop('checked', true).closest('label').addClass('active');
-                $('#scheme_type_percent').prop('checked', false).closest('label').removeClass('active');
-                $('.scheme-penalty-span-val').text('₹');
-            }
-          
-        }, 'json');
-    });
-
-    $(document).on('click', '.schemeDeleteBtn', function () {
-        var id = $(this).attr('value'); // Get value attribute
-        swalConfirm('Delete', 'Do you want to Delete the Scheme?', deleteScheme, id);
-        return;
-    });
+   
     /////////////////////////////////////////////////////Scheme Modal END///////////////////////////////////////////////////
 
     $('#submit_loan_category_creation').click(function (event) {
@@ -548,34 +512,6 @@ function getStatusChange(id) {
         }
     }, 'json');
 }
-
-
-// function getSchemeDropdown() {
-//     $.post('api/loan_category_creation/get_scheme_list.php', function (response) {
-//         scheme_choices.clearStore();
-//         let selectedSchemeId = [];
-//         $.each(response, function (index, val) {
-//             let selected = '';
-//             let schemename2 = $('#scheme_name2').val();
-//             if (schemename2.includes(val.id)) {
-//                 selected = 'selected';
-//                 selectedSchemeId.push(val.id);
-//             }
-//             let items = [
-//                 {
-//                     value: val.id,
-//                     label: val.scheme_name,
-//                     selected: selected
-//                 }
-//             ];
-//             scheme_choices.setChoices(items);
-//             scheme_choices.init();
-//         });
-
-//         clearSchemeForm();
-//         getSchemeListTable(selectedSchemeId);
-//     }, 'json');
-// }
 
 
 function deleteLoanCategory(id) {
