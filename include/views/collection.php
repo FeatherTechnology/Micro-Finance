@@ -119,10 +119,8 @@
                                 <thead>
                                     <!-- First row: Spanning headers for sections -->
                                     <tr>
-                                        <th colspan="2">List View</th>
-                                        <th colspan="5">Collection Info</th>
+                                        <th colspan="8">Collection Info</th>
                                         <th colspan="6">Collection Track</th>
-                                        <th colspan="2"></th>
                                     </tr>
                                     <!-- Second row: Column headers -->
                                     <tr>
@@ -139,7 +137,7 @@
                                         <th>Collection Penalty</th>
                                         <th>Collection Fine</th>
                                         <th>Total Collection</th>
-                                        <th>Action</th>
+                                        <th>Chart</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -335,3 +333,4 @@
     </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////// Fine Chart Modal END ////////////////////////////////////////////////////////////////////// -->
+ 

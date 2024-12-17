@@ -9,7 +9,7 @@ $fine_date = date('Y-m-d', strtotime($_POST['fine_date']));
 $fine_purpose = $_POST['fine_purpose'];
 $fine_Amnt = $_POST['fine_Amnt'];
 
-$qry = $pdo->query("INSERT INTO `collection_charges`( `cus_mapping_id`, `loan_id`, `coll_date`, `coll_purpose`, `coll_charge`, `status`, `insert_login_id`, `created_date`) VALUES ('$cus_id','$fine_loan_id','$fine_date','$fine_purpose','$fine_Amnt','0','$user_id', now()) ");
+$qry = $pdo->query("INSERT INTO `fine_charges`( `cus_mapping_id`, `loan_id`, `fine_date`, `fine_purpose`, `fine_charge`, `status`, `insert_login_id`, `created_date`) VALUES ('$cus_id','$fine_loan_id','$fine_date','$fine_purpose','$fine_Amnt','0','$user_id', now()) ");
 if ($qry) {
     $result = 1;
 } else {
