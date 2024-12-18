@@ -27,7 +27,7 @@ $query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_
           LEFT JOIN area_name_creation anc ON cc.area = anc.id
           LEFT JOIN branch_creation bc ON cc.branch = bc.id
  	JOIN users us ON FIND_IN_SET(lelc.loan_category, us.loan_category)
-     WHERE lcm.issue_status = 'issued' AND us.id ='$user_id' ";
+     WHERE lcm.issue_status = '1' AND us.id ='$user_id' ";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];
@@ -40,7 +40,7 @@ if (isset($_POST['search'])) {
                       OR bc.branch_name LIKE '%" . $search . "%')";
     }
 }
-// $query .= "GROUP BY cp.cus_id ";
+ $query .= "GROUP BY lelc.loan_id ";
 if (isset($_POST['order'])) {
     $query .= " ORDER BY " . $column[$_POST['order']['0']['column']] . ' ' . $_POST['order']['0']['dir'];
 } else {

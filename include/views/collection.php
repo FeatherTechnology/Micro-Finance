@@ -98,7 +98,7 @@
                                 <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="disabledInput">Fine</label>&nbsp;<span class="text-danger ">*</span>
-                                        <input type="text" class="form-control" readonly id="coll_charge" name="coll_charge" value='' tabindex='9'>
+                                        <input type="text" class="form-control" readonly id="fine_charge" name="fine_charge" value='' tabindex='9'>
                                     </div>
                                 </div>
 
