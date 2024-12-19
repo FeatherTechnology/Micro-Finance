@@ -42,7 +42,7 @@
                 </div>
 
                 <input type="hidden" name="loan_category_id" id="loan_category_id">
-                <input type="hidden" name="cp_id" id="cp_id">
+                <input type="hidden" name="loan_id" id="loan_id">
                 <input type="hidden" name="status" id="status">
                 <input type="hidden" name="sub_status" id="sub_status">
 
@@ -288,7 +288,6 @@
                                 <th>Paid Date</th>
                                 <th>Paid Amount</th>
                                 <th>Balance Amount</th>
-                                <th>Waiver Amount</th>
                             </thead>
                         </table>
                     </div>
@@ -322,7 +321,6 @@
                         <th>Paid Date</th>
                         <th>Paid Amount</th>
                         <th>Balance Amount</th>
-                        <th>Waiver Amount</th>
                     </thead>
                 </table>
             </div>

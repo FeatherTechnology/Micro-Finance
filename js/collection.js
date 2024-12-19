@@ -21,6 +21,7 @@ $(document).ready(function () {
         let loan_id = dataParts[0];
         let centre_id = dataParts[1];
         let centre_name = dataParts[2];
+        $('#loan_id').val(loan_id)
         $('#pageHeaderName').text(` - Collection - Loan ID: ${loan_id}, Centre ID: ${centre_id}, Centre Name: ${centre_name}`);
         collectionCustomerList(loan_id)
         $.ajax({
@@ -187,11 +188,63 @@ $(document).ready(function () {
             }, 'json');
         }
     })
-
+    $(document).on('click', '.fine-chart', function (e) {
+        e.preventDefault(); // Prevent default anchor behavior
+        var cus_mapping_id = $(this).attr('data-id'); // Capture data-id from the clicked element
+        $('#fine_model').modal('show'); // Show the modal
+        fineChartList(cus_mapping_id); // Call the function and pass the cus_mapping_id
+    });
 
 
     //////////////////////////////////////////////Fine End//////////////////////////////////////////////
-
+////////////////////////////////////////////Penalty Chart////////////////////////
+$(document).on('click','.penalty-chart', function(e){
+    e.preventDefault(); // Prevent default anchor behavior
+    var cus_mapping_id = $(this).attr('data-id'); // Capture data-id from the clicked element
+    $('#penalty_model').modal('show'); // Show the modal
+    penaltyChartList(cus_mapping_id); 
+});
+///////////////////////////////////////////////Penalty cahrt End///////////////////////////////////////////
+//////////////////////////////////////////Due Chart start//////////////////////////////
+$(document).on('click','.due-chart', function(){
+    var cus_mapping_id = $(this).attr('data-id');
+    let loan_id= $('#loan_id').val()
+    $('#due_chart_model').modal('show');
+    dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
+    setTimeout(()=>{
+        $('.print_due_coll').click(function(){
+            var id = $(this).attr('value');
+            Swal.fire({
+                title: 'Print',
+                text: 'Do you want to print this collection?',
+                imageUrl: 'img/printer.png',
+                imageWidth: 300,
+                imageHeight: 210,
+                imageAlt: 'Custom image',
+                showCancelButton: true,
+                confirmButtonColor: '#009688',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'No',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url:'api/collection_files/print_collection.php',
+                        data:{'coll_id':id},
+                        type:'post',
+                        cache:false,
+                        success:function(html){
+                            $('#printcollection').html(html)
+                            // Get the content of the div element
+                            var content = $("#printcollection").html();
+                        }
+                    })
+                }
+            })
+        })
+    },1000)
+});
+//////////////////////////Due Chart End/////////////////////////////////////////
 });
 
 
@@ -355,4 +408,54 @@ function collectionCustomerList(loan_id) {
             console.error('AJAX Error: ' + status + error);
         }
     });
+}
+function closeChartsModal() {
+    $('#due_chart_model').modal('hide');
+    $('#penalty_model').modal('hide');
+    $('#fine_model').modal('hide');
+}
+//Fine Chart List
+function fineChartList(cus_mapping_id){
+    $.ajax({
+        url: 'api/collection_files/get_fine_chart_list.php',
+        data: {'cus_mapping_id':cus_mapping_id},
+        type:'post',
+        cache: false,
+        success: function(response){
+            $('#fine_chart_table_div').empty()
+            $('#fine_chart_table_div').html(response)
+        }
+    });//Ajax End.
+}
+//Penalty chart
+function penaltyChartList(cus_mapping_id){
+    $.ajax({
+        url: 'api/collection_files/get_penalty_chart_list.php',
+        data: {'cus_mapping_id':cus_mapping_id},
+        type:'post',
+        cache: false,
+        success: function(response){
+            $('#penalty_chart_table_div').empty()
+            $('#penalty_chart_table_div').html(response)
+        }
+    });//Ajax End.
+}
+////////////////////Due Chart List
+function dueChartList(cus_mapping_id,loan_id){
+    $.ajax({
+        url: 'api/collection_files/get_due_chart_list.php',
+        data: {'cus_mapping_id':cus_mapping_id},
+        type:'post',
+        cache: false,
+        success: function(response){
+            $('#due_chart_table_div').empty();
+            $('#due_chart_table_div').html(response);
+        }
+    }).then(function(){
+      
+        $.post('api/collection_files/get_due_method_name.php',{loan_id},function(response){
+            $('#dueChartTitle').text('Due Chart ( '+ response['due_month'] + ' - '+ response['loan_type'] +' )');
+        },'json');
+    })
+
 }
