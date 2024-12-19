@@ -361,13 +361,13 @@ function issueList() {
 
             $.each(response, function (index, item) {
                 var paymentTypeOptions = `
-                    <select class="form-control payment-type" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'disabled' : ''}>
+                    <select class="form-control payment-type" data-id="${item.id}" ${item.issue_status === '1' ? 'disabled' : ''}>
                         <option value="1" ${item.payment_type == 1 ? 'selected' : ''}>Single</option>
                         <option value="2" ${item.payment_type == 2 ? 'selected' : ''}>Split</option>
                     </select>
                 `;
                 var issueTypeOptions = `
-                    <select class="form-control issue-type" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'disabled' : ''}>
+                    <select class="form-control issue-type" data-id="${item.id}" ${item.issue_status === '1' ? 'disabled' : ''}>
                         <option value="1" ${item.issue_type == 1 ? 'selected' : ''}>Cash</option>
                         <option value="2" ${item.issue_type == 2 ? 'selected' : ''}>Bank Transfer</option>
                     </select>
@@ -378,16 +378,16 @@ function issueList() {
                 if (loan_date === '' || loan_date === null || loan_date === undefined) {
                     var status = 'In Issue';
                 } else {
-                    var status = (item.issue_status === 'Issued' ? 'Issued' : 'Pending');
+                    var status = (item.issue_status === '1' ? 'Issued' : 'Pending');
                 }
 
-                var actionHtml = `<input type="checkbox" class="form-check-input" data-id="${item.id}" ${item.issue_status === 'Issued' ? 'disabled' : ''} />`; // Checkbox disabled if Issued
+                var actionHtml = `<input type="checkbox" class="form-check-input" data-id="${item.id}" ${item.issue_status === '1' ? 'disabled' : ''} />`; // Checkbox disabled if Issued
                 let issueAmountInput;
                 let remainingAmount = parseFloat(item.individual_amount) - parseFloat(item.issued_amount || 0);
                 let Amount = moneyFormatIndia(remainingAmount)
                 issueAmountInput = `
                         <input type="text" class="form-control issue-amount" 
-                            value="${Amount}" readonly data-id="${item.id}"   ${item.issue_status === 'Issued' ? 'readonly' : ''}/>
+                            value="${Amount}" readonly data-id="${item.id}"   ${item.issue_status === '1' ? 'readonly' : ''}/>
                     `;
 
                 var row = '<tr>' +
@@ -435,7 +435,7 @@ function issueList() {
                     // Clear the value for split payment, allowing the user to enter a new value
                     issueAmountInput = `
                         <input type="number" class="form-control issue-amount" 
-                            value="" data-id="${id}" ${issueStatus === 'Issued' ? 'readonly' : ''} />
+                            value="" data-id="${id}" ${issueStatus === '1' ? 'readonly' : ''} />
                     `;
                 }
 

@@ -35,7 +35,7 @@ foreach ($loan_issue_data as $issue) {
 
     $total_amount = $qry4->fetchColumn();
     if ($net_cash == $total_amount) {
-        $qry2 = $pdo->query("UPDATE loan_cus_mapping SET issue_status = 'Issued' WHERE id = $cus_mapping_id");
+        $qry2 = $pdo->query("UPDATE loan_cus_mapping SET issue_status = '1' WHERE id = $cus_mapping_id");
     }
 
     if ($qry1) {
@@ -52,7 +52,7 @@ $qry3 = $pdo->query("UPDATE loan_entry_loan_calculation
 
 // Query to check if all customers mapped to the loan_id have issue_status as 'Issued'
 $qry5 = $pdo->query("SELECT COUNT(*) as total_customers, 
-                             SUM(CASE WHEN issue_status = 'Issued' THEN 1 ELSE 0 END) as issued_customers
+                             SUM(CASE WHEN issue_status = '1' THEN 1 ELSE 0 END) as issued_customers
                       FROM loan_cus_mapping 
                       WHERE loan_id = '$loan_id'");
 

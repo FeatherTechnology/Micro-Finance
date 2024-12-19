@@ -9411,3 +9411,25 @@ table.dataTable th {
 .sorting_asc{
   width: 10px !important;
 }
+/* Adding border between Collection Info and Collection Track */
+#customer_list_table th:nth-child(8), /* Border after the 'Fine' column in Collection Info */
+#customer_list_table td:nth-child(8) {
+    border-right: 2px solid #000; /* Border separating the sections */
+}
+
+/* Optional: Add a border to the entire table header for more contrast */
+#customer_list_table thead tr th {
+    border-bottom: 2px solid #000;
+}
+
+
+/* Additional styling for table headers and cells */
+#customer_list_table th, 
+#customer_list_table td {
+    padding: 10px;
+    text-align: center;
+}
+
+#customer_list_table tbody tr td {
+    vertical-align: middle;
+}
