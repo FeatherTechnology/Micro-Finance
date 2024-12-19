@@ -271,34 +271,44 @@ $(document).ready(function () {
         $('.refresh_loan_calc').val('');
     });
 
-    //  Modify due_method_calc change handler
     $('#due_method_calc').change(function () {
-        let schemeDueMethod = $(this).val()
+        let schemeDueMethod = $(this).val();
         let loanCatId = $('#loan_category_calc').val();
         let profitType = $('#profit_type_calc').val(); // Get the current profit type value
-        // Check both profitType and dueMethodCalc values
-        if (profitType == '2' && schemeDueMethod == '2') {
-            $('.scheme_day').show();
-            //  dueMethodScheme(schemeDueMethod, loanCatId);
+    
+        // Handle showing/hiding .scheme_day and .scheme_date based on profitType and schemeDueMethod
+        if (profitType == '2' && schemeDueMethod == '2') { 
+            // Profit Type 2 and Scheme Due Method 2 (weekly)
+            $('.scheme_day').show(); 
+            $('.scheme_date').hide(); 
+            $('.scheme_date_calc').val(''); 
+        } else if (profitType == '1' && schemeDueMethod == '2') { 
+            // Profit Type 1 and Scheme Due Method 2 (weekly)
+            $('.scheme_day').show(); 
+            $('.scheme_date').hide(); 
+            $('.scheme_date_calc').val(''); 
+        } else if (profitType == '2' && schemeDueMethod == '1') { 
+            // Profit Type 2 and Scheme Due Method 1 (monthly)
+            $('.scheme_day').hide(); 
+            $('.scheme_date').show(); 
+            getDateDropDown(); // Call getDateDropDown function
+        } else if (profitType == '1' && schemeDueMethod == '1') { 
+            // Profit Type 1 and Scheme Due Method 1 (monthly)
+            $('.scheme_day').hide(); 
+            $('.scheme_date').show(); 
+            getDateDropDown(); // Call getDateDropDown function
         } else {
-
-            $('.scheme_day').hide();
-            $('.scheme_day_calc').val(''); // Clear value if hidden
-
-        }
-
-        if (profitType == '2' && schemeDueMethod == '1') {
-            $('.scheme_date').show();
-            //  dueMethodScheme(schemeDueMethod, loanCatId);
-            getDateDropDown()
-        } else {
-
+            // Default case if none of the above conditions are met
+            $('.scheme_day').hide(); 
             $('.scheme_date').hide();
-            $('.scheme_date_calc').val('');
+            $('.scheme_date_calc').val(''); 
         }
+    
+        // Clear the start date and maturity date fields
         $('#due_startdate_calc').val('');
         $('#maturity_date_calc').val('');
     });
+    
 
     $('#scheme_name_calc').change(function () { //Scheme Name change event
         let scheme_id = $(this).val();
@@ -438,7 +448,6 @@ $(document).ready(function () {
             'customer_mapping_data': customerMappingData,// Add customer mapping data
             'id': $('#loan_calculation_id').val(),
         }
-        console.log(formData);
         if (isFormDataValid(formData)) {
             $('#submit_loan_calculation').prop('disabled', true);
             $.post('api/loan_entry_files/submit_loan_calculation.php', formData, function (response) {
@@ -522,10 +531,12 @@ function getLoanCatDetails(id, profitType) {
     // Proceed with the AJAX request only if the ID is not empty
     $.post('api/loan_entry_files/getLoanCatDetails.php', { id, profitType }, function (response) {
         if (response && response.length > 0) {
-            $('#due_method_calc').val(response[0].due_method);
+          //  $('#due_method_calc').val(response[0].due_method);
+            $('#due_method_calc').val(response[0].due_method).trigger('change');
             $('#profit_method_calc').val(response[0].benefit_method);
             $('#due_method_calc').prop('disabled', true);
             $('#profit_method_calc').prop('disabled', true);
+          
 
             var int_rate_upd = ($('#int_rate_upd').val()) ? $('#int_rate_upd').val() : '';
             var due_period_upd = ($('#due_period_upd').val()) ? $('#due_period_upd').val() : '';
@@ -851,6 +862,13 @@ function isFormDataValid(formData) {
             validateField(formData['doc_charge_calc'], 'doc_charge_calc'),
             validateField(formData['processing_fees_calc'], 'processing_fees_calc')
         ];
+        if (formData['due_method_calc'] == '2') {
+            validationResults.push(validateField(formData['scheme_day_calc'], 'scheme_day_calc'));
+        }
+        if (formData['due_method_calc'] == '1') {
+            validationResults.push(validateField(formData['scheme_date_calc'], 'scheme_date_calc'));
+        }
+        
         if (!validationResults.every(result => result)) {
             isValid = false;
         }
@@ -860,14 +878,17 @@ function isFormDataValid(formData) {
             validateField(formData['due_method_calc'], 'due_method_calc'),
             validateField(formData['profit_method_calc'], 'profit_method_calc'),
             validateField(formData['scheme_name_calc'], 'scheme_name_calc'),
-            validateField(formData['scheme_date_calc'], 'scheme_date_calc'),
             validateField(formData['interest_rate_calc'], 'interest_rate_calc'),
             validateField(formData['due_period_calc'], 'due_period_calc'),
             validateField(formData['doc_charge_calc'], 'doc_charge_calc'),
             validateField(formData['processing_fees_calc'], 'processing_fees_calc')
         ];
+        
         if (formData['due_method_calc'] == '2') {
             validationResults.push(validateField(formData['scheme_day_calc'], 'scheme_day_calc'));
+        }
+        if (formData['due_method_calc'] == '1') {
+            validationResults.push(validateField(formData['scheme_date_calc'], 'scheme_date_calc'));
         }
         // Check if all validations passed
         if (!validationResults.every(result => result)) {

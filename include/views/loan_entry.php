@@ -353,8 +353,7 @@
                                             <th>Area</th>
                                             <th>Designation</th>
                                             <th>Action</th>
-
-                                        </tr>
+                                       </tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
