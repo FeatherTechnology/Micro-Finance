@@ -5,6 +5,7 @@ const profit_type = new Choices('#profit_type', {
 });
 $(document).ready(function () {
     $('.add_loancategory_btn, .back_to_loancategory_btn').click(function () {
+        $('#submit_loan_category_creation').prop('disabled', false);
         clearLoanCategoryCreationForm();
         swapTableAndCreation();
         getSchemeTable()
@@ -232,9 +233,10 @@ $(document).ready(function () {
             if (Array.isArray(formData.profit_type)) {
                 formData.profit_type = formData.profit_type.join(",");
             }
-    
+            $('#submit_loan_category_creation').prop('disabled', true);
             // Submit form via AJAX
             $.post('api/loan_category_creation/submit_loan_category_creation.php', formData, function (response) {
+                $('#submit_loan_category_creation').prop('disabled', false);
                 if (response === '2') {
                     swalSuccess('Success', 'Loan Category Added Successfully!');
                 } else if (response === '1') {

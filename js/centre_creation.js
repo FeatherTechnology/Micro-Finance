@@ -1,6 +1,7 @@
 $(document).ready(function () {
     //Move Loan Entry 
     $(document).on('click', '#add_centre, #back_btn', function () {
+        $('#submit_centre_creation').prop('disabled', false);
         $('#centre_id').val('');
         swapTableAndCreation();
        
@@ -140,6 +141,7 @@ $(document).ready(function () {
                 swalError('Warning', 'Please Fill out Representative Info!');
                 return false;
             }
+            $('#submit_centre_creation').prop('disabled', true);
             $.ajax({
                 url: 'api/centre_creation_files/submit_centre.php',
                 type: 'post',
@@ -148,6 +150,7 @@ $(document).ready(function () {
                 processData: false,
                 cache: false,
                 success: function (response) {
+                    $('#submit_cus_map').prop('disabled', false);
                     response = JSON.parse(response);
                     if (response == '1') {
                         swalSuccess('Success', 'Centre Info Added Successfully!');

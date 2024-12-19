@@ -1,6 +1,7 @@
 //On Load function 
 $(document).ready(function () {
     $(document).on('click', '.edit-loan-issue', function () {
+        $('#submit_doc_info').prop('disabled', false);
         let id = $(this).attr('value'); //Customer Profile id From List page.
         $('#loan_id').val(id);
         swapTableAndCreation();
@@ -13,6 +14,8 @@ $(document).ready(function () {
         swapTableAndCreation();
     });
     $('input[name=loan_issue_type]').click(function () {
+        $('#submit_loan_issue').prop('disabled', false);
+        $('#submit_doc_info').prop('disabled', false);
         let loanIssueType = $(this).val();
         if (loanIssueType == 'loandoc') {
             $('#documentation_form').show(); $('#loan_issue_form').hide();
@@ -45,6 +48,7 @@ $(document).ready(function () {
             }
         });
         if (isValid) {
+            $('#submit_doc_info').prop('disabled', true);
             let docInfo = new FormData();
             docInfo.append('loan_id', loan_id);
             docInfo.append('doc_id', doc_id);
@@ -63,6 +67,7 @@ $(document).ready(function () {
                 processData: false,
                 cache: false,
                 success: function (response) {
+                    $('#submit_doc_info').prop('disabled', false);
                     if (response == '1') {
                         swalSuccess('Success', 'Document Info Added Successfully')
                     } else {
@@ -144,8 +149,10 @@ $(document).ready(function () {
             loan_issue_data: loanIssueData // The array of loan issues
         };
         if (isValid) {
+            $('#submit_loan_issue').prop('disabled', true);
             // Send the data to the backend via AJAX
             $.post('api/loan_issue_files/submit_loan_issue.php', dataToSubmit, function (response) {
+                $('#submit_doc_info').prop('disabled', false);
                 if (response == '1') {
                     swalSuccess('Success', 'Loan Issued Successfully');
                     swapTableAndCreation(); // Swap table content or perform any action you need

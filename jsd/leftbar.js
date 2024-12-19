@@ -12,7 +12,8 @@ $(document).ready(function () {
         'centre_creation': 'profile',
         'loan_entry':'loan_entry',
         'approval':'approval',
-        'loan_issue':'loan_issue'
+        'loan_issue':'loan_issue',
+        'closed':'closed'
 
     };
 

@@ -1,8 +1,8 @@
 <?php
 require '../../ajaxconfig.php';
 
-$loan_id = $_POST['loan_id'];
-$qry = $pdo->query("SELECT loan_id FROM loan_entry_loan_calculation WHERE id = '$loan_id'");
+$id = $_POST['loan_id'];
+$qry = $pdo->query("SELECT loan_id FROM loan_entry_loan_calculation WHERE id = '$id'");
 $loan_cat_id =$qry->fetchAll(PDO::FETCH_ASSOC);
 
 if(isset($loan_cat_id[0]['loan_id'])) {

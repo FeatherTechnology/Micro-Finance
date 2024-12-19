@@ -1,5 +1,6 @@
 $(document).ready(function () {
     $(document).on('click', '#add_branch, #back_btn', function () {
+        $('#submit_branch_creation').prop('disabled', false);
         swapTableAndCreation();
     });
 
@@ -24,7 +25,10 @@ $(document).ready(function () {
             }
         });
         if (isValid) {
+            $('#submit_branch_creation').prop('disabled', true);
             $.post('api/branch_creation/submit_branch_creation.php', { company_name, branch_code, branch_name, address, state, district, taluk, place, pincode, email_id, mobile_number, whatsapp, landline, landline_code, branchid }, function (response) {
+                $('#submit_branch_creation').prop('disabled', false);
+
                 if (response == '1') {
                     swalSuccess('Success', 'Branch Added Successfully!');
                 } else {

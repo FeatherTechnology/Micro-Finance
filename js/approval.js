@@ -464,7 +464,9 @@ $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, functio
         'current_mapping_count':current_mapping_count
     }
     if (isFormDataValid(formData)) {
+      $('#submit_loan_calculation').prop('disabled', true);
         $.post("api/approval/submit_loan_edit_calculation.php", formData, function (response) {
+          $('#submit_loan_calculation').prop('disabled', false);
           if (response.result == "1") {
                       swalSuccess("Success", "Loan Entry Updated Successfully!");
                       $("#loan_calculation_id").val(response.last_id);
@@ -489,6 +491,7 @@ $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, functio
 });
 
   $(document).on("click", ".approval-edit", function () {
+    $('#submit_loan_calculation').prop('disabled', false);
     $("#edit_content").show();
     let loanCalcId = $(this).attr("value");
     let centre_id = $(this).attr("centre_id");

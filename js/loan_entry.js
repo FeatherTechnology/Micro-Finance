@@ -1,8 +1,8 @@
 $(document).ready(function () {
     //Move Loan Entry 
     $(document).on('click', '.move-loan-entry', function () {
-        let loan_calc_id = $(this).attr('value');
-        swalConfirm('Delete', 'Are you ready to move to the Approval Screen?', moveToNext, loan_calc_id);
+        let loan_id = $(this).attr('value');
+        swalConfirm('Approval', 'Are you ready to move to the Approval Screen?', moveToNext, loan_id);
         return;
     });
     // Loan Entry Tab Change Radio buttons
@@ -11,6 +11,7 @@ $(document).ready(function () {
 });
 
 $(document).on("click", "#add_loan,#back_btn", function () {
+    $('#submit_loan_calculation').prop('disabled', false);
     swapTableAndCreation();
     callLoanCaculationFunctions();
     getCentreId();
@@ -439,7 +440,9 @@ $(document).ready(function () {
         }
         console.log(formData);
         if (isFormDataValid(formData)) {
+            $('#submit_loan_calculation').prop('disabled', true);
             $.post('api/loan_entry_files/submit_loan_calculation.php', formData, function (response) {
+                $('#submit_loan_calculation').prop('disabled', false);
                 if (response.result == '1') {
                     if (response.last_id) {
                         swalSuccess('Success', 'Loan Entry Added Successfully!');
@@ -1066,9 +1069,9 @@ function getCentreId() {
 }
 
 
-function moveToNext(loan_calc_id) {
-    let cus_sts = 3;
-    $.post('api/common_files/move_to_next.php', { loan_calc_id, cus_sts }, function (response) {
+function moveToNext(loan_id) {
+    let loan_sts = 3;
+    $.post('api/common_files/move_to_next.php', { loan_id, loan_sts }, function (response) {
         if (response == '0') {
             swalSuccess('Success', 'Moved to Approval');
             getLoanEntryTable();
