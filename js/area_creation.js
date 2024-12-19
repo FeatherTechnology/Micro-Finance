@@ -7,6 +7,7 @@ const intance = new Choices('#area_name', {
 
 $(document).ready(function () {
     $('.add_area_btn, .back_to_area_btn').click(function () {
+        $('#submit_area_creation').prop('disabled', false);
         swapTableAndCreation();
 
     });
@@ -85,9 +86,11 @@ $(document).ready(function () {
         });
         let isMultiSelectValid = validateMultiSelectField('area_name',intance);
         if (isValid && isMultiSelectValid) {
+            $('#submit_area_creation').prop('disabled', true);
             /////////////////////////// submit page AJAX /////////////////////////////////////
             area_id = area_id.join(",");
             $.post('api/area_creation_files/submit_area_creation.php', { branch_id, area_id, id }, function (response) {
+                $('#submit_area_creation').prop('disabled', false);
                 if (response == '1') {
                     swalSuccess('Success', 'Area Added Successfully!');
                 } else {

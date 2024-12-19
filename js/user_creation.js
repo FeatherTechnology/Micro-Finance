@@ -22,6 +22,7 @@ const loan_category = new Choices('#loan_category', {
 $(document).ready(function () {
 
     $('.add_user_btn, .back_to_userList_btn').click(function () {
+        $('#submit_user_creation').prop('disabled', false);
         swapTableAndCreation();
     });
 
@@ -162,8 +163,10 @@ $(document).ready(function () {
         let isLoanCategoryValid = validateMultiSelectField('loan_category', loan_category);
 
         if (isValid && isBranchNameValid && isCentreValid && isLoanCategoryValid) {
+            $('#submit_user_creation').prop('disabled', true);
             if (selectedSubmenuIds.length > 0) {
                 $.post('api/user_creation_files/submit_user_creation.php', userFormData, function (response) {
+                    $('#submit_user_creation').prop('disabled', false);
                     if (response.status == '') {
                         swalError('Error', 'Creation Failed.');
                     } else if (response.status == '1') {
