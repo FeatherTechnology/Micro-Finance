@@ -331,4 +331,17 @@
     </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////// Fine Chart Modal END ////////////////////////////////////////////////////////////////////// -->
- 
+ <!----------------------------- CARD Start- Ledger View Chart ------------------------------>
+<div class="card ledger_view_chart_model" style="display: none;">
+    <div class="card-header">
+        <div class="card-title">Ledger View</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12" id="ledger_view_table_div" style="overflow: auto;">
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-----------------------------CARD END - Ledger View Chart --------------------------------->

@@ -41,6 +41,9 @@ if (isset($_POST['search'])) {
     }
 }
  $query .= "GROUP BY lelc.loan_id ";
+
+
+
 if (isset($_POST['order'])) {
     $query .= " ORDER BY " . $column[$_POST['order']['0']['column']] . ' ' . $_POST['order']['0']['dir'];
 } else {

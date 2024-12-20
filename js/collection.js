@@ -5,7 +5,7 @@ $(document).ready(function () {
         $('#collection_list').show();
         getCollectionListTable();
         $('#back_to_coll_list ,#coll_main_container').hide();
-
+        $('.ledger_view_chart_model').hide();
     });
 
     ///////////////////////////////////////////////Pay Due Start////////////////////////////////////
@@ -245,6 +245,16 @@ $(document).on('click','.due-chart', function(){
     },1000)
 });
 //////////////////////////Due Chart End/////////////////////////////////////////
+//////////////////////////////Ledger View Start///////////////////////////////////
+$(document).on('click', '.ledgerViewBtn', function (event) {
+    event.preventDefault();
+    $('.ledger_view_chart_model').show();
+    $('#back_to_coll_list').show();
+    $('#collection_list').hide();
+    let loan_id= $(this).attr('value');
+    getLedgerViewChart(loan_id);
+});
+////////////////////////////////Ledger View End/////////////////////////
 });
 
 
@@ -323,16 +333,15 @@ function collectionCustomerList(loan_id) {
             $.each(response, function (index, item) {
                 var isReadOnly = (!item.issue_status || item.issue_status.trim() === "") ? "readonly" : "";
                 var customer_amnt = item.total_cus_amnt ? item.total_cus_amnt : '';
-                // Corrected dropdown HTML part
+    
                 var dropdownContent = "<div class='dropdown'>" +
-                    "<button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>" +
+                "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +
                     "<a href='#' class='due-chart' data-id='" + item.id + "'>Due Chart</a>" +
                     "<a href='#' class='penalty-chart' data-id='" + item.id + "'>Penalty Chart</a>" +
-                    "<a href='#' class='fine-chart' data-id='" + item.id + "'>Fine Chart</a>" +
+                    "<a href='#' class='fine-chart' data-id='" + item.id  + "'>Fine Chart</a>" +
                     "</div>" +
                     "</div>";
-
                 var row = '<tr>' +
                     '<td>' + (index + 1) + '</td>' +
                     '<td>' + item.cus_id + '</td>' +
@@ -360,9 +369,8 @@ function collectionCustomerList(loan_id) {
             if (!hasRows) {
                 tbody.append('<tr><td colspan="13">No data available</td></tr>'); // Adjust colspan as necessary
             }
-
             setDropdownScripts();
-
+        
             // Bind input changes for calculating Total Collection
             $('input.collection_due, input.collection_penalty, input.collection_fine').on('input', function () {
                 var rowId = $(this).data('id');  // Use item.id here instead of index
@@ -458,4 +466,11 @@ function dueChartList(cus_mapping_id,loan_id){
         },'json');
     })
 
+}
+function getLedgerViewChart(loan_id){
+    $.post('api/collection_files/ledger_view_data.php', {loan_id:loan_id}, function(response){
+        $('#ledger_view_table_div').empty();
+        $('#ledger_view_table_div').html(response);
+
+    });
 }

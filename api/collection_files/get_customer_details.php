@@ -47,13 +47,14 @@ if ($result->rowCount() > 0) {
         }
 
         // Fetch total paid amount for this customer
-        $cus_mapping_id = $row['id'];
+        $cus_mapping_id = $row['id'] ?? '';
         $checkcollection = $pdo->query("SELECT SUM(due_amt_track) as totalPaidAmt FROM collection WHERE cus_mapping_id = '$cus_mapping_id'");
         $checkrow = $checkcollection->fetch();
         $totalPaidAmt = $checkrow['totalPaidAmt'] ?? 0;
 
         // Penalty calculations for monthly or weekly dues
-        if ($row['due_month'] == 1) { // Monthly calculation
+        $due_month = $row['due_month'] ?? '';
+        if ($due_month == 1) { // Monthly calculation
             $due_start_from = date('Y-m', strtotime($row['due_start']));
             $due_end_from = date('Y-m-d', strtotime($row['due_end']));
             $current_date = date('Y-m');
@@ -63,7 +64,7 @@ if ($result->rowCount() > 0) {
             $end_date_obj = DateTime::createFromFormat('Y-m-d', $due_end_from);
             $current_date_obj = DateTime::createFromFormat('Y-m', $current_date);
 
-            $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12);
+            $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12) + 1;
 
             $toPayTillNow = $monthsElapsed * $row['individual_amount'];
 
@@ -99,11 +100,11 @@ if ($result->rowCount() > 0) {
                 }
                 $start_date_obj->add($interval); // Move to the next month
             }
-            if ($count > 0) {
+            if ($count > 1) {
 
                 // If Due month exceeded, calculate pending amount with how many months are exceeded and subtract pre closure amount if available
                 $row['pending'] = max(0, $toPayTillNow - $totalPaidAmt);
-        
+
                 // Fetch overall penalty paid till now
                 $result = $pdo->query("SELECT SUM(penalty_track) as penalty FROM `collection` WHERE cus_mapping_id ='$cus_mapping_id'");
                 $row1 = $result->fetch();
@@ -131,10 +132,11 @@ if ($result->rowCount() > 0) {
 
                 // Payable will be the due amount minus any paid and pre-closure amounts
                 $row['payable'] = $row['pending'] + $row['individual_amount'] - $totalPaidAmt;
+
                 //  echo "payable: " . $row['payable'] . "<br>";
                 $row['total_cus_amnt'] = $row['overall_amount'] - $totalPaidAmt;
             }
-        } elseif ($row['due_month'] == 2) { // Weekly calculation
+        } elseif ($due_month == 2) { // Weekly calculation
             $due_start_from = date('Y-m-d', strtotime($row['due_start']));
             $due_end_from = date('Y-m-d', strtotime($row['due_end']));
             $current_date = date('Y-m-d');
@@ -143,10 +145,9 @@ if ($result->rowCount() > 0) {
             $start_date_obj = DateTime::createFromFormat('Y-m-d', $due_start_from);
             $end_date_obj = DateTime::createFromFormat('Y-m-d', $due_end_from);
             $current_date_obj = DateTime::createFromFormat('Y-m-d', $current_date);
-
             $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) + 1;
             $toPayTillNow = $weeksElapsed * $row['individual_amount'];
-            
+
             // Debugging logs
 
             $penalty = 0;
@@ -175,17 +176,17 @@ if ($result->rowCount() > 0) {
                         } else {
                             $penalty += $penalty_per;
                         }
-                        $qry = $pdo->query("INSERT INTO penalty_charges (cus_mapping_id,loan_id penalty_date, penalty, created_date) VALUES ('$cus_mapping_id','$loan_id', '$penalty_date', '$penalty', CURRENT_TIMESTAMP)");
+                        $qry = $pdo->query("INSERT INTO penalty_charges (cus_mapping_id,loan_id, penalty_date, penalty, created_date) VALUES ('$cus_mapping_id','$loan_id', '$penalty_date', '$penalty', CURRENT_TIMESTAMP)");
                     }
                 }
                 $start_date_obj->add($interval); // Move to the next week
             }
-            if ($count > 0) {
+            if ($count > 1) {
 
                 // If Due month exceeded, calculate pending amount with how many months are exceeded and subtract pre closure amount if available
                 $row['pending'] = max(0, $toPayTillNow - $totalPaidAmt);
                 // Fetch the overdue penalty based on scheme or loan category
-            //   echo "Pending: " . $row['pending'] . "<br>";
+                //   echo "Pending: " . $row['pending'] . "<br>";
                 // Fetch overall penalty paid till now
                 $result = $pdo->query("SELECT SUM(penalty_track) as penalty FROM `collection` WHERE cus_mapping_id ='$cus_mapping_id'");
                 $row1 = $result->fetch();
@@ -198,12 +199,15 @@ if ($result->rowCount() > 0) {
                 $penaltyRaised = $row2['penalty'] ?? 0;
 
                 // Calculate total penalty after adjusting paid and waiver amounts
-                 $row['penalty'] = $penaltyRaised - $penaltyPaid;
+                $row['penalty'] = $penaltyRaised - $penaltyPaid;
 
                 // Calculate payable amount (due + pending amount)
-               // $row['pending'] = $row['pending'] ?? 0;
-
-                $row['payable'] = $row['pending'] + $row['individual_amount'];
+                // $row['pending'] = $row['pending'] ?? 0;
+                if ($row['pending'] > 0) {
+                    $row['payable'] = $row['pending'] + $row['individual_amount'];
+                }else{
+                    $row['payable'] = $row['pending'] + $row['individual_amount']- $totalPaidAmt;  
+                }
                 $row['total_cus_amnt'] = $row['overall_amount'] - $totalPaidAmt;
             } else {
                 // If due date hasn't been exceeded, no pending or penalty

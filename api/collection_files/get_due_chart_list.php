@@ -119,19 +119,19 @@ function moneyFormatIndia($num)
     $loan_amt = floatval($loanIssue['total_amount_calc']) / $loanIssue['total_customer'];
     $loan_type = 'emi';
 
-$scheme_day = $loanIssue['scheme_day_calc'];
-$scheme_date = $loanIssue['scheme_date'];
+    $scheme_day = $loanIssue['scheme_day_calc'];
+    $scheme_date = $loanIssue['scheme_date'];
     $due_amt_1 = $loanIssue['due_amount_calc'] / $loanIssue['total_customer'];
 
     $issue_date = $loanIssue['issue_date'];
     $due_month = $loanIssue['due_month'];
     ?>
 
-<?php
+    <?php
     // Conditionally render the table header based on the due_month value
     if ($due_month == 1) {
         // Due month is 1, show this header design
-        ?>
+    ?>
         <thead>
             <tr>
                 <th width="15"> Due No </th>
@@ -146,10 +146,10 @@ $scheme_date = $loanIssue['scheme_date'];
                 <th> Action </th>
             </tr>
         </thead>
-        <?php
+    <?php
     } elseif ($due_month == 2) {
         // Due month is 2, show this header design
-        ?>
+    ?>
         <thead>
             <tr>
                 <th width="15"> Due No </th>
@@ -165,54 +165,60 @@ $scheme_date = $loanIssue['scheme_date'];
                 <th> Action </th>
             </tr>
         </thead>
-        <?php
+    <?php
     }
     ?>
     <tbody>
-    <tr>
-        <?php if ($due_month == 1): ?>
-            <!-- TDs for due_month 1 -->
-            <td> </td>
-            <td><?php echo date('m-Y', strtotime($issue_date)); // For Monthly. Show month and year ?></td>
-            <td><?php echo $scheme_date; // Display scheme date ?></td>
-            <td> <!-- Optionally, handle due amount, pending, and other fields --> </td>
-            <td> <!-- Pending --> </td>
-            <td> <!-- Payable --> </td>
-            <td> <!-- Collection Date --> </td>
-            <td> <!-- Collection Amount --> </td>
-            <td><?php echo $loan_amt; // balance Amount ?> </td>
-            <td></td>
+        <tr>
+            <?php if ($due_month == 1): ?>
+                <!-- TDs for due_month 1 -->
+                <td> </td>
+                <td><?php echo date('m-Y', strtotime($issue_date)); // For Monthly. Show month and year 
+                    ?></td>
+                <td><?php echo $scheme_date; // Display scheme date 
+                    ?></td>
+                <td> <!-- Optionally, handle due amount, pending, and other fields --> </td>
+                <td> <!-- Pending --> </td>
+                <td> <!-- Payable --> </td>
+                <td> <!-- Collection Date --> </td>
+                <td> <!-- Collection Amount --> </td>
+                <td><?php echo moneyFormatIndia($loan_amt); // balance Amount 
+                    ?> </td>
+                <td></td>
 
-        <?php elseif ($due_month == 2): ?>
-            <!-- TDs for due_month 2 -->
-            <td> </td>
-            <td><?php echo date('d-m-Y', strtotime($issue_date)); // For Weekly && Day. Show day, month, year ?></td>
-            <td><?php
-                // For Weekly & Day, show corresponding weekday name
-                $daysOfWeek = [
-                    1 => 'Monday',
-                    2 => 'Tuesday',
-                    3 => 'Wednesday',
-                    4 => 'Thursday',
-                    5 => 'Friday',
-                    6 => 'Saturday',
-                    7 => 'Sunday'
-                ];
+            <?php elseif ($due_month == 2): ?>
+                <!-- TDs for due_month 2 -->
+                <td> </td>
+                <td><?php echo date('d-m-Y', strtotime($issue_date)); // For Weekly && Day. Show day, month, year 
+                    ?></td>
+                <td><?php
+                    // For Weekly & Day, show corresponding weekday name
+                    $daysOfWeek = [
+                        1 => 'Monday',
+                        2 => 'Tuesday',
+                        3 => 'Wednesday',
+                        4 => 'Thursday',
+                        5 => 'Friday',
+                        6 => 'Saturday',
+                        7 => 'Sunday'
+                    ];
 
-                if (isset($daysOfWeek[$scheme_day])) {
-                    echo $daysOfWeek[$scheme_day]; // Display the day of the week
-                }
-            ?></td>
-            <td><?php echo date('M', strtotime($issue_date)); // Show month for weekly/day scheme ?></td>
-            <td> <!-- Optionally, handle due amount, pending, and other fields --> </td>
-            <td> <!-- Pending --> </td>
-            <td> <!-- Payable --> </td>
-            <td> <!-- Collection Date --> </td>
-            <td> <!-- Collection Amount --> </td>
-            <td> <?php echo $loan_amt; // Balance Amount ?> </td>
-            <td></td>
-        <?php endif; ?>
-    </tr>
+                    if (isset($daysOfWeek[$scheme_day])) {
+                        echo $daysOfWeek[$scheme_day]; // Display the day of the week
+                    }
+                    ?></td>
+                <td><?php echo date('M', strtotime($issue_date)); // Show month for weekly/day scheme 
+                    ?></td>
+                <td> <!-- Optionally, handle due amount, pending, and other fields --> </td>
+                <td> <!-- Pending --> </td>
+                <td> <!-- Payable --> </td>
+                <td> <!-- Collection Date --> </td>
+                <td> <!-- Collection Amount --> </td>
+                <td> <?php echo moneyFormatIndia($loan_amt); // Balance Amount 
+                        ?> </td>
+                <td></td>
+            <?php endif; ?>
+        </tr>
         <?php
         $issued = date('Y-m-d', strtotime($issue_date));
         if ($loanFrom['due_month'] == '1') {
@@ -278,15 +284,15 @@ $scheme_date = $loanIssue['scheme_date'];
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><?php $pendingMinusCollection = (intVal($row['pending_amt'])); ?></td>
-                    <td><?php $payableMinusCollection = (intVal($row['payable_amt'])); ?></td>
+                    <td><?php $pendingMinusCollection = (moneyFormatIndia(intval($row['pending_amt']))); ?></td>
+                    <td><?php $payableMinusCollection =(moneyFormatIndia(intVal($row['payable_amt']))); ?></td>
                     <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
                     <td>
                         <?php if ($row['due_amt_track'] > 0) {
-                            echo $row['due_amt_track'];
+                            echo moneyFormatIndia($row['due_amt_track']);
                         } ?>
                     </td>
-                    <td><?php echo $bal_amt; ?></td>
+                    <td><?php echo moneyFormatIndia($bal_amt);?></td>
                     <td> <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> <i class="fa fa-print" aria-hidden="true"></i> </a> </td>
                 </tr>
 
@@ -304,7 +310,7 @@ $scheme_date = $loanIssue['scheme_date'];
         foreach ($dueMonth as $cusDueMonth) {
             if ($loanFrom['due_month'] == '1') {
                 //Query for Monthly.
-                $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.total_amount_calc,lelc.total_customer,lelc.due_month
+                $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.total_amount_calc,lelc.total_customer,lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
                 FROM `collection` c
                 LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                 LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
@@ -316,7 +322,7 @@ $scheme_date = $loanIssue['scheme_date'];
                 ) ");
             } elseif ($loanFrom['due_month'] == '2') {
                 //Query For Weekly.
-                $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end,lelc.total_amount_calc,lelc.total_customer, lelc.due_month
+                $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end,lelc.total_amount_calc,lelc.total_customer, lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
             FROM `collection` c
             LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
@@ -338,7 +344,7 @@ $scheme_date = $loanIssue['scheme_date'];
                         $row['overall_amount'] = 0;
                     }
                     $bal_amt = intVal($row['overall_amount']) - $due_amt_track;
-                    
+
 
                 ?>
                     <tr> <!-- Showing From Due Start date to Maurity date -->
@@ -350,17 +356,14 @@ $scheme_date = $loanIssue['scheme_date'];
                                 <td><?php echo $i;
                                     $i++; ?></td>
                                 <td><?php //For Monthly.
-                                        echo date('m-Y', strtotime($cusDueMonth)); 
+                                    echo date('m-Y', strtotime($cusDueMonth));
                                     ?>
                                 </td>
-                                <td>
-                                    <?php
-                                    echo date('M', strtotime($cusDueMonth));
-                                    ?>
-                                </td>
+                                <td><?php echo $scheme_date; // Display scheme date 
+                                    ?></td>
 
-                                <td><?php echo $row['due_amnt']; ?></td>
-                                
+                                <td><?php echo moneyFormatIndia($row['due_amnt']); ?></td>
+
                             <?php } else { ?>
                                 <td></td>
                                 <td></td>
@@ -374,16 +377,30 @@ $scheme_date = $loanIssue['scheme_date'];
                                 <td><?php echo $i;
                                     $i++; ?></td>
                                 <td><?php
-                                        //For Weekly && Day.
-                                        echo date('d-m-Y', strtotime($cusDueMonth));
+                                    //For Weekly && Day.
+                                    echo date('d-m-Y', strtotime($cusDueMonth));
                                     ?>
                                 </td>
                                 <td>
                                     <?php
-                                    echo date('M', strtotime($cusDueMonth));
-                                    ?>
+                                    // For Weekly & Day, show corresponding weekday name
+                                    $daysOfWeek = [
+                                        1 => 'Monday',
+                                        2 => 'Tuesday',
+                                        3 => 'Wednesday',
+                                        4 => 'Thursday',
+                                        5 => 'Friday',
+                                        6 => 'Saturday',
+                                        7 => 'Sunday'
+                                    ];
+
+                                    if (isset($daysOfWeek[$scheme_day])) {
+                                        echo $daysOfWeek[$scheme_day]; // Display the day of the week
+                                    } ?>
                                 </td>
-                                <td><?php echo $row['due_amnt']; ?></td>
+                                <td><?php echo date('M', strtotime($cusDueMonth)); // Show month for weekly/day scheme 
+                                    ?></td>
+                                <td><?php echo moneyFormatIndia($row['due_amnt']); ?></td>
 
                             <?php } else { ?>
                                 <td></td>
@@ -395,13 +412,13 @@ $scheme_date = $loanIssue['scheme_date'];
 
                         <td><?php $pendingMinusCollection = (intVal($row['pending_amt']));
                             if ($pendingMinusCollection != '') {
-                                echo $pendingMinusCollection;
+                                echo moneyFormatIndia($pendingMinusCollection);
                             } else {
                                 echo 0;
                             } ?></td>
                         <td><?php $payableMinusCollection = (intVal($row['payable_amt']));
                             if ($payableMinusCollection != '') {
-                                echo $payableMinusCollection;
+                                echo moneyFormatIndia($payableMinusCollection);
                             } else {
                                 echo 0;
                             } ?></td>
@@ -409,10 +426,10 @@ $scheme_date = $loanIssue['scheme_date'];
 
                         <td>
                             <?php if ($row['due_amt_track'] > 0) {
-                                echo $row['due_amt_track'];
+                                echo moneyFormatIndia($row['due_amt_track']);
                             } ?>
                         </td>
-                        <td><?php echo $bal_amt;?></td>
+                        <td><?php echo moneyFormatIndia($bal_amt); ?></td>
                         <td> <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> <i class="fa fa-print" aria-hidden="true"></i> </a> </td>
                     </tr>
 
@@ -421,66 +438,77 @@ $scheme_date = $loanIssue['scheme_date'];
             } else { //if not paid on due month. else part will show.
                 ?>
                 <tr>
-                    <td><?php echo $i; ?></td>
-                    <td><?php
-                        if ($loanFrom['due_month'] == '1') {
-                            //For Monthly.
-                            echo date('m-Y', strtotime($cusDueMonth));
-                        } else {
-                            //For Weekly && Day.
-                            echo date('d-m-Y', strtotime($cusDueMonth));
-                        } ?>
-                    </td>
-                    <td> <?php echo date('M', strtotime($cusDueMonth)); ?> </td>
-                    <td><?php echo $due_amt_1; ?></td>
-                    
-                    <?php
-                    if ($loanFrom['due_month'] == '1') {
-                        if (date('Y-m', strtotime($cusDueMonth)) <=  date('Y-m')) { ?>
-                            <td>
-                                <?php $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth);
-                                echo $response['pending']; ?>
-                            </td>
-                            <td>
-                                <?php $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth);
-                                echo $response['payable']; ?>
-                            </td>
-                        <?php } else if (date('Y-m', strtotime($cusDueMonth)) >  date('Y-m') && $curDateChecker == true) { ?>
-                            <td>
-                                <?php $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
-                            </td>
-                            <td>
-                                <?php $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
-                            </td>
+                    <td><?php echo $i++; ?></td>
+
+                    <?php if ($loanFrom['due_month'] == '1') { // For Monthly Due Method 
+                    ?>
+                        <!-- For Monthly Dues -->
+                        <td><?php echo date('m-Y', strtotime($cusDueMonth)); // Due No (Month-Year) 
+                            ?></td>
+                        <td><?php echo $scheme_date; // Month 
+                            ?></td>
+                        <td><?php echo moneyFormatIndia($due_amt_1); // Due Amount 
+                            ?></td>
+
                         <?php
-                            $curDateChecker = false; //set to false because, pending and payable only need one month after current month
-                        } else {
-                        ?>
+                        // Logic for pending and payable amounts
+                        if (date('Y-m', strtotime($cusDueMonth)) <= date('Y-m')) {
+                            $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
+                            <td><?php echo moneyFormatIndia($response['pending']); // Pending 
+                                ?></td>
+                            <td><?php echo moneyFormatIndia($response['payable']); // Payable 
+                                ?></td>
+                        <?php } elseif (date('Y-m', strtotime($cusDueMonth)) > date('Y-m') && $curDateChecker == true) {
+                            $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
+                            <td><?php echo moneyFormatIndia($response['pending']); ?></td>
+                            <td><?php echo moneyFormatIndia($response['payable']); ?></td>
+                            <?php $curDateChecker = false; // Only show for one month 
+                            ?>
+                        <?php } else { ?>
                             <td></td>
                             <td></td>
+                        <?php } ?>
+
+                    <?php } elseif ($loanFrom['due_month'] == '2') { // For Weekly/Daily Due Method 
+                    ?>
+                        <!-- For Weekly/Daily Dues -->
+                        <td><?php echo date('d-m-Y', strtotime($cusDueMonth)); // Due Date 
+                            ?></td>
+                        <td><?php
+                            // For Weekly & Day, show corresponding weekday name
+                            $daysOfWeek = [
+                                1 => 'Monday',
+                                2 => 'Tuesday',
+                                3 => 'Wednesday',
+                                4 => 'Thursday',
+                                5 => 'Friday',
+                                6 => 'Saturday',
+                                7 => 'Sunday'
+                            ];
+
+                            if (isset($daysOfWeek[$scheme_day])) {
+                                echo $daysOfWeek[$scheme_day]; // Display the day of the week
+                            } ?></td>
+                        <td><?php echo date('M', strtotime($cusDueMonth)); // Month 
+                            ?></td>
+                        <td><?php echo moneyFormatIndia($due_amt_1); // Due Amount 
+                            ?></td>
+
                         <?php
-                        }
-                    } else {
-                        if (date('Y-m-d', strtotime($cusDueMonth)) <=  date('Y-m-d')) { ?>
-                            <td>
-                                <?php $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth);
-                                echo $response['pending']; ?>
-                            </td>
-                            <td>
-                                <?php $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth);
-                                echo $response['payable']; ?>
-                            </td>
-                        <?php } else if (date('Y-m-d', strtotime($cusDueMonth)) >  date('Y-m-d') && $curDateChecker == true) { ?>
-                            <td>
-                                <?php $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
-                            </td>
-                            <td>
-                                <?php $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
-                            </td>
-                        <?php
-                            $curDateChecker = false; //set to false because, pending and payable only need one month after current month
-                        } else {
-                        ?>
+                        // Logic for pending and payable amounts
+                        if (date('Y-m-d', strtotime($cusDueMonth)) <= date('Y-m-d')) {
+                            $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
+                            <td><?php echo moneyFormatIndia($response['pending']); // Pending 
+                                ?></td>
+                            <td><?php echo moneyFormatIndia($response['payable']); // Payable 
+                                ?></td>
+                        <?php } elseif (date('Y-m-d', strtotime($cusDueMonth)) > date('Y-m-d') && $curDateChecker == true) {
+                            $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
+                            <td><?php echo moneyFormatIndia($response['pending']); ?></td>
+                            <td><?php echo moneyFormatIndia($response['payable']); ?></td>
+                            <?php $curDateChecker = false; // Only show for one due date 
+                            ?>
+                        <?php } else { ?>
                             <td></td>
                             <td></td>
                     <?php
@@ -500,76 +528,117 @@ $scheme_date = $loanIssue['scheme_date'];
         }
 
         $currentMonth = date('Y-m-d');
-        if ($loanFrom['due_month'] == '1') {
-            //Query for Monthly.
-            $run = $pdo->query("SELECT c.id,c.due_amnt,c.pending_amt,c.payable_amt, c.coll_date,c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.due_month,lelc.total_amount_calc,lelc.total_customer
-            FROM `collection` c
-            LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
-            LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
-            WHERE c.`cus_mapping_id` = '$cus_mapping_id' AND (c.due_amt_track != '')
-            AND (
-                    (MONTH(c.coll_date) > MONTH('$maturity_month') AND MONTH(c.coll_date) <= MONTH('$currentMonth') AND MONTH(c.coll_date) != '0000-00-00' )
-                ) ");
-        } else
-        if ($loanFrom['due_month'] == '2') {
-            //Query For Weekly.
-            $run = $pdo->query("SELECT c.id,c.due_amnt,c.pending_amt,c.payable_amt, c.coll_date,c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.due_month,lelc.total_amount_calc,lelc.total_customer
-            FROM `collection` c
-            LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
-            LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
-            WHERE c.`cus_mapping_id` = '$cus_mapping_id' AND (c.due_amt_track != '')
-            AND (
-                    (WEEK(c.coll_date) > WEEK('$maturity_month') AND WEEK(c.coll_date) <= WEEK('$currentMonth') AND WEEK(c.coll_date) != '0000-00-00' )
-                ) ");
+
+if ($loanFrom['due_month'] == '1') {
+    //Query for Monthly.
+    $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, 
+                                lelc.due_start, lelc.due_end, lelc.due_month, lelc.total_amount_calc, lelc.total_customer, 
+                                lelc.scheme_day_calc, lelc.scheme_date
+                        FROM `collection` c
+                        LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
+                        LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
+                        WHERE c.`cus_mapping_id` = '$cus_mapping_id' 
+                        AND (c.due_amt_track != '') 
+                        AND (MONTH(c.coll_date) > MONTH('$maturity_month') 
+                             AND MONTH(c.coll_date) <= MONTH('$currentMonth') 
+                             AND c.coll_date != '0000-00-00')");
+} else if ($loanFrom['due_month'] == '2') {
+    //Query for Weekly.
+    $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, 
+                                lelc.due_start, lelc.due_end, lelc.due_month, lelc.total_amount_calc, lelc.total_customer, 
+                                lelc.scheme_day_calc, lelc.scheme_date
+                        FROM `collection` c
+                        LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
+                        LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
+                        WHERE c.`cus_mapping_id` = '$cus_mapping_id' 
+                        AND (c.due_amt_track != '') 
+                        AND (WEEK(c.coll_date) > WEEK('$maturity_month') 
+                             AND WEEK(c.coll_date) <= WEEK('$currentMonth') 
+                             AND c.coll_date != '0000-00-00')");
+}
+
+if ($run->rowCount() > 0) {
+    $due_amt_track = 0;
+    $waiver = 0;
+    while ($row = $run->fetch()) {
+        $collectionAmnt = intVal($row['due_amt_track']);
+        $due_amt_track = intVal($row['due_amt_track']);
+        
+        // Calculate overall_amount if total_amount_calc exists
+        if (!empty($row['total_amount_calc']) && $row['total_amount_calc'] > 0) {
+            $row['overall_amount'] = $row['total_amount_calc'] / $row['total_customer'];
+        } else {
+            $row['overall_amount'] = 0;
         }
+        $bal_amt = intVal($row['overall_amount']) - $due_amt_track;
 
-        if ($run->rowCount() > 0) {
-            $due_amt_track = 0;
-            $waiver = 0;
-            while ($row = $run->fetch()) {
-                $collectionAmnt = intVal($row['due_amt_track']);
-                $due_amt_track = intVal($row['due_amt_track']);
-                if (!empty($row['total_amount_calc']) && $row['total_amount_calc'] > 0) {
-                    $row['overall_amount'] = $row['total_amount_calc'] / $row['total_customer'];
-                } else {
-                    $row['overall_amount'] = 0;
-                }
-
-                $bal_amt = intVal($row['overall_amount']) - $due_amt_track;
+        // Display the data based on monthly or weekly due_month
+        if ($loanFrom['due_month'] == '1') {
+            // Monthly Display
             ?>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    
-                    <td><?php $pendingMinusCollection = (intVal($row['pending_amt']));
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><?php $pendingMinusCollection = (intVal($row['pending_amt']));
                         if ($pendingMinusCollection != '') {
-                            echo $pendingMinusCollection;
+                            echo moneyFormatIndia($pendingMinusCollection);
                         } else {
                             echo 0;
                         } ?></td>
                     <td><?php $payableMinusCollection = (intVal($row['payable_amt']));
                         if ($payableMinusCollection != '') {
-                            echo $payableMinusCollection;
+                            echo moneyFormatIndia($payableMinusCollection);
                         }
                         ?></td>
                     <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
                     <td>
                         <?php if ($row['due_amt_track'] > 0) {
-                            echo $row['due_amt_track'];
+                            echo moneyFormatIndia($row['due_amt_track']);
                         } ?>
                     </td>
-                    <td><?php echo $bal_amt; ?></td>
+                    <td><?php echo moneyFormatIndia($bal_amt); ?></td>
                     <td> <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> <i class="fa fa-print" aria-hidden="true"></i> </a> </td>
-                </tr>
-
-        <?php
+            </tr>
+            <?php
+        } else if ($loanFrom['due_month'] == '2') {
+            // Weekly Display
+            ?>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><?php $pendingMinusCollection = (intVal($row['pending_amt']));
+                        if ($pendingMinusCollection != '') {
+                            echo moneyFormatIndia($pendingMinusCollection);
+                        } else {
+                            echo 0;
+                        } ?></td>
+                    <td><?php $payableMinusCollection = (intVal($row['payable_amt']));
+                        if ($payableMinusCollection != '') {
+                            echo moneyFormatIndia($payableMinusCollection);
+                        }
+                        ?></td>
+                    <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
+                    <td>
+                        <?php if ($row['due_amt_track'] > 0) {
+                            echo moneyFormatIndia($row['due_amt_track']);
+                        } ?>
+                    </td>
+                    <td><?php echo moneyFormatIndia($bal_amt); ?></td>
+                    <td> <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> <i class="fa fa-print" aria-hidden="true"></i> </a> </td>
+            </tr>
+            <?php
+        }
+        ?>
+           <?php
                 $i++;
             }
         }
         ?>
-
     </tbody>
 </table>
 
@@ -912,7 +981,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             //If still current month is not ended, then penalty will be 0
             $response['penalty'] = 0;
             //If still current month is not ended, then payable will be due amt
-            $response['payable'] = $response['due_amt'] - $tot_paid_tilldate - $preclose_tilldate;
+            $response['payable'] = $response['due_amnt'] - $tot_paid_tilldate - $preclose_tilldate;
         }
     }
     if ($response['pending'] < 0) {
