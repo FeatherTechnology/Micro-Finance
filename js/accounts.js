@@ -38,10 +38,9 @@ $(document).ready(function(){
         let collectTableRowVal = {
             'username' : $(this).closest('tr').find('td:nth-child(2)').text(),
             'id' : $(this).attr('value'),
-            'line' : $(this).closest('tr').find('td:nth-child(3)').text(),
-            'branch' : $(this).closest('tr').find('td:nth-child(4)').text(),
-            'no_of_bills' : $(this).closest('tr').find('td:nth-child(5)').text(),
-            'collected_amnt' : $(this).closest('tr').find('td:nth-child(6)').text(),
+            'branch' : $(this).closest('tr').find('td:nth-child(3)').text(),
+            'no_of_bills' : $(this).closest('tr').find('td:nth-child(4)').text(),
+            'collected_amnt' : $(this).closest('tr').find('td:nth-child(5)').text().replace(/,/g, ''),
             'cash_type' : $("input[name='coll_cash_type']:checked").val(),
             'bank_id' : $('#coll_bank_name :selected').val()
         };
@@ -85,46 +84,56 @@ $(document).ready(function(){
         }
     });
 
-    $('#expenses_category').change(function(){
-        let expCat = $(this).val();
-        if(expCat =='14'){
-            $('.agentDiv').show();
-            getAgentName();
-        }else{
-            $('.agentDiv').hide();
-        }
+
+    $('#submit_expenses_creation').click(function (event) {
+        event.preventDefault();
+
+        let expensesData = {
+            'coll_mode': $("input[name='expenses_cash_type']:checked").val(),
+            'bank_id': $('#expenses_bank_name :selected').val(),
+            'invoice_id': $('#invoice_id').val(),
+            'branch_name': $('#branch_name :selected').val(),
+            'expenses_category': $('#expenses_category :selected').val(),
+            'description': $('#description').val(),
+            'expenses_amnt': $('#expenses_amnt').val(),
+            'expenses_trans_id': $('#expenses_trans_id').val(),
+        };
+
+        // Fetch closing balance and validate the expense amount before submitting
+        getClosingBal(function (hand_cash_balance, bank_cash_balance) {
+            let expensesAmount = parseFloat(expensesData.expenses_amnt);
+            let collMode = expensesData.coll_mode;
+
+            // Check if cash mode is 1 (Hand Cash) and expenses amount is greater than hand cash balance
+            if (collMode == '1' && expensesAmount > hand_cash_balance) {
+                swalError('Warning', 'Insufficient Hand cash balance');
+                return;
+            }
+
+            // Check if cash mode is 2 (Bank Transaction) and expenses amount is greater than bank cash balance
+            if (collMode == '2' && expensesAmount > bank_cash_balance) {
+                swalError('Warning', 'Insufficient Bank cash balance.');
+                return;
+            }
+
+            // Proceed if the balance check passes
+            if (expensesFormValid(expensesData)) {
+                $.post('api/accounts_files/accounts/submit_expenses.php', expensesData, function (response) {
+                    if (response == '1') {
+                        swalSuccess('Success', 'Expenses added successfully.');
+                        expensesTable('#expenses_creation_table');
+                        getInvoiceNo();
+                        getClosingBal(); // Update the closing balance after submission
+                    } else {
+                        swalError('Error', 'Failed to add expenses.');
+                    }
+                }, 'json');
+            } else {
+                swalError('Warning', 'Kindly Fill Mandatory Fields.');
+            }
+        });
     });
 
-    $('#submit_expenses_creation').click(function(event){
-        event.preventDefault();
-        let expensesData = {
-            'coll_mode' : $("input[name='expenses_cash_type']:checked").val(),
-            'bank_id' : $('#expenses_bank_name :selected').val(),
-            'invoice_id' : $('#invoice_id').val(),
-            'branch_name' : $('#branch_name :selected').val(),
-            'expenses_category' : $('#expenses_category :selected').val(),
-            'agent_name' : $('#agent_name :selected').val(),
-            'expenses_total_issued' : $('#expenses_total_issued').val(),
-            'expenses_total_amnt' : $('#expenses_total_amnt').val(),
-            'description' : $('#description').val(),
-            'expenses_amnt' : $('#expenses_amnt').val(),
-            'expenses_trans_id' : $('#expenses_trans_id').val(),
-        }
-        if(expensesFormValid(expensesData)){
-            $.post('api/accounts_files/accounts/submit_expenses.php',expensesData,function(response){
-                if(response =='1'){
-                    swalSuccess('Success', 'Expenses added successfully.');
-                    expensesTable('#expenses_creation_table');
-                    getInvoiceNo();
-                    getClosingBal();
-                }else{
-                    swalError('Error', 'Failed.');
-                }
-            },'json');
-        }else{
-            swalError('Warning', 'Kindly Fill Mandatory Fields.');
-        }
-    });
 
     
     $(document).on('click', '.expDeleteBtn', function () {
@@ -136,18 +145,7 @@ $(document).ready(function(){
         expensesTable('#accounts_expenses_table');
     });
 
-    $('#agent_name').change(function(){
-        let agentId = $(this).val();
-        let coll_mode = $("input[name='expenses_cash_type']:checked").val();
 
-        if(coll_mode =='' || coll_mode ==undefined){
-            swalError('Warning', 'Kindly select the cash mode.')
-            $('#expenses_total_issued').val('');
-            $('#expenses_total_amnt').val('');
-        }else{
-            getAgentDetails(agentId, coll_mode);
-        }
-    });
     
     $('#other_trans_add').click(function(){
         otherTransTable('#other_transaction_table');
@@ -198,15 +196,6 @@ $(document).ready(function(){
 
         $('#cat_type').empty().append(catTypeOptn); //To show Type based on transaction category.
 
-        // if(category =='7'){
-        //     $('#other_user_name').attr('disabled', false);
-        //     $('.other_user_name_div').show();
-        //     getUserList();
-        // }else{
-        //     $('.other_user_name_div').hide();
-        //     $('#other_user_name').val('').attr('disabled', true);
-        // }
-        
         getRefId(category);
     });
     
@@ -262,19 +251,85 @@ $(document).ready(function(){
             'other_amnt' : $('#other_amnt').val(),
             'other_remark' : $('#other_remark').val()
         }
-        if(otherTransFormValid(otherTransData)){
-            $.post('api/accounts_files/accounts/submit_other_transaction.php',otherTransData,function(response){
-                if(response =='1'){
-                    swalSuccess('Success', 'Other Transaction added successfully.');
-                    otherTransTable('#other_transaction_table');
-                    getClosingBal();
-                }else{
-                    swalError('Error', 'Failed.');
+        let otherAmount = otherTransData.other_amnt;
+        let collMode = otherTransData.coll_mode;
+        let catType = otherTransData.cat_type; // 1 = Credit, 2 = Debit
+        let transCategory = parseInt(otherTransData.trans_category);
+        // Fetch user's total credit and debit amounts
+        $.post('api/accounts_files/accounts/get_user_transactions.php', {
+            // 'coll_mode': otherTransData.coll_mode,
+            'other_trans_name': otherTransData.other_trans_name
+        }, function (response) {
+            let totalCredit = parseFloat(response.total_type_1_amount || 0); // Total Credit
+            let totalDebit = parseFloat(response.total_type_2_amount || 0);  // Total Debit
+
+            let balance;
+            if (catType == '2') { // Debit Transaction
+                balance = totalCredit - totalDebit; // Calculate balance
+            } else if (catType == '1') { // Credit Transaction
+                balance = totalDebit - totalCredit; // Calculate balance  
+            }
+
+            // Validate Debit Transactions
+            if (transCategory >= 3 && transCategory <= 9) {
+                if (catType == '2') { // Debit Transaction
+                    if (balance !== 0) {
+                        // Allow debit if balance is zero or negative, as long as debit amount does not exceed the absolute value of the balance
+                        if (otherAmount > Math.abs(balance)) {
+                            const formattedBalance = moneyFormatIndia(Math.abs(balance));
+                            swalError('Warning', 'You may only debit up to: ' + formattedBalance);
+                            return;
+                        }
+                    }
+                } else if (catType == '1') { // Credit Transaction
+                    // Allow credit if balance is negative or zero
+                    if (balance !== 0) {
+                        if (otherAmount > Math.abs(balance)) {
+                            const formattedBalance = moneyFormatIndia(Math.abs(balance));
+                            swalError('Warning', 'You may only credit up to: ' + formattedBalance);
+                            return;
+                        }
+                    }
                 }
-            },'json');
-        }else{
-            swalError('Warning', 'Kindly Fill Mandatory Fields.');
-        }
+            } else if (transCategory <= 2) {
+                if (catType == '2' && totalCredit < totalDebit + otherAmount) {
+                    const formattedBalance = moneyFormatIndia(Math.abs(balance));
+                    swalError('Warning', 'You may only debit up to: ' + formattedBalance);
+                    return;
+                }
+            }
+
+            // Fetch hand cash and bank cash balances for validation
+            getClosingBal(function (hand_cash_balance, bank_cash_balance) {
+                if (catType == '2') { // Debit Transaction
+                    if (collMode == '1' && otherAmount > hand_cash_balance) {
+                        swalError('Warning', 'Insufficient hand cash balance.');
+                        return;
+                    }
+                    if (collMode == '2' && otherAmount > bank_cash_balance) {
+                        swalError('Warning', 'Insufficient bank cash balance.');
+                        return;
+                    }
+                }
+                //    Proceed if all validations pass
+                if (otherTransFormValid(otherTransData)) {
+                    $.post('api/accounts_files/accounts/submit_other_transaction.php', otherTransData, function (response) {
+                        if (response == '1') {
+                            swalSuccess('Success', 'Other Transaction added successfully.');
+                            otherTransTable('#other_transaction_table');
+                            getClosingBal(); // Update closing balance after submission
+                            $('#name_id_cont').show();
+                            $('#name_modl_btn').show();
+                        } else {
+                            swalError('Error', 'Failed to add transaction.');
+                        }
+                    }, 'json');
+                }
+                else {
+                    swalError('Warning', 'Please fill all required fields.');
+                }
+            });
+        }, 'json');
     });
     
     $(document).on('click', '.transDeleteBtn', function () {
@@ -336,17 +391,23 @@ function getOpeningBal(){
     });
 }
 
-function getClosingBal(){
-    $.post('api/accounts_files/accounts/closing_balance.php',function(response){
-        if(response.length > 0){
+function getClosingBal(callback) {
+    $.post('api/accounts_files/accounts/closing_balance.php', function (response) {
+        if (response.length > 0) {
             let close = parseInt($('.opening_val').text()) + parseInt(response[0]['closing_balance']);
             let hand = parseInt($('.op_hand_cash_val').text()) + parseInt(response[0]['hand_cash']);
             let bank = parseInt($('.op_bank_cash_val').text()) + parseInt(response[0]['bank_cash']);
+
             $('.closing_val').text(close);
             $('.clse_hand_cash_val').text(hand);
             $('.clse_bank_cash_val').text(bank);
+
+            // Call the callback function if defined
+            if (typeof callback === "function") {
+                callback(hand, bank, close);
+            }
         }
-    },'json');
+    }, 'json');
 }
 
 function getCollectionList(){
@@ -386,10 +447,9 @@ function getLoanIssueList(){
         let columnMapping = [
             'sno',
             'name',
-            'linename',
+            'branch_name',
             'no_of_loans',
             'issueAmnt'
-            // 'balance'
         ];
         appendDataToTable('#accounts_loanissue_table', response, columnMapping);
         setdtable('#accounts_loanissue_table');
@@ -423,25 +483,10 @@ function getBranchList(){
     },'json');
 }
 
-function getAgentName() {
-    $.post('api/agent_creation/agent_creation_list.php', function (response) {
-        let appendAgentIdOption = '';
-        appendAgentIdOption += '<option value="">Select Agent Name</option>';
-        $.each(response, function (index, val) {
-            let selected = '';
-            let agent_id_edit_it = '';
-            if (val.id == agent_id_edit_it) {
-                selected = 'selected';
-            }
-            appendAgentIdOption += '<option value="' + val.id + '" ' + selected + '>' + val.agent_name + '</option>';
-        });
-        $('#agent_name').empty().append(appendAgentIdOption);
-    }, 'json');
-}
 
 function expensesFormValid(expensesData){
     for(key in expensesData){
-        if(key !='agent_name' && key !='expenses_total_issued' && key !='expenses_total_amnt' && key !='bank_id' && key !='expenses_trans_id'){
+        if( key !='expenses_total_issued' && key !='expenses_total_amnt' && key !='bank_id' && key !='expenses_trans_id'){
             if(expensesData[key] =='' || expensesData[key] ==null || expensesData[key] ==undefined){
                 return false;
             }
@@ -450,12 +495,6 @@ function expensesFormValid(expensesData){
 
     if(expensesData['coll_mode'] =='2'){
         if(expensesData['bank_id'] =='' || expensesData['bank_id'] ==null || expensesData['bank_id'] == undefined || expensesData['expenses_trans_id'] =='' || expensesData['expenses_trans_id'] ==null || expensesData['expenses_trans_id'] == undefined ){
-            return false;
-        }
-    }
-
-    if(expensesData['expenses_category']=='14'){
-        if(expensesData['agent_name'] =='' || expensesData['agent_name'] ==null || expensesData['agent_name'] ==undefined || expensesData['expenses_total_issued'] =='' || expensesData['expenses_total_issued'] ==null || expensesData['expenses_total_issued'] ==undefined || expensesData['expenses_total_amnt'] =='' || expensesData['expenses_total_amnt'] ==null || expensesData['expenses_total_amnt'] ==undefined ){
             return false;
         }
     }
@@ -472,9 +511,6 @@ function expensesTable(tableId){
             'invoice_id',
             'branch',
             'expenses_category',
-            'agent_id',
-            'total_issued',
-            'total_amount',
             'description',
             'amount',
             'trans_id',
@@ -509,14 +545,6 @@ function deleteExp(id) {
             swalError('Alert', 'Delete Failed')
         }
     }, 'json');
-}
-
-function getAgentDetails(id, coll_mode){
-    $.post('api/accounts_files/accounts/get_agent_cash_details.php',{id, coll_mode},function(response){
-        $('#expenses_total_issued').val(response[0].total_issued);
-        let issuedAmount = (response[0].total_issued =='0') ? '0' : response[0].total_amount;
-        $('#expenses_total_amnt').val(issuedAmount);
-    },'json');
 }
 
 function getOtherTransNameTable(){

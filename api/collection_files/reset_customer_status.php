@@ -19,10 +19,10 @@ class CollectStsClass
         $loan_id = $this->pdo->quote($loan_id);
 
         // Fetch loan details
+
         $loan_query = $this->pdo->query("SELECT * FROM `loan_entry_loan_calculation` WHERE loan_id = $loan_id");
         if ($loan_query->rowCount() > 0) {
             $loan_row = $loan_query->fetch();
-            $total_amount_calc = !empty($loan_row['total_amount_calc']) ? $loan_row['total_amount_calc'] : $loan_row['principal_amount_calc'];
             $due_amount_calc = !empty($loan_row['due_amount_calc']) ? $loan_row['due_amount_calc'] : 0;
         }
 
@@ -32,7 +32,6 @@ class CollectStsClass
         while ($coll_row = $collection_query->fetch()) {
             $total_paid += intval($coll_row['due_amt_track']);
         }
-        $balance = $total_amount_calc - $total_paid;
 
         // Fine and penalty calculations
         $fine_charge = $this->getFineCharge($loan_id);
@@ -49,11 +48,11 @@ class CollectStsClass
         $result = $this->pdo->query($query);
 
         $overall_status = 'Payable'; // Default overall status
-        $all_paid = true; // Initialize $all_paid variable
+      
 
         if ($result->rowCount() > 0) {
             $customers = $result->fetchAll(PDO::FETCH_ASSOC);
-
+            $all_paid = true; // Initialize $all_paid variable
             foreach ($customers as &$row) {
                 $row['pending'] = 0;
                 $row['payable'] = 0;
@@ -68,8 +67,7 @@ class CollectStsClass
 
                 // Escape cus_mapping_id for safety
                 $cus_mapping_id = $this->pdo->quote($cus_mapping_id);
-
-                $checkcollection = $this->pdo->query("SELECT SUM(due_amt_track) as totalPaidAmt FROM collection WHERE cus_mapping_id = $cus_mapping_id");
+                $checkcollection = $this->pdo->query("SELECT SUM(due_amt_track) as totalPaidAmt FROM collection WHERE cus_mapping_id = $cus_mapping_id;");
                 $checkrow = $checkcollection->fetch();
                 $totalPaidAmt = $checkrow['totalPaidAmt'] ?? 0;
 
@@ -77,12 +75,14 @@ class CollectStsClass
                 $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty);
 
                 // Check if any customer has 'Pending' or 'OD' status
-                if ($status == 'Pending') {
-                    $overall_status = 'Pending';
-                } else if ($status == 'OD') {
-                    $overall_status = 'OD';
-                } else if ($status != 'Paid') {
-                    $all_paid = false; // If any customer is not paid, set $all_paid to false
+                if ($status == 'Pending' || $status == 'OD' || $status =='Payable') {
+                    $overall_status = $status; // Set overall status to the most severe state (OD or Pending)
+                    $all_paid = false;         // Mark that not all customers are paid
+                }
+            
+                // If any customer is not "Paid," mark $all_paid as false
+                if ($status != 'Paid') {
+                    $all_paid = false;
                 }
             }
         }
@@ -90,6 +90,7 @@ class CollectStsClass
         if ($all_paid) {
             $overall_status = 'Paid';
         }
+      
         if ($overall_status == 'Paid') {
             $update_query = "UPDATE loan_entry_loan_calculation SET sub_status = 2 WHERE loan_id = $loan_id";
         } else {
@@ -163,12 +164,16 @@ class CollectStsClass
             $current_date = date('Y-m-d');
 
             $start_date_obj = DateTime::createFromFormat('Y-m-d', $due_start_from);
+    
             $current_date_obj = DateTime::createFromFormat('Y-m-d', $current_date);
+   
             $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) + 1;
 
             if ($weeksElapsed > 1) {
                 $toPayTillNow = $weeksElapsed * $row['individual_amount'];
+            
                 $pending = $toPayTillNow - $totalPaidAmt;
+               
                 if ($toPayTillNow == $totalPaidAmt) {
                     $status = 'Paid';
                 } else {
@@ -188,7 +193,6 @@ class CollectStsClass
                 }
             }
         }
-
         return $status;
     }
 }

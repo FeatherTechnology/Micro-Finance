@@ -7,19 +7,14 @@ $bank_id = $_POST['bank_id'];
 
 if ($cash_type == '1') {
     $cndtn = "coll_mode = '1' ";
-    $cndtn1 = "payment_mode = '1' ";
+    $cndtn1 = "issue_type = '1' ";
 } elseif ($cash_type == '2') {
     $cndtn = "coll_mode != '1' AND bank_id = '$bank_id' ";
-    $cndtn1 = "payment_mode != '1' ";
+    $cndtn1 = "issue_type != '1' ";
 }
 //collection_mode = 1 - cash; 2 to 5 - bank;
-$qry = $pdo->query("SELECT b.name, c.linename, no_of_loans, issueAmnt
-FROM other_transaction a 
-JOIN users b ON a.user_name = b.id 
-JOIN line_name_creation c ON b.line = c.id 
-LEFT JOIN ( SELECT insert_login_id, COUNT(id) AS no_of_loans, SUM(issue_amnt) AS issueAmnt FROM loan_issue WHERE $cndtn1 AND DATE(issue_date) = CURDATE() GROUP BY insert_login_id ) li ON li.insert_login_id = b.id
-WHERE a.type = '2' AND a.trans_cat = '7' AND $cndtn
-GROUP BY b.name, c.linename, no_of_loans, issueAmnt; ");
+
+$qry = $pdo->query("SELECT b.name,c.branch_name,COUNT(li.id) AS no_of_loans, SUM(li.issue_amount) AS issueAmnt FROM loan_issue li JOIN users b ON li.insert_login_id = b.id JOIN branch_creation c ON b.branch = c.id WHERE $cndtn1 AND DATE(li.issue_date) = CURDATE() GROUP BY li.insert_login_id ");
 if ($qry->rowCount() > 0) {
     while ($data = $qry->fetch(PDO::FETCH_ASSOC)) {
         // $amnt = ($data['amount']) ? $data['amount'] : 0;

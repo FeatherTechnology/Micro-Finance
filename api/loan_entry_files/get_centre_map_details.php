@@ -5,8 +5,6 @@ require "../../ajaxconfig.php";
 $cus_map_arr = array();
 $id=$_POST['id'];
 
-
-
 // Check if loan_id_calc is not empty or invalid
 if ($id != '') {
     // Directly inject the loan_id_calc value into the query (be cautious)
@@ -15,7 +13,7 @@ if ($id != '') {
                           JOIN customer_creation cc ON gcm.cus_id = cc.id 
                           LEFT JOIN area_name_creation anc ON cc.area = anc.id  
                           LEFT JOIN loan_entry_loan_calculation lelc ON gcm.loan_id = lelc.loan_id
-                          WHERE lelc.centre_id = '$id' AND (cc.customer_status IS NULL OR cc.customer_status = '' OR cc.customer_status = 1)");
+                          WHERE lelc.centre_id = '$id' AND (gcm.closed_sub_status IS NULL OR gcm.closed_sub_status = 0 OR gcm.closed_sub_status = 1)");
 
     // Check if the query returns any rows
     if ($qry->rowCount() > 0) {

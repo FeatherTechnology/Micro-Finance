@@ -156,12 +156,12 @@ function moneyFormatIndia($num1) {
                             <input type="radio" id="coll_hand_cash" name="coll_cash_type" value='1'/>&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
                         </div>
                     </div>
-                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12">
+                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12" style="display: none;">
                         <div class="form-group">
                             <input type="radio" id="coll_bank_cash" name="coll_cash_type" value='2'/>&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
                         </div>
                     </div>
-                    <div class="col-sm-2 col-md-2 col-lg-2">
+                    <div class="col-sm-2 col-md-2 col-lg-2" style="display: none;">
                         <div class="form-group">
                             <select class="form-control" name="coll_bank_name" id="coll_bank_name" disabled>
                                 <option value="">Select Bank</option>
@@ -206,12 +206,12 @@ function moneyFormatIndia($num1) {
                                     <input type="radio" id="loan_issue_hand_cash" name="issue_cash_type" value='1'/>&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
                                 </div>
                             </div>
-                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12">
+                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12" style="display:none;">
                                 <div class="form-group">
                                     <input type="radio" id="loan_issue_bank_cash" name="issue_cash_type" value='2'/>&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
                                 </div>
                             </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2">
+                            <div class="col-sm-2 col-md-2 col-lg-2" style="display:none;">
                                 <div class="form-group">
                                     <select class="form-control" name="issue_bank_name" id="issue_bank_name">
                                         <option value="">Select Bank</option>
@@ -226,6 +226,7 @@ function moneyFormatIndia($num1) {
                                     <tr>
                                         <th width=25>S.NO</th>
                                         <th>User</th>
+                                        <th>Branch</th>
                                         <th>No of Loans</th>
                                         <th>Total Net Cash</th>
                                         <!-- <th>Balance in Hand</th> -->
@@ -259,9 +260,6 @@ function moneyFormatIndia($num1) {
                                     <th>Invoice ID</th>
                                     <th>Branch</th>
                                     <th>Expense Category</th>
-                                    <th>Agent Name</th>
-                                    <th>Total Issue</th>
-                                    <th>Total Amount</th>
                                     <th>Description</th>
                                     <th>Amount</th>
                                     <th>Transaction ID</th>
@@ -392,26 +390,6 @@ function moneyFormatIndia($num1) {
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 agentDiv" style="display: none;">
-                                <div class="form-group">
-                                    <label for="agent_name">Agent Name</label><span class="text-danger">*</span>
-                                    <select class="form-control" name="agent_name" id="agent_name" tabindex="8">
-                                        <option value="">Select Agent Name</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 agentDiv" style="display: none;">
-                                <div class="form-group">
-                                    <label for="expenses_total_issued">Total Issued</label><span class="text-danger">*</span>
-                                    <input class="form-control" name="expenses_total_issued" id="expenses_total_issued" tabindex="9" readonly>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 agentDiv" style="display: none;">
-                                <div class="form-group">
-                                    <label for="expenses_total_amnt">Total Amount</label><span class="text-danger">*</span>
-                                    <input class="form-control" name="expenses_total_amnt" id="expenses_total_amnt" tabindex="10" readonly>
-                                </div>
-                            </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="description">Description</label><span class="text-danger">*</span>
@@ -451,9 +429,6 @@ function moneyFormatIndia($num1) {
                                     <th>Invoice ID</th>
                                     <th>Branch</th>
                                     <th>Expense Category</th>
-                                    <th>Agent Name</th>
-                                    <th>Total Issue</th>
-                                    <th>Total Amount</th>
                                     <th>Description</th>
                                     <th>Amount</th>
                                     <th>Transaction ID</th>
@@ -559,14 +534,6 @@ function moneyFormatIndia($num1) {
                                     <input type="number" class="form-control" name="other_trans_id" id="other_trans_id" tabindex="10" >
                                 </div>
                             </div>
-                            <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 other_user_name_div" style="display: none;">
-                                <div class="form-group">
-                                    <label for="other_user_name">User Name</label><span class="text-danger">*</span>
-                                    <select class="form-control" name="other_user_name" id="other_user_name" tabindex="11" disabled>
-                                        <option value="">Select User Name</option>
-                                    </select>
-                                </div>
-                            </div> -->
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="other_amnt">Amount</label><span class="text-danger">*</span>

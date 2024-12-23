@@ -57,7 +57,7 @@ $(document).ready(function () {
 
         $('#submit_collection').unbind('click').click(function (event) {
             event.preventDefault();
-
+            $(this).attr('disabled', true);
             // Initialize an empty array to hold the collected data
             let collectionData = [];
             let loanTotalAmnt = $('#tot_amt').val().replace(/,/g, '');
@@ -110,6 +110,8 @@ $(document).ready(function () {
             if (collectionData.length === 0) {
                 swalError('Warning', 'Please fill in the total collection.');
                 return; // Exit if no rows have data to submit
+            }else{
+                $('#submit_collection').attr('disabled', false); 
             }
 
             // Send the collected data to the server using AJAX
@@ -130,6 +132,7 @@ $(document).ready(function () {
                 },
                 success: function (response) {
                     // Ensure the response is parsed correctly
+                    $('#submit_collection').attr('disabled', false);
                     response = typeof response === 'string' ? JSON.parse(response) : response;
                     if (response == 1) {
                         swalSuccess('Success', "Collected Successfully");

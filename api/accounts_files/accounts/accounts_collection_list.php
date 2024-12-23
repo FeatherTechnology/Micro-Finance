@@ -15,13 +15,11 @@ $qry = $pdo->query("WITH first_query AS (
     SELECT 
         u.id AS userid, 
         u.name, 
-        lnc.linename, 
         bc.branch_name, 
         (
             SELECT COUNT(*) 
             FROM collection nbc 
-            WHERE $cndtn 
-            AND nbc.insert_login_id = u.id 
+            WHERE  nbc.insert_login_id = u.id 
             AND nbc.coll_date > COALESCE(
                 (SELECT created_on FROM accounts_collect_entry WHERE user_id = u.id AND $cndtn ORDER BY id DESC LIMIT 1), 
                 '1970-01-01 00:00:00'
@@ -31,17 +29,15 @@ $qry = $pdo->query("WITH first_query AS (
         SUM(c.total_paid_track) AS total_amount, 
         '1' AS type
     FROM `collection` c 
-    JOIN line_name_creation lnc ON c.line = lnc.id 
-    JOIN branch_creation bc ON c.branch = bc.id 
-    JOIN users u ON FIND_IN_SET(c.line, u.line) 
+     JOIN users u ON FIND_IN_SET(c.insert_login_id, u.id)
+    JOIN branch_creation bc ON u.branch = bc.id    
     LEFT JOIN (
         SELECT ace.user_id, ace.collection_amnt 
         FROM `accounts_collect_entry` ace 
         ORDER BY id DESC 
         LIMIT 1
     ) AS last_collection ON c.insert_login_id = last_collection.user_id 
-    WHERE $cndtn 
-    AND c.coll_date > COALESCE(
+    WHERE c.coll_date > COALESCE(
         (SELECT created_on FROM accounts_collect_entry WHERE user_id = u.id AND $cndtn ORDER BY id DESC LIMIT 1), 
         '1970-01-01 00:00:00'
     ) 
@@ -53,22 +49,20 @@ second_query AS (
     SELECT 
         us.id as userid, 
         us.name, 
-        ac.line, 
         ac.branch, 
         SUM(ac.no_of_bills) AS no_of_bills,  
         SUM(ac.collection_amnt) AS total_amount,
         '2' as type
     FROM `accounts_collect_entry` ac
     JOIN users us ON ac.user_id = us.id
-    WHERE $cndtn 
-    AND DATE(ac.created_on) = CURDATE() 
+    WHERE  DATE(ac.created_on) = CURDATE() 
     AND ac.user_id NOT IN (
         SELECT userid 
         FROM first_query
     )
     GROUP BY us.id
 )
-SELECT userid, name, linename, branch_name, no_of_bills, total_amount, type 
+SELECT userid, name, branch_name, no_of_bills, total_amount, type 
 FROM (
     SELECT * FROM first_query
     UNION ALL

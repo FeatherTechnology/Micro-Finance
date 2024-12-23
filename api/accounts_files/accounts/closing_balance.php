@@ -19,7 +19,13 @@ if ($c_cr_b_qry->rowCount() > 0) {
 } else {
     $c_cr_b = 0;
 }
-
+// Loan Issue
+$l_c_h_qry = $pdo->query("SELECT SUM(issue_amount) AS lis_cr_amnt FROM loan_issue WHERE issue_type = 1 AND DATE(created_on) = CURDATE() "); //Hand Cash
+if ($l_c_h_qry->rowCount() > 0) {
+    $l_cr_h = $l_c_h_qry->fetch()['lis_cr_amnt'];
+} else {
+    $l_cr_h = 0;
+}
 //Expenses Debit.
 $e_dr_h_qry = $pdo->query("SELECT SUM(amount) AS exp_dr_amnt FROM expenses WHERE coll_mode = 1 AND DATE(created_on) = CURDATE() "); //Hand Cash
 if ($e_dr_h_qry->rowCount() > 0) {
@@ -65,7 +71,7 @@ if ($ot_dr_b_qry->rowCount() > 0) {
 }
 
 $hand_cr = intval($c_cr_h) + intval($ot_cr_h);
-$hand_dr = intval($e_dr_h) + intval($ot_dr_h);
+$hand_dr = intval($e_dr_h) + intval($ot_dr_h) + intval($l_cr_h);
 $bank_cr = intval($c_cr_b) + intval($ot_cr_b);
 $bank_dr = intval($e_dr_b) + intval($ot_dr_b);
 

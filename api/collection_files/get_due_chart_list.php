@@ -539,9 +539,10 @@ if ($loanFrom['due_month'] == '1') {
                         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
                         WHERE c.`cus_mapping_id` = '$cus_mapping_id' 
                         AND (c.due_amt_track != '') 
-                        AND (MONTH(c.coll_date) > MONTH('$maturity_month') 
-                             AND MONTH(c.coll_date) <= MONTH('$currentMonth') 
+                        AND (MONTH(c.coll_date) > MONTH('$maturity_month') AND Year(c.coll_date) > Year('$maturity_month') 
+                             AND MONTH(c.coll_date) <= MONTH('$currentMonth') AND  Year(c.coll_date) <= Year('$currentMonth') 
                              AND c.coll_date != '0000-00-00')");
+                             
 } else if ($loanFrom['due_month'] == '2') {
     //Query for Weekly.
     $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, 
@@ -552,8 +553,8 @@ if ($loanFrom['due_month'] == '1') {
                         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
                         WHERE c.`cus_mapping_id` = '$cus_mapping_id' 
                         AND (c.due_amt_track != '') 
-                        AND (WEEK(c.coll_date) > WEEK('$maturity_month') 
-                             AND WEEK(c.coll_date) <= WEEK('$currentMonth') 
+                        AND (WEEK(c.coll_date) > WEEK('$maturity_month') AND Year(c.coll_date) > Year('$maturity_month') 
+                             AND WEEK(c.coll_date) <= WEEK('$currentMonth') AND Year(c.coll_date) <= Year('$maturity_month') 
                              AND c.coll_date != '0000-00-00')");
 }
 
@@ -667,9 +668,8 @@ function getNextLoanDetails($pdo, $cus_mapping_id, $date)
             $coll_arr[] = $row;
         }
         $total_paid = 0;
-        $total_paid_princ = 0;
         $total_paid_int = 0;
-        $pre_closure = 0;
+
 
         foreach ($coll_arr as $tot) {
             $total_paid += intVal($tot['due_amt_track']); //only calculate due amount not total paid value, because it will have penalty and coll charge also
@@ -803,11 +803,6 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             if ($totalPaidAmt < $toPaytilldate && $collectioncount == 0) {
                 $checkPenalty = $pdo->query("SELECT * FROM penalty_charges WHERE penalty_date = '$penalty_date' AND `cus_mapping_id` = '$cus_mapping_id'");
                 if ($checkPenalty->rowCount() == 0) {
-                    if ($loan_arr['loan_type'] == 'emi') {
-                        // Apply penalty for EMI loans
-                    } else if ($loan_arr['loan_type'] == 'interest' && $count != 0) {
-                        // Apply penalty for interest loans (not the first month)
-                    }
                 }
                 $countForPenalty++;
             }
