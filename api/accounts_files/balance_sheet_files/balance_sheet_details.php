@@ -87,7 +87,7 @@ if ($qry5->rowCount() > 0) {
     $contradr = $qry5->fetch(PDO::FETCH_ASSOC)['contra_dr'];
 } 
 
-$qry6 = $pdo->query("SELECT COALESCE(SUM(amount),0) AS adv_dr FROM `other_transaction` WHERE trans_cat ='7' AND type = '2' AND $where "); //Loan Advance 
+$qry6 = $pdo->query("SELECT COALESCE(SUM(issue_amount),0) AS adv_dr FROM `loan_issue` WHERE $where "); //Loan Advance 
 if ($qry6->rowCount() > 0) {
     $advdr = $qry6->fetch(PDO::FETCH_ASSOC)['adv_dr'];
 }

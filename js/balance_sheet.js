@@ -158,14 +158,13 @@ function getNetBenefitDetails(type, from_date, to_date, month){
     }
     $.post('api/accounts_files/balance_sheet_files/net_benefit_details.php', args, function(response){
         $('#net_benefit_table tbody tr:nth-child(2) td:nth-child(2)').text(response[0]['benefit']);
-        $('#net_benefit_table tbody tr:nth-child(3) td:nth-child(2)').text(response[0]['intrst']);
-        $('#net_benefit_table tbody tr:nth-child(4) td:nth-child(2)').text(response[0]['doc_charges']);
-        $('#net_benefit_table tbody tr:nth-child(5) td:nth-child(2)').text(response[0]['proc_charges']);
-        $('#net_benefit_table tbody tr:nth-child(6) td:nth-child(2)').text(response[0]['penalty']);
-        $('#net_benefit_table tbody tr:nth-child(7) td:nth-child(2)').text(response[0]['fine']);
-        $('#net_benefit_table tbody tr:nth-child(8) td:nth-child(2)').text(response[0]['oicr']);
+        $('#net_benefit_table tbody tr:nth-child(3) td:nth-child(2)').text(response[0]['doc_charges']);
+        $('#net_benefit_table tbody tr:nth-child(4) td:nth-child(2)').text(response[0]['proc_charges']);
+        $('#net_benefit_table tbody tr:nth-child(5) td:nth-child(2)').text(response[0]['penalty']);
+        $('#net_benefit_table tbody tr:nth-child(6) td:nth-child(2)').text(response[0]['fine']);
+        $('#net_benefit_table tbody tr:nth-child(7) td:nth-child(2)').text(response[0]['oicr']);
 
-        $('#net_benefit_table tbody tr:nth-child(10) td:nth-child(3)').text(response[0]['expdr']);
+        $('#net_benefit_table tbody tr:nth-child(9) td:nth-child(3)').text(response[0]['expdr']);
         
     },'json').then(function(){
         setTimeout(() => {
@@ -189,9 +188,9 @@ function getNetBenefitTotal() {
     debit_total = moneyFormatIndia(debit_total);
     benefit_total = moneyFormatIndia(benefit);
 
-    $('#net_benefit_table tbody tr:nth-child(12) td:nth-child(2)').text(credit_total).css('font-weight','bold');
-    $('#net_benefit_table tbody tr:nth-child(12) td:nth-child(3)').text(debit_total).css('font-weight','bold');
-    $('#net_benefit_table tbody tr:nth-child(13) td:nth-child(2)').text(benefit_total).css('font-weight','bold');
+    $('#net_benefit_table tbody tr:nth-child(11) td:nth-child(2)').text(credit_total).css('font-weight','bold');
+    $('#net_benefit_table tbody tr:nth-child(11) td:nth-child(3)').text(debit_total).css('font-weight','bold');
+    $('#net_benefit_table tbody tr:nth-child(12) td:nth-child(2)').text(benefit_total).css('font-weight','bold');
 }
 
 // to clear all contents

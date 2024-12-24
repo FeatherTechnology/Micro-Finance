@@ -55,7 +55,7 @@ if ($grp['due_month'] == '1') {
     }
 }
 
-$qry = $pdo->query("SELECT lcm.id as cus_mapping_id, lelc.loan_id, lelc.centre_id, cuc.cus_id, cuc.first_name,lelc.due_amount_calc,lelc.due_month,lelc.total_customer
+$qry = $pdo->query("SELECT lcm.id as cus_mapping_id, lelc.loan_id, lelc.centre_id, cuc.cus_id, cuc.first_name,lelc.due_amount_calc,lelc.due_month,lelc.total_customer,lcm.issue_status
 FROM loan_cus_mapping lcm
 LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
 LEFT JOIN customer_creation cuc ON lcm.cus_id = cuc.id
@@ -232,7 +232,11 @@ $customer_details = $qry->fetchAll(PDO::FETCH_ASSOC);
                 }
                 ?>
                 <td>
-                    <input type="button" class="btn btn-primary due-chart" value="Due Chart" data-id='<?php echo $customer['cus_mapping_id']; ?>'>
+                    <input type="button"
+                        class="btn btn-primary due-chart"
+                        value="Due Chart"
+                        data-id='<?php echo $customer['cus_mapping_id']; ?>'
+                        <?php echo ($customer['issue_status'] != 1) ? 'disabled' : ''; ?>>
                 </td>
             </tr>
         <?php } ?>

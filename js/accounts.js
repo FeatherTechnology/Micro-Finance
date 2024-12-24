@@ -273,7 +273,7 @@ $(document).ready(function(){
             // Validate Debit Transactions
             if (transCategory >= 3 && transCategory <= 9) {
                 if (catType == '2') { // Debit Transaction
-                    if (balance !== 0) {
+                    if (balance > 0) {
                         // Allow debit if balance is zero or negative, as long as debit amount does not exceed the absolute value of the balance
                         if (otherAmount > Math.abs(balance)) {
                             const formattedBalance = moneyFormatIndia(Math.abs(balance));
@@ -283,7 +283,7 @@ $(document).ready(function(){
                     }
                 } else if (catType == '1') { // Credit Transaction
                     // Allow credit if balance is negative or zero
-                    if (balance !== 0) {
+                    if (balance > 0) {
                         if (otherAmount > Math.abs(balance)) {
                             const formattedBalance = moneyFormatIndia(Math.abs(balance));
                             swalError('Warning', 'You may only credit up to: ' + formattedBalance);

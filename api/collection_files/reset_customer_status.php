@@ -48,7 +48,7 @@ class CollectStsClass
         $result = $this->pdo->query($query);
 
         $overall_status = 'Payable'; // Default overall status
-      
+
 
         if ($result->rowCount() > 0) {
             $customers = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -75,11 +75,13 @@ class CollectStsClass
                 $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty);
 
                 // Check if any customer has 'Pending' or 'OD' status
-                if ($status == 'Pending' || $status == 'OD' || $status =='Payable') {
+                if ($status == 'Pending' || $status == 'OD') {
                     $overall_status = $status; // Set overall status to the most severe state (OD or Pending)
                     $all_paid = false;         // Mark that not all customers are paid
                 }
-            
+                if ($status == 'Payable') {
+                    $all_paid = false;
+                }
                 // If any customer is not "Paid," mark $all_paid as false
                 if ($status != 'Paid') {
                     $all_paid = false;
@@ -90,7 +92,7 @@ class CollectStsClass
         if ($all_paid) {
             $overall_status = 'Paid';
         }
-      
+
         if ($overall_status == 'Paid') {
             $update_query = "UPDATE loan_entry_loan_calculation SET sub_status = 2 WHERE loan_id = $loan_id";
         } else {
@@ -137,16 +139,19 @@ class CollectStsClass
 
             if ($monthsElapsed > 1) {
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
+                $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillNow - $totalPaidAmt;
                 if ($toPayTillNow == $totalPaidAmt) {
                     $status = 'Paid';
-                } else {
+                } else if ($toPayTillPrev == $totalPaidAmt) {
                     $status = 'Payable';
-                }
-                if ($pending > 0) {
-                    $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
                 } else {
-                    $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
+                    // Check for outstanding or pending status
+                    if ($pending > 0) {
+                        $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
+                    } else {
+                        $status = 'Pending'; // If no pending, mark as pending regardless of fine or penalty
+                    }
                 }
             } else {
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
@@ -164,28 +169,33 @@ class CollectStsClass
             $current_date = date('Y-m-d');
 
             $start_date_obj = DateTime::createFromFormat('Y-m-d', $due_start_from);
-    
+
             $current_date_obj = DateTime::createFromFormat('Y-m-d', $current_date);
-   
+
             $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) + 1;
 
             if ($weeksElapsed > 1) {
+                // Calculate amount to be paid till now and till the previous week
                 $toPayTillNow = $weeksElapsed * $row['individual_amount'];
-            
+                $toPayTillPrev = ($weeksElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillNow - $totalPaidAmt;
-               
+
                 if ($toPayTillNow == $totalPaidAmt) {
                     $status = 'Paid';
-                } else {
+                } else if ($toPayTillPrev == $totalPaidAmt) {
                     $status = 'Payable';
-                }
-                if ($pending > 0) {
-                    $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
                 } else {
-                    $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
+                    // Check for outstanding or pending status
+                    if ($pending > 0) {
+                        $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
+                    } else {
+                        $status = 'Pending'; // If no pending, mark as pending regardless of fine or penalty
+                    }
                 }
             } else {
+                // Handle the case where only 1 week has elapsed or less
                 $toPayTillNow = $weeksElapsed * $row['individual_amount'];
+
                 if ($toPayTillNow == $totalPaidAmt) {
                     $status = 'Paid';
                 } else {

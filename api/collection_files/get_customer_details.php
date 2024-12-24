@@ -100,7 +100,7 @@ if ($result->rowCount() > 0) {
                 }
                 $start_date_obj->add($interval); // Move to the next month
             }
-            if ($count > 1) {
+            if ($count > 0) {
 
                 // If Due month exceeded, calculate pending amount with how many months are exceeded and subtract pre closure amount if available
                 $row['pending'] = max(0, $toPayTillNow - $totalPaidAmt);
@@ -181,8 +181,8 @@ if ($result->rowCount() > 0) {
                 }
                 $start_date_obj->add($interval); // Move to the next week
             }
-            if ($count > 1) {
-
+      
+            if ($count > 0) {
                 // If Due month exceeded, calculate pending amount with how many months are exceeded and subtract pre closure amount if available
                 $row['pending'] = max(0, $toPayTillNow - $totalPaidAmt);
                 // Fetch the overdue penalty based on scheme or loan category
