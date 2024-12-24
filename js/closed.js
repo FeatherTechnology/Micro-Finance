@@ -39,6 +39,7 @@ $(document).ready(function () {
             let loan_id=$("#loan_id").val();
             console.log("loan id"+loan_id);
             let sub_status=$("#sub_status").val();
+            let centre_id=$("#centre_id").val();
             let remarks=$("#centre_remarks").val();
             let allValid = true;
             $('#closed_customer_table tbody tr').each(function() {
@@ -47,13 +48,12 @@ $(document).ready(function () {
                 console.log('Row Select Value:', selectedValue); 
                 if (selectedValue === "") {
                     allValid = false; 
-                    console.log('A select box in this row is invalid.');
                     selectBox.addClass('is-invalid');
                 } 
             })
             if(allValid && sub_status!=''){
                 submitCustomer();
-                submitLoanSubStatus(loan_id,sub_status,remarks)
+                submitLoanSubStatus(loan_id,sub_status,remarks,centre_id)
             }
             else{
                 $('#sub_status').css('border', '1px solid rgb(255, 56, 56)');
@@ -162,13 +162,13 @@ function getCustomerList(loan_id){
     })
 }
 
-function submitLoanSubStatus(loan_id,sub_status,remarks){
+function submitLoanSubStatus(loan_id,sub_status,remarks,centre_id){
     $.ajax({
         url: 'api/closed_files/submit_loan_status.php',
         type: 'POST',
         dataType: 'json',
         data: {
-            loan_id: loan_id,sub_status:sub_status,remarks:remarks
+            loan_id: loan_id,sub_status:sub_status,remarks:remarks,centre_id:centre_id
         },
         success: function (response) {
             if(response==="0"){
@@ -230,7 +230,7 @@ function submitCustomer(){
 function moveToNext(loan_id, loan_sts) {
     $.post('api/common_files/move_to_next.php', { loan_id, loan_sts }, function (response) {
         if (response == '0') {
-            let alertName = 'Approved Successfully';
+            let alertName = 'Closed Successfully';
             swalSuccess('Success', alertName);
             getclosedTable()
         } else {
