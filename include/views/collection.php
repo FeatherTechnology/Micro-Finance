@@ -42,7 +42,7 @@
                 </div>
 
                 <input type="hidden" name="loan_category_id" id="loan_category_id">
-                <input type="hidden" name="cp_id" id="cp_id">
+                <input type="hidden" name="loan_id" id="loan_id">
                 <input type="hidden" name="status" id="status">
                 <input type="hidden" name="sub_status" id="sub_status">
 
@@ -288,7 +288,6 @@
                                 <th>Paid Date</th>
                                 <th>Paid Amount</th>
                                 <th>Balance Amount</th>
-                                <th>Waiver Amount</th>
                             </thead>
                         </table>
                     </div>
@@ -322,7 +321,6 @@
                         <th>Paid Date</th>
                         <th>Paid Amount</th>
                         <th>Balance Amount</th>
-                        <th>Waiver Amount</th>
                     </thead>
                 </table>
             </div>
@@ -333,4 +331,17 @@
     </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////// Fine Chart Modal END ////////////////////////////////////////////////////////////////////// -->
- 
+ <!----------------------------- CARD Start- Ledger View Chart ------------------------------>
+<div class="card ledger_view_chart_model" style="display: none;">
+    <div class="card-header">
+        <div class="card-title">Ledger View</div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12" id="ledger_view_table_div" style="overflow: auto;">
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!-----------------------------CARD END - Ledger View Chart --------------------------------->

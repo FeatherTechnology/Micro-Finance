@@ -13,8 +13,12 @@ $(document).ready(function () {
         'loan_entry':'loan_entry',
         'approval':'approval',
         'loan_issue':'loan_issue',
-        'closed':'closed'
-
+        'collection':'collection',
+        'closed':'closed',
+        'noc':'noc',
+        'accounts':'accounts',
+        'balance_sheet':'accounts',
+        'search_screen':'search'
     };
 
     const current_page = localStorage.getItem('currentPage');

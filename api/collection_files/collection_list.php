@@ -18,7 +18,7 @@ $column = array(
     'lelc.id',
     'lelc.id',
 );
-$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, bc.branch_name
+$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, bc.branch_name,lelc.sub_status
           FROM loan_entry_loan_calculation lelc
           LEFT JOIN loan_category_creation lcc ON lelc.loan_category = lcc.id
           LEFT JOIN loan_category lc ON lcc.loan_category = lc.id
@@ -41,6 +41,9 @@ if (isset($_POST['search'])) {
     }
 }
  $query .= "GROUP BY lelc.loan_id ";
+
+
+
 if (isset($_POST['order'])) {
     $query .= " ORDER BY " . $column[$_POST['order']['0']['column']] . ' ' . $_POST['order']['0']['dir'];
 } else {
@@ -65,32 +68,37 @@ $sno = isset($_POST['start']) ? $_POST['start'] + 1 : 1;
 $data = [];
 $data = [];
 foreach ($result as $row) {
-    $status = $collectionSts->updateCollectStatus($row['loan_id']);
-    $sub_array = array();
+    if ($row['sub_status'] != 2) {
+        $status = $collectionSts->updateCollectStatus($row['loan_id']);
+        $sub_array = array();
 
-    $sub_array[] = $sno++;
-    $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';
-    $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';
-    $sub_array[] = isset($row['centre_no']) ? $row['centre_no'] : '';
-    $sub_array[] = isset($row['centre_name']) ? $row['centre_name'] : '';
-    $sub_array[] = isset($row['mobile1']) ? $row['mobile1'] : '';
-    $sub_array[] = isset($row['areaname']) ? $row['areaname'] : '';
-    $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
- $sub_array[] = $status;
-    $action= "<div class='dropdown'>
-                <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
-               <div class='dropdown-content'>";
-
-  $action .= "<a href='#' class='pay-due' data-value='" . $row['loan_id'] . "_" . $row['centre_id'] . "_" . $row['centre_name'] . "' title='Pay Fine'>Pay Due</a>";
-
+        $sub_array[] = $sno++;
+        $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';
+        $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';
+        $sub_array[] = isset($row['centre_no']) ? $row['centre_no'] : '';
+        $sub_array[] = isset($row['centre_name']) ? $row['centre_name'] : '';
+        $sub_array[] = isset($row['mobile1']) ? $row['mobile1'] : '';
+        $sub_array[] = isset($row['areaname']) ? $row['areaname'] : '';
+        $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
+     $sub_array[] = $status;
+        $action= "<div class='dropdown'>
+                    <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
+                   <div class='dropdown-content'>";
     
-  
-        $action  .= "<a href='#' class='pay-fine' value='" . $row['loan_id'] . "' title='Fine'>Fine</a>";
+      $action .= "<a href='#' class='pay-due' data-value='" . $row['loan_id'] . "_" . $row['centre_id'] . "_" . $row['centre_name'] . "' title='Pay Fine'>Pay Due</a>";
     
-    $action .= "</div></div>";
-    $sub_array[] = $action;
-    $sub_array[] = "<button class='btn btn-primary ledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
-    $data[] = $sub_array;
+        
+      
+            $action  .= "<a href='#' class='pay-fine' value='" . $row['loan_id'] . "' title='Fine'>Fine</a>";
+        
+        $action .= "</div></div>";
+        $sub_array[] = $action;
+        $sub_array[] = "<button class='btn btn-primary ledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
+        $data[] = $sub_array;
+    } else {
+        $status = $collectionSts->updateCollectStatus($row['loan_id']);
+    }
+    
 }
 function count_all_data($pdo)
 {

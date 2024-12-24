@@ -34,7 +34,7 @@ foreach ($collectionData as $data) {
   } else {
     $status = '2';
   }
-
+  
   $query =  $pdo->query("INSERT INTO `collection` (
                 `loan_id`, `cus_mapping_id`, `loan_total_amnt`, `loan_paid_amnt`, `loan_balance`, `loan_due_amnt`, 
                 `loan_pending_amnt`, `loan_payable_amnt`, `loan_penalty`, `loan_fine`, `coll_status`, `due_amnt`, 
@@ -44,9 +44,9 @@ foreach ($collectionData as $data) {
               VALUES (
                 '$loan_id', '$cus_mapping_id', '$loanTotalAmnt', '$loanPaidAmnt', '$loanBalance', '$loanDueAmnt', 
                 '$loanPendingAmnt', '$loanPayableAmnt', '$loanPenaltyAmnt', '$loanFineAmnt', '$status', '$due_amnt', 
-                '$pending_amt', '$payable_amt', '$penalty', '$fine_charge', '$coll_date', '$collection_due', 
+                '$pending_amt', '$payable_amt', '$penalty', '$fine_charge', '$coll_date ". date(' H:i:s') ."', '$collection_due', 
                 '$collection_penalty', '$collection_fine', '$total_collection', '$user_id', 
-                NOW())");
+                CURRENT_TIMESTAMP())");
   if ($query) {
     $response = 1;  // If both queries executed successfully
   } else {
@@ -58,7 +58,7 @@ foreach ($collectionData as $data) {
   }
 
   if ($collection_fine != '') {
-    $qry2 = $pdo->query("INSERT INTO `fine_charges`(`cus_mapping_id`,`loan_id`, `paid_date`, `paid_amnt`) VALUES ('$cus_mapping_id','$loan_id','$coll_date','$collection_fine',)");
+    $qry2 = $pdo->query("INSERT INTO `fine_charges`(`cus_mapping_id`,`loan_id`, `paid_date`, `paid_amnt`) VALUES ('$cus_mapping_id','$loan_id','$coll_date','$collection_fine')");
   }
 
 

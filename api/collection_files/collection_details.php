@@ -129,26 +129,17 @@ if ($result->rowCount() > 0) {
             $current_date_obj = DateTime::createFromFormat('Y-m', $current_date);
     
             // Calculate months elapsed since due start
-            $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12);
+            $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12)+1;
            // echo "Months Elapsed: " . $monthsElapsed . "<br>";
-            if ($monthsElapsed == 0) {
+            if ($monthsElapsed == 1) {
                 // For the first month, payable = individual_amount + totalPaidAmt
                 $row['payable'] = $row['individual_amount'] - $totalPaidAmt;
               //  echo "Payable: " . $row['payable'] . "<br>";
-            } elseif ($monthsElapsed >= 1) {
+            } elseif ($monthsElapsed >1) {
                 // For subsequent months, calculate pending and add to individual_amount for payable
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $row['pending'] = $toPayTillNow - $totalPaidAmt;
                 $row['payable'] = $row['pending'] + $row['individual_amount'];
-            
-                // Debug output to check the values
-            //    echo "Months Elapsed: " . $monthsElapsed . "<br>";
-            //     echo "Individual Amount: " . $row['individual_amount'] . "<br>";
-            //     echo "Total Paid Amount: " . $totalPaidAmt . "<br>";
-            //     echo "To Pay Till Now: " . $toPayTillNow . "<br>";
-            //     echo "Pending: " . $row['pending'] . "<br>";
-            //     echo "Payable: " . $row['payable'] . "<br>";
-            
                 // Add to total pending
                 $total_pending += $row['pending'];
                // echo "Total Pending (Updated): " . $total_pending . "<br>";
@@ -162,12 +153,12 @@ if ($result->rowCount() > 0) {
             $start_date_obj = DateTime::createFromFormat('Y-m-d', $due_start_from);
             $current_date_obj = DateTime::createFromFormat('Y-m-d', $current_date);
     
-            $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7);
+            $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) +1;
     
-            if ($weeksElapsed == 0) {
+            if ($weeksElapsed == 1) {
                 // For the first week, payable = individual_amount + totalPaidAmt
                 $row['payable'] = $row['individual_amount'] - $totalPaidAmt;
-            } elseif ($weeksElapsed >= 1) {
+            } elseif ($weeksElapsed > 1) {
                 // For subsequent weeks, calculate pending and add to individual_amount for payable
                 $toPayTillNow = $weeksElapsed * $row['individual_amount'];
                 $row['pending'] = $toPayTillNow - $totalPaidAmt;
