@@ -1,6 +1,6 @@
 <?php
 $timeZoneQry = "SET time_zone = '+5:30' ";
-$host = "192.168.1.5";
+$host = "192.168.1.10";
 $db_user = "db_user";
 $db_pass = "dbpassword@123";
 $dbname = "micro_finance";

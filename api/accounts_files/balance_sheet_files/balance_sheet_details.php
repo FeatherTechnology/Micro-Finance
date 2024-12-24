@@ -5,19 +5,16 @@ $user_id = ($_POST['user_id'] != '') ? $userwhere = " AND insert_login_id = '" .
 
 if ($type == 'today') {
     $where = " DATE(created_on) = CURRENT_DATE $userwhere";
-    $collwhere = " DATE(created_date) = CURRENT_DATE $userwhere";
 
 } else if ($type == 'day') {
     $from_date = $_POST['from_date'];
     $to_date = $_POST['to_date'];
     $where = " (DATE(created_on) >= '$from_date' && DATE(created_on) <= '$to_date' ) $userwhere ";
-    $collwhere = " (DATE(created_date) >= '$from_date' && DATE(created_date) <= '$to_date' ) $userwhere ";
 
 } else if ($type == 'month') {
     $month = date('m', strtotime($_POST['month']));
     $year = date('Y', strtotime($_POST['month']));
     $where = " (MONTH(created_on) = '$month' AND YEAR(created_on) = $year) $userwhere";
-    $collwhere = " (MONTH(created_date) = '$month' AND YEAR(created_date) = $year) $userwhere";
 
 }
 
@@ -100,12 +97,10 @@ if ($qry7->rowCount() > 0) {
     $expdr = $qry7->fetch(PDO::FETCH_ASSOC)['exp_dr'];
 }
 
-$qry8 = $pdo->query("SELECT COALESCE(SUM(due_amt_track),0) AS due, COALESCE(SUM(princ_amt_track),0) AS princ, COALESCE(SUM(int_amt_track),0) AS intrst, COALESCE(SUM(penalty_track),0) AS penalty, COALESCE(SUM(coll_charge_track),0) AS fine FROM `collection` WHERE $collwhere "); //Collection 
+$qry8 = $pdo->query("SELECT COALESCE(SUM(due_amt_track),0) AS due,COALESCE(SUM(penalty_track),0) AS penalty, COALESCE(SUM(fine_charge_track),0) AS fine FROM `collection` WHERE $where "); //Collection 
 if ($qry8->rowCount() > 0) {
     $row = $qry8->fetch(PDO::FETCH_ASSOC);
     $due = $row['due'];
-    $princ = $row['princ'];
-    $intrst = $row['intrst'];
     $penalty = $row['penalty'];
     $fine = $row['fine'];
 }
@@ -126,8 +121,6 @@ $result[0]['advdr'] = $advdr;
 $result[0]['expdr'] = $expdr;
 
 $result[0]['due'] = $due;
-$result[0]['princ'] = $princ;
-$result[0]['intrst'] = $intrst;
 $result[0]['penalty'] = $penalty;
 $result[0]['fine'] = $fine;
 

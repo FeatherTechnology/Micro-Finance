@@ -12,7 +12,13 @@ $(document).ready(function () {
         'centre_creation': 'profile',
         'loan_entry':'loan_entry',
         'approval':'approval',
-        'loan_issue':'loan_issue'
+        'loan_issue':'loan_issue',
+        'collection':'collection',
+        'closed':'closed',
+        'noc':'noc',
+        'accounts':'accounts',
+        'balance_sheet':'accounts',
+        'search_screen':'search'
 
     };
 

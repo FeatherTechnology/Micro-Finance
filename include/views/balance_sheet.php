@@ -44,16 +44,6 @@
                                         <td></td>
                                     </tr>
                                     <tr>
-                                        <td><b>Principal Collection</b></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Interest Collection</b></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
                                         <td><b>Penalty Charges</b></td>
                                         <td></td>
                                         <td></td>
@@ -164,11 +154,6 @@
                                     </tr>
                                     <tr>
                                         <td><b>Benefit Amount</b></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Interest Amount</b></td>
                                         <td></td>
                                         <td></td>
                                     </tr>

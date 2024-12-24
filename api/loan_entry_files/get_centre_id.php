@@ -16,9 +16,9 @@ foreach ($result as $row) {
 
     // Query to check if the centre_id exists in loan_entry_loan_calculation table
     $loan_qry = $pdo->query("
-        SELECT lelc.loan_id, lelc.loan_status, cs.sub_status
+        SELECT lelc.loan_id, lelc.loan_status, cs.closed_sub_status
         FROM loan_entry_loan_calculation lelc
-        LEFT JOIN closed_status cs ON lelc.centre_id = cs.centre_id
+        LEFT JOIN closed_loan cs ON lelc.centre_id = cs.centre_id
         WHERE lelc.centre_id = '$centre_id'
     ");
 
@@ -35,7 +35,7 @@ foreach ($result as $row) {
 
         while ($loan_row = $loan_qry->fetch(PDO::FETCH_ASSOC)) {
             // If sub_status is 2, mark as not_show and break out of the loop
-            if ($loan_row['sub_status'] == 2) {
+            if ($loan_row['closed_sub_status'] == 2) {
                 $can_show = false;
                 break; // No need to check further
             }
