@@ -19,7 +19,6 @@ $(document).ready(function () {
         'accounts':'accounts',
         'balance_sheet':'accounts',
         'search_screen':'search'
-
     };
 
     const current_page = localStorage.getItem('currentPage');

@@ -1,6 +1,7 @@
 $(document).ready(function () {
     //Move Loan Entry 
     $(document).on('click', '#add_customer, #back_btn', function () {
+        $('#submit_cus_creation').prop('disabled', false);
         $('#cus_id').val('');
         swapTableAndCreation();
        
@@ -181,6 +182,7 @@ $('#submit_cus_creation').click(function (event) {
     });
    
     if (isValid) {
+        $('#submit_cus_creation').prop('disabled', true);
         $.ajax({
             url: 'api/customer_creation_files/submit_customer.php',
             type: 'post',
@@ -189,6 +191,7 @@ $('#submit_cus_creation').click(function (event) {
             processData: false,
             cache: false,
             success: function (response) {
+                $('#submit_cus_creation').prop('disabled', false);
                 response = JSON.parse(response);
                 if (response == '1') {
                     swalSuccess('Success', 'Customer Info Added Successfully!');

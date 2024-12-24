@@ -149,7 +149,7 @@
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content" style="background-color: white">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add Family Info</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Representative Info</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="getRepresentInfoTable();" tabindex="1">
                     <span aria-hidden="true">&times;</span>
                 </button>

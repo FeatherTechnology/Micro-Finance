@@ -81,7 +81,7 @@
             </div>
             <div class="selector-item">
                 <input type="radio" id="centre_limit" name="loan_entry_type" class="selector-item_radio" value="centre_limit">
-                <label for="centre_limit" class="selector-item_label">Centre Limt</label>
+                <label for="centre_limit" class="selector-item_label">Centre Limit</label>
             </div>
         </div>
     </div>

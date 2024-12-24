@@ -6,6 +6,7 @@ const underBranchChoices = new Choices('#under_branch', {
 
 $(document).ready(function () {
     $(document).on('click', '#add_bank, #back_btn', function () {
+        $('#submit_bank_creation').prop('disabled', false);
         swapTableAndCreation();
         getUnderBranchDropdown();
     });
@@ -25,6 +26,7 @@ $(document).ready(function () {
         });
         let isMultiSelectValid = validateMultiSelectField('under_branch', underBranchChoices);
         if (isValid && isMultiSelectValid) {
+            $('#submit_bank_creation').prop('disabled', true);
             let bankDetail = new FormData();
             bankDetail.append('bank_name', bank_name)
             bankDetail.append('bank_short_name', bank_short_name)
@@ -43,6 +45,7 @@ $(document).ready(function () {
                 processData: false,
                 cache: false,
                 success: function (response) {
+                    $('#submit_bank_creation').prop('disabled', false);
                     if (response = 'Success') {
                         if (bank_id == '') {
                             swalSuccess('Success', 'Bank Added Successfully!');

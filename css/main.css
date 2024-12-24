@@ -9411,6 +9411,12 @@ table.dataTable th {
 .sorting_asc{
   width: 10px !important;
 }
+
+
+#branch_create_search, #centre_create_search, #loan_entry_table_search,#noc_table_search {
+   padding: 7px !important;
+   }
+
 /* Adding border between Collection Info and Collection Track */
 #customer_list_table th:nth-child(8), /* Border after the 'Fine' column in Collection Info */
 #customer_list_table td:nth-child(8) {
@@ -9433,3 +9439,4 @@ table.dataTable th {
 #customer_list_table tbody tr td {
     vertical-align: middle;
 }
+
