@@ -832,20 +832,28 @@ function resetValidation() {
 
 function isFormDataValid(formData) {
     let isValid = true;
-    // console.dir("data"+formData);
     const excludedFields = [
-        'loan_amnt_calc', 'principal_amnt_calc', 'interest_amnt_calc', 'total_amnt_calc',
-        'processing_fees_calculate', 'net_cash_calc',
-        'due_amnt_calc', 'doc_charge_calculate',
-        'due_method_calc', 'profit_method_calc',
+        'loan_amnt_calc', 
+        'principal_amnt_calc', 
+        'interest_amnt_calc', 
+        'total_amnt_calc',
+        'processing_fees_calculate', 
+        'net_cash_calc',
+        'due_amnt_calc', 
+        'doc_charge_calculate',
+        'due_method_calc', 
+        'profit_method_calc',
         'scheme_date_calc',
         'scheme_day_calc',
         'scheme_name_calc',
-        'due_period_calc', 'interest_rate_calc', 'processing_fees_calc', 'doc_charge_calc', 'id'
+        'due_period_calc', 
+        'interest_rate_calc', 
+        'processing_fees_calc', 
+        'doc_charge_calc', 
+        'id'
     ];
     // Validate all fields except the excluded ones
     for (let key in formData) {
-        // console.log(key ,formData[key]);
         if (!excludedFields.includes(key)) {
             if (!validateField(formData[key], key)) {
                 isValid = false;
@@ -854,7 +862,7 @@ function isFormDataValid(formData) {
     }
     // Additional validation based on specific conditions
     if (formData['profit_type_calc'] == '1') { // Calculation
-        let validationResults = [
+        var validationResults = [
             validateField(formData['due_method_calc'], 'due_method_calc'),
             validateField(formData['profit_method_calc'], 'profit_method_calc'),
             validateField(formData['interest_rate_calc'], 'interest_rate_calc'),
@@ -862,19 +870,9 @@ function isFormDataValid(formData) {
             validateField(formData['doc_charge_calc'], 'doc_charge_calc'),
             validateField(formData['processing_fees_calc'], 'processing_fees_calc')
         ];
-        if (formData['due_method_calc'] == '2') {
-            validationResults.push(validateField(formData['scheme_day_calc'], 'scheme_day_calc'));
-        }
-        if (formData['due_method_calc'] == '1') {
-            validationResults.push(validateField(formData['scheme_date_calc'], 'scheme_date_calc'));
-        }
         
-        if (!validationResults.every(result => result)) {
-            isValid = false;
-        }
-    }
-    else if (formData['profit_type_calc'] == '2') {
-        let validationResults = [
+    } else if (formData['profit_type_calc'] == '2') {
+        var validationResults = [
             validateField(formData['due_method_calc'], 'due_method_calc'),
             validateField(formData['profit_method_calc'], 'profit_method_calc'),
             validateField(formData['scheme_name_calc'], 'scheme_name_calc'),
@@ -884,16 +882,17 @@ function isFormDataValid(formData) {
             validateField(formData['processing_fees_calc'], 'processing_fees_calc')
         ];
         
-        if (formData['due_method_calc'] == '2') {
-            validationResults.push(validateField(formData['scheme_day_calc'], 'scheme_day_calc'));
-        }
-        if (formData['due_method_calc'] == '1') {
-            validationResults.push(validateField(formData['scheme_date_calc'], 'scheme_date_calc'));
-        }
-        // Check if all validations passed
-        if (!validationResults.every(result => result)) {
-            isValid = false;
-        }
+    }
+
+    if (formData['due_method_calc'] == '2') {
+        validationResults.push(validateField(formData['scheme_day_calc'], 'scheme_day_calc'));
+    }
+    if (formData['due_method_calc'] == '1') {
+        validationResults.push(validateField(formData['scheme_date_calc'], 'scheme_date_calc'));
+    }
+    
+    if (!validationResults.every(result => result)) {
+        isValid = false;
     }
     return isValid;
 }
