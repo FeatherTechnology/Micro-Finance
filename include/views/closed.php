@@ -155,6 +155,10 @@
 
                         </div>
                     </div>
+                    <div class="col-12 mt-3 text-right">
+                    <button name="submit_centre_closed" id="submit_centre_closed" class="btn btn-primary" tabindex="12"><span class="icon-check"></span>&nbsp;Submit</button>
+                   
+                </div>
                 </div>
             </div>
 
