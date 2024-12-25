@@ -15,7 +15,7 @@ $column = array(
     'bc.branch_name',
     'lelc.id',
     'lelc.id',
-    'lelc.id',
+    'lelc.id'
 );
 $query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, bc.branch_name,lelc.loan_status,lelc.loan_amount
           FROM loan_entry_loan_calculation lelc
@@ -25,7 +25,7 @@ $query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_
           LEFT JOIN loan_cus_mapping lcm ON lelc.loan_id = lcm.loan_id
           LEFT JOIN branch_creation bc ON cc.branch = bc.id
  	JOIN users us ON FIND_IN_SET(lelc.loan_category, us.loan_category)
-     WHERE lcm.issue_status = '1' AND us.id ='$user_id' ";
+     WHERE lcm.issue_status = '1' AND us.id ='$user_id' AND lelc.loan_status <=7 ";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];
@@ -40,11 +40,18 @@ if (isset($_POST['search'])) {
 $query .= "GROUP BY lelc.loan_id ";
 
 
-
+// Ordering functionality
 if (isset($_POST['order'])) {
-    $query .= " ORDER BY " . $column[$_POST['order']['0']['column']] . ' ' . $_POST['order']['0']['dir'];
+    $columnIndex = $_POST['order'][0]['column'];  // Index of the column to be sorted
+    $sortDirection = $_POST['order'][0]['dir'];  // Sort direction (asc/desc)
+    
+    if (isset($column[$columnIndex])) {
+        // Apply sorting using the column and direction provided
+        $query .= " ORDER BY " . $column[$columnIndex] . " " . $sortDirection;
+    }
 } else {
-    $query .= ' ';
+    // Default sorting (if no sorting is applied from frontend)
+    $query .= ' ORDER BY cc.id DESC';
 }
 $query1 = '';
 if (isset($_POST['length']) && $_POST['length'] != -1) {
@@ -67,6 +74,11 @@ $data = [];
 foreach ($result as $row) {
 
     $status = $collectionSts->updateCollectStatus($row['loan_id']);
+    if($status == "Paid"){
+        $collection_status = "Completed";
+    }else{
+        $collection_status = "In Collection";
+    }
     $centre_status = 'Current';
     $sub_array = array();
 
@@ -79,7 +91,7 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['loan_amount']) ? moneyFormatIndia($row['loan_amount']) : '';
     $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
     $sub_array[] = $centre_status;
-    $sub_array[] = $status;
+    $sub_array[] = $collection_status;
     $sub_array[] = "<button class='btn btn-primary ledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
     $data[] = $sub_array;
 }

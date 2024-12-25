@@ -121,7 +121,8 @@ function moneyFormatIndia($num)
 
     $scheme_day = $loanIssue['scheme_day_calc'];
     $scheme_date = $loanIssue['scheme_date'];
-    $due_amt_1 = $loanIssue['due_amount_calc'] / $loanIssue['total_customer'];
+    $due_amt_1 = round($loanIssue['due_amount_calc'] / $loanIssue['total_customer']);
+
 
     $issue_date = $loanIssue['issue_date'];
     $due_month = $loanIssue['due_month'];
@@ -824,8 +825,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
         if ($count > 0) {
 
             //if Due month exceeded due amount will be as pending with how many months are exceeded and subract pre closure amount if available
-            $response['pending'] = ($response['due_amnt'] * ($count)) - $tot_paid_tilldate;
-
+            $response['pending'] = round(($response['due_amnt'] * $count) - $tot_paid_tilldate);
 
             // If due month exceeded
             if (empty($loan_arr['scheme_name'])) {
@@ -850,7 +850,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             $response['penalty'] = $penalty - $total_penalty;
 
             // Calculate payable amount
-            $response['payable'] = $response['due_amnt'] + $response['pending'];
+            $response['payable'] = round($response['due_amnt'] + $response['pending']);
 
             if ($response['payable'] > $response['balance']) {
                 //if payable is greater than balance then change it as balance amt coz dont collect more than balance
@@ -863,7 +863,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             //If still current month is not ended, then penalty will be 0
             $response['penalty'] = 0;
             //If still current month is not ended, then payable will be due amt
-            $response['payable'] = $response['due_amnt'] - $tot_paid_tilldate;
+            $response['payable'] = round($response['due_amnt'] - $tot_paid_tilldate);
         }
     } else
     if ($loan_arr['due_month'] == '2') {
@@ -939,7 +939,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
         }
         if ($count > 0) {
             //if Due month exceeded due amount will be as pending with how many months are exceeded and subract pre closure amount if available
-            $response['pending'] = ($response['due_amnt'] * $count) - $tot_paid_tilldate;
+            $response['pending'] = round(($response['due_amnt'] * $count) - $tot_paid_tilldate);
 
             // If due month exceeded
             if (empty($loan_arr['scheme_name'])) {
@@ -964,7 +964,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             $response['penalty'] = $penalty - $row['penalty'];
 
             // Calculate payable amount
-            $response['payable'] = $response['due_amnt'] + $response['pending'];
+            $response['payable'] = round($response['due_amnt'] + $response['pending']);
             if ($response['payable'] > $response['balance']) {
                 //if payable is greater than balance then change it as balance amt coz dont collect more than balance
                 //this case will occur when collection status becoms OD
@@ -976,7 +976,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             //If still current month is not ended, then penalty will be 0
             $response['penalty'] = 0;
             //If still current month is not ended, then payable will be due amt
-            $response['payable'] = $response['due_amnt'] - $tot_paid_tilldate - $preclose_tilldate;
+            $response['payable'] =  round($response['due_amnt'] - $tot_paid_tilldate - $preclose_tilldate);
         }
     }
     if ($response['pending'] < 0) {

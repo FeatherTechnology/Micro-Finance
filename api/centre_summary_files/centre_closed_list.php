@@ -4,7 +4,7 @@ require '../../ajaxconfig.php';
 $user_id = $_SESSION['user_id'];
 
 include '../collection_files/reset_customer_status.php';
-
+$centre_sub_status = [ null =>'',''=>'',1 => 'Consider',2=> 'Blocked'];
 $collectionSts = new CollectStsClass($pdo);
 $column = array(
     'lelc.id',
@@ -15,17 +15,19 @@ $column = array(
     'bc.branch_name',
     'lelc.id',
     'lelc.id',
-    'lelc.id',
+    'lelc.id'
 );
-$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, bc.branch_name,lelc.loan_status,lelc.loan_amount,lelc.due_end
+$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, bc.branch_name,lelc.loan_status,lelc.loan_amount,lelc.due_end,cl.closed_sub_status
           FROM loan_entry_loan_calculation lelc
           LEFT JOIN loan_category_creation lcc ON lelc.loan_category = lcc.id
           LEFT JOIN loan_category lc ON lcc.loan_category = lc.id
           LEFT JOIN centre_creation cc ON lelc.centre_id = cc.centre_id
           LEFT JOIN loan_cus_mapping lcm ON lelc.loan_id = lcm.loan_id
+          LEFT JOIN closed_loan cl ON lelc.loan_id = cl.loan_id
           LEFT JOIN branch_creation bc ON cc.branch = bc.id
  	JOIN users us ON FIND_IN_SET(lelc.loan_category, us.loan_category)
-     WHERE   us.id ='$user_id'  AND CURDATE() > lelc.due_end AND loan_status >=9 ";
+    WHERE us.id = '$user_id' 
+  AND (CURDATE() > lelc.due_end OR lelc.loan_status >= 8) ";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];
@@ -39,13 +41,20 @@ if (isset($_POST['search'])) {
 }
 $query .= "GROUP BY lelc.loan_id ";
 
-
-
+// Ordering functionality
 if (isset($_POST['order'])) {
-    $query .= " ORDER BY " . $column[$_POST['order']['0']['column']] . ' ' . $_POST['order']['0']['dir'];
+    $columnIndex = $_POST['order'][0]['column'];  // Index of the column to be sorted
+    $sortDirection = $_POST['order'][0]['dir'];  // Sort direction (asc/desc)
+    
+    if (isset($column[$columnIndex])) {
+        // Apply sorting using the column and direction provided
+        $query .= " ORDER BY " . $column[$columnIndex] . " " . $sortDirection;
+    }
 } else {
-    $query .= ' ';
+    // Default sorting (if no sorting is applied from frontend)
+    $query .= ' ORDER BY cc.id DESC';
 }
+
 $query1 = '';
 if (isset($_POST['length']) && $_POST['length'] != -1) {
     $query1 = ' LIMIT ' . intval($_POST['start']) . ', ' . intval($_POST['length']);
@@ -67,6 +76,11 @@ $data = [];
 foreach ($result as $row) {
 
     $status = $collectionSts->updateCollectStatus($row['loan_id']);
+    if($status == "Paid"){
+        $collection_status = "Completed";
+    }else{
+        $collection_status = "In Collection";
+    }
     $centre_status = 'Closed';
     $sub_array = array();
 
@@ -79,8 +93,9 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['loan_amount']) ? moneyFormatIndia($row['loan_amount']) : '';
     $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
     $sub_array[] = $centre_status;
-    $sub_array[] = $status;
-    $sub_array[] = "<button class='btn btn-primary ledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
+    $sub_array[] = $centre_sub_status[$row['closed_sub_status']];
+    $sub_array[] = $collection_status;
+    $sub_array[] = "<button class='btn btn-primary closeledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
     $data[] = $sub_array;
 }
 function count_all_data($pdo)

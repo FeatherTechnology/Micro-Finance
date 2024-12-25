@@ -137,9 +137,14 @@ if ($result->rowCount() > 0) {
               //  echo "Payable: " . $row['payable'] . "<br>";
             } elseif ($monthsElapsed >1) {
                 // For subsequent months, calculate pending and add to individual_amount for payable
+                $toPayTillPrev = ($monthsElapsed -1) * $row['individual_amount'];
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
-                $row['pending'] = $toPayTillNow - $totalPaidAmt;
-                $row['payable'] = $row['pending'] + $row['individual_amount'];
+                $row['pending'] = max(0, $toPayTillPrev - $totalPaidAmt);
+                if ($row['pending'] > 0) {
+                    $row['payable'] = $row['pending'] + $row['individual_amount'];
+                }else{
+                    $row['payable'] = $toPayTillNow - $totalPaidAmt;  
+                }
                 // Add to total pending
                 $total_pending += $row['pending'];
                // echo "Total Pending (Updated): " . $total_pending . "<br>";
@@ -160,9 +165,15 @@ if ($result->rowCount() > 0) {
                 $row['payable'] = $row['individual_amount'] - $totalPaidAmt;
             } elseif ($weeksElapsed > 1) {
                 // For subsequent weeks, calculate pending and add to individual_amount for payable
-                $toPayTillNow = $weeksElapsed * $row['individual_amount'];
-                $row['pending'] = $toPayTillNow - $totalPaidAmt;
-                $row['payable'] = $row['pending'] + $row['individual_amount'];
+                $toPayTillPrev = ($weeksElapsed - 1)* $row['individual_amount'];
+                $toPayTillNow = ($weeksElapsed)* $row['individual_amount'];
+                $toPayTillPrev = ($weeksElapsed - 1)* $row['individual_amount'];
+                $row['pending'] = max(0, $toPayTillPrev - $totalPaidAmt);
+                if ($row['pending'] > 0) {
+                    $row['payable'] = $row['pending'] + $row['individual_amount'];
+                }else{
+                    $row['payable'] = $toPayTillNow - $totalPaidAmt;  
+                }
                 $total_pending += $row['pending']; // Add to total pending only after 1 week
             }
         }

@@ -3,36 +3,65 @@ require "../../../ajaxconfig.php";
 
 $type = $_POST['type'];
 // $user_id = ($_POST['user_id'] != '') ? $userwhere = " AND insert_login_id = '" . $_POST['user_id'] . "' " : $userwhere = ''; //for user based
-if($_POST['user_id'] != ''){
+if ($_POST['user_id'] != '') {
     $userwhere = " AND insert_login_id = '" . $_POST['user_id'] . "' "; //for user based    
     $lelcuserswhere = " AND li.insert_login_id = '" . $_POST['user_id'] . "' "; //for user based    
-}else{
-    $userwhere = '';    
-    $lelcuserswhere = '';    
-} 
+} else {
+    $userwhere = '';
+    $lelcuserswhere = '';
+}
 
 if ($type == 'today') {
     $where = " DATE(created_on) = CURRENT_DATE $userwhere";
-    $collwhere = " DATE(created_on) = CURRENT_DATE $userwhere";
+    $collwhere = " DATE(c.created_on) = CURRENT_DATE $userwhere";
     $lelcwhere = " DATE(li.issue_date) = CURRENT_DATE $lelcuserswhere";
-
 } else if ($type == 'day') {
     $from_date = $_POST['from_date'];
     $to_date = $_POST['to_date'];
     $where = " (DATE(created_on) >= '$from_date' && DATE(created_on) <= '$to_date' ) $userwhere ";
-    $collwhere = " (DATE(created_on) >= '$from_date' && DATE(created_on) <= '$to_date' ) $userwhere ";
+    $collwhere = " (DATE(c.created_on) >= '$from_date' && DATE(c.created_on) <= '$to_date' ) $userwhere ";
     $lelcwhere = " (DATE(li.issue_date) >= '$from_date' && DATE(li.issue_date) <= '$to_date' ) $lelcuserswhere ";
-
 } else if ($type == 'month') {
     $month = date('m', strtotime($_POST['month']));
     $year = date('Y', strtotime($_POST['month']));
     $where = " (MONTH(created_on) = '$month' AND YEAR(created_on) = $year) $userwhere";
-    $collwhere = " (MONTH(created_on) = '$month' AND YEAR(created_on) = $year) $userwhere";
+    $collwhere = " (MONTH(c.created_on) = '$month' AND YEAR(c.created_on) = $year) $userwhere";
     $lelcwhere = " (MONTH(li.issue_date) = '$month' AND YEAR(li.issue_date) = $year) $lelcuserswhere";
-
 }
 
 $result = array();
+
+$qry1 = $pdo->query("
+SELECT 
+    lcm.id, 
+    due_summary.due_track, 
+    COALESCE(ROUND(SUM(
+        CASE 
+            WHEN due_summary.due_track > ((lelc.principal_amount_calc / lelc.total_customer) / lelc.due_period) 
+            THEN due_summary.due_track - ((lelc.principal_amount_calc / lelc.total_customer) / lelc.due_period) 
+            ELSE 0 
+        END
+    ), 0), 0) AS total_interest_paid 
+FROM loan_cus_mapping lcm
+JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
+JOIN (
+    SELECT 
+        c.cus_mapping_id, 
+        COALESCE(SUM(c.due_amt_track), 0) AS due_track 
+    FROM `collection` c 
+    WHERE $collwhere
+    GROUP BY c.cus_mapping_id
+) AS due_summary ON lcm.id = due_summary.cus_mapping_id
+GROUP BY lcm.loan_id, lcm.id
+");
+$total_interest_paid = 0;
+if ($qry1->rowCount() > 0) {
+    while ($row = $qry1->fetch(PDO::FETCH_ASSOC)) {
+        $intreset_paid =  $row['total_interest_paid'];
+        $total_interest_paid += $intreset_paid;
+
+    }
+}
 
 $qry = $pdo->query("
     SELECT
@@ -71,7 +100,7 @@ if ($qry->rowCount() > 0) {
     }
 }
 
-$qry2 = $pdo->query("SELECT COALESCE(SUM(due_amt_track),0) AS due, COALESCE(SUM(penalty_track),0) AS penalty, COALESCE(SUM(fine_charge_track),0) AS fine FROM `collection` WHERE $collwhere "); //Collection 
+$qry2 = $pdo->query("SELECT COALESCE(SUM(c.due_amt_track),0) AS due, COALESCE(SUM(c.penalty_track),0) AS penalty, COALESCE(SUM(c.fine_charge_track),0) AS fine FROM `collection`c WHERE $collwhere "); //Collection 
 if ($qry2->rowCount() > 0) {
     $row = $qry2->fetch(PDO::FETCH_ASSOC);
     $penalty = $row['penalty'];
@@ -88,7 +117,7 @@ if ($qry4->rowCount() > 0) {
     $expdr = $qry4->fetch(PDO::FETCH_ASSOC)['exp_dr'];
 }
 
-$result[0]['benefit'] = $total_benefit;
+$result[0]['total_interest_paid'] = $total_interest_paid;
 $result[0]['doc_charges'] = $total_doc_charges;
 $result[0]['proc_charges']  = $total_proc_charges;
 $result[0]['penalty'] = $penalty;

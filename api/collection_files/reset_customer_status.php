@@ -140,7 +140,7 @@ class CollectStsClass
             if ($monthsElapsed > 1) {
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];
-                $pending = $toPayTillNow - $totalPaidAmt;
+                $pending = $toPayTillPrev - $totalPaidAmt;
                 if ($toPayTillNow == $totalPaidAmt) {
                     $status = 'Paid';
                 } else if ($toPayTillPrev == $totalPaidAmt) {
@@ -150,7 +150,7 @@ class CollectStsClass
                     if ($pending > 0) {
                         $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
                     } else {
-                        $status = 'Pending'; // If no pending, mark as pending regardless of fine or penalty
+                        $status = 'Payable';
                     }
                 }
             } else {
@@ -178,7 +178,7 @@ class CollectStsClass
                 // Calculate amount to be paid till now and till the previous week
                 $toPayTillNow = $weeksElapsed * $row['individual_amount'];
                 $toPayTillPrev = ($weeksElapsed - 1) * $row['individual_amount'];
-                $pending = $toPayTillNow - $totalPaidAmt;
+                $pending = $toPayTillPrev - $totalPaidAmt;
 
                 if ($toPayTillNow == $totalPaidAmt) {
                     $status = 'Paid';
@@ -189,7 +189,7 @@ class CollectStsClass
                     if ($pending > 0) {
                         $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
                     } else {
-                        $status = 'Pending'; // If no pending, mark as pending regardless of fine or penalty
+                        $status = 'Payable'; 
                     }
                 }
             } else {

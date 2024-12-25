@@ -23,6 +23,7 @@ $(document).ready(function(){
             getOpeningBal('today', '', '', '')
             getBalSheetDetails('today', '', '', '');
             getNetBenefitDetails('today', '', '', '');
+            getProfitBenefitDetails('today', '', '', '');
         }
     });
 
@@ -33,6 +34,7 @@ $(document).ready(function(){
             getOpeningBal('day', from_date, to_date, '')
             getBalSheetDetails('day', from_date, to_date, '');
             getNetBenefitDetails('day', from_date, to_date, '');
+            getProfitBenefitDetails('day', from_date, to_date, '');
 
             $('.close').trigger('click');//it will close modal
         } else {
@@ -48,6 +50,7 @@ $(document).ready(function(){
             getOpeningBal('month', '', '', for_month)
             getBalSheetDetails('month', '', '', for_month);
             getNetBenefitDetails('month', '', '', for_month);
+            getProfitBenefitDetails('month', '', '', for_month);
 
             $('.close').trigger('click');//it will close modal
         } else {
@@ -193,6 +196,51 @@ function getNetBenefitTotal() {
     $('#net_benefit_table tbody tr:nth-child(12) td:nth-child(2)').text(benefit_total).css('font-weight','bold');
 }
 
+function getProfitBenefitDetails(type, from_date, to_date, month){
+    var user_id = $('#by_user').val();
+    if (type == 'today'){ 
+        var args = { 'type': 'today', 'user_id': user_id }; 
+    } else if (type == 'day'){ 
+        var args = { 'type': 'day', 'from_date': from_date, 'to_date': to_date, 'user_id': user_id }; 
+    } else if (type == 'month'){ 
+        var args = { 'type': 'month', 'month': month, 'user_id': user_id }; 
+    }
+    $.post('api/accounts_files/balance_sheet_files/net_profit_details.php', args, function(response){
+        $('#net_profit_table tbody tr:nth-child(2) td:nth-child(2)').text(response[0]['total_interest_paid']);
+        $('#net_profit_table tbody tr:nth-child(3) td:nth-child(2)').text(response[0]['doc_charges']);
+        $('#net_profit_table tbody tr:nth-child(4) td:nth-child(2)').text(response[0]['proc_charges']);
+        $('#net_profit_table tbody tr:nth-child(5) td:nth-child(2)').text(response[0]['penalty']);
+        $('#net_profit_table tbody tr:nth-child(6) td:nth-child(2)').text(response[0]['fine']);
+        $('#net_profit_table tbody tr:nth-child(7) td:nth-child(2)').text(response[0]['oicr']);
+
+        $('#net_profit_table tbody tr:nth-child(9) td:nth-child(3)').text(response[0]['expdr']);
+        
+    },'json').then(function(){
+        setTimeout(() => {
+            getNetProfitTotal();
+        }, 1000);
+    });
+}
+
+function getNetProfitTotal() {
+    let credit_total = 0;
+    let debit_total = 0;
+    $('#net_profit_table tbody tr').each(function () {
+        let credit = $(this).find('td:nth-child(2)').text(); // credit amount
+        let debit = $(this).find('td:nth-child(3)').text(); // debit amount
+        credit_total += parseInt(credit) || 0;
+        debit_total += parseInt(debit) || 0;
+    });
+    
+    let benefit = credit_total - debit_total;
+    credit_total = moneyFormatIndia(credit_total);
+    debit_total = moneyFormatIndia(debit_total);
+    benefit_total = moneyFormatIndia(benefit);
+
+    $('#net_profit_table tbody tr:nth-child(11) td:nth-child(2)').text(credit_total).css('font-weight','bold');
+    $('#net_profit_table tbody tr:nth-child(11) td:nth-child(3)').text(debit_total).css('font-weight','bold');
+    $('#net_profit_table tbody tr:nth-child(12) td:nth-child(2)').text(benefit_total).css('font-weight','bold');
+}
 // to clear all contents
 function clearAllContents() {
     $('#balance_sheet_table').find('tbody tr').each(function () {
@@ -200,6 +248,10 @@ function clearAllContents() {
         $(this).find('td:nth-child(3)').text('')
     });
     $('#net_benefit_table').find('tbody tr').each(function () {
+        $(this).find('td:nth-child(2)').text('')
+        $(this).find('td:nth-child(3)').text('')
+    });
+    $('#net_profit_table').find('tbody tr').each(function () {
         $(this).find('td:nth-child(2)').text('')
         $(this).find('td:nth-child(3)').text('')
     });

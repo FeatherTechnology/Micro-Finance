@@ -18,7 +18,7 @@ $column = array(
     'lelc.id',
     'lelc.id',
 );
-$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, bc.branch_name,lelc.sub_status
+$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, bc.branch_name,lelc.sub_status,lelc.due_end
           FROM loan_entry_loan_calculation lelc
           LEFT JOIN loan_category_creation lcc ON lelc.loan_category = lcc.id
           LEFT JOIN loan_category lc ON lcc.loan_category = lc.id
@@ -70,6 +70,12 @@ $data = [];
 foreach ($result as $row) {
     if ($row['sub_status'] != 2) {
         $status = $collectionSts->updateCollectStatus($row['loan_id']);
+        if (date('Y-m-d') > $row['due_end']) {
+            $coll_status = "Closed";
+        } else {
+            $coll_status = "Current";
+        }
+        
         $sub_array = array();
 
         $sub_array[] = $sno++;
@@ -85,7 +91,7 @@ foreach ($result as $row) {
                     <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
                    <div class='dropdown-content'>";
     
-      $action .= "<a href='#' class='pay-due' data-value='" . $row['loan_id'] . "_" . $row['centre_id'] . "_" . $row['centre_name'] . "' title='Pay Fine'>Pay Due</a>";
+      $action .= "<a href='#' class='pay-due' data-value='" . $row['loan_id'] . "_" . $row['centre_id'] . "_" . $row['centre_name'] ."_" . $status . "_" . $coll_status . "' title='Pay Fine'>Pay Due</a>";
     
         
       
