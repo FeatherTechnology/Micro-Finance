@@ -319,7 +319,7 @@ function editCentreCreation(id) {
     }, 'json');
 
 }
-$('button[type="reset"],#back_btn').click(function (event) {
+$('button[type="reset"],#back_btn,#add_centre').click(function (event) {
     // event.preventDefault();
     $('input').each(function () {
         var id = $(this).attr('id');

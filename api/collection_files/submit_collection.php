@@ -5,6 +5,8 @@ $user_id = $_SESSION['user_id'];
 
 // Get the data from the AJAX request
 $loan_id = $_POST['loan_id'];
+$sub_status = $_POST['sub_status'];
+$status = $_POST['status'];
 $loanTotalAmnt = $_POST['loanTotalAmnt'];
 $loanPaidAmnt = $_POST['loanPaidAmnt'];
 $loanBalance = $_POST['loanBalance'];
@@ -30,20 +32,20 @@ foreach ($collectionData as $data) {
   $total_collection = $data['total_collection'];
   // Insert data into the collection table
   if ($collection_due >= $payable_amt) {
-    $status = '1';
+    $coll_status = '1';
   } else {
-    $status = '2';
+    $coll_status = '2';
   }
   
   $query =  $pdo->query("INSERT INTO `collection` (
                 `loan_id`, `cus_mapping_id`, `loan_total_amnt`, `loan_paid_amnt`, `loan_balance`, `loan_due_amnt`, 
-                `loan_pending_amnt`, `loan_payable_amnt`, `loan_penalty`, `loan_fine`, `coll_status`, `due_amnt`, 
+                `loan_pending_amnt`, `loan_payable_amnt`, `loan_penalty`, `loan_fine`, `coll_status`,`status`,`sub_status`, `due_amnt`, 
                 `pending_amt`, `payable_amt`, `penalty`, `fine_charge`, `coll_date`, `due_amt_track`, 
                 `penalty_track`, `fine_charge_track`, `total_paid_track`, `insert_login_id`, 
                 `created_on`) 
               VALUES (
                 '$loan_id', '$cus_mapping_id', '$loanTotalAmnt', '$loanPaidAmnt', '$loanBalance', '$loanDueAmnt', 
-                '$loanPendingAmnt', '$loanPayableAmnt', '$loanPenaltyAmnt', '$loanFineAmnt', '$status', '$due_amnt', 
+                '$loanPendingAmnt', '$loanPayableAmnt', '$loanPenaltyAmnt', '$loanFineAmnt', '$coll_status','$status','$sub_status', '$due_amnt', 
                 '$pending_amt', '$payable_amt', '$penalty', '$fine_charge', '$coll_date ". date(' H:i:s') ."', '$collection_due', 
                 '$collection_penalty', '$collection_fine', '$total_collection', '$user_id', 
                 CURRENT_TIMESTAMP())");
@@ -57,7 +59,7 @@ foreach ($collectionData as $data) {
     $qry1 = $pdo->query("INSERT INTO `penalty_charges`(`cus_mapping_id`,`loan_id`, `paid_date`, `paid_amnt`, `created_date`) VALUES ('$cus_mapping_id','$loan_id','$coll_date','$collection_penalty', current_timestamp) ");
   }
 
-  if ($collection_fine != '') {
+  if ($collection_fine != '' and $collection_fine > 0) {
     $qry2 = $pdo->query("INSERT INTO `fine_charges`(`cus_mapping_id`,`loan_id`, `paid_date`, `paid_amnt`) VALUES ('$cus_mapping_id','$loan_id','$coll_date','$collection_fine')");
   }
 
@@ -68,7 +70,7 @@ foreach ($collectionData as $data) {
   $fine_charge_check = intval($collection_fine)  - intval($fine_charge);
 
   if ($check == 0 && $penalty_check == 0 && $fine_charge_check == 0) {
-    $closedQry = $pdo->query("UPDATE `loan_entry_loan_calculation` SET `status`='8',`update_login_id`='$user_id',`updated_on`=now() WHERE `loan_id`='$loan_id' "); //balance is zero change the customer status as 8, moved to closed.
+    $closedQry = $pdo->query("UPDATE `loan_entry_loan_calculation` SET `loan_status`='8',`update_login_id`='$user_id',`updated_on`=now() WHERE `loan_id`='$loan_id' "); //balance is zero change the customer status as 8, moved to closed.
     if ($closedQry) {
       $result = '3';
     }

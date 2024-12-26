@@ -273,7 +273,7 @@ $(document).ready(function(){
             // Validate Debit Transactions
             if (transCategory >= 3 && transCategory <= 9) {
                 if (catType == '2') { // Debit Transaction
-                    if (balance !== 0) {
+                    if (balance > 0) {
                         // Allow debit if balance is zero or negative, as long as debit amount does not exceed the absolute value of the balance
                         if (otherAmount > Math.abs(balance)) {
                             const formattedBalance = moneyFormatIndia(Math.abs(balance));
@@ -283,7 +283,7 @@ $(document).ready(function(){
                     }
                 } else if (catType == '1') { // Credit Transaction
                     // Allow credit if balance is negative or zero
-                    if (balance !== 0) {
+                    if (balance > 0) {
                         if (otherAmount > Math.abs(balance)) {
                             const formattedBalance = moneyFormatIndia(Math.abs(balance));
                             swalError('Warning', 'You may only credit up to: ' + formattedBalance);
@@ -572,16 +572,6 @@ function nameDropDown(){
     },'json');
 }
 
-// function getUserList(){
-//     $.post('api/accounts_files/accounts/user_list.php',function(response){
-//         let userNameOptn='';
-//             userNameOptn +="<option value=''>Select User Name</option>";
-//             $.each(response, function(index, val){
-//                 userNameOptn += "<option value='"+val.id+"'>"+val.name+"</option>";
-//             });
-//         $('#other_user_name').empty().append(userNameOptn);
-//     },'json');
-// }
 
 function otherTransFormValid(data){
     for(key in data){
@@ -597,13 +587,6 @@ function otherTransFormValid(data){
             return false;
         }
     }
-
-    // if(data['trans_category'] =='7'){
-    //     if(data['other_user_name'] =='' || data['other_user_name'] ==null || data['other_user_name'] == undefined){
-    //         return false;
-    //     }
-    // }
-
     return true;
 }
 

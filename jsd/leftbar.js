@@ -10,6 +10,8 @@ $(document).ready(function () {
         'user_creation': 'admin',
         'customer_creation': 'profile',
         'centre_creation': 'profile',
+        'customer_data': 'profile',
+        'centre_summary': 'profile',
         'loan_entry':'loan_entry',
         'approval':'approval',
         'loan_issue':'loan_issue',

@@ -21,6 +21,8 @@ $(document).ready(function () {
         let loan_id = dataParts[0];
         let centre_id = dataParts[1];
         let centre_name = dataParts[2];
+        let sub_status = dataParts[3];
+        let status = dataParts[4];
         $('#loan_id').val(loan_id)
         $('#pageHeaderName').text(` - Collection - Loan ID: ${loan_id}, Centre ID: ${centre_id}, Centre Name: ${centre_name}`);
         collectionCustomerList(loan_id)
@@ -120,6 +122,8 @@ $(document).ready(function () {
                 method: 'POST',
                 data: {
                     loan_id: loan_id,
+                    status: status,
+                    sub_status: sub_status,
                     loanTotalAmnt: loanTotalAmnt,
                     loanPaidAmnt: loanPaidAmnt,
                     loanBalance: loanBalance,
@@ -462,11 +466,12 @@ function dueChartList(cus_mapping_id,loan_id){
             $('#due_chart_table_div').empty();
             $('#due_chart_table_div').html(response);
         }
-    }).then(function(){
-      
-        $.post('api/collection_files/get_due_method_name.php',{loan_id},function(response){
-            $('#dueChartTitle').text('Due Chart ( '+ response['due_month'] + ' - '+ response['loan_type'] +' )');
-        },'json');
+    }).then(function(){   
+        $.post('api/collection_files/get_due_method_name.php', {loan_id: loan_id, cus_mapping_id: cus_mapping_id}, function(response) {
+            $('#dueChartTitle').text('Due Chart ( ' + response['due_month'] + ' - ' + response['loan_type'] + ' ) - Customer ID: ' 
+            + response['cus_id'] + ' - Customer Name: ' + response['cus_name'] + ' - Loan ID: ' + response['loan_id'] 
+            + ' - Centre ID: ' + response['centre_id'] + ' - Centre Name: ' + response['centre_name']);
+        }, 'json');
     })
 
 }

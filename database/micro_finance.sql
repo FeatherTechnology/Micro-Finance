@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 19, 2024 at 05:10 AM
+-- Generation Time: Dec 26, 2024 at 05:09 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,6 +46,31 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `Add_Sub_Menu` (IN `main_menu_id` IN
 END$$
 
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accounts_collect_entry`
+--
+
+CREATE TABLE `accounts_collect_entry` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `branch` varchar(50) NOT NULL,
+  `coll_mode` int(11) NOT NULL,
+  `bank_id` varchar(50) DEFAULT NULL,
+  `no_of_bills` int(11) NOT NULL,
+  `collection_amnt` varchar(150) NOT NULL,
+  `insert_login_id` int(11) NOT NULL,
+  `created_on` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `accounts_collect_entry`
+--
+
+INSERT INTO `accounts_collect_entry` (`id`, `user_id`, `branch`, `coll_mode`, `bank_id`, `no_of_bills`, `collection_amnt`, `insert_login_id`, `created_on`) VALUES
+(2, 1, 'Vandavasi', 1, '', 7, '89000', 1, '2024-12-23 17:28:42');
 
 -- --------------------------------------------------------
 
@@ -175,10 +200,10 @@ CREATE TABLE `centre_creation` (
   `centre_id` varchar(100) NOT NULL,
   `centre_no` varchar(100) NOT NULL,
   `centre_name` varchar(100) NOT NULL,
-  `centre_limit` int(50) NOT NULL,
-  `lable` varchar(250) NOT NULL,
-  `feedback` varchar(250) NOT NULL,
-  `remarks` varchar(250) NOT NULL,
+  `centre_limit` varchar(50) DEFAULT NULL,
+  `lable` varchar(250) DEFAULT NULL,
+  `feedback` varchar(250) DEFAULT NULL,
+  `remarks` varchar(250) DEFAULT NULL,
   `mobile1` varchar(100) NOT NULL,
   `mobile2` varchar(100) DEFAULT NULL,
   `area` varchar(255) NOT NULL,
@@ -195,12 +220,13 @@ CREATE TABLE `centre_creation` (
 --
 
 INSERT INTO `centre_creation` (`id`, `centre_id`, `centre_no`, `centre_name`, `centre_limit`, `lable`, `feedback`, `remarks`, `mobile1`, `mobile2`, `area`, `branch`, `pic`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, 'M-101', '3123123', 'VSI', 5000000, 'Afg', '', '', '8797898798', '', '1', 1, '', 1, NULL, '2024-12-13', NULL),
-(2, 'M-102', '10', 'chennai', 500000, 'xxxx', 'yyyy', 'zzzz', '9878964531', '', '2', 1, '', 1, NULL, '2024-12-13', NULL),
-(3, 'M-103', '979', 'MNC', 60000, 'xxx', 'yyy', 'zzzz', '7686786786', '', '1', 1, '', 1, NULL, '2024-12-14', NULL),
-(4, 'M-104', '356', 'MGM', 0, '', '', '', '7825446576', '', '2', 1, '', 1, 1, '2024-12-16', '2024-12-16'),
-(5, 'M-105', '3123123', 'VSI', 0, '', '', '', '9789465135', '', '1', 1, '', 1, NULL, '2024-12-16', NULL),
-(6, 'M-106', '3123123', 'VSI', 0, '', '', '', '9876853312', '', '1', 1, '', 1, NULL, '2024-12-16', NULL);
+(1, 'M-101', '3123123', 'VSI', '5000000', 'Afg', '', '', '8797898798', '', '1', 1, '', 1, NULL, '2024-12-13', NULL),
+(2, 'M-102', '10', 'chennai', '500000', 'xxxx', 'yyyy', 'zzzz', '9878964531', '', '2', 1, '', 1, NULL, '2024-12-13', NULL),
+(3, 'M-103', '979', 'MNC', '60000', 'xxx', 'yyy', 'zzzz', '7686786786', '', '1', 1, '', 1, NULL, '2024-12-14', NULL),
+(4, 'M-104', '356', 'MGM', '0', '', '', '', '7825446576', '', '2', 1, '', 1, 1, '2024-12-16', '2024-12-16'),
+(5, 'M-105', '3123123', 'VSI', '0', '', '', '', '9789465135', '', '1', 1, '', 1, NULL, '2024-12-16', NULL),
+(6, 'M-106', '3123123', 'VSI', '0', '', '', '', '9876853312', '', '1', 1, '', 1, 1, '2024-12-16', '2024-12-24'),
+(7, 'M-107', '123', 'VSI-1', '0', '', '', '', '7897897789', '', '2', 1, '', 1, NULL, '2024-12-24', NULL);
 
 -- --------------------------------------------------------
 
@@ -211,6 +237,7 @@ INSERT INTO `centre_creation` (`id`, `centre_id`, `centre_no`, `centre_name`, `c
 CREATE TABLE `closed_loan` (
   `id` int(11) NOT NULL,
   `loan_id` varchar(110) DEFAULT NULL,
+  `centre_id` varchar(150) DEFAULT NULL,
   `closed_sub_status` int(10) DEFAULT NULL,
   `closed_remarks` varchar(250) DEFAULT NULL,
   `closed_date` date DEFAULT NULL,
@@ -221,8 +248,8 @@ CREATE TABLE `closed_loan` (
 -- Dumping data for table `closed_loan`
 --
 
-INSERT INTO `closed_loan` (`id`, `loan_id`, `closed_sub_status`, `closed_remarks`, `closed_date`, `insert_login_id`) VALUES
-(1, 'L-102', NULL, '', '2024-12-18', 1);
+INSERT INTO `closed_loan` (`id`, `loan_id`, `centre_id`, `closed_sub_status`, `closed_remarks`, `closed_date`, `insert_login_id`) VALUES
+(16, 'L-103', 'M-101', 1, 'ffff', '2024-12-23', 1);
 
 -- --------------------------------------------------------
 
@@ -268,12 +295,14 @@ CREATE TABLE `collection` (
   `loan_penalty` varchar(100) DEFAULT NULL,
   `loan_fine` varchar(100) DEFAULT NULL,
   `coll_status` varchar(255) DEFAULT NULL,
+  `status` varchar(100) DEFAULT NULL,
+  `sub_status` varchar(100) DEFAULT NULL,
   `due_amnt` int(100) NOT NULL,
   `pending_amt` varchar(255) DEFAULT NULL,
   `payable_amt` varchar(255) DEFAULT NULL,
   `penalty` varchar(255) DEFAULT NULL,
   `fine_charge` varchar(255) DEFAULT NULL,
-  `coll_date` date DEFAULT NULL,
+  `coll_date` datetime DEFAULT NULL,
   `due_amt_track` varchar(255) NOT NULL DEFAULT '0',
   `penalty_track` varchar(255) NOT NULL DEFAULT '0',
   `fine_charge_track` varchar(255) NOT NULL DEFAULT '0',
@@ -288,9 +317,16 @@ CREATE TABLE `collection` (
 -- Dumping data for table `collection`
 --
 
-INSERT INTO `collection` (`id`, `loan_id`, `cus_mapping_id`, `loan_total_amnt`, `loan_paid_amnt`, `loan_balance`, `loan_due_amnt`, `loan_pending_amnt`, `loan_payable_amnt`, `loan_penalty`, `loan_fine`, `coll_status`, `due_amnt`, `pending_amt`, `payable_amt`, `penalty`, `fine_charge`, `coll_date`, `due_amt_track`, `penalty_track`, `fine_charge_track`, `total_paid_track`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, 'L-102', 17, '1035000', '0', 1035000, '345000', 0, 345000, '0', '0', '1', 172500, '0', '172500', '0', '0', '0000-00-00', '10000', '0', '0', '10000', '1', NULL, '2024-12-18 14:57:35', '2024-12-18 14:57:35'),
-(8, 'L-102', 17, '1035000', '10000', 1025000, '345000', 0, 335000, '0', '0', '2', 172500, '0', '162500', '0', '0', '2024-12-18', '10000', '0', '0', '10000', '1', NULL, '2024-12-18 16:51:25', '2024-12-18 16:51:25');
+INSERT INTO `collection` (`id`, `loan_id`, `cus_mapping_id`, `loan_total_amnt`, `loan_paid_amnt`, `loan_balance`, `loan_due_amnt`, `loan_pending_amnt`, `loan_payable_amnt`, `loan_penalty`, `loan_fine`, `coll_status`, `status`, `sub_status`, `due_amnt`, `pending_amt`, `payable_amt`, `penalty`, `fine_charge`, `coll_date`, `due_amt_track`, `penalty_track`, `fine_charge_track`, `total_paid_track`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(8, 'L-102', 17, '1035000', '10000', 1025000, '345000', 0, 335000, '0', '0', '2', 'Current', 'Payable', 172500, '0', '162500', '0', '0', '2024-12-18 00:00:00', '10000', '0', '0', '10000', '1', NULL, '2024-12-18 16:51:25', '2024-12-18 16:51:25'),
+(11, 'L-101', 9, '52500', '0', 52500, '10500', 0, 10500, '', '6000', '2', 'Current', 'Payable', 5250, '0', '5250', '0', '1000', '2024-12-20 00:00:00', '5245', '0', '1000', '6245', '1', NULL, '2024-12-20 16:58:39', '2024-12-20 16:58:39'),
+(12, 'L-101', 21, '52500', '0', 52500, '10500', 0, 10500, '', '6000', '1', 'Current', 'Payable', 5250, '0', '5250', '0', '5000', '2024-12-20 00:00:00', '5250', '0', '5000', '10250', '1', NULL, '2024-12-20 16:58:39', '2024-12-20 16:58:39'),
+(13, 'L-102', 17, '1035000', '20000', 1015000, '345000', 0, 325000, '0', '0', '2', 'Current', 'Payable', 172500, '0', '152500', '0', '0', '2024-12-20 00:00:00', '500', '0', '0', '500', '1', NULL, '2024-12-20 17:24:42', '2024-12-20 17:24:42'),
+(14, 'L-102', 17, '1035000', '20500', 1014500, '345000', 0, 324500, '0', '0', '2', 'Current', 'Payable', 172500, '0', '152000', '0', '0', '2024-12-20 00:00:00', '52000', '0', '0', '52000', '1', NULL, '2024-12-20 17:52:56', '2024-12-20 17:52:56'),
+(18, 'L-102', 17, '1035000', '62500', 972500, '345000', 0, 282500, '0', '0', '2', 'Current', 'Payable', 172500, '0', '110000', '0', '0', '2024-12-23 00:00:00', '10000', '0', '0', '10000', '1', NULL, '2024-12-23 12:33:36', '2024-12-23 12:33:36'),
+(19, 'L-102', 17, '1035000', '72500', 962500, '345000', 0, 272500, '0', '0', '2', 'Current', 'Payable', 172500, '0', '100000', '0', '0', '2024-12-23 17:32:37', '1000', '0', '0', '1000', '1', NULL, '2024-12-23 17:32:37', '2024-12-23 17:32:37'),
+(23, 'L-101', 9, '52500', '10495', 42005, '10500', 10505, 21005, '106', '0', '2', 'Current', 'Pending', 5250, '5255', '10505', '53', '0', '2024-12-25 15:08:35', '5', '0', '0', '5', '1', NULL, '2024-12-25 15:08:35', '2024-12-25 15:08:35'),
+(24, 'L-101', 9, '52500', '10500', 42000, '10500', 10500, 21000, '106', '0', '2', 'Current', 'Payable', 5250, '0', '5250', '53', '0', '2024-12-26 16:42:51', '1000', '0', '0', '1000', '1', NULL, '2024-12-26 16:42:51', '2024-12-26 16:42:51');
 
 -- --------------------------------------------------------
 
@@ -371,7 +407,6 @@ CREATE TABLE `customer_creation` (
   `native_address` varchar(255) DEFAULT NULL,
   `pic` varchar(100) DEFAULT NULL,
   `multiple_loan` varchar(100) NOT NULL,
-  `customer_status` varchar(100) DEFAULT NULL,
   `insert_login_id` int(11) DEFAULT NULL,
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` date DEFAULT NULL,
@@ -382,10 +417,10 @@ CREATE TABLE `customer_creation` (
 -- Dumping data for table `customer_creation`
 --
 
-INSERT INTO `customer_creation` (`id`, `cus_id`, `aadhar_number`, `cus_data`, `cus_status`, `first_name`, `last_name`, `dob`, `age`, `area`, `mobile1`, `mobile2`, `whatsapp`, `occupation`, `occ_detail`, `address`, `native_address`, `pic`, `multiple_loan`, `customer_status`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, 'C-101', '830474780575', 'Existing', 'Renewal', 'Gowthami', 'Subramani', '1993-10-02', '31', '1', '9987456321', '7563214893', '7563214893', 'Teacher', 'business', '', '', '', '1', '2', 1, 1, '2024-12-12', '2024-12-12'),
-(2, 'C-102', '741852963014', 'New', '', 'Meenashi', 'Anand', '1995-07-19', '29', '2', '8945210376', '6545219823', '6545219823', '', '', '', '', '', '0', '2', 1, NULL, '2024-12-12', NULL),
-(3, 'C-103', '235345345345', 'New', '', 'Rajie', '', '', '', '1', '8678786786', '', '', '', '', '', '', '', '1', NULL, 1, NULL, '2024-12-13', NULL);
+INSERT INTO `customer_creation` (`id`, `cus_id`, `aadhar_number`, `cus_data`, `cus_status`, `first_name`, `last_name`, `dob`, `age`, `area`, `mobile1`, `mobile2`, `whatsapp`, `occupation`, `occ_detail`, `address`, `native_address`, `pic`, `multiple_loan`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(1, 'C-101', '830474780575', 'Existing', 'Renewal', 'Gowthami', 'Subramani', '1993-10-02', '31', '1', '9987456321', '7563214893', '7563214893', 'Teacher', 'business', '', '', '', '1', 1, 1, '2024-12-12', '2024-12-12'),
+(2, 'C-102', '741852963014', 'New', '', 'Meenashi', 'Anand', '1995-07-19', '29', '2', '8945210376', '6545219823', '6545219823', '', '', '', '', '', '0', 1, NULL, '2024-12-12', NULL),
+(3, 'C-103', '235345345345', 'New', '', 'Rajie', '', '', '', '1', '8678786786', '', '', '', '', '', '', '', '1', 1, NULL, '2024-12-13', NULL);
 
 -- --------------------------------------------------------
 
@@ -483,6 +518,9 @@ CREATE TABLE `document_info` (
   `count` int(11) NOT NULL,
   `remark` varchar(100) DEFAULT NULL,
   `upload` varchar(100) NOT NULL DEFAULT '0',
+  `noc_status` int(50) NOT NULL,
+  `date_of_noc` varchar(150) DEFAULT NULL,
+  `hand_over_person` varchar(150) DEFAULT NULL,
   `insert_login_id` int(11) NOT NULL,
   `update_login_id` int(11) DEFAULT NULL,
   `created_on` date DEFAULT NULL,
@@ -493,9 +531,39 @@ CREATE TABLE `document_info` (
 -- Dumping data for table `document_info`
 --
 
-INSERT INTO `document_info` (`id`, `loan_id`, `doc_id`, `cus_id`, `doc_name`, `doc_type`, `count`, `remark`, `upload`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(6, 'L-102', 'D-103', 5, 'Aadhar card', 2, 1, '', '675823c7c1a10.png', 1, NULL, '2024-12-10', NULL),
-(8, 'L-101', 'D-105', 9, 'Aadhar card', 1, 1, '', '', 1, NULL, '2024-12-14', NULL);
+INSERT INTO `document_info` (`id`, `loan_id`, `doc_id`, `cus_id`, `doc_name`, `doc_type`, `count`, `remark`, `upload`, `noc_status`, `date_of_noc`, `hand_over_person`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(6, 'L-102', 'D-103', 5, 'Aadhar card', 2, 1, '', '675823c7c1a10.png', 0, NULL, NULL, 1, NULL, '2024-12-10', NULL),
+(8, 'L-101', 'D-105', 9, 'Aadhar card', 1, 1, '', '', 0, NULL, NULL, 1, NULL, '2024-12-14', '2024-12-19');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `expenses`
+--
+
+CREATE TABLE `expenses` (
+  `id` int(11) NOT NULL,
+  `coll_mode` int(11) NOT NULL,
+  `bank_id` int(11) DEFAULT NULL,
+  `invoice_id` varchar(100) NOT NULL,
+  `branch` int(11) NOT NULL,
+  `expenses_category` varchar(50) NOT NULL,
+  `agent_id` varchar(50) DEFAULT NULL,
+  `total_issued` varchar(50) DEFAULT NULL,
+  `total_amount` varchar(100) DEFAULT NULL,
+  `description` varchar(255) NOT NULL,
+  `amount` varchar(150) NOT NULL,
+  `trans_id` varchar(150) NOT NULL,
+  `insert_login_id` int(11) NOT NULL,
+  `created_on` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `expenses`
+--
+
+INSERT INTO `expenses` (`id`, `coll_mode`, `bank_id`, `invoice_id`, `branch`, `expenses_category`, `agent_id`, `total_issued`, `total_amount`, `description`, `amount`, `trans_id`, `insert_login_id`, `created_on`) VALUES
+(1, 1, 0, '2412001', 1, '1', '', '', '', 'ggjf', '12000', '', 1, '2024-12-23 15:59:13');
 
 -- --------------------------------------------------------
 
@@ -547,7 +615,21 @@ CREATE TABLE `fine_charges` (
 INSERT INTO `fine_charges` (`id`, `cus_mapping_id`, `loan_id`, `fine_date`, `fine_purpose`, `fine_charge`, `paid_date`, `paid_amnt`, `status`, `insert_login_id`, `update_login_id`, `created_date`, `updated_date`) VALUES
 (1, 9, 'L-101', '2024-12-16', 'delay', '500', NULL, '0', 0, '1', NULL, '2024-12-16 15:06:15', '2024-12-16 15:06:15'),
 (2, 21, 'L-101', '2024-12-16', 'delay', '5000', NULL, '0', 0, '1', NULL, '2024-12-16 15:14:22', '2024-12-16 15:14:22'),
-(3, 9, 'L-101', '2024-12-17', 'delay', '500', NULL, '0', 0, '1', NULL, '2024-12-17 16:56:26', '2024-12-17 16:56:26');
+(3, 9, 'L-101', '2024-12-17', 'delay', '500', NULL, '0', 0, '1', NULL, '2024-12-17 16:56:26', '2024-12-17 16:56:26'),
+(4, 9, 'L-101', NULL, NULL, '0', '2024-12-19', '0', NULL, NULL, NULL, NULL, '2024-12-19 10:40:32'),
+(5, 9, 'L-101', NULL, NULL, '0', '2024-12-20', '1000', NULL, NULL, NULL, NULL, '2024-12-20 16:58:39'),
+(6, 21, 'L-101', NULL, NULL, '0', '2024-12-20', '5000', NULL, NULL, NULL, NULL, '2024-12-20 16:58:39'),
+(7, 17, 'L-102', NULL, NULL, '0', '2024-12-20', '0', NULL, NULL, NULL, NULL, '2024-12-20 17:24:42'),
+(8, 17, 'L-102', NULL, NULL, '0', '2024-12-20', '0', NULL, NULL, NULL, NULL, '2024-12-20 17:52:56'),
+(9, 9, 'L-101', NULL, NULL, '0', '2024-12-20', '0', NULL, NULL, NULL, NULL, '2024-12-20 18:03:22'),
+(10, 9, 'L-101', NULL, NULL, '0', '2024-12-23', '0', NULL, NULL, NULL, NULL, '2024-12-23 11:45:37'),
+(11, 9, 'L-101', NULL, NULL, '0', '2024-12-23', '0', NULL, NULL, NULL, NULL, '2024-12-23 12:26:11'),
+(12, 17, 'L-102', NULL, NULL, '0', '2024-12-23', '0', NULL, NULL, NULL, NULL, '2024-12-23 12:33:36'),
+(13, 17, 'L-102', NULL, NULL, '0', '2024-12-23', '0', NULL, NULL, NULL, NULL, '2024-12-23 17:32:37'),
+(14, 9, 'L-101', NULL, NULL, '0', '2024-12-25', '0', NULL, NULL, NULL, NULL, '2024-12-25 13:03:00'),
+(15, 9, 'L-101', NULL, NULL, '0', '2024-12-25', '0', NULL, NULL, NULL, NULL, '2024-12-25 13:33:43'),
+(16, 17, 'L-102', NULL, NULL, '0', '2024-12-25', '0', NULL, NULL, NULL, NULL, '2024-12-25 13:34:42'),
+(17, 9, 'L-101', NULL, NULL, '0', '2024-12-25', '0', NULL, NULL, NULL, NULL, '2024-12-25 15:08:35');
 
 -- --------------------------------------------------------
 
@@ -628,7 +710,7 @@ CREATE TABLE `loan_cus_mapping` (
   `customer_mapping` varchar(11) NOT NULL,
   `designation` varchar(100) DEFAULT NULL,
   `issue_status` varchar(100) DEFAULT NULL,
-  `closed_sub_status` int(11) NOT NULL,
+  `closed_sub_status` varchar(11) DEFAULT NULL,
   `closed_remarks` varchar(250) DEFAULT NULL,
   `inserted_login_id` int(11) NOT NULL,
   `created_on` date NOT NULL
@@ -639,13 +721,13 @@ CREATE TABLE `loan_cus_mapping` (
 --
 
 INSERT INTO `loan_cus_mapping` (`id`, `loan_id`, `centre_id`, `cus_id`, `customer_mapping`, `designation`, `issue_status`, `closed_sub_status`, `closed_remarks`, `inserted_login_id`, `created_on`) VALUES
-(9, 'L-101', 'M-101', 1, 'New', 'fdgd', '1', 0, NULL, 1, '2024-12-14'),
-(13, 'L-103', 'M-103', 1, 'Additional', 'head', '1', 1, 'tttfgahfhafdhfd', 1, '2024-12-14'),
-(17, 'L-102', 'M-102', 2, 'New', 'ddd', '1', 0, '', 1, '2024-12-14'),
-(19, 'L-102', 'M-102', 3, 'Additional', '', NULL, 0, '', 1, '2024-12-14'),
-(20, 'L-103', 'M-103', 3, 'Additional', '', NULL, 2, 'efdgfdhgfdhfdhdfh', 1, '2024-12-14'),
-(21, 'L-101', 'M-101', 3, 'Additional', '', '1', 0, NULL, 1, '2024-12-14'),
-(22, 'L-104', 'M-104', 3, 'Additional', 'jkkj', NULL, 0, NULL, 1, '2024-12-16');
+(9, 'L-101', 'M-101', 1, 'New', 'fdgd', '1', '0', NULL, 1, '2024-12-14'),
+(13, 'L-103', 'M-103', 1, 'Additional', 'head', '1', '1', 'tttfgahfhafdhfd', 1, '2024-12-14'),
+(17, 'L-102', 'M-102', 2, 'New', 'ddd', '1', '0', '', 1, '2024-12-14'),
+(19, 'L-102', 'M-102', 3, 'Additional', '', NULL, '0', '', 1, '2024-12-14'),
+(20, 'L-103', 'M-103', 3, 'Additional', '', NULL, '2', 'efdgfdhgfdhfdhdfh', 1, '2024-12-14'),
+(21, 'L-101', 'M-101', 3, 'Additional', '', '1', '2', NULL, 1, '2024-12-14'),
+(22, 'L-104', 'M-104', 3, 'Additional', 'jkkj', NULL, '0', NULL, 1, '2024-12-16');
 
 -- --------------------------------------------------------
 
@@ -683,6 +765,7 @@ CREATE TABLE `loan_entry_loan_calculation` (
   `due_end` date DEFAULT NULL,
   `loan_date` date DEFAULT NULL,
   `loan_status` int(11) NOT NULL DEFAULT 0,
+  `sub_status` varchar(11) DEFAULT NULL,
   `remarks` varchar(25) DEFAULT NULL,
   `insert_login_id` int(11) NOT NULL,
   `update_login_id` int(11) DEFAULT NULL,
@@ -694,11 +777,11 @@ CREATE TABLE `loan_entry_loan_calculation` (
 -- Dumping data for table `loan_entry_loan_calculation`
 --
 
-INSERT INTO `loan_entry_loan_calculation` (`id`, `centre_id`, `loan_id`, `loan_category`, `loan_amount`, `total_customer`, `loan_amt_per_cus`, `profit_type`, `due_month`, `benefit_method`, `scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`, `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_date`, `loan_status`, `remarks`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, 'M-101', 'L-101', 1, 50000, 2, 25000, '1', '2', '2', 5, 1, 5, 1, 1, '', '', 50000, 50000, 2500, 52500, 10500, 500, 500, 49000, '2024-12-17', '2025-01-17', '2024-12-14', 4, 'hhhh', 1, 1, '2024-12-13', '2024-12-18'),
-(2, 'M-102', 'L-102', 2, 900000, 2, 450000, '1', '1', '2', 0, 5, 3, 2, 2, '', '15', 900000, 900000, 135000, 1035000, 345000, 18000, 18000, 864000, '2024-12-17', '2025-02-17', '2024-12-16', 8, 'hhhh', 1, 1, '2024-12-13', '2024-12-17'),
-(3, 'M-103', 'L-103', 1, 200000, 2, 100000, '1', '1', '2', 0, 1, 5, 1, 1, '', '', 200000, 200000, 10000, 210000, 42000, 2000, 2000, 196000, '2024-12-14', '2025-04-14', '2024-12-14', 9, 'assssss', 1, 1, '2024-12-14', '2024-12-18'),
-(4, 'M-104', 'L-104', 1, 100000, 2, 50000, '1', '2', '2', 2, 1, 5, 1, 0, '', '', 100000, 100000, 5000, 105000, 21000, 1000, 0, 99000, '2024-12-16', '2025-01-14', NULL, 1, NULL, 1, 1, '2024-12-16', '2024-12-17');
+INSERT INTO `loan_entry_loan_calculation` (`id`, `centre_id`, `loan_id`, `loan_category`, `loan_amount`, `total_customer`, `loan_amt_per_cus`, `profit_type`, `due_month`, `benefit_method`, `scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`, `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_date`, `loan_status`, `sub_status`, `remarks`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
+(1, 'M-101', 'L-101', 1, 50000, 2, 25000, '1', '2', '2', 5, 1, 6, 1, 1, '', '', 50000, 50000, 2500, 52500, 10500, 500, 500, 49000, '2024-12-17', '2025-01-17', '2024-12-14', 7, '1', 'hhhh', 1, 1, '2024-12-13', '2024-12-18'),
+(2, 'M-102', 'L-102', 2, 900000, 2, 450000, '1', '1', '2', 0, 5, 3, 2, 2, '', '15', 900000, 900000, 135000, 1035000, 345000, 18000, 18000, 864000, '2024-12-17', '2025-02-17', '2024-12-16', 8, '1', 'hhhh', 1, 1, '2024-12-13', '2024-12-24'),
+(3, 'M-103', 'L-103', 1, 200000, 2, 100000, '1', '1', '2', 0, 1, 5, 1, 1, '', '', 200000, 200000, 10000, 210000, 42000, 2000, 2000, 196000, '2024-12-14', '2025-04-14', '2024-12-14', 10, '1', 'assssss', 1, 1, '2024-12-14', '2024-12-23'),
+(4, 'M-104', 'L-104', 1, 100000, 2, 50000, '1', '2', '2', 2, 1, 5, 1, 0, '', '', 100000, 100000, 5000, 105000, 21000, 1000, 0, 99000, '2024-12-16', '2025-01-14', NULL, 1, NULL, NULL, 1, 1, '2024-12-16', '2024-12-17');
 
 -- --------------------------------------------------------
 
@@ -746,7 +829,8 @@ INSERT INTO `loan_issue` (`id`, `cus_mapping_id`, `loan_id`, `loan_amnt`, `net_c
 (6, '15', 'L-103', 200000, 98000, 1, '1', 98000, NULL, NULL, '2024-12-14', 1, NULL, '2024-12-14 12:44:39', NULL),
 (7, '17', 'L-102', 900000, 432000, 1, '1', 432000, NULL, NULL, '2024-12-16', 1, NULL, '2024-12-16 12:13:36', NULL),
 (8, '21', 'L-101', 50000, 24500, 2, '1', 14000, NULL, NULL, '2024-12-18', 1, NULL, '2024-12-18 12:13:45', NULL),
-(9, '21', 'L-101', 50000, 24500, 1, '1', 10500, NULL, NULL, '2024-12-18', 1, NULL, '2024-12-18 12:14:06', NULL);
+(9, '21', 'L-101', 50000, 24500, 1, '1', 10500, NULL, NULL, '2024-12-18', 1, NULL, '2024-12-18 12:14:06', NULL),
+(10, '19', 'L-102', 900000, 432000, 2, '1', 32000, NULL, NULL, '2024-12-23', 1, NULL, '2024-12-23 16:40:56', NULL);
 
 -- --------------------------------------------------------
 
@@ -785,6 +869,81 @@ INSERT INTO `menu_list` (`id`, `menu`, `link`, `icon`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `noc`
+--
+
+CREATE TABLE `noc` (
+  `id` int(10) NOT NULL,
+  `loan_id` varchar(150) DEFAULT NULL,
+  `customer_id` varchar(150) DEFAULT NULL,
+  `customer_name` varchar(150) DEFAULT NULL,
+  `date_of_noc` date DEFAULT NULL,
+  `insert_login_id` int(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `other_transaction`
+--
+
+CREATE TABLE `other_transaction` (
+  `id` int(11) NOT NULL,
+  `coll_mode` int(11) NOT NULL,
+  `bank_id` int(11) DEFAULT NULL,
+  `trans_cat` int(11) NOT NULL,
+  `name` int(11) NOT NULL,
+  `type` int(11) NOT NULL,
+  `ref_id` varchar(100) DEFAULT NULL,
+  `trans_id` varchar(100) NOT NULL,
+  `amount` varchar(150) NOT NULL,
+  `remark` varchar(255) NOT NULL,
+  `insert_login_id` int(11) NOT NULL,
+  `created_on` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `other_transaction`
+--
+
+INSERT INTO `other_transaction` (`id`, `coll_mode`, `bank_id`, `trans_cat`, `name`, `type`, `ref_id`, `trans_id`, `amount`, `remark`, `insert_login_id`, `created_on`) VALUES
+(1, 1, 0, 1, 1, 1, 'DEP-101', '', '100000', 'dsfs', 1, '2024-12-23 15:53:09'),
+(3, 2, 2, 3, 3, 1, 'EL-101', '45645', '10000', 'jhg', 1, '2024-12-23 15:58:24'),
+(4, 1, 0, 3, 3, 1, 'EL-102', '', '10000', 'asd', 1, '2024-12-24 14:44:54'),
+(5, 1, 0, 3, 5, 1, 'EL-103', '', '1500000', 'fgdfg', 1, '2024-12-24 14:47:35'),
+(6, 1, 0, 4, 4, 2, 'EXC-101', '', '40000', 'hgfh', 1, '2024-12-24 14:48:03'),
+(7, 1, 0, 4, 4, 2, 'EXC-102', '', '45000', 'ggfdf', 1, '2024-12-24 15:13:40'),
+(9, 1, 0, 4, 4, 2, 'EXC-104', '', '90000', 'fgfd', 1, '2024-12-24 15:15:06'),
+(10, 1, 0, 4, 4, 1, 'EXC-105', '', '75000', 'hgf', 1, '2024-12-24 15:17:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `other_trans_name`
+--
+
+CREATE TABLE `other_trans_name` (
+  `id` int(11) NOT NULL,
+  `trans_cat` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `insert_login_id` int(11) NOT NULL,
+  `created_on` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `other_trans_name`
+--
+
+INSERT INTO `other_trans_name` (`id`, `trans_cat`, `name`, `insert_login_id`, `created_on`) VALUES
+(1, 1, 'Anu', 1, '2024-12-23'),
+(2, 5, 'kumar', 1, '2024-12-23'),
+(3, 3, 'Kannan', 1, '2024-12-23'),
+(4, 4, 'Anu', 1, '2024-12-24'),
+(5, 3, 'Radha', 1, '2024-12-24');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `penalty_charges`
 --
 
@@ -804,9 +963,12 @@ CREATE TABLE `penalty_charges` (
 --
 
 INSERT INTO `penalty_charges` (`cus_mapping_id`, `loan_id`, `penalty_date`, `penalty`, `paid_date`, `paid_amnt`, `created_date`, `updated_time`) VALUES
-(9, NULL, '2024-12-17', '0', NULL, '0', '2024-12-24 17:32:48', '2024-12-24 17:32:48'),
-(21, NULL, '2024-12-17', '0', NULL, '0', '2024-12-24 17:32:48', '2024-12-24 17:32:48'),
-(19, 'L-102', '2024-12', '0', NULL, '0', '2025-01-23 17:33:28', '2025-01-23 17:33:28');
+(21, 'L-101', '2024-12-24', '53', NULL, '0', '2024-12-25 17:36:51', '2024-12-25 17:36:51'),
+(9, 'L-101', '2024-12-31', '53', NULL, '0', '2025-01-01 17:38:07', '2025-01-01 17:38:07'),
+(21, 'L-101', '2024-12-31', '53', NULL, '0', '2025-01-01 17:38:07', '2025-01-01 17:38:07'),
+(9, 'L-101', '2025-01-07', '53', NULL, '0', '2025-01-11 17:49:07', '2025-01-11 17:49:07'),
+(21, 'L-101', '2025-01-07', '53', NULL, '0', '2025-01-11 17:49:07', '2025-01-11 17:49:07'),
+(19, 'L-102', '2024-12', '3450', NULL, '0', '2025-01-11 17:49:17', '2025-01-11 17:49:17');
 
 -- --------------------------------------------------------
 
@@ -840,7 +1002,8 @@ INSERT INTO `representative_info` (`id`, `centre_id`, `rep_name`, `rep_aadhar`, 
 (4, 'M-104', 'Radha', '564565645645', '', '8123123434', '', '', 1, NULL, '2024-12-16', NULL),
 (5, 'M-105', 'knkj', '987981332132', '', '9879987465', '', '', 1, NULL, '2024-12-16', NULL),
 (6, 'M-106', 'xxxxx', '987968453132', '', '9798463136', '', '', 1, NULL, '2024-12-16', NULL),
-(7, 'M-106', 'vvvvv', '979864131321', '', '9786513213', '', '', 1, NULL, '2024-12-16', NULL);
+(7, 'M-106', 'vvvvv', '979864131321', '', '9786513213', '', '', 1, NULL, '2024-12-16', NULL),
+(8, 'M-107', 'kerthi', '867867867867', '', '8987978978', '', '', 1, NULL, '2024-12-24', NULL);
 
 -- --------------------------------------------------------
 
@@ -959,12 +1122,13 @@ INSERT INTO `sub_menu_list` (`id`, `main_menu`, `sub_menu`, `link`, `icon`) VALU
 (16, 9, 'Closed', 'closed', 'circle-with-cross'),
 (17, 10, 'NOC', 'noc', 'book'),
 (18, 11, 'Accounts', 'accounts', 'rate_review'),
-(19, 12, 'Search', 'search_screen', 'search'),
-(20, 13, 'Loan Issue Report', 'loan_issue_report', 'area-graph'),
-(21, 13, 'Collection Report', 'collection_report', 'event_note'),
-(22, 13, 'Balance Report', 'balance_report', 'event_available'),
-(23, 13, 'Closed Report', 'closed_report', 'erase'),
-(24, 14, 'Bulk Upload ', 'bulk_upload', 'cloud_done');
+(19, 11, 'Balance sheet', 'balance_sheet', 'colours'),
+(20, 12, 'Search', 'search_screen', 'search'),
+(21, 13, 'Loan Issue Report', 'loan_issue_report', 'cloud_done'),
+(22, 13, 'Collection Report', 'collection_report', 'event_note'),
+(23, 13, 'Balance Report', 'balance_report', 'event_available'),
+(24, 13, 'Closed Report', 'closed_report', 'erase'),
+(26, 14, 'Bulk Upload', 'bulk_upload', 'cloud_done');
 
 -- --------------------------------------------------------
 
@@ -1341,12 +1505,19 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `user_code`, `role`, `designation`, `address`, `place`, `email`, `mobile`, `user_name`, `password`, `branch`, `loan_category`, `centre_name`, `collection_access`, `download_access`, `screens`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, 'Super Admin', 'US-001', 1, 1, '', '', '', '', 'admin', '123', '1', '1,2', '1,2,3,4', 1, 1, '1,2,3,4,5,6,7,8,9,12,13,14,15,16', '1', '1', '2024-06-13', '2024-12-16'),
-(13, 'kamal', 'US-002', 1, 1, '', '', '', '', 'kamal', '123', '1', '2,1', '2,1', 1, 1, '1', '1', '', '2024-12-13', '0000-00-00');
+(1, 'Super Admin', 'US-001', 1, 1, '', '', '', '', 'admin', '123', '1', '1,2', '1,2,3,4', 1, 1, '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,26,24,21,22,23', '1', '1', '2024-06-13', '2024-12-16'),
+(13, 'kamal', 'US-002', 1, 1, '', '', '', '', 'kamal', '123', '1', '2,1', '2,1', 1, 1, '1', '1', '', '2024-12-13', '0000-00-00'),
+(14, 'tamil', 'US-003', 1, 1, 'Bussy Street', '', '', '', 'tamil', '123', '1', '3', '4,2', 1, 1, '1', '1', '', '2024-12-30', '0000-00-00');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `accounts_collect_entry`
+--
+ALTER TABLE `accounts_collect_entry`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `area_creation`
@@ -1443,6 +1614,12 @@ ALTER TABLE `document_info`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `expenses`
+--
+ALTER TABLE `expenses`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `family_info`
 --
 ALTER TABLE `family_info`
@@ -1500,6 +1677,24 @@ ALTER TABLE `menu_list`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `noc`
+--
+ALTER TABLE `noc`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `other_transaction`
+--
+ALTER TABLE `other_transaction`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `other_trans_name`
+--
+ALTER TABLE `other_trans_name`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `representative_info`
 --
 ALTER TABLE `representative_info`
@@ -1551,6 +1746,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `accounts_collect_entry`
+--
+ALTER TABLE `accounts_collect_entry`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `area_creation`
 --
 ALTER TABLE `area_creation`
@@ -1578,13 +1779,13 @@ ALTER TABLE `branch_creation`
 -- AUTO_INCREMENT for table `centre_creation`
 --
 ALTER TABLE `centre_creation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `closed_loan`
 --
 ALTER TABLE `closed_loan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `closed_status`
@@ -1596,7 +1797,7 @@ ALTER TABLE `closed_status`
 -- AUTO_INCREMENT for table `collection`
 --
 ALTER TABLE `collection`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `company_creation`
@@ -1635,6 +1836,12 @@ ALTER TABLE `document_info`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `expenses`
+--
+ALTER TABLE `expenses`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `family_info`
 --
 ALTER TABLE `family_info`
@@ -1644,7 +1851,7 @@ ALTER TABLE `family_info`
 -- AUTO_INCREMENT for table `fine_charges`
 --
 ALTER TABLE `fine_charges`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `loan_category`
@@ -1680,7 +1887,7 @@ ALTER TABLE `loan_id`
 -- AUTO_INCREMENT for table `loan_issue`
 --
 ALTER TABLE `loan_issue`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `menu_list`
@@ -1689,10 +1896,28 @@ ALTER TABLE `menu_list`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
+-- AUTO_INCREMENT for table `noc`
+--
+ALTER TABLE `noc`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `other_transaction`
+--
+ALTER TABLE `other_transaction`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `other_trans_name`
+--
+ALTER TABLE `other_trans_name`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `representative_info`
 --
 ALTER TABLE `representative_info`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `role`
@@ -1716,7 +1941,7 @@ ALTER TABLE `states`
 -- AUTO_INCREMENT for table `sub_menu_list`
 --
 ALTER TABLE `sub_menu_list`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `taluks`
@@ -1728,7 +1953,7 @@ ALTER TABLE `taluks`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
