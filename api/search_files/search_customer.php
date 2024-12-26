@@ -62,12 +62,6 @@ $stmt->execute();
 
 if ($stmt->rowCount() > 0) {
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        // $row['action'] = "<div class='dropdown'>
-        //     <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
-        //     <div class='dropdown-content'>
-        //         <a href='#' class='view_customer' value='" . $row['id'] . "' centre_id='" . $row['centre_id'] . "'>View</a>
-        //     </div>
-        // </div>";
         $row['action'] = "<button class='btn btn-primary view_customer' value='" . $row['id'] . "'>View</button>";
 
         $search_list_arr[] = $row; 

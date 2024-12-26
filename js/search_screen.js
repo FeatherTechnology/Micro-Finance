@@ -19,11 +19,9 @@ $(document).ready(function () {
           $("#customer_details").trigger("click");
 
           $("#search_content").show();
-          // $("#custome_list").show();
           $("#centre_list_content").hide();
           getSearchTable(data);
           getcentreList();
-          // getcentreTable(data);
         },
       });
     } else {
@@ -36,14 +34,9 @@ $(document).ready(function () {
     if (search_type == "customer_details") {
       $("#custome_list_content").show();
       $("#centre_list_content").hide();
-      // $(this).prop("checked", false);
     } else if (search_type == "centre_details") {
       $("#custome_list_content").hide();
       $("#centre_list_content").show();
-      // $(this).prop("checked", true);
-      // // $("#customer_details").prop("checked", false);
-
-      // getcentreList();
     }
   });
 
@@ -55,7 +48,6 @@ $(document).ready(function () {
   });
 
   $(document).on("click", ".view_customer", function () {
-    console.log("ksafkjsfjsbdjbsdfj");
     $("#customer_loan_content").show();
     $("#search_content").hide();
     $("#search").hide();
@@ -82,46 +74,44 @@ $(document).ready(function () {
     getCentreDetails(centre_id);
   });
 
-  $(document).on('click','.view_chart', function(){
-    var cus_mapping_id = $(this).attr('value');
-    var loan_id = $(this).attr('loan_id');
-    $('#due_chart_model').modal('show');
-    dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
-    setTimeout(()=>{
-        $('.print_due_coll').click(function(){
-            var id = $(this).attr('value');
-            Swal.fire({
-                title: 'Print',
-                text: 'Do you want to print this collection?',
-                imageUrl: 'img/printer.png',
-                imageWidth: 300,
-                imageHeight: 210,
-                imageAlt: 'Custom image',
-                showCancelButton: true,
-                confirmButtonColor: '#009688',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'No',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url:'api/collection_files/print_collection.php',
-                        data:{'coll_id':id},
-                        type:'post',
-                        cache:false,
-                        success:function(html){
-                            $('#printcollection').html(html)
-                            // Get the content of the div element
-                            var content = $("#printcollection").html();
-                        }
-                    })
-                }
-            })
-        })
-    },1000)
-});
-
-
+  $(document).on("click", ".view_chart", function () {
+    var cus_mapping_id = $(this).attr("value");
+    var loan_id = $(this).attr("loan_id");
+    $("#due_chart_model").modal("show");
+    dueChartList(cus_mapping_id, loan_id); // To show Due Chart List.
+    setTimeout(() => {
+      $(".print_due_coll").click(function () {
+        var id = $(this).attr("value");
+        Swal.fire({
+          title: "Print",
+          text: "Do you want to print this collection?",
+          imageUrl: "img/printer.png",
+          imageWidth: 300,
+          imageHeight: 210,
+          imageAlt: "Custom image",
+          showCancelButton: true,
+          confirmButtonColor: "#009688",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No",
+          confirmButtonText: "Yes",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $.ajax({
+              url: "api/collection_files/print_collection.php",
+              data: { coll_id: id },
+              type: "post",
+              cache: false,
+              success: function (html) {
+                $("#printcollection").html(html);
+                // Get the content of the div element
+                var content = $("#printcollection").html();
+              },
+            });
+          }
+        });
+      });
+    }, 1000);
+  });
 });
 
 function validate() {
@@ -230,7 +220,6 @@ function getcentreList() {
       success: function (data) {
         $("#search_content").show();
         $("#custome_list").hide();
-        // $("#search").hide();
         getcentreTable(data);
       },
     });
@@ -294,27 +283,36 @@ function getCentreDetails(centre_id) {
     "json"
   );
 }
-function dueChartList(cus_mapping_id,loan_id){
+function dueChartList(cus_mapping_id, loan_id) {
   $.ajax({
-      url: 'api/collection_files/get_due_chart_list.php',
-      data: {'cus_mapping_id':cus_mapping_id},
-      type:'post',
-      cache: false,
-      success: function(response){
-          $('#due_chart_table_div').empty();
-          $('#due_chart_table_div').html(response);
-      }
-  }).then(function(){
-    
-      $.post('api/collection_files/get_due_method_name.php',{loan_id},function(response){
-          $('#dueChartTitle').text('Due Chart ( '+ response['due_month'] + ' - '+ response['loan_type'] +' )');
-      },'json');
-  })
-
+    url: "api/collection_files/get_due_chart_list.php",
+    data: { cus_mapping_id: cus_mapping_id },
+    type: "post",
+    cache: false,
+    success: function (response) {
+      $("#due_chart_table_div").empty();
+      $("#due_chart_table_div").html(response);
+    },
+  }).then(function () {
+    $.post(
+      "api/collection_files/get_due_method_name.php",
+      { loan_id },
+      function (response) {
+        $("#dueChartTitle").text(
+          "Due Chart ( " +
+            response["due_month"] +
+            " - " +
+            response["loan_type"] +
+            " )"
+        );
+      },
+      "json"
+    );
+  });
 }
 
 function closeChartsModal() {
-  $('#due_chart_model').modal('hide');
-  $('#penalty_model').modal('hide');
-  $('#fine_model').modal('hide');
+  $("#due_chart_model").modal("hide");
+  $("#penalty_model").modal("hide");
+  $("#fine_model").modal("hide");
 }

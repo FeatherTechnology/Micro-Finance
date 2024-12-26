@@ -11,7 +11,6 @@ $mobile = isset($_POST['mobile']) ? $_POST['mobile'] : '';
 $area = isset($_POST['area']) ? $_POST['area'] : '';
 
 // Initialize the query with the common part
-// $sql = "SELECT cc.aadhar_number, cc.first_name,cc.mobile1,cc.cus_id,cc.id, anc.areaname AS area, bc.branch_name,crc.centre_name,crc.centre_id,centre_no,lcm.loan_id FROM loan_entry_loan_calculation lelc LEFT JOIN loan_cus_mapping lcm ON lcm.loan_id = lelc.loan_id LEFT JOIN centre_creation crc ON lelc.centre_id = crc.centre_id LEFT JOIN customer_creation cc ON lcm.cus_id =cc.id LEFT JOIN area_name_creation anc ON cc.area = anc.id LEFT JOIN area_creation ac ON anc.id = ac.id LEFT JOIN branch_creation bc ON ac.branch_id = bc.id INNER JOIN (SELECT MAX(centre_id) as max_id FROM centre_creation GROUP BY centre_id) latest ON crc.centre_id = latest.max_id  WHERE 1=1";
 $sql = "SELECT cc.aadhar_number, cc.first_name,cc.mobile1,cc.cus_id,cc.id, anc.areaname AS area, bc.branch_name,crc.centre_name,crc.centre_id,centre_no,lcm.loan_id
         FROM  loan_entry_loan_calculation lelc 
         LEFT JOIN loan_cus_mapping lcm ON lcm.loan_id = lelc.loan_id
