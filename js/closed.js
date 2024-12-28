@@ -62,8 +62,135 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on('click', '.ledgerViewBtn', function (event) {
+        event.preventDefault();
+        $('.ledger_view_chart_model').show();
+        $('#back_to_coll_list').show();
+        $('.closed_table_content').hide();
+        let loan_id= $(this).attr('value');
+        getLedgerViewChart(loan_id);
+    });
+    $(document).on('click', '#back_to_coll_list', function (event) {
+        event.preventDefault();
+        $('.closed_table_content').show();
+        getclosedTable();
+        $('#back_to_coll_list').hide();
+        $('.ledger_view_chart_model').hide();
+    });
+    $(document).on('click','.due-chart', function(){
+        var cus_mapping_id = $(this).attr('data-id');
+        let loan_id= $('#loan_id').val()
+        $('#due_chart_model').modal('show');
+        dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
+        setTimeout(()=>{
+            $('.print_due_coll').click(function(){
+                var id = $(this).attr('value');
+                Swal.fire({
+                    title: 'Print',
+                    text: 'Do you want to print this collection?',
+                    imageUrl: 'img/printer.png',
+                    imageWidth: 300,
+                    imageHeight: 210,
+                    imageAlt: 'Custom image',
+                    showCancelButton: true,
+                    confirmButtonColor: '#009688',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'No',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url:'api/collection_files/print_collection.php',
+                            data:{'coll_id':id},
+                            type:'post',
+                            cache:false,
+                            success:function(html){
+                                $('#printcollection').html(html)
+                                // Get the content of the div element
+                                var content = $("#printcollection").html();
+                            }
+                        })
+                    }
+                })
+            })
+        },1000)
+    });
+    $(document).on('click','.cus_due_chart', function(){
+        var cus_mapping_id = $(this).attr('value');
+        let loan_id= $('#loan_id').val()
+        $('#due_chart_model').modal('show');
+        dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
+        setTimeout(()=>{
+            $('.print_due_coll').click(function(){
+                var id = $(this).attr('value');
+                Swal.fire({
+                    title: 'Print',
+                    text: 'Do you want to print this collection?',
+                    imageUrl: 'img/printer.png',
+                    imageWidth: 300,
+                    imageHeight: 210,
+                    imageAlt: 'Custom image',
+                    showCancelButton: true,
+                    confirmButtonColor: '#009688',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'No',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url:'api/collection_files/print_collection.php',
+                            data:{'coll_id':id},
+                            type:'post',
+                            cache:false,
+                            success:function(html){
+                                $('#printcollection').html(html)
+                                // Get the content of the div element
+                                var content = $("#printcollection").html();
+                            }
+                        })
+                    }
+                })
+            })
+        },1000)
+    });
+
 
 });
+function closeChartsModal() {
+    $('#due_chart_model').modal('hide');
+    $('#penalty_model').modal('hide');
+    $('#fine_model').modal('hide');
+}
+
+function dueChartList(cus_mapping_id,loan_id){
+    $.ajax({
+        url: 'api/collection_files/get_due_chart_list.php',
+        data: {'cus_mapping_id':cus_mapping_id},
+        type:'post',
+        cache: false,
+        success: function(response){
+            $('#due_chart_table_div').empty();
+            $('#due_chart_table_div').html(response);
+        }
+    }).then(function(){
+      
+        $.post('api/collection_files/get_due_method_name.php',{loan_id},function(response){
+            $('#dueChartTitle').text('Due Chart ( '+ response['due_month'] + ' - '+ response['loan_type'] +' )');
+        },'json');
+    })
+
+}
+
+function getLedgerViewChart(loan_id){
+    $.post('api/collection_files/ledger_view_data.php', {loan_id:loan_id}, function(response){
+        $('#ledger_view_table_div').empty();
+        $('#ledger_view_table_div').html(response);
+
+    });
+}
+
+
+
 
 // function start
 function getclosedTable() {

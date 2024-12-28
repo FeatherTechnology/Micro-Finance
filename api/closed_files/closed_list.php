@@ -76,14 +76,7 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['loan_amount']) ? $row['loan_amount'] : '';
     $sub_array[] = isset($row['loan_status']) ? ($row['loan_status'] == 8 ? 'Closed' : 'Closed') : "";
     $sub_array[] = isset($row['closed_sub_status']) ? ($row['closed_sub_status'] == 1 ? 'Consider' : ($row['closed_sub_status'] == 2 ? 'Blocked' : '')) : '';
-    $chart = "<div class='dropdown'>
-    <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
-   <div class='dropdown-content'>";
-    $chart .= "<a href='#' class='due_chart' value='" . $row['id'] . "' centre_id='" . $row['centre_id'] . "' title='Due Chart'>Due Chart</a>";
-    $chart .= "<a href='#' class='penalty_chart' value='" . $row['id'] . "' title='Penalty Chart'>Penalty Chart</a>";
-    $chart .= "<a href='#' class='fine_chart' value='" . $row['id'] . "' title='Fine Chart'>Fine Chart</a>";
-    $chart .= "</div></div>";
-    $sub_array[] = $chart;
+$sub_array[] = "<button class='btn btn-primary ledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
 
     $action = "<div class='dropdown'>
     <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
