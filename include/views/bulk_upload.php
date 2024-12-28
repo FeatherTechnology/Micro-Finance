@@ -14,9 +14,10 @@
 											<label for="upload_files">Uplaod Category</label><span class="text-danger">*</span>
 											<select class="form-control" id="upload_files" name="upload_files" tabindex="1">
 												<option value="">Select Uplaod Category</option>
-												<option value="1">Customer and Centre Creation</option>
-												<option value="2">Loan Entry</option>
-												<option value="3">Loan Issue</option>
+												<option value="1">Customer Creation</option>
+												<option value="2">Centre Creation</option>
+												<option value="3">Loan Entry</option>
+												<option value="4">Loan Issue</option>
 											</select>
 										</div>
 									</div>

@@ -84,7 +84,7 @@ $loan_balance = getBalance($pdo, $cus_mapping_id, $coll_date, $loan_id);
 
 
 <div class="frame" id="dettable" style="background-color: #ffffff; font-size: 8px; display: flex;flex-direction: column; align-items: flex-start;">
-    <div style="display: flex; justify-content: center;padding-bottom:10px;"><img class="micro-logo" alt="Micro-Finance" src="img/user22.png" style="width: 224px; height: auto;" /></div>
+    <div style="display: flex; justify-content: center;padding-bottom:10px;"><img class="micro-logo" alt="Micro-Finance" src="img/logo.jpg" style="width: 125px; height: 125px;" /></div>
     <div class="overlap-group" style="display: flex; justify-content: center; gap: 10px;">
 
         <div class="captions" style="display: flex; flex-direction: column; align-items: flex-end;">

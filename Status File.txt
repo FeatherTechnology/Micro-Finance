@@ -4,4 +4,8 @@
 4 = Approve in Approval || In Loan Issue;
 5 = Cancel in Approval;
 6 = Revoke in Approval;
-7=Loan Issued/Collection
+7=Loan Issued/Collection;
+8 = collection finished/closed
+9 = closed
+10 = in  noc
+11 = noc completed
