@@ -224,6 +224,7 @@ function moneyFormatIndia($num)
         $issued = date('Y-m-d', strtotime($issue_date));
         if ($loanFrom['due_month'] == '1') {
             //Query for Monthly.
+         
             $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track,c.fine_charge_track,lelc.due_start,lelc.due_end, lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
             FROM `collection` c
              LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
@@ -245,27 +246,15 @@ function moneyFormatIndia($num)
         } else
         if ($loanFrom['due_month'] == '2') {
             //Query For Weekly.
+            
             $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
             FROM `collection` c
             LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
             WHERE c.cus_mapping_id = '$cus_mapping_id' 
             AND c.due_amt_track IS NOT NULL AND c.due_amt_track != '' 
-            AND (
-                (
-                    YEAR(c.coll_date) = YEAR('$issued') 
-                    AND WEEK(c.coll_date) >= WEEK('$issued')
-                ) 
-                OR (
-                    (
-                        YEAR(c.coll_date) = YEAR('$due_start_from') 
-                        AND WEEK(c.coll_date) < WEEK('$due_start_from')
-                    ) 
-                    OR (
-                        YEAR(c.coll_date) < YEAR('$due_start_from')
-                    )
-                )
-            ) ");
+            AND  WEEK(c.coll_date) >= WEEK('$issued')
+            AND  WEEK(c.coll_date) < WEEK('$due_start_from') ");
         }
 
         //For showing data before due start date
@@ -306,7 +295,17 @@ function moneyFormatIndia($num)
         $jj = 0;
         $last_int_amt = $due_amt_1;
 
-        $bal_amt = 0;
+        $initial_balance_query = $pdo->query("SELECT lelc.total_amount_calc,lelc.total_customer 
+        FROM loan_cus_mapping lcm
+        LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
+        WHERE lcm.id = '$cus_mapping_id'");
+    
+    $initial_balance_result = $initial_balance_query->fetch();
+    $initial_balance = floor($initial_balance_result['total_amount_calc'] / $initial_balance_result['total_customer']);
+ // Use total_amount_calc or any other dynamic value
+    
+    $bal_amt = $initial_balance;
+        $bal_amt = $initial_balance;
         $lastCusdueMonth = '1970-00-00';
         foreach ($dueMonth as $cusDueMonth) {
             if ($loanFrom['due_month'] == '1') {
@@ -344,7 +343,7 @@ function moneyFormatIndia($num)
                     } else {
                         $row['overall_amount'] = 0;
                     }
-                    $bal_amt = intVal($row['overall_amount']) - $due_amt_track;
+                    $bal_amt -= $due_amt_track;
 
 
                 ?>
@@ -371,7 +370,7 @@ function moneyFormatIndia($num)
                                 <td></td>
                                 <td></td>
                             <?php }
-                        } else { //this is for weekly and daily loan to check lastcusduemonth comparision
+                        } else { //this is for weekly  loan to check lastcusduemonth comparision
                             if (date('Y-m-d', strtotime($lastCusdueMonth)) != date('Y-m-d', strtotime($row['coll_date']))) {
                                 // this condition is to check whether the same month has collection again. if yes the no need to show month name and due amount and serial number
                             ?>
@@ -453,18 +452,13 @@ function moneyFormatIndia($num)
 
                         <?php
                         // Logic for pending and payable amounts
+      
                         if (date('Y-m', strtotime($cusDueMonth)) <= date('Y-m')) {
                             $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
                             <td><?php echo moneyFormatIndia($response['pending']); // Pending 
                                 ?></td>
                             <td><?php echo moneyFormatIndia($response['payable']); // Payable 
                                 ?></td>
-                        <?php } elseif (date('Y-m', strtotime($cusDueMonth)) > date('Y-m') && $curDateChecker == true) {
-                            $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
-                            <td><?php echo moneyFormatIndia($response['pending']); ?></td>
-                            <td><?php echo moneyFormatIndia($response['payable']); ?></td>
-                            <?php $curDateChecker = false; // Only show for one month 
-                            ?>
                         <?php } else { ?>
                             <td></td>
                             <td></td>
@@ -503,13 +497,8 @@ function moneyFormatIndia($num)
                                 ?></td>
                             <td><?php echo moneyFormatIndia($response['payable']); // Payable 
                                 ?></td>
-                        <?php } elseif (date('Y-m-d', strtotime($cusDueMonth)) > date('Y-m-d') && $curDateChecker == true) {
-                            $response = getNextLoanDetails($pdo, $cus_mapping_id, $cusDueMonth); ?>
-                            <td><?php echo moneyFormatIndia($response['pending']); ?></td>
-                            <td><?php echo moneyFormatIndia($response['payable']); ?></td>
-                            <?php $curDateChecker = false; // Only show for one due date 
-                            ?>
-                        <?php } else { ?>
+                     
+                        <?php  }else { ?>
                             <td></td>
                             <td></td>
                     <?php
@@ -527,7 +516,17 @@ function moneyFormatIndia($num)
                 $i++;
             }
         }
-
+        $initial_balance_query = $pdo->query("SELECT lelc.total_amount_calc,lelc.total_customer 
+        FROM loan_cus_mapping lcm
+        LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
+        WHERE lcm.id = '$cus_mapping_id'");
+    
+    $initial_balance_result = $initial_balance_query->fetch();
+    $initial_balance = floor($initial_balance_result['total_amount_calc'] / $initial_balance_result['total_customer']);
+ // Use total_amount_calc or any other dynamic value
+    
+    $bal_amt = $initial_balance;
+        $bal_amt = $initial_balance;
         $currentMonth = date('Y-m-d');
 
 if ($loanFrom['due_month'] == '1') {
@@ -572,7 +571,7 @@ if ($run->rowCount() > 0) {
         } else {
             $row['overall_amount'] = 0;
         }
-        $bal_amt = intVal($row['overall_amount']) - $due_amt_track;
+        $bal_amt -= $due_amt_track;
 
         // Display the data based on monthly or weekly due_month
         if ($loanFrom['due_month'] == '1') {
@@ -882,13 +881,14 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
         $countForPenalty = 0;
 
         $dueCharge = $due_amnt;
-        $start = DateTime::createFromFormat('Y-m-d', $due_start_from);
-        $current = DateTime::createFromFormat('Y-m-d', $current_date);
+        $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) + 1;
+        $toPayTillPrev = ($weeksElapsed -1) * $dueCharge;
+        $toPayTillNow = ($weeksElapsed) * $dueCharge;
 
-        for ($i = $start; $i < $current; $start->add($interval)) {
-            $loandate_tillnow += 1;
-            $toPaytilldate = intval($loandate_tillnow) * intval($dueCharge);
-        }
+        // Debugging logs
+
+        $penalty = 0;
+        $count = 0;
 
         while ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) { // To find loan date count till now from start date.
 
@@ -916,7 +916,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             }
             $count++;
 
-            if ($totalPaidAmt < $toPaytilldate && $collectioncount == 0) {
+            if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
                 $checkPenalty = $pdo->query("SELECT * from penalty_charges where penalty_date = '$penalty_checking_date' and cus_mapping_id = '$cus_mapping_id'");
                 if ($checkPenalty->rowCount() == 0) {
                     // Handle penalty charge here if needed
@@ -939,7 +939,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
         }
         if ($count > 0) {
             //if Due month exceeded due amount will be as pending with how many months are exceeded and subract pre closure amount if available
-            $response['pending'] = round(($response['due_amnt'] * $count) - $tot_paid_tilldate);
+            $response['pending'] = round($toPayTillPrev - $tot_paid_tilldate);
 
             // If due month exceeded
             if (empty($loan_arr['scheme_name'])) {
@@ -963,8 +963,12 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             // Calculate pending penalty
             $response['penalty'] = $penalty - $row['penalty'];
 
-            // Calculate payable amount
-            $response['payable'] = round($response['due_amnt'] + $response['pending']);
+            if ($response['pending']  > 0) {
+                $response['payable']  =   $response['pending']  + $response['due_amnt'];
+            }else{
+                $response['payable']  = $toPayTillNow - $tot_paid_tilldate;  
+            }
+   
             if ($response['payable'] > $response['balance']) {
                 //if payable is greater than balance then change it as balance amt coz dont collect more than balance
                 //this case will occur when collection status becoms OD

@@ -61,7 +61,7 @@ $result_check = $qry5->fetch(PDO::FETCH_ASSOC);
 if ($result_check['total_customers'] == $result_check['issued_customers']) {
     // If all customers have 'Issued' status, update loan_status to 7 in loan_entry_loan_calculation table
     $qry6 = $pdo->query("UPDATE loan_entry_loan_calculation 
-                         SET loan_status = 7 
+                         SET loan_status = 7,update_login_id = $user_id, updated_on = NOW()
                          WHERE loan_id = '$loan_id'");
 }
 

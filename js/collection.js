@@ -338,9 +338,8 @@ function collectionCustomerList(loan_id) {
             var hasRows = false;
 
             $.each(response, function (index, item) {
-                var isReadOnly = (!item.issue_status || item.issue_status.trim() === "") ? "readonly" : "";
+                var isReadOnly = (!item.issue_status || item.issue_status === "") ? "disabled" : "";    
                 var customer_amnt = item.total_cus_amnt ? item.total_cus_amnt : '';
-    
                 var dropdownContent = "<div class='dropdown'>" +
                 "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +

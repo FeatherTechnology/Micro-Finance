@@ -73,7 +73,7 @@ foreach ($result as $row) {
         if (date('Y-m-d') > $row['due_end']) {
             $coll_status = "Closed";
         } else {
-            $coll_status = "Current";
+            $coll_status = "Present";
         }
         
         $sub_array = array();
