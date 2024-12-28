@@ -15,9 +15,9 @@ if ($loan_id!= '') {
             $action = "<div class='dropdown'>
             <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
            <div class='dropdown-content'>";
-                $action .= "<a href='#' class='due_chart' value='" . $gcs_info['id'] . "'  title='Due Chart'>Due Chart</a>";
-                $action .= "<a href='#' class='penalty_chart' value='" . $gcs_info['id'] . "' title='Penalty Chart'>Penalty Chart</a>";
-                $action .= "<a href='#' class='fine_chart' value='" . $gcs_info['id']. "' title='Fine Chart'>Fine Chart</a>";
+                $action .= "<a href='#' class='cus_due_chart' value='" . $gcs_info['id'] . "'  title='Due Chart'>Due Chart</a>";
+                $action .= "<a href='#' class='cus_penalty_chart' value='" . $gcs_info['id'] . "' title='Penalty Chart'>Penalty Chart</a>";
+                $action .= "<a href='#' class='cus_fine_chart' value='" . $gcs_info['id']. "' title='Fine Chart'>Fine Chart</a>";
             $action .= "</div></div>";
             $gcs_info['chart'] = $action;
             $cus_sts_arr[] = $gcs_info;
