@@ -25,7 +25,10 @@ $query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_
           LEFT JOIN loan_cus_mapping lcm ON lelc.loan_id = lcm.loan_id
           LEFT JOIN branch_creation bc ON cc.branch = bc.id
  	JOIN users us ON FIND_IN_SET(lelc.loan_category, us.loan_category)
-     WHERE lcm.issue_status = '1' AND us.id ='$user_id' AND lelc.loan_status <=7 ";
+     WHERE lcm.issue_status = '1' 
+AND us.id = '$user_id' 
+AND lelc.loan_status NOT IN (5, 6) 
+AND lelc.loan_status <= 7 ";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];

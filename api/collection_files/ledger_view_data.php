@@ -201,9 +201,8 @@ $customer_details = $qry->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo $customer['first_name']; ?></td>
                 <td>
                     <?php
-                    // Correcting individual amount calculation for each customer
-                    $individual_amount = $customer['due_amount_calc'] / $customer['total_customer'];
-                    echo $individual_amount; // Displaying the amount with two decimal places
+                    $individual_amount = floor($customer['due_amount_calc'] / $customer['total_customer']);
+                    echo $individual_amount;
                     ?>
                 </td>
                 <?php

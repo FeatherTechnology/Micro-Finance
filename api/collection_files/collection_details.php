@@ -141,13 +141,13 @@ if ($result->rowCount() > 0) {
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $row['pending'] = max(0, $toPayTillPrev - $totalPaidAmt);
                 if ($row['pending'] > 0) {
-                    $row['payable'] = $row['pending'] + $row['individual_amount'];
+                    $row['payable'] = max(0, $row['pending'] + $row['individual_amount']);
                 }else{
-                    $row['payable'] = $toPayTillNow - $totalPaidAmt;  
+                    $row['payable'] = max(0, $toPayTillNow - $totalPaidAmt);  
                 }
                 // Add to total pending
-                $total_pending += $row['pending'];
-               // echo "Total Pending (Updated): " . $total_pending . "<br>";
+                $total_pending += max(0, $row['pending']);
+               
             }
             
         } elseif ($row['due_month'] == 2) { // Weekly calculation
@@ -170,16 +170,16 @@ if ($result->rowCount() > 0) {
                 $toPayTillPrev = ($weeksElapsed - 1)* $row['individual_amount'];
                 $row['pending'] = max(0, $toPayTillPrev - $totalPaidAmt);
                 if ($row['pending'] > 0) {
-                    $row['payable'] = $row['pending'] + $row['individual_amount'];
+                    $row['payable'] = max(0, $row['pending'] + $row['individual_amount']);
                 }else{
-                    $row['payable'] = $toPayTillNow - $totalPaidAmt;  
+                    $row['payable'] = max(0, $toPayTillNow - $totalPaidAmt);  
                 }
-                $total_pending += $row['pending']; // Add to total pending only after 1 week
+                $total_pending += max(0, $row['pending']); // Add to total pending only after 1 week
             }
         }
     
         // Add individual payable to total payable
-        $total_payable += $row['payable'];
+        $total_payable += max(0, $row['payable']);
     }
     
     
