@@ -108,7 +108,7 @@ if ($result->rowCount() > 0) {
         
         // Calculate individual_amount for each customer
         if (!empty($row['due_amount_calc']) && $row['total_customer'] > 0) {
-            $row['individual_amount'] = $row['due_amount_calc'] / $row['total_customer'];
+            $row['individual_amount'] = round($row['due_amount_calc'] / $row['total_customer']);
         } else {
             $row['individual_amount'] = 0;
         }

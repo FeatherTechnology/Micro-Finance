@@ -116,7 +116,7 @@ function moneyFormatIndia($num)
 
     $loanIssue = $issueDate->fetch();
     //If Due method is Monthly, Calculate penalty by checking the month has ended or not  
-    $loan_amt = floatval($loanIssue['total_amount_calc']) / $loanIssue['total_customer'];
+    $loan_amt = round($loanIssue['total_amount_calc']) / $loanIssue['total_customer'];
     $loan_type = 'emi';
 
     $scheme_day = $loanIssue['scheme_day_calc'];

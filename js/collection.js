@@ -361,7 +361,7 @@ function collectionCustomerList(loan_id) {
                     // Input fields for collection due amount, penalty, and fine
 
                     '<td><input type="number" class="form-control collection_due" data-id="' + item.id + '" data-individual-amount="' + item.total_cus_amnt + '" value="" ' + isReadOnly + '></td>' +
-                    '<td><input type="number" class="form-control collection_penalty" data-id="' + item.id + '" data-penalty-amount="' + item.pending + '" value=" " ' + isReadOnly + '></td>' +
+                    '<td><input type="number" class="form-control collection_penalty" data-id="' + item.id + '" data-penalty-amount="' + item.penalty + '" value=" " ' + isReadOnly + '></td>' +
                     '<td><input type="number" class="form-control collection_fine" data-id="' + item.id + '" data-fine-amount="' + item.fine_charge + '" value=" " ' + isReadOnly + '></td>' +
                     // Calculated total collection
                     '<td><input type="number" class="form-control total_collection" data-id="' + item.id + '" value=" " readonly></td>' +
@@ -393,7 +393,7 @@ function collectionCustomerList(loan_id) {
                 var overPay = moneyFormatIndia(payable);
                 var penaltyAmount = parseFloat($('input.collection_penalty[data-id="' + rowId + '"]').data('penalty-amount'));
                 var fineAmount = parseFloat($('input.collection_fine[data-id="' + rowId + '"]').data('fine-amount'));
-
+           
                 if (collectionDue > payable) {
                     // Show warning using Swal or any other method
                     swalError('Warning', 'Collection Due exceeds the Payable Amount: ' + overPay);

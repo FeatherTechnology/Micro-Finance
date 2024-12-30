@@ -241,7 +241,7 @@ class loanIssueUploadClass
                 '" . strip_tags($data['issue_amount']) . "',
                 '" . strip_tags($data['issue_date']) . "',
                 '" . $user_id . "',
-                NOW()
+                '" . strip_tags($data['issue_date']) . "'
             )";
 
                 // Execute the insert query for settlement_info
@@ -270,7 +270,7 @@ class loanIssueUploadClass
             if ($issue_count ==  $total_members) {
                 // If all customers have 'Issued' status, update loan_status to 7 in loan_entry_loan_calculation table
                 $qry6 = $pdo->query("UPDATE loan_entry_loan_calculation 
-                         SET loan_status = 7,update_login_id = $user_id, updated_on = NOW() 
+                         SET loan_status = 7,update_login_id = $user_id, updated_on = '" . strip_tags($data['issue_date']) . "'
                          WHERE loan_id = '" . strip_tags($data['loan_id']) . "' ");
             }
         }
