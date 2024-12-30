@@ -9413,7 +9413,7 @@ table.dataTable th {
 }
 
 
-#branch_create_search, #centre_create_search, #loan_entry_table_search,#noc_table_search,#loan_issue_report_table_search {
+#branch_create_search, #centre_create_search, #loan_entry_table_search,#noc_table_search,#loan_issue_report_table_search,#closed_table_search,#customer_list_table_search,#centre_current_table_search,#centre_close_table_search{
    padding: 7px !important;
    }
 

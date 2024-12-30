@@ -6,14 +6,32 @@ class overallClass
     public function getCustomerStatus($pdo, $customer_map_id)
     {
         $customer_status = '';
-        $qry = $pdo->query("SELECT COALESCE(lelc.total_amount_calc, 0) AS total_amount_calc,
-    COALESCE(lelc.total_customer, 0) AS total_customer,SUM(COALESCE(c.total_paid_track, 0) + COALESCE(c.fine_charge_track, 0) + COALESCE(c.penalty_track, 0)) AS total_paid,
-    SUM(COALESCE(fc.fine_charge, 0) + COALESCE(pc.penalty, 0)) AS payable_charge
-                            from loan_cus_mapping cm
-                            left join fine_charges fc On fc.cus_mapping_id = cm.id
-                            left join collection c On c.cus_mapping_id =cm.id
-                            left join loan_entry_loan_calculation lelc On lelc.loan_id =cm.loan_id
-                            left join penalty_charges pc on pc.cus_mapping_id=cm.id WHERE cm.id='$customer_map_id'");
+
+$qry = $pdo->query("SELECT
+c.cus_mapping_id,
+SUM(c.total_paid_track) AS total_paid_track,
+SUM(c.fine_charge_track) AS total_fine_charge_track,
+SUM(c.penalty_track) AS total_penalty_track,
+(SUM(c.total_paid_track) + SUM(c.fine_charge_track) + SUM(c.penalty_track)) AS total_paid,
+IFNULL(f.total_fine_charge, 0) AS total_fine_charge,
+IFNULL(p.total_penalty, 0) AS total_penalty,
+(SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0) + IFNULL(p.total_penalty, 0)) AS payable_charge,
+lelc.total_amount_calc,lelc.total_customer
+FROM
+collection c
+LEFT JOIN
+(SELECT cus_mapping_id, SUM(fine_charge) AS total_fine_charge FROM fine_charges GROUP BY cus_mapping_id) f
+ON f.cus_mapping_id = c.cus_mapping_id
+LEFT JOIN
+(SELECT cus_mapping_id, SUM(penalty) AS total_penalty FROM penalty_charges GROUP BY cus_mapping_id) p
+ON p.cus_mapping_id = c.cus_mapping_id
+LEFT JOIN
+loan_entry_loan_calculation lelc
+ON lelc.loan_id = c.loan_id
+WHERE
+c.cus_mapping_id = '$customer_map_id'
+GROUP BY
+c.cus_mapping_id");
         if ($qry->rowCount() > 0) {
             $res = $qry->fetch(PDO::FETCH_ASSOC);
 
