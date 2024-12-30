@@ -6,17 +6,6 @@ class overallClass
     public function getCustomerStatus($pdo, $customer_map_id)
     {
         $customer_status = '';
-//         $qry = $pdo->query("SELECT COALESCE(lelc.total_amount_calc, 0) AS total_amount_calc,
-//     COALESCE(lelc.total_customer, 0) AS total_customer,SUM(COALESCE(c.total_paid_track, 0) + COALESCE(c.fine_charge_track, 0) + COALESCE(c.penalty_track, 0)) AS total_paid,
-//     SUM(COALESCE(f.fine_charge, 0) + COALESCE(p.penalty, 0)) AS payable_charge
-//                           FROM
-//     `collection` c
-// LEFT JOIN fine_charges f ON
-//     f.cus_mapping_id = c.cus_mapping_id
-// LEFT JOIN penalty_charges p ON
-//     p.cus_mapping_id = c.cus_mapping_id
-// LEFT JOIN loan_entry_loan_calculation lelc  ON
-//    lelc.loan_id = c.loan_id WHERE c.cus_mapping_id='$customer_map_id'");
 
 $qry = $pdo->query("SELECT
 c.cus_mapping_id,
