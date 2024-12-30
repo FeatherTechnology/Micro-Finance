@@ -222,3 +222,64 @@
     </div>
 </div>
 <!-----------------------------CARD END - Ledger View Chart --------------------------------->
+<div class="modal fade" id="penalty_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content" style="background-color: white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Penalty Chart</h5>
+                <button type="button" class="close" data-dismiss="modal" tabindex="1" aria-label="Close" onclick="closeChartsModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row" id="penalty_chart_table_div">
+                        <table class="table custom-table">
+                            <thead>
+                                <th>S No.</th>
+                                <th>Penalty Date</th>
+                                <th>Penalty</th>
+                                <th>Paid Date</th>
+                                <th>Paid Amount</th>
+                                <th>Balance Amount</th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal" onclick="closeChartsModal()" tabindex="4">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /////////////////////////////////////////////////////////////////// Fine Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
+<div class="modal fade" id="fine_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content" style="background-color: white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Fine Chart</h5>
+                <button type="button" class="close" data-dismiss="modal" tabindex="1" aria-label="Close" onclick="closeChartsModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body overflow-x-cls" id="fine_chart_table_div">
+                <table class="table custom-table">
+                    <thead>
+                        <th>S No.</th>
+                        <th>Date</th>
+                        <th>Fine</th>
+                        <th>Purpose</th>
+                        <th>Paid Date</th>
+                        <th>Paid Amount</th>
+                        <th>Balance Amount</th>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-dismiss="modal" onclick="closeChartsModal()" tabindex="4">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
