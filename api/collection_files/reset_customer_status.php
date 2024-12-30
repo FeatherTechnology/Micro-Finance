@@ -67,7 +67,25 @@ class CollectStsClass
 
                 // Escape cus_mapping_id for safety
                 $cus_mapping_id = $this->pdo->quote($cus_mapping_id);
-                $checkcollection = $this->pdo->query("SELECT SUM(due_amt_track) as totalPaidAmt FROM collection WHERE cus_mapping_id = $cus_mapping_id;");
+                $current_date = date('Y-m-d');
+                if ($row['due_month'] == 1) {
+                    $checkcollection = $this->pdo->query("
+                        SELECT SUM(due_amt_track) as totalPaidAmt 
+                        FROM collection 
+                        WHERE cus_mapping_id = $cus_mapping_id 
+                        AND ((YEAR(coll_date) = YEAR('$current_date') AND MONTH(coll_date) <= MONTH('$current_date')) 
+                        OR (YEAR(coll_date) < YEAR('$current_date')))
+                    ");
+                } else {
+                    $checkcollection = $this->pdo->query("
+                        SELECT SUM(due_amt_track) as totalPaidAmt 
+                        FROM collection 
+                        WHERE cus_mapping_id = $cus_mapping_id 
+                        AND ((YEAR(coll_date) = YEAR('$current_date') AND WEEK(coll_date) <= WEEK('$current_date')) 
+                        OR (YEAR(coll_date) < YEAR('$current_date')))
+                    ");
+                }
+    
                 $checkrow = $checkcollection->fetch();
                 $totalPaidAmt = $checkrow['totalPaidAmt'] ?? 0;
 
@@ -141,7 +159,7 @@ class CollectStsClass
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillPrev - $totalPaidAmt;
-                if ($toPayTillNow == $totalPaidAmt) {
+                if ( $totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                 } else if ($toPayTillPrev == $totalPaidAmt) {
                     $status = 'Payable';
@@ -155,7 +173,7 @@ class CollectStsClass
                 }
             } else {
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
-                if ($toPayTillNow == $totalPaidAmt) {
+                if ( $totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                 } else {
                     $status = 'Payable';
@@ -180,7 +198,7 @@ class CollectStsClass
                 $toPayTillPrev = ($weeksElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillPrev - $totalPaidAmt;
 
-                if ($toPayTillNow == $totalPaidAmt) {
+                if  ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                 } else if ($toPayTillPrev == $totalPaidAmt) {
                     $status = 'Payable';
@@ -189,14 +207,14 @@ class CollectStsClass
                     if ($pending > 0) {
                         $status = ($fine_charge > 0 || $penalty > 0) ? 'OD' : 'Pending';
                     } else {
-                        $status = 'Payable'; 
+                        $status = 'Payable';
                     }
                 }
             } else {
                 // Handle the case where only 1 week has elapsed or less
                 $toPayTillNow = $weeksElapsed * $row['individual_amount'];
 
-                if ($toPayTillNow == $totalPaidAmt) {
+                if  ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                 } else {
                     $status = 'Payable';

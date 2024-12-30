@@ -122,9 +122,9 @@ if ($result->rowCount() > 0) {
 
                 // Calculate payable amount (due + pending amount)
                 if ($row['pending'] > 0) {
-                    $row['payable'] = $row['pending'] + $row['individual_amount'];
+                    $row['payable'] = max(0, $row['pending'] + $row['individual_amount']);
                 }else{
-                    $row['payable'] = $toPayTillNow - $totalPaidAmt;  
+                    $row['payable'] = max(0, $toPayTillNow - $totalPaidAmt);  
                 }
                 $row['total_cus_amnt'] = $row['overall_amount'] - $totalPaidAmt;
                 // If payable exceeds balance, adjust to balance amount
@@ -135,7 +135,7 @@ if ($result->rowCount() > 0) {
                 $row['penalty'] = 0;
 
                 // Payable will be the due amount minus any paid and pre-closure amounts
-                $row['payable'] = $row['pending'] + $row['individual_amount'] - $totalPaidAmt;
+                $row['payable'] = max(0, $row['pending'] + $row['individual_amount'] - $totalPaidAmt);
 
                 //  echo "payable: " . $row['payable'] . "<br>";
                 $row['total_cus_amnt'] = $row['overall_amount'] - $totalPaidAmt;
@@ -160,7 +160,6 @@ if ($result->rowCount() > 0) {
 
             while ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) {
                 $penalty_checking_date = $start_date_obj->format('Y-m-d');
-
                 $penalty_date = $start_date_obj->format('Y-m-d');
                 $checkcollection = $pdo->query("SELECT * FROM `collection` WHERE `cus_mapping_id` = '$cus_mapping_id' AND WEEK(coll_date) = WEEK('$penalty_checking_date') AND YEAR(coll_date) = YEAR('$penalty_checking_date')");
                 $collectioncount = $checkcollection->rowCount();
@@ -211,9 +210,9 @@ if ($result->rowCount() > 0) {
                 // Calculate payable amount (due + pending amount)
                 // $row['pending'] = $row['pending'] ?? 0;
                 if ($row['pending'] > 0) {
-                    $row['payable'] = $row['pending'] + $row['individual_amount'];
+                    $row['payable'] = max(0, $row['pending'] + $row['individual_amount']);
                 }else{
-                    $row['payable'] = $toPayTillNow - $totalPaidAmt;  
+                    $row['payable'] = max(0, $toPayTillNow - $totalPaidAmt);  
                 }
                 $row['total_cus_amnt'] = $row['overall_amount'] - $totalPaidAmt;
             } else {
@@ -222,7 +221,7 @@ if ($result->rowCount() > 0) {
                 $row['penalty'] = 0;
 
                 // Payable will be the due amount minus any paid and pre-closure amounts
-                $row['payable'] = $row['pending'] + $row['individual_amount'] - $totalPaidAmt;
+                $row['payable'] = max(0, $row['pending'] + $row['individual_amount'] - $totalPaidAmt);
                 $row['total_cus_amnt'] = $row['overall_amount'] - $totalPaidAmt;
             }
         }
