@@ -137,7 +137,7 @@
                                         <th>Collection Penalty</th>
                                         <th>Collection Fine</th>
                                         <th>Total Collection</th>
-                                        <th>Chart</th>
+                                        <th>Charts</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -266,8 +266,8 @@
         </div>
     </div>
 </div>
-<!-- /////////////////////////////////////////////////////////////////// Fine Add Modal END /////////////////////////////////////////////////////////////
- <!-- /////////////////////////////////////////////////////////////////// Penalty Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
+<!-- /////////////////////////////////////////////////////////////////// Fine Add Modal END /////////////////////////////////////////////////////////////-->
+<!-- ////////////////////////////////////////////////////////////////// Penalty Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="penalty_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content" style="background-color: white">
@@ -277,23 +277,19 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row" id="penalty_chart_table_div">
-                        <table class="table custom-table">
-                            <thead>
-                                <th>S No.</th>
-                                <th>Penalty Date</th>
-                                <th>Penalty</th>
-                                <th>Paid Date</th>
-                                <th>Paid Amount</th>
-                                <th>Balance Amount</th>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-
+            <div class="modal-body overflow-x-cls" id="penalty_chart_table_div">
+                <table class="table custom-table">
+                    <thead>
+                        <th>S No.</th>
+                        <th>Penalty Date</th>
+                        <th>Penalty</th>
+                        <th>Paid Date</th>
+                        <th>Paid Amount</th>
+                        <th>Balance Amount</th>
+                    </thead>
+                </table>
             </div>
+
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-dismiss="modal" onclick="closeChartsModal()" tabindex="4">Close</button>
             </div>
@@ -331,7 +327,7 @@
     </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////// Fine Chart Modal END ////////////////////////////////////////////////////////////////////// -->
- <!----------------------------- CARD Start- Ledger View Chart ------------------------------>
+<!----------------------------- CARD Start- Ledger View Chart ------------------------------>
 <div class="card ledger_view_chart_model" style="display: none;">
     <div class="card-header">
         <div class="card-title">Ledger View</div>
@@ -339,7 +335,7 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12" id="ledger_view_table_div" style="overflow: auto;">
-                
+
             </div>
         </div>
     </div>

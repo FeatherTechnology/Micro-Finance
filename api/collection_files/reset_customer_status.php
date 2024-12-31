@@ -17,7 +17,7 @@ class CollectStsClass
 
         // Escape loan_id to prevent SQL injection
         $loan_id = $this->pdo->quote($loan_id);
-
+       
         // Fetch loan details
 
         $loan_query = $this->pdo->query("SELECT * FROM `loan_entry_loan_calculation` WHERE loan_id = $loan_id");
@@ -80,8 +80,8 @@ class CollectStsClass
                 $fine = $checkrow['fine_charge'] ?? 0;
                 $penalty_track = $checkrow['penalty_track'] ?? 0;
                 // Fine and penalty calculations
-                $fine_charge = $this->getFineCharge($cus_mapping_id,$fine,$penalty_track);
-                $penalty = $this->getPenalty($cus_mapping_id,$fine,$penalty_track);
+                $fine_charge = $this->getFineCharge($cus_mapping_id,$fine);
+                $penalty = $this->getPenalty($cus_mapping_id,$penalty_track);
                 // Calculate and update status based on the due period (monthly/weekly)
                 $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty);
 
@@ -139,7 +139,9 @@ class CollectStsClass
     {
         $currentDate = new DateTime();
         $status = 'Payable'; // Default status
-
+    
+        // Logic for calculating the status
+        $status = '';
         // Monthly calculation
         if ($row['due_month'] == 1) {
             $due_start_from = date('Y-m', strtotime($row['due_start']));
@@ -150,7 +152,9 @@ class CollectStsClass
             $end_date_obj = DateTime::createFromFormat('Y-m-d', $due_end_from);
             $current_date_obj = DateTime::createFromFormat('Y-m', $current_month);
             $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12) + 1;
-
+            if ($start_date_obj > $current_date_obj) {
+                $monthsElapsed -= 1;
+            }
             if ($monthsElapsed > 1) {
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];

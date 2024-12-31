@@ -116,7 +116,7 @@ function moneyFormatIndia($num)
 
     $loanIssue = $issueDate->fetch();
     //If Due method is Monthly, Calculate penalty by checking the month has ended or not  
-    $loan_amt = round($loanIssue['total_amount_calc']) / $loanIssue['total_customer'];
+    $loan_amt = round($loanIssue['total_amount_calc'] / $loanIssue['total_customer']);
     $loan_type = 'emi';
 
     $scheme_day = $loanIssue['scheme_day_calc'];
@@ -261,34 +261,63 @@ function moneyFormatIndia($num)
         $due_amt_track = 0;
         $last_bal_amt = 0;
         $bal_amt = 0;
-        if ($run->rowCount() > 0) {
-            while ($row = $run->fetch()) {
-                $collectionAmnt = intVal($row['due_amt_track']);
-                $due_amt_track = $due_amt_track + intVal($row['due_amt_track']);
-                $bal_amt = $loan_amt - $due_amt_track;
+if ($run->rowCount() > 0) {
+    while ($row = $run->fetch()) {
+        $collectionAmnt = intVal($row['due_amt_track']);
+        $due_amt_track = $due_amt_track + intVal($row['due_amt_track']);
+        $bal_amt = $loan_amt - $due_amt_track;
+?>
 
-        ?>
-                <tr> <!-- Showing From loan date to due start date. if incase due paid before due start date it has to show seperatly in top row. -->
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><?php $pendingMinusCollection = (moneyFormatIndia(intval($row['pending_amt']))); ?></td>
-                    <td><?php $payableMinusCollection =(moneyFormatIndia(intVal($row['payable_amt']))); ?></td>
-                    <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
-                    <td>
-                        <?php if ($row['due_amt_track'] > 0) {
-                            echo moneyFormatIndia($row['due_amt_track']);
-                        } ?>
-                    </td>
-                    <td><?php echo moneyFormatIndia($bal_amt);?></td>
-                    <td> <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> <i class="fa fa-print" aria-hidden="true"></i> </a> </td>
-                </tr>
-
-                <?php
-            }
+        <tr> <!-- Showing From loan date to due start date. if incase due paid before due start date it has to show separately in top row. -->
+        <?php
+        if ($loanFrom['due_month'] == '1') {
+            ?>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><?php echo moneyFormatIndia(intval($row['pending_amt'])); ?></td>
+            <td><?php echo moneyFormatIndia(intVal($row['payable_amt'])); ?></td>
+            <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
+            <td>
+                <?php if ($row['due_amt_track'] > 0) {
+                    echo moneyFormatIndia($row['due_amt_track']);
+                } ?>
+            </td>
+            <td><?php echo moneyFormatIndia($bal_amt); ?></td>
+            <td> 
+                <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> 
+                    <i class="fa fa-print" aria-hidden="true"></i> 
+                </a> 
+            </td>
+            <?php
+        } else {
+            ?>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><?php echo moneyFormatIndia(intval($row['pending_amt'])); ?></td>
+            <td><?php echo moneyFormatIndia(intVal($row['payable_amt'])); ?></td>
+            <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
+            <td>
+                <?php if ($row['due_amt_track'] > 0) {
+                    echo moneyFormatIndia($row['due_amt_track']);
+                } ?>
+            </td>
+            <td><?php echo moneyFormatIndia($bal_amt); ?></td>
+            <td> 
+                <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> 
+                    <i class="fa fa-print" aria-hidden="true"></i> 
+                </a> 
+            </td>
+            </tr>
+        <?php
         }
+    }
+}
+
 
         //For showing collection after due start date
         $due_amt_track = 0;
@@ -302,10 +331,8 @@ function moneyFormatIndia($num)
     
     $initial_balance_result = $initial_balance_query->fetch();
     $initial_balance = floor($initial_balance_result['total_amount_calc'] / $initial_balance_result['total_customer']);
- // Use total_amount_calc or any other dynamic value
-    
-    $bal_amt = $initial_balance;
-        $bal_amt = $initial_balance;
+
+    $bal_amt = $bal_amt > 0 ? $bal_amt : $initial_balance;
         $lastCusdueMonth = '1970-00-00';
         foreach ($dueMonth as $cusDueMonth) {
             if ($loanFrom['due_month'] == '1') {
@@ -525,8 +552,7 @@ function moneyFormatIndia($num)
     $initial_balance = floor($initial_balance_result['total_amount_calc'] / $initial_balance_result['total_customer']);
  // Use total_amount_calc or any other dynamic value
     
-    $bal_amt = $initial_balance;
-        $bal_amt = $initial_balance;
+ $bal_amt = $bal_amt > 0 ? $bal_amt : $initial_balance;
         $currentMonth = date('Y-m-d');
 
 if ($loanFrom['due_month'] == '1') {

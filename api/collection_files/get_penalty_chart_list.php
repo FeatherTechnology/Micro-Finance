@@ -67,7 +67,6 @@ function moneyFormatIndia($num)
         $sumAmnt = $sumPenaltyAmnt->fetch();
         $penalty = $sumAmnt['penalte'];
         $paid_amt = $sumAmnt['paidAmnt'];
-
         ?>
 
 </tbody>

@@ -53,9 +53,10 @@ if ($grp['due_month'] == '1') {
         $start_date_obj->add($interval);
         $dueMonth[] = $start_date_obj->format('Y-m-d');
     }
-}
 
-$qry = $pdo->query("SELECT lcm.id as cus_mapping_id, lelc.loan_id, lelc.centre_id, cuc.cus_id, cuc.first_name,lelc.due_amount_calc,lelc.due_month,lelc.total_customer,lcm.issue_status
+   
+}
+$qry = $pdo->query("SELECT lcm.id as cus_mapping_id, lelc.loan_id, lelc.centre_id, cuc.cus_id, cuc.first_name,lelc.due_amount_calc,lelc.due_month,lelc.total_customer,lcm.issue_status,lelc.due_start
 FROM loan_cus_mapping lcm
 LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
 LEFT JOIN customer_creation cuc ON lcm.cus_id = cuc.id
@@ -208,25 +209,64 @@ $customer_details = $qry->fetchAll(PDO::FETCH_ASSOC);
                 <?php
                 if ($grp['due_month'] == '1') {
                     foreach ($dueMonth as $date) {
-                        $qry = $pdo->query("SELECT SUM(due_amt_track) AS coll_amnt 
-                            FROM collection 
-                            WHERE loan_id = '$loan_id' 
-                            AND cus_mapping_id = '" . $customer['cus_mapping_id'] . "' 
-                            AND MONTH(coll_date) = MONTH('" . $date . "') 
-                            AND YEAR(coll_date) = YEAR('" . $date . "')");
+                        if ($customer['due_start'] == $date) {
+                            // Query for coll_date before or equal to the specified date
+                            $qry = $pdo->query("
+                                SELECT SUM(due_amt_track) AS coll_amnt 
+                                FROM collection 
+                                WHERE loan_id = '$loan_id'
+                                AND cus_mapping_id = '" . $customer['cus_mapping_id'] . "'
+                                AND (
+                                    (YEAR(coll_date) < YEAR('$date')) 
+                                    OR (YEAR(coll_date) = YEAR('$date') AND MONTH(coll_date) <= MONTH('$date'))
+                                )
+                            ");
+                        } else {
+                            // Query for coll_date in the exact month and year of the specified date
+                            $qry = $pdo->query("
+                                SELECT SUM(due_amt_track) AS coll_amnt 
+                                FROM collection 
+                                WHERE loan_id = '$loan_id'
+                                AND cus_mapping_id = '" . $customer['cus_mapping_id'] . "'
+                                AND MONTH(coll_date) = MONTH('$date') 
+                                AND YEAR(coll_date) = YEAR('$date')
+                            ");
+                        }
+
+                        // Fetch and display the result
                         $row = $qry->fetch();
-                        echo "<td>" . $row['coll_amnt'] . "</td>";
+                        echo "<td>" . ($row['coll_amnt'] ? $row['coll_amnt'] : '') . "</td>";
                     }
                 } else {
                     foreach ($dueMonth as $start_date) {
-                        $qry = $pdo->query("SELECT SUM(due_amt_track) AS coll_amnt 
-                            FROM collection 
-                            WHERE loan_id = '$loan_id' 
-                            AND cus_mapping_id = '" . $customer['cus_mapping_id'] . "' 
-                            AND WEEK(coll_date) = WEEK('" . $start_date . "') 
-                            AND YEAR(coll_date) = YEAR('" . $start_date . "')");
+                        if ($customer['due_start'] == $start_date) {
+                            // Query for records in the same year and week <= the current week of $start_date
+                        
+                            $qry = $pdo->query("
+                                SELECT SUM(due_amt_track) AS coll_amnt 
+                                FROM collection 
+                                WHERE loan_id = '$loan_id' 
+                                AND cus_mapping_id = '" . $customer['cus_mapping_id'] . "' 
+                               AND (
+                                    (YEAR(coll_date) < YEAR('$start_date')) 
+                                    OR (YEAR(coll_date) = YEAR('$start_date') AND WEEK(coll_date) <= WEEK('$start_date'))
+                                )
+                            ");
+                        } else {
+                            // Query for records exactly in the same week and year as $start_date
+                            $qry = $pdo->query("
+                                SELECT SUM(due_amt_track) AS coll_amnt 
+                                FROM collection 
+                                WHERE loan_id = '$loan_id' 
+                                AND cus_mapping_id = '" . $customer['cus_mapping_id'] . "' 
+                                AND WEEK(coll_date) = WEEK('$start_date') 
+                                AND YEAR(coll_date) = YEAR('$start_date')
+                            ");
+                        }
+
+                        // Fetch and display the result
                         $row = $qry->fetch();
-                        echo "<td>" . $row['coll_amnt'] . "</td>";
+                        echo "<td>" . ($row['coll_amnt'] ? $row['coll_amnt'] : '') . "</td>";
                     }
                 }
                 ?>

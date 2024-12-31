@@ -4,10 +4,10 @@ $(document).ready(function () {
         $('#submit_cus_creation').prop('disabled', false);
         $('#cus_id').val('');
         swapTableAndCreation();
-       
+
         setTimeout(() => {
-        getAreaName()
-        getFamilyInfoTable()
+            getAreaName()
+            getFamilyInfoTable()
         }, 1000);
         $('.cus_status_div').hide();
         $('#imgshow').attr('src', 'img/avatar.png');
@@ -42,7 +42,7 @@ $(document).ready(function () {
         }
         $('#age').val(age);
     });
-    $('input[name="mobile_whatsapp"]').on('change', function () {
+    $('input[name=mobile_whatsapp]').click(function () {
         let selectedValue = $(this).val();
         let mobileNumber;
 
@@ -70,7 +70,7 @@ $(document).ready(function () {
         let fam_mobile = $('#fam_mobile').val();
         let family_id = $('#family_id').val();
 
-        var data = ['fam_name', 'fam_relationship','fam_mobile','fam_aadhar']
+        var data = ['fam_name', 'fam_relationship', 'fam_mobile', 'fam_aadhar']
 
         var isValid = true;
         data.forEach(function (entry) {
@@ -115,121 +115,121 @@ $(document).ready(function () {
         $('#family_id').val('');
         $('#family_form select').each(function () {
             $(this).val($(this).find('option:first').val());
-    
+
         });
         $('#family_form textarea').val('');
         $('#family_form input').val('');
-       
+
     })
-////////////////////////Family Modal end////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////customer creation//////////////////////////////////////
-$('#submit_cus_creation').click(function (event) {
-    event.preventDefault();
+    ////////////////////////Family Modal end////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////customer creation//////////////////////////////////////
+    $('#submit_cus_creation').click(function (event) {
+        event.preventDefault();
 
-    // Validation
-  
-    let cus_id = $('#cus_id').val();
-    let aadhar_number = $('#aadhar_number').val().replace(/\s/g, '');
-    let cus_data = $('#cus_data').val();
-    let cus_status = $('#cus_status').val();
-    let first_name = $("#first_name").val();
-    let last_name = $('#last_name').val();
-    let dob = $('#dob').val();
-    let age = $('#age').val();
-    let area = $('#area').val();
-    let mobile1 = $('#mobile1').val();
-    let mobile2 = $('#mobile2').val();
-    let whatsapp = $('#whatsapp').val();
-    let occ_detail = $('#occ_detail').val();
-    let occupation = $('#occupation').val();
-    let address = $('#address').val();
-    let native_address = $('#native_address').val();
-    let multiple_loan = $('#multiple_loan').val();
-    let pic = $('#pic')[0].files[0];
-    let per_pic = $('#per_pic').val();
-    let customer_profile_id = $('#customer_profile_id').val();
+        // Validation
 
-    let cusDetail = new FormData();
-    cusDetail.append('cus_id', cus_id);
-    cusDetail.append('aadhar_number', aadhar_number);
-    cusDetail.append('cus_data', cus_data);
-    cusDetail.append('cus_status', cus_status);
-    cusDetail.append('first_name', first_name);
-    cusDetail.append('last_name', last_name);
-    cusDetail.append('dob', dob);
-    cusDetail.append('age', age);
-    cusDetail.append('area', area);
-    cusDetail.append('mobile1', mobile1);
-    cusDetail.append('mobile2', mobile2);
-    cusDetail.append('whatsapp', whatsapp);
-    cusDetail.append('occupation', occupation);
-    cusDetail.append('occ_detail', occ_detail);
-    cusDetail.append('address', address);
-    cusDetail.append('native_address', native_address);
-    cusDetail.append('multiple_loan', multiple_loan);
-    cusDetail.append('pic', pic);
-    cusDetail.append('per_pic', per_pic);
-    cusDetail.append('customer_profile_id', customer_profile_id);
+        let cus_id = $('#cus_id').val();
+        let aadhar_number = $('#aadhar_number').val().replace(/\s/g, '');
+        let cus_data = $('#cus_data').val();
+        let cus_status = $('#cus_status').val();
+        let first_name = $("#first_name").val();
+        let last_name = $('#last_name').val();
+        let dob = $('#dob').val();
+        let age = $('#age').val();
+        let area = $('#area').val();
+        let mobile1 = $('#mobile1').val();
+        let mobile2 = $('#mobile2').val();
+        let whatsapp = $('#whatsapp').val();
+        let occ_detail = $('#occ_detail').val();
+        let occupation = $('#occupation').val();
+        let address = $('#address').val();
+        let native_address = $('#native_address').val();
+        let multiple_loan = $('#multiple_loan').val();
+        let pic = $('#pic')[0].files[0];
+        let per_pic = $('#per_pic').val();
+        let customer_profile_id = $('#customer_profile_id').val();
 
-    var data = ['cus_id', 'first_name', 'aadhar_number','area', 'mobile1', 'multiple_loan']
+        let cusDetail = new FormData();
+        cusDetail.append('cus_id', cus_id);
+        cusDetail.append('aadhar_number', aadhar_number);
+        cusDetail.append('cus_data', cus_data);
+        cusDetail.append('cus_status', cus_status);
+        cusDetail.append('first_name', first_name);
+        cusDetail.append('last_name', last_name);
+        cusDetail.append('dob', dob);
+        cusDetail.append('age', age);
+        cusDetail.append('area', area);
+        cusDetail.append('mobile1', mobile1);
+        cusDetail.append('mobile2', mobile2);
+        cusDetail.append('whatsapp', whatsapp);
+        cusDetail.append('occupation', occupation);
+        cusDetail.append('occ_detail', occ_detail);
+        cusDetail.append('address', address);
+        cusDetail.append('native_address', native_address);
+        cusDetail.append('multiple_loan', multiple_loan);
+        cusDetail.append('pic', pic);
+        cusDetail.append('per_pic', per_pic);
+        cusDetail.append('customer_profile_id', customer_profile_id);
 
-    var isValid = true;
-    data.forEach(function (entry) {
-        var fieldIsValid = validateField($('#' + entry).val(), entry);
-        if (!fieldIsValid) {
-            isValid = false;
-        }
-    });
-   
-    if (isValid) {
-        $('#submit_cus_creation').prop('disabled', true);
-        $.ajax({
-            url: 'api/customer_creation_files/submit_customer.php',
-            type: 'post',
-            data: cusDetail,
-            contentType: false,
-            processData: false,
-            cache: false,
-            success: function (response) {
-                $('#submit_cus_creation').prop('disabled', false);
-                response = JSON.parse(response);
-                if (response == '1') {
-                    swalSuccess('Success', 'Customer Info Added Successfully!');
-                } else {
-                    swalSuccess('Success', 'Customer Info Updated Successfully!');
-                }
-                $('#customer_profile_id').val(response.last_id);
-                $('#cus_data').val(response.cus_data);
-                if (response.cus_data == 'Existing') {
-                    $('.cus_status_div').show();
-                }
-                $('#cus_status').val(response.cus_status);
-                $('#customer_creation').trigger('reset');
-                getCustomerEntryTable();
-                swapTableAndCreation()
+        var data = ['cus_id', 'first_name', 'aadhar_number', 'area', 'mobile1', 'multiple_loan']
 
+        var isValid = true;
+        data.forEach(function (entry) {
+            var fieldIsValid = validateField($('#' + entry).val(), entry);
+            if (!fieldIsValid) {
+                isValid = false;
             }
         });
-    }
-});
-$(document).on('click', '.customerActionBtn', function () {
-    let id = $(this).attr('value');
-    $('#customer_profile_id').val(id);
-    swapTableAndCreation();
-    editCustomerCreation(id)
 
-});
-$('#aadhar_number').on('blur', function () {
-    let aadhar_number = $('#aadhar_number').val().trim().replace(/\s/g, ''); 
+        if (isValid) {
+            $('#submit_cus_creation').prop('disabled', true);
+            $.ajax({
+                url: 'api/customer_creation_files/submit_customer.php',
+                type: 'post',
+                data: cusDetail,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function (response) {
+                    $('#submit_cus_creation').prop('disabled', false);
+                    response = JSON.parse(response);
+                    if (response == '1') {
+                        swalSuccess('Success', 'Customer Info Added Successfully!');
+                    } else {
+                        swalSuccess('Success', 'Customer Info Updated Successfully!');
+                    }
+                    $('#customer_profile_id').val(response.last_id);
+                    $('#cus_data').val(response.cus_data);
+                    if (response.cus_data == 'Existing') {
+                        $('.cus_status_div').show();
+                    }
+                    $('#cus_status').val(response.cus_status);
+                    $('#customer_creation').trigger('reset');
+                    getCustomerEntryTable();
+                    swapTableAndCreation()
+
+                }
+            });
+        }
+    });
+    $(document).on('click', '.customerActionBtn', function () {
+        let id = $(this).attr('value');
+        $('#customer_profile_id').val(id);
+        swapTableAndCreation();
+        editCustomerCreation(id)
+
+    });
+    $('#aadhar_number').on('blur', function () {
+        let aadhar_number = $('#aadhar_number').val().trim().replace(/\s/g, '');
         existingCustmerProfile(aadhar_number)
-    
-});
-$(document).on('click', '.customerDeleteBtn', function () {
-    var id = $(this).attr('value');
-    swalConfirm('Delete', 'Do you want to Delete the Customer Details?', getCustomerDelete, id);
-    return;
-});
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    });
+    $(document).on('click', '.customerDeleteBtn', function () {
+        var id = $(this).attr('value');
+        swalConfirm('Delete', 'Do you want to Delete the Customer Details?', getCustomerDelete, id);
+        return;
+    });
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 });
 $(function () {
     getCustomerEntryTable();
@@ -307,7 +307,7 @@ function editCustomerCreation(id) {
         }
         getAreaName()
         setTimeout(() => {
-            getAutoGenCusId(id)  
+            getAutoGenCusId(id)
             $('#area').trigger('change');
             getFamilyInfoTable()
         }, 1000);
@@ -341,7 +341,7 @@ function existingCustmerProfile(aadhar_number) {
             $('#cus_status').val('');
             $('#address').val('');
             $('#native_address').val('');
-            $('#occupation').val(''); 
+            $('#occupation').val('');
             $('#occ_detail').val('');
             $('#multiple_loan').val('');
             $('.cus_status_div').hide();
@@ -381,15 +381,15 @@ function existingCustmerProfile(aadhar_number) {
             setTimeout(() => {
                 getFamilyInfoTable()
                 $('#area').trigger('change');
-               
+
             }, 1000);
             $('.cus_status_div').show();
-         
+
             let path = "uploads/loan_entry/cus_pic/";
             $('#per_pic').val(response[0].pic);
             var img = $('#imgshow');
             img.attr('src', path + response[0].pic);
-          
+
 
         }
     }, 'json');
@@ -421,7 +421,7 @@ $('button[type="reset"],#back_btn').click(function (event) {
     $('#customer_creation select').css('border', '1px solid #cecece');
     $('#customer_creation textarea').css('border', '1px solid #cecece');
     $('.cus_status_div').hide();
-         
+
 
 });
 function getCustomerDelete(id) {
@@ -472,7 +472,7 @@ function getFamilyTable() {
         $('#family_form input').css('border', '1px solid #cecece');
         $('#family_form select').css('border', '1px solid #cecece');
         $('#fam_relationship').val('');
-        
+
     }, 'json')
 }
 
@@ -481,7 +481,7 @@ function getFamilyDelete(id) {
         if (response == '1') {
             swalSuccess('Success', 'Family Info Deleted Successfully!');
             getFamilyTable();
-        }  else {
+        } else {
             swalError('Warning', 'Error occur While Delete Family Info.');
         }
     }, 'json');
