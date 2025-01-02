@@ -9412,10 +9412,9 @@ table.dataTable th {
   width: 10px !important;
 }
 
-
-#branch_create_search, #centre_create_search, #loan_entry_table_search,#noc_table_search,#loan_issue_report_table_search,#closed_table_search,#customer_list_table_search,#centre_current_table_search,#centre_close_table_search,#customer_create_search{
-   padding: 7px !important;
-   }
+#branch_create_search, #centre_create_search, #loan_entry_table_search,#noc_table_search,#loan_issue_report_table_search,#closed_table_search,#customer_list_table_search,#centre_current_table_search,#centre_close_table_search,#customer_create_search,#collection_list_table_search{
+  padding: 7px !important;
+  }
 
 /* Adding border between Collection Info and Collection Track */
 #customer_list_table th:nth-child(8), /* Border after the 'Fine' column in Collection Info */
@@ -9440,3 +9439,6 @@ table.dataTable th {
     vertical-align: middle;
 }
 
+#customer_list_table tbody tr td {
+  vertical-align: middle;
+}
