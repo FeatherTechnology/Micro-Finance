@@ -20,7 +20,12 @@ $(document).ready(function () {
         'noc':'noc',
         'accounts':'accounts',
         'balance_sheet':'accounts',
-        'search_screen':'search'
+        'search_screen':'search',
+        'loan_issue_report':'reports',
+        'collection_report':'reports',
+        'balance_report':'reports',
+        'closed_report':'reports',
+        'bulk_upload':'bulk_upload',
     };
 
     const current_page = localStorage.getItem('currentPage');

@@ -27,12 +27,13 @@ $area = $_POST['area'];
 $branch = $_POST['branch'];
 $centre_create_id = $_POST['centre_create_id'];
 $user_id = $_SESSION['user_id'];
+$current_date = date('Y-m-d ');
 
 if ($centre_create_id != '') {
-    $qry = $pdo->query("UPDATE `centre_creation` SET `centre_id`='$centre_id', `centre_no`='$centre_no',`centre_name`='$centre_name', `mobile1`='$mobile1', `mobile2`='$mobile2', `area`='$area', `branch`='$branch', `pic`='$picture',`update_login_id`='$user_id', updated_on = now() WHERE `id`='$centre_create_id'");
+    $qry = $pdo->query("UPDATE `centre_creation` SET `centre_id`='$centre_id', `centre_no`='$centre_no',`centre_name`='$centre_name', `mobile1`='$mobile1', `mobile2`='$mobile2', `area`='$area', `branch`='$branch', `pic`='$picture',`update_login_id`='$user_id', updated_on = '$current_date' WHERE `id`='$centre_create_id'");
     $result = 0; // Update
 } else {
-    $qry = $pdo->query("INSERT INTO `centre_creation`(`centre_id`, `centre_no`,`centre_name`,`mobile1`, `mobile2`, `area`, `branch`,`pic`, `insert_login_id`, `created_on`) VALUES ('$centre_id', '$centre_no','$centre_name','$mobile1', '$mobile2', '$area', '$branch', '$picture', '$user_id', now())");
+    $qry = $pdo->query("INSERT INTO `centre_creation`(`centre_id`, `centre_no`,`centre_name`,`mobile1`, `mobile2`, `area`, `branch`,`pic`, `insert_login_id`, `created_on`) VALUES ('$centre_id', '$centre_no','$centre_name','$mobile1', '$mobile2', '$area', '$branch', '$picture', '$user_id', '$current_date')");
     $result = 1; // Insert
 }
 

@@ -115,11 +115,11 @@
                                         <div class="form-group">
                                             <label>Choose Mobile Number for WhatsApp:</label><br>
                                             <label>
-                                                <input type="radio" name="mobile_whatsapp" value="mobile1" id="mobile1_radio">
+                                                <input type="radio" name="mobile_whatsapp" value="mobile1" id="mobile1_radio" tabindex="12">
                                                 Mobile Number 1
                                             </label><br>
                                             <label>
-                                                <input type="radio" name="mobile_whatsapp" value="mobile2" id="mobile2_radio">
+                                                <input type="radio" name="mobile_whatsapp" value="mobile2" id="mobile2_radio" tabindex="13">
                                                 Mobile Number 2
                                             </label>
                                             <input type="hidden" id="selected_mobile_radio">
@@ -128,38 +128,38 @@
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="whatsapp"> WhatsApp Number </label>
-                                            <input type="number" class="form-control" id="whatsapp" name="whatsapp" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter WhatsApp Number" tabindex="10">
+                                            <input type="number" class="form-control" id="whatsapp" name="whatsapp" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter WhatsApp Number" tabindex="14">
                                         </div>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="occupation">Occupation</label>
-                                            <input type="text" class="form-control" id="occupation" name="occupation" placeholder="Enter Occupation" tabindex="11">
+                                            <input type="text" class="form-control" id="occupation" name="occupation" placeholder="Enter Occupation" tabindex="15">
                                         </div>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="occ_detail">Occupation Detail</label>
-                                            <input type="text" class="form-control" id="occ_detail" name="occ_detail" placeholder="Enter Occupation Detail" tabindex="12">
+                                            <input type="text" class="form-control" id="occ_detail" name="occ_detail" placeholder="Enter Occupation Detail" tabindex="16">
                                         </div>
                                     </div>
 
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="address"> Address </label>
-                                            <textarea class="form-control" name="address" id="address" placeholder="Enter Address" tabindex="13"></textarea>
+                                            <textarea class="form-control" name="address" id="address" placeholder="Enter Address" tabindex="17"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="native_address"> Native Address </label>
-                                            <textarea class="form-control" name="native_address" id="native_address" placeholder="Enter Native Address" tabindex="14"></textarea>
+                                            <textarea class="form-control" name="native_address" id="native_address" placeholder="Enter Native Address" tabindex="18"></textarea>
                                         </div>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="multiple_loan">Muliple Loan Entry</label><span class="text-danger">*</span>
-                                            <select type="text" class="form-control" id="multiple_loan" name="multiple_loan" tabindex="15">
+                                            <select type="text" class="form-control" id="multiple_loan" name="multiple_loan" tabindex="19">
                                                 <option value="">Select Multiple Loan Entry</option>
                                                 <option value="1">Enable</option>
                                                 <option value="0">Disable</option>
@@ -175,7 +175,7 @@
                                         <div class="form-group">
                                             <label for="pic"> Photo</label><br>
                                             <img id='imgshow' class="img_show" src='img\avatar.png' />
-                                            <input type="file" class="form-control  personal_info_disble" id="pic" name="pic" tabindex="16">
+                                            <input type="file" class="form-control  personal_info_disble" id="pic" name="pic" tabindex="20">
                                             <input type="hidden" class="personal_info_disble" id="per_pic">
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Family Info 
-                            <button type="button" class="btn btn-primary" id="add_group" name="add_group" data-toggle="modal" data-target="#add_fam_info_modal" onclick="getFamilyTable()" style="padding: 5px 35px; float: right;" tabindex='17'><span class="icon-add"></span></button>
+                            <button type="button" class="btn btn-primary" id="add_group" name="add_group" data-toggle="modal" data-target="#add_fam_info_modal" onclick="getFamilyTable()" style="padding: 5px 35px; float: right;" tabindex='21'><span class="icon-add"></span></button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -217,8 +217,8 @@
             <div class="col-md-12 ">
                 <div class="text-right">
 
-                    <button type="submit" name="submit_cus_creation" id="submit_cus_creation" class="btn btn-primary" value="Submit" tabindex="18"><span class="icon-check"></span>&nbsp;Submit</button>
-                    <button type="reset" class="btn btn-outline-secondary" tabindex="19">Clear</button>
+                    <button type="submit" name="submit_cus_creation" id="submit_cus_creation" class="btn btn-primary" value="Submit" tabindex="22"><span class="icon-check"></span>&nbsp;Submit</button>
+                    <button type="reset" class="btn btn-outline-secondary" tabindex="23">Clear</button>
                 </div>
             </div>
         </div>
@@ -249,7 +249,7 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="fam_relationship">Relationship</label><span class="text-danger">*</span>
-                                    <select type="text" class="form-control" id="fam_relationship" name="fam_relationship" tabindex="1">
+                                    <select type="text" class="form-control" id="fam_relationship" name="fam_relationship" tabindex="2">
                                         <option value=""> Select Relationship </option>
                                         <option value="Father"> Father </option>
                                         <option value="Mother"> Mother </option>
@@ -266,28 +266,28 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="fam_age">Age</label>
-                                    <input type="number" class="form-control" name="fam_age" id="fam_age" tabindex="1" placeholder="Enter Age">
+                                    <input type="number" class="form-control" name="fam_age" id="fam_age" tabindex="3" placeholder="Enter Age">
                                     <input type="hidden" id="addage_id" value='0'>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="fam_occupation">Occupation</label>
-                                    <input class="form-control" name="fam_occupation" id="fam_occupation" tabindex="1" placeholder="Enter Occupation">
+                                    <input class="form-control" name="fam_occupation" id="fam_occupation" tabindex="4" placeholder="Enter Occupation">
                                     <input type="hidden" id="addoccupation_id" value='0'>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="fam_aadhar">Aadhar No</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="fam_aadhar" id="fam_aadhar" tabindex="1" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
+                                    <input type="text" class="form-control" name="fam_aadhar" id="fam_aadhar" tabindex="5" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
                                     <input type="hidden" id="addaadhar_id" value='0'>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="fam_mobile">Mobile No</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" name="fam_mobile" id="fam_mobile" onKeyPress="if(this.value.length==10) return false;" tabindex="1" placeholder="Enter Mobile Number">
+                                    <input type="number" class="form-control" name="fam_mobile" id="fam_mobile" onKeyPress="if(this.value.length==10) return false;" tabindex="6" placeholder="Enter Mobile Number">
                                     <input type="hidden" id="addmobile_id" value='0'>
                                 </div>
                             </div>
@@ -295,8 +295,8 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="" style="visibility:hidden"></label><br>
-                                    <button name="submit_family" id="submit_family" class="btn btn-primary" tabindex="1"><span class="icon-check"></span>&nbsp;Submit</button>
-                                    <button type="reset" id="clear_fam_form" class="btn btn-outline-secondary" tabindex="">Clear</button>
+                                    <button name="submit_family" id="submit_family" class="btn btn-primary" tabindex="7"><span class="icon-check"></span>&nbsp;Submit</button>
+                                    <button type="reset" id="clear_fam_form" class="btn btn-outline-secondary" tabindex="8">Clear</button>
                                 </div>
                             </div>
                         </div>

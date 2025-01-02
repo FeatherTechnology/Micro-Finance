@@ -52,7 +52,7 @@ class CustomerStatus
 
         $result = $this->pdo->query($query);
 
-        $overall_status = 'Payable'; // Default overall status
+        $status = 'Payable';
 
 
         if ($result->rowCount() > 0) {
