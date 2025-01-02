@@ -13,8 +13,8 @@ $other_trans_id = $_POST['other_trans_id'];
 // $other_user_name = $_POST['other_user_name'];
 $other_amnt = $_POST['other_amnt'];
 $other_remark = $_POST['other_remark'];
-
-$qry = $pdo->query("INSERT INTO `other_transaction`( `coll_mode`, `bank_id`, `trans_cat`, `name`, `type`, `ref_id`, `trans_id`, `amount`, `remark`, `insert_login_id`, `created_on`) VALUES ('$coll_mode','$bank_id','$trans_category','$other_trans_name','$cat_type','$other_ref_id','$other_trans_id','$other_amnt','$other_remark','$user_id', now() )");
+$current_date_time = date('Y-m-d H:i:s');
+$qry = $pdo->query("INSERT INTO `other_transaction`( `coll_mode`, `bank_id`, `trans_cat`, `name`, `type`, `ref_id`, `trans_id`, `amount`, `remark`, `insert_login_id`, `created_on`) VALUES ('$coll_mode','$bank_id','$trans_category','$other_trans_name','$cat_type','$other_ref_id','$other_trans_id','$other_amnt','$other_remark','$user_id', '$current_date_time' )");
 if ($qry) {
     $result = 1;
 } else {

@@ -229,7 +229,7 @@ function moneyFormatIndia($num)
             FROM `collection` c
              LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
-            WHERE c.cus_mapping_id = '$cus_mapping_id' AND (c.due_amt_track != '')
+            WHERE c.cus_mapping_id = '$cus_mapping_id' AND (c.due_amt_track != '') AND c.due_amt_track > 0
             AND(
                 (
                     ( MONTH(c.coll_date) >= MONTH('$issued') AND YEAR(c.coll_date) = YEAR('$issued') )
@@ -245,16 +245,15 @@ function moneyFormatIndia($num)
             )");
         } else
         if ($loanFrom['due_month'] == '2') {
-            //Query For Weekly.
-            
+            //Query For Weekly. 
             $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
             FROM `collection` c
             LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
             WHERE c.cus_mapping_id = '$cus_mapping_id' 
-            AND c.due_amt_track IS NOT NULL AND c.due_amt_track != '' 
-            AND  WEEK(c.coll_date) >= WEEK('$issued')
-            AND  WEEK(c.coll_date) < WEEK('$due_start_from') ");
+            AND c.due_amt_track IS NOT NULL AND c.due_amt_track != '' AND c.due_amt_track > 0
+            AND c.coll_date BETWEEN ('$issued')
+            AND ('$due_start_from') ");
         }
 
         //For showing data before due start date
@@ -317,8 +316,6 @@ if ($run->rowCount() > 0) {
         }
     }
 }
-
-
         //For showing collection after due start date
         $due_amt_track = 0;
         $jj = 0;
@@ -342,7 +339,7 @@ if ($run->rowCount() > 0) {
                 LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                 LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
                 WHERE c.cus_mapping_id = '$cus_mapping_id'
-                AND c.due_amt_track != ''
+                AND c.due_amt_track != '' AND c.due_amt_track > 0
                 AND (
                     MONTH(c.coll_date) = MONTH('$cusDueMonth') 
                     AND YEAR(c.coll_date) = YEAR('$cusDueMonth')
@@ -354,7 +351,7 @@ if ($run->rowCount() > 0) {
             LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
             WHERE c.cus_mapping_id = '$cus_mapping_id'
-            AND c.due_amt_track != ''
+            AND c.due_amt_track != '' AND c.due_amt_track > 0
             AND (
                 WEEK(c.coll_date) = WEEK('$cusDueMonth') 
                 AND YEAR(c.coll_date) = YEAR('$cusDueMonth')
@@ -370,7 +367,8 @@ if ($run->rowCount() > 0) {
                     } else {
                         $row['overall_amount'] = 0;
                     }
-                    $bal_amt -= $due_amt_track;
+                $bal_amt = max(0,$bal_amt - $due_amt_track);
+
 
 
                 ?>
@@ -564,7 +562,7 @@ if ($loanFrom['due_month'] == '1') {
                         LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
                         WHERE c.`cus_mapping_id` = '$cus_mapping_id' 
-                        AND (c.due_amt_track != '') 
+                        AND (c.due_amt_track != '') AND c.due_amt_track > 0
                         AND (MONTH(c.coll_date) > MONTH('$maturity_month') AND Year(c.coll_date) > Year('$maturity_month') 
                              AND MONTH(c.coll_date) <= MONTH('$currentMonth') AND  Year(c.coll_date) <= Year('$currentMonth') 
                              AND c.coll_date != '0000-00-00')");
@@ -578,7 +576,7 @@ if ($loanFrom['due_month'] == '1') {
                         LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
                         WHERE c.`cus_mapping_id` = '$cus_mapping_id' 
-                        AND (c.due_amt_track != '') 
+                        AND (c.due_amt_track != '') AND c.due_amt_track > 0
                         AND (WEEK(c.coll_date) > WEEK('$maturity_month') AND Year(c.coll_date) > Year('$maturity_month') 
                              AND WEEK(c.coll_date) <= WEEK('$currentMonth') AND Year(c.coll_date) <= Year('$maturity_month') 
                              AND c.coll_date != '0000-00-00')");

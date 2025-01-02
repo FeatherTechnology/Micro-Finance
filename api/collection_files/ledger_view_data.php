@@ -241,7 +241,6 @@ $customer_details = $qry->fetchAll(PDO::FETCH_ASSOC);
                     foreach ($dueMonth as $start_date) {
                         if ($customer['due_start'] == $start_date) {
                             // Query for records in the same year and week <= the current week of $start_date
-                        
                             $qry = $pdo->query("
                                 SELECT SUM(due_amt_track) AS coll_amnt 
                                 FROM collection 

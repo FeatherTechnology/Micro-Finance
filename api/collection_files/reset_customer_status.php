@@ -104,22 +104,23 @@ class CollectStsClass
             $overall_status = 'Paid';
         }
 
-        if ($overall_status == 'Paid') {
-            $update_query = "UPDATE loan_entry_loan_calculation SET sub_status = 2 WHERE loan_id = $loan_id";
-        } else {
-            $update_query = "UPDATE loan_entry_loan_calculation SET sub_status = 1 WHERE loan_id = $loan_id";
-        }
+        // if ($overall_status == 'Paid') {
+        //     $update_query = "UPDATE loan_entry_loan_calculation SET sub_status = 2 WHERE loan_id = $loan_id";
+        // } else {
+        //     $update_query = "UPDATE loan_entry_loan_calculation SET sub_status = 1 WHERE loan_id = $loan_id";
+        // }
 
-        // Execute the update query
-        $this->pdo->exec($update_query);
+        // // Execute the update query
+        // $this->pdo->exec($update_query);
 
         return $overall_status;
     }
  
     private function getFineCharge($cus_mapping_id,$fine)
     {
+        $current_date = date('Y-m-d');
         // Escape loan_id for safety
-        $fine_query = $this->pdo->query("SELECT SUM(fine_charge) as fine_charge FROM fine_charges WHERE cus_mapping_id = $cus_mapping_id AND  fine_date <= CURDATE() ");
+        $fine_query = $this->pdo->query("SELECT SUM(fine_charge) as fine_charge FROM fine_charges WHERE cus_mapping_id = $cus_mapping_id AND  fine_date <='$current_date' ");
         $fine_row = $fine_query->fetch();
         $fine_cal = $fine_row['fine_charge'] ?? 0;
         $final_fine = $fine_cal - $fine;
@@ -127,8 +128,8 @@ class CollectStsClass
     }
 
     private function getPenalty($cus_mapping_id,$penalty_track)
-    {
-        $penalty_query = $this->pdo->query("SELECT SUM(penalty) as penalty FROM penalty_charges WHERE cus_mapping_id = $cus_mapping_id AND penalty_date <= CURDATE()");
+    {$current_date = date('Y-m-d');
+        $penalty_query = $this->pdo->query("SELECT SUM(penalty) as penalty FROM penalty_charges WHERE cus_mapping_id = $cus_mapping_id AND penalty_date <= '$current_date'");
         $penalty_row = $penalty_query->fetch();
         $pen_cal = $penalty_row['penalty'] ?? 0;
         $final_penalty = $pen_cal - $penalty_track;
@@ -161,13 +162,16 @@ class CollectStsClass
                 $pending = $toPayTillPrev - $totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
+                    if ($fine_charge > 0 || $penalty > 0) {
+                        $status = 'Pending';
+                    }
                 } else if ($toPayTillPrev == $totalPaidAmt) {
                     $status = 'Payable';
                 } else if ($current_date_obj > $end_date_obj) {
                     $status = 'OD';
                 } else {
                     // Check for outstanding or pending status
-                    if ($pending > 0 || $fine_charge > 0 || $penalty > 0) {
+                    if ($pending > 0) {
                         $status = 'Pending';
                     } else {
                         $status = 'Payable';
@@ -203,13 +207,19 @@ class CollectStsClass
 
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
-                } else if ($toPayTillPrev == $totalPaidAmt) {
+                    // If there are fines or penalties, the status should be 'Pending' even if the amount is fully paid
+                    if ($fine_charge > 0 || $penalty > 0) {
+                        $status = 'Pending';
+                    }
+                } elseif ($toPayTillPrev == $totalPaidAmt) {
+                    // If the total paid amount equals the amount due till the previous period, set status to 'Payable'
                     $status = 'Payable';
-                } else if ($current_date_obj > $end_date_obj) {
+                } elseif ($current_date_obj > $end_date_obj) {
+                    // If the current date is past the end date, set status to 'OD' (Overdue)
                     $status = 'OD';
                 } else {
-                    // Check for outstanding or pending status
-                    if ($pending > 0 || $fine_charge > 0 || $penalty > 0) {
+                    // Check if there is any pending amount
+                    if ($pending > 0) {
                         $status = 'Pending';
                     } else {
                         $status = 'Payable';

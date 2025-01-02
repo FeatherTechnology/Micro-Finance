@@ -14,7 +14,7 @@ $column = array(
     'cc.mobile1',
     'anc.areaname',
     'bc.branch_name',
-    'lelc.id', 
+    'lelc.id',
     'lelc.id',
     'lelc.id',
 );
@@ -27,7 +27,9 @@ $query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_
           LEFT JOIN area_name_creation anc ON cc.area = anc.id
           LEFT JOIN branch_creation bc ON cc.branch = bc.id
  	JOIN users us ON FIND_IN_SET(lelc.loan_category, us.loan_category)
-     WHERE lcm.issue_status = '1' AND us.id ='$user_id' ";
+    WHERE lcm.issue_status = '1' 
+  AND us.id = '$user_id' 
+  AND NOT (lelc.loan_status >= 8)";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];
@@ -40,7 +42,7 @@ if (isset($_POST['search'])) {
                       OR bc.branch_name LIKE '%" . $search . "%')";
     }
 }
- $query .= "GROUP BY lelc.loan_id ";
+$query .= "GROUP BY lelc.loan_id ";
 
 
 
@@ -68,43 +70,39 @@ $sno = isset($_POST['start']) ? $_POST['start'] + 1 : 1;
 $data = [];
 $data = [];
 foreach ($result as $row) {
-    if ($row['sub_status'] != 2) {
-        $status = $collectionSts->updateCollectStatus($row['loan_id']);
-        if (date('Y-m-d') > $row['due_end']) {
-            $coll_status = "Closed";
-        } else {
-            $coll_status = "Present";
-        }
-        
-        $sub_array = array();
 
-        $sub_array[] = $sno++;
-        $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';
-        $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';
-        $sub_array[] = isset($row['centre_no']) ? $row['centre_no'] : '';
-        $sub_array[] = isset($row['centre_name']) ? $row['centre_name'] : '';
-        $sub_array[] = isset($row['mobile1']) ? $row['mobile1'] : '';
-        $sub_array[] = isset($row['areaname']) ? $row['areaname'] : '';
-        $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
-     $sub_array[] = $status;
-        $action= "<div class='dropdown'>
+    $status = $collectionSts->updateCollectStatus($row['loan_id']);
+    if (date('Y-m-d') > $row['due_end']) {
+        $coll_status = "Closed";
+    } else {
+        $coll_status = "Present";
+    }
+
+    $sub_array = array();
+
+    $sub_array[] = $sno++;
+    $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';
+    $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';
+    $sub_array[] = isset($row['centre_no']) ? $row['centre_no'] : '';
+    $sub_array[] = isset($row['centre_name']) ? $row['centre_name'] : '';
+    $sub_array[] = isset($row['mobile1']) ? $row['mobile1'] : '';
+    $sub_array[] = isset($row['areaname']) ? $row['areaname'] : '';
+    $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
+    $sub_array[] = $status;
+    $action = "<div class='dropdown'>
                     <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
                    <div class='dropdown-content'>";
-    
-      $action .= "<a href='#' class='pay-due' data-value='" . $row['loan_id'] . "_" . $row['centre_id'] . "_" . $row['centre_name'] ."_" . $status . "_" . $coll_status . "' title='Pay Fine'>Pay Due</a>";
-    
-        
-      
-            $action  .= "<a href='#' class='pay-fine' value='" . $row['loan_id'] . "' title='Fine'>Fine</a>";
-        
-        $action .= "</div></div>";
-        $sub_array[] = $action;
-        $sub_array[] = "<button class='btn btn-primary ledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
-        $data[] = $sub_array;
-    } else {
-        $status = $collectionSts->updateCollectStatus($row['loan_id']);
-    }
-    
+
+    $action .= "<a href='#' class='pay-due' data-value='" . $row['loan_id'] . "_" . $row['centre_id'] . "_" . $row['centre_name'] . "_" . $status . "_" . $coll_status . "' title='Pay Fine'>Pay Due</a>";
+
+
+
+    $action  .= "<a href='#' class='pay-fine' value='" . $row['loan_id'] . "' title='Fine'>Fine</a>";
+
+    $action .= "</div></div>";
+    $sub_array[] = $action;
+    $sub_array[] = "<button class='btn btn-primary ledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
+    $data[] = $sub_array;
 }
 function count_all_data($pdo)
 {
@@ -122,4 +120,3 @@ $output = array(
 );
 
 echo json_encode($output);
-
