@@ -12,7 +12,7 @@ $column = array(
     'cc.cus_data',
     'cc.id'
 );
-$query = "SELECT cc.id, cc.cus_id, CONCAT(cc.first_name, ' ', cc.last_name) AS cus_name, cc.mobile1, anc.areaname
+$query = "SELECT cc.id, cc.cus_id, CONCAT(cc.first_name, ' ', COALESCE(cc.last_name, ''))AS cus_name, cc.mobile1, anc.areaname
  FROM customer_creation cc 
  LEFT JOIN area_name_creation anc ON cc.area = anc.id
 WHERE 1";

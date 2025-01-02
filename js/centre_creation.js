@@ -167,6 +167,7 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.centreActionBtn', function () {
+        $('#submit_centre_creation').prop('disabled', false);
         let id = $(this).attr('value');
         $('#centre_create_id').val(id);
 

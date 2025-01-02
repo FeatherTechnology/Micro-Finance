@@ -127,7 +127,7 @@ function appendCuatomerList(cus_id, date_of_noc, customer_name) {
     console.log("inside");
     let currentCusId = $(this).find("td").eq(2).text().trim();
     console.log("currentCusId" + currentCusId);
-    console.log("customer id" + cus_id); 
+    console.log("customer id" + cus_id);
 
     if (currentCusId === cus_id) {
       console.log("iside inside");
@@ -169,6 +169,7 @@ function submitCustomer() {
       });
     }
   });
+  console.log("Data to Save:", dataToSave);
   if (dataToSave.length > 0) {
     $.ajax({
       url: "api/noc_files/submit_customer_noc.php",
@@ -177,7 +178,7 @@ function submitCustomer() {
       data: { customers: dataToSave },
       success: function (response) {
         if (response.success) {
-          alert("NOC Completed");
+          alert("NOC submitted successfully.");
           getDocCreationTable(loan_id);
           setTimeout(() => {
             setSubmittedDisabled();
@@ -195,7 +196,6 @@ function submitCustomer() {
   }
 }
 
-
 function setValuesInTables() {
   let member = $("#noc_member").val();
   let date = $("#date_of_noc").val();
@@ -203,7 +203,11 @@ function setValuesInTables() {
   let name = member != "" ? $("#noc_member").find(":selected").text() : "";
   let checked = false;
   $(".docCheckbox").each(function () {
-    if ($(this).is(":checked")) {
+    // if ($(this).is(":checked")) {
+    let checkbox = $(this)
+      .closest("tr")
+      .find("td:nth-child(11) input[type='checkbox']");
+    if ($(this).is(":checked") && !checkbox.prop("disabled")) {
       checked = true;
       $(this).closest("tr").find("td:nth-child(10)").text(name);
       $(this).closest("tr").find("td:nth-child(9)").text(formattedDate);
@@ -226,7 +230,6 @@ function formatDate(inputDate) {
   // Rearrange them in dd-mm-yyyy format
   return parts[2] + "-" + parts[1] + "-" + parts[0];
 }
-
 
 function setSubmittedDisabled() {
   $(".docCheckbox").each(function () {

@@ -6,6 +6,7 @@ $areaname = $_POST['areaname'];
 $branch_id = $_POST['branch_id'];
 $status = $_POST['status'];
 $id = $_POST['id'];
+$current_date = date('Y-m-d ');
 
 $qry = $pdo->query("SELECT * FROM `area_name_creation` WHERE REPLACE(TRIM(areaname), ' ', '') = REPLACE(TRIM('$areaname'), ' ', '') AND branch_id = '$branch_id' and status = '$status' ");
 if ($qry->rowCount() > 0) {
@@ -22,11 +23,11 @@ if ($qry->rowCount() > 0) {
                 return;
             }
         }
-        $pdo->query("UPDATE `area_name_creation` SET `areaname`='$areaname', `branch_id`='$branch_id',`status`='$status',`update_login_id`='$user_id',`updated_on`=now() WHERE `id`='$id'");
+        $pdo->query("UPDATE `area_name_creation` SET `areaname`='$areaname', `branch_id`='$branch_id',`status`='$status',`update_login_id`='$user_id',`updated_on`='$current_date' WHERE `id`='$id'");
         $result = 0; //update
 
     } else {
-        $pdo->query("INSERT INTO `area_name_creation`(`areaname`, `branch_id`, `status`, `insert_login_id`, `created_on`) VALUES ('$areaname', '$branch_id', '$status', '$user_id', now())");
+        $pdo->query("INSERT INTO `area_name_creation`(`areaname`, `branch_id`, `status`, `insert_login_id`, `created_on`) VALUES ('$areaname', '$branch_id', '$status', '$user_id', '$current_date')");
         $result = 1; //Insert
     }
 }

@@ -277,7 +277,7 @@ function getCustomerList(loan_id){
                     </select>
                 `;
                 textarea = `
-                    <textarea class="form-control textarea" placeholder="Enter remarks">${item.closed_remarks}</textarea>
+                    <textarea class="form-control textarea" placeholder="Enter remarks">${item.closed_remarks ? item.closed_remarks : ''}</textarea>
                 `;
             } else {
                 sub_status = `

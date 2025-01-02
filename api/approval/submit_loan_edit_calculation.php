@@ -31,6 +31,7 @@ $due_startdate_calc = $_POST['due_startdate_calc'];
 $maturity_date_calc = $_POST['maturity_date_calc'];
 $id = $_POST['id'];
 $current_mapping_count=$_POST['current_mapping_count'];
+$current_date = date('Y-m-d ');
 
 if ($current_mapping_count > $total_cus) {
     echo json_encode(['result' => 3, 'message' => 'Remove The Customer Mapping Details']);
@@ -72,7 +73,7 @@ else if($current_mapping_count == $total_cus){
         `due_start` = '$due_startdate_calc',
         `due_end` = '$maturity_date_calc',
         `update_login_id` = '$user_id',
-        `updated_on` = now()
+        `updated_on` = '$current_date'
     WHERE `id` = '$id'");
 }
 
@@ -114,7 +115,7 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
         } else {
             // Insert the new customer mapping
             $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, centre_id, cus_id, customer_mapping, designation, inserted_login_id, created_on) 
-                                VALUES ('$loan_id_calc', '$Centre_id', '$cus_id', '$cus_mapping', '$designation', '$user_id', NOW())");
+                                VALUES ('$loan_id_calc', '$Centre_id', '$cus_id', '$cus_mapping', '$designation', '$user_id', '$current_date')");
         }
         if ($cus_mapping == 'Renewal') {
             // Check if any loan has a status between 1 and 7 (inclusive)
