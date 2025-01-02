@@ -22,7 +22,11 @@ $query = "SELECT lelc.id, lelc.loan_id, lelc.centre_id,lelc.loan_amount,lelc.due
  LEFT JOIN area_name_creation anc ON anc.id = cc.area
  LEFT JOIN branch_creation bc ON bc.id = cc.branch
  LEFT JOIN closed_status cs ON cs.loan_id = lelc.loan_id
- WHERE lelc.loan_status = 8 or lelc.due_end <'$current_date' or lelc.loan_status = 9";
+ WHERE ((lelc.loan_status = 8 
+OR lelc.loan_status = 9) 
+OR lelc.due_end < '$current_date') 
+AND lelc.loan_status != 10
+ ";
 
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {

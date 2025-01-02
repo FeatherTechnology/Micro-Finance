@@ -54,14 +54,14 @@
                                         <div class="form-group">
                                             <label for="area_name">Area Name</label><span class="text-danger">*</span>
                                             <input type="hidden" id="area_name2">
-                                            <select class="form-control" id="area_name" name="area_name" tabindex="3" multiple>
+                                            <select class="form-control" id="area_name" name="area_name" tabindex="2" multiple>
                                                 <option value="">Select Area Name</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-1 col-sm-2" style="margin-top: 18px;">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-primary modalBtnCss" id="area_modal_btn" onclick="getAreaNameTable()"><span class="icon-add"></span></button>
+                                            <button type="button" class="btn btn-primary modalBtnCss" id="area_modal_btn" onclick="getAreaNameTable()"  tabindex="3"><span class="icon-add"></span></button>
                                         </div>
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
 
                         <div class="col-12 mt-3 text-right">
                             <button name="submit_area_creation" id="submit_area_creation" class="btn btn-primary" tabindex="4"><span class="icon-check"></span>&nbsp;Submit</button>
-                            <button type="reset" class="btn btn-outline-secondary" tabindex="14">Clear</button>
+                            <button type="reset" class="btn btn-outline-secondary" tabindex="5">Clear</button>
                         </div>
 
                     </div>

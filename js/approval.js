@@ -1428,7 +1428,7 @@ function loanCalculationEdit(id) {
           $("#maturity_date_calc").val(response[0].due_end);
           $("#total_cus").trigger("blur");
           getCusMapTable();
-        }, 2000);
+        }, 1000);
       }
     },
     "json"

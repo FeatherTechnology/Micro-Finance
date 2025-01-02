@@ -153,6 +153,18 @@ $(document).ready(function () {
             })
         },1000)
     });
+    $(document).on('click','.cus_penalty_chart', function(e){
+        e.preventDefault(); // Prevent default anchor behavior
+        var cus_mapping_id = $(this).attr('value'); // Capture data-id from the clicked element
+        $('#penalty_model').modal('show'); // Show the modal
+        penaltyChartList(cus_mapping_id); 
+    });
+    $(document).on('click', '.cus_fine_chart', function (e) {
+        e.preventDefault(); // Prevent default anchor behavior
+        var cus_mapping_id = $(this).attr('value'); // Capture data-id from the clicked element
+        $('#fine_model').modal('show'); // Show the modal
+        fineChartList(cus_mapping_id); // Call the function and pass the cus_mapping_id
+    });
 
 
 });
@@ -179,6 +191,32 @@ function dueChartList(cus_mapping_id,loan_id){
         },'json');
     })
 
+}
+//Penalty chart
+function penaltyChartList(cus_mapping_id){
+    $.ajax({
+        url: 'api/collection_files/get_penalty_chart_list.php',
+        data: {'cus_mapping_id':cus_mapping_id},
+        type:'post',
+        cache: false,
+        success: function(response){
+            $('#penalty_chart_table_div').empty()
+            $('#penalty_chart_table_div').html(response)
+        }
+    });//Ajax End.
+}
+//Fine Chart List
+function fineChartList(cus_mapping_id){
+    $.ajax({
+        url: 'api/collection_files/get_fine_chart_list.php',
+        data: {'cus_mapping_id':cus_mapping_id},
+        type:'post',
+        cache: false,
+        success: function(response){
+            $('#fine_chart_table_div').empty()
+            $('#fine_chart_table_div').html(response)
+        }
+    });//Ajax End.
 }
 
 function getLedgerViewChart(loan_id){
@@ -239,7 +277,7 @@ function getCustomerList(loan_id){
                     </select>
                 `;
                 textarea = `
-                    <textarea class="form-control textarea" placeholder="Enter remarks">${item.closed_remarks}</textarea>
+                    <textarea class="form-control textarea" placeholder="Enter remarks">${item.closed_remarks ? item.closed_remarks : ''}</textarea>
                 `;
             } else {
                 sub_status = `

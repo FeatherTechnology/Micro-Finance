@@ -31,7 +31,9 @@ $due_startdate_calc = $_POST['due_startdate_calc'];
 $maturity_date_calc = $_POST['maturity_date_calc'];
 $id = $_POST['id'];
 $current_mapping_count=$_POST['current_mapping_count'];
+
 $current_date = date('Y-m-d');
+
 if ($current_mapping_count > $total_cus) {
     echo json_encode(['result' => 3, 'message' => 'Remove The Customer Mapping Details']);
     exit;
