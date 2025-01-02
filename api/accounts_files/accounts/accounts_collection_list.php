@@ -10,6 +10,8 @@ if ($cash_type == '1') {
 } elseif ($cash_type == '2') {
     $cndtn = "coll_mode != '1' AND bank_id = '$bank_id' ";
 }
+$current_date = date('Y-m-d');
+$current_date_time = date('Y-m-d H:i:s');
 //collection_mode = 1 - cash; 2 to 5 - bank;
 $qry = $pdo->query("WITH first_query AS (
     SELECT 
@@ -24,7 +26,7 @@ $qry = $pdo->query("WITH first_query AS (
                 (SELECT created_on FROM accounts_collect_entry WHERE user_id = u.id AND $cndtn ORDER BY id DESC LIMIT 1), 
                 '1970-01-01 00:00:00'
             ) 
-            AND nbc.coll_date <= NOW()
+            AND nbc.coll_date <= '$current_date_time'
         ) as no_of_bills,
         SUM(c.total_paid_track) AS total_amount, 
         '1' AS type
@@ -41,7 +43,7 @@ $qry = $pdo->query("WITH first_query AS (
         (SELECT created_on FROM accounts_collect_entry WHERE user_id = u.id AND $cndtn ORDER BY id DESC LIMIT 1), 
         '1970-01-01 00:00:00'
     ) 
-    AND c.coll_date <= NOW() 
+    AND c.coll_date <= '$current_date_time' 
     AND c.insert_login_id = u.id 
     GROUP BY u.id
 ),
@@ -55,7 +57,7 @@ second_query AS (
         '2' as type
     FROM `accounts_collect_entry` ac
     JOIN users us ON ac.user_id = us.id
-    WHERE  DATE(ac.created_on) = CURDATE() 
+    WHERE  DATE(ac.created_on) ='$current_date'
     AND ac.user_id NOT IN (
         SELECT userid 
         FROM first_query

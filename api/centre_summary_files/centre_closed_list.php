@@ -6,6 +6,7 @@ $user_id = $_SESSION['user_id'];
 include '../collection_files/reset_customer_status.php';
 $centre_sub_status = [ null =>'',''=>'',1 => 'Consider',2=> 'Blocked'];
 $collectionSts = new CollectStsClass($pdo);
+$current_date = date('Y-m-d');
 $column = array(
     'lelc.id',
     'lelc.loan_id',
@@ -27,7 +28,7 @@ $query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_
           LEFT JOIN branch_creation bc ON cc.branch = bc.id
  	JOIN users us ON FIND_IN_SET(lelc.loan_category, us.loan_category)
     WHERE us.id = '$user_id' 
-  AND (CURDATE() > lelc.due_end OR lelc.loan_status >= 8) ";
+  AND ('$current_date' > lelc.due_end OR lelc.loan_status >= 8) ";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];

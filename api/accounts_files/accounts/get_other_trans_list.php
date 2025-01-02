@@ -2,12 +2,12 @@
 require "../../../ajaxconfig.php";
 @session_start();
 $user_id = $_SESSION['user_id'];
-
+$current_date = date('Y-m-d');
 $trans_cat = ["1" => 'Deposit', "2" => 'Investment', "3" => 'EL', "4" => 'Exchange', "5" => 'Bank Deposit', "6" => 'Bank Withdrawal', "7" => 'Loan Advance', "8" => 'Other Income'];
 $cash_type = ["1" => 'Hand Cash', "2" => 'Bank Cash'];
 $crdr = ["1" => 'Credit', "2" => 'Debit'];
 $trans_list_arr = array();
-$qry = $pdo->query("SELECT a.*, b.name AS transname, d.name as username, e.bank_name as bank_namecash FROM `other_transaction` a JOIN other_trans_name b ON a.name =b.id LEFT JOIN users d ON a.insert_login_id = d.id LEFT JOIN bank_creation e ON a.bank_id = e.id WHERE a.insert_login_id = '$user_id' AND DATE(a.created_on) = CURDATE() ");
+$qry = $pdo->query("SELECT a.*, b.name AS transname, d.name as username, e.bank_name as bank_namecash FROM `other_transaction` a JOIN other_trans_name b ON a.name =b.id LEFT JOIN users d ON a.insert_login_id = d.id LEFT JOIN bank_creation e ON a.bank_id = e.id WHERE a.insert_login_id = '$user_id' AND DATE(a.created_on) = '$current_date' ");
 if ($qry->rowCount() > 0) {
     while ($result = $qry->fetch()) {
         $result['coll_mode'] = $cash_type[$result['coll_mode']];

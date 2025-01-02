@@ -116,7 +116,7 @@ function moneyFormatIndia($num)
 
     $loanIssue = $issueDate->fetch();
     //If Due method is Monthly, Calculate penalty by checking the month has ended or not  
-    $loan_amt = floatval($loanIssue['total_amount_calc']) / $loanIssue['total_customer'];
+    $loan_amt = round($loanIssue['total_amount_calc'] / $loanIssue['total_customer']);
     $loan_type = 'emi';
 
     $scheme_day = $loanIssue['scheme_day_calc'];
@@ -229,7 +229,7 @@ function moneyFormatIndia($num)
             FROM `collection` c
              LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
-            WHERE c.cus_mapping_id = '$cus_mapping_id' AND (c.due_amt_track != '')
+            WHERE c.cus_mapping_id = '$cus_mapping_id' AND (c.due_amt_track != '') AND c.due_amt_track > 0
             AND(
                 (
                     ( MONTH(c.coll_date) >= MONTH('$issued') AND YEAR(c.coll_date) = YEAR('$issued') )
@@ -245,51 +245,77 @@ function moneyFormatIndia($num)
             )");
         } else
         if ($loanFrom['due_month'] == '2') {
-            //Query For Weekly.
-            
+            //Query For Weekly. 
             $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
             FROM `collection` c
             LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
             WHERE c.cus_mapping_id = '$cus_mapping_id' 
-            AND c.due_amt_track IS NOT NULL AND c.due_amt_track != '' 
-            AND  WEEK(c.coll_date) >= WEEK('$issued')
-            AND  WEEK(c.coll_date) < WEEK('$due_start_from') ");
+            AND c.due_amt_track IS NOT NULL AND c.due_amt_track != '' AND c.due_amt_track > 0
+            AND c.coll_date BETWEEN ('$issued')
+            AND ('$due_start_from') ");
         }
 
         //For showing data before due start date
         $due_amt_track = 0;
         $last_bal_amt = 0;
         $bal_amt = 0;
-        if ($run->rowCount() > 0) {
-            while ($row = $run->fetch()) {
-                $collectionAmnt = intVal($row['due_amt_track']);
-                $due_amt_track = $due_amt_track + intVal($row['due_amt_track']);
-                $bal_amt = $loan_amt - $due_amt_track;
+if ($run->rowCount() > 0) {
+    while ($row = $run->fetch()) {
+        $collectionAmnt = intVal($row['due_amt_track']);
+        $due_amt_track = $due_amt_track + intVal($row['due_amt_track']);
+        $bal_amt = $loan_amt - $due_amt_track;
+?>
 
-        ?>
-                <tr> <!-- Showing From loan date to due start date. if incase due paid before due start date it has to show seperatly in top row. -->
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><?php $pendingMinusCollection = (moneyFormatIndia(intval($row['pending_amt']))); ?></td>
-                    <td><?php $payableMinusCollection =(moneyFormatIndia(intVal($row['payable_amt']))); ?></td>
-                    <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
-                    <td>
-                        <?php if ($row['due_amt_track'] > 0) {
-                            echo moneyFormatIndia($row['due_amt_track']);
-                        } ?>
-                    </td>
-                    <td><?php echo moneyFormatIndia($bal_amt);?></td>
-                    <td> <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> <i class="fa fa-print" aria-hidden="true"></i> </a> </td>
-                </tr>
-
-                <?php
-            }
+        <tr> <!-- Showing From loan date to due start date. if incase due paid before due start date it has to show separately in top row. -->
+        <?php
+        if ($loanFrom['due_month'] == '1') {
+            ?>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><?php echo moneyFormatIndia(intval($row['pending_amt'])); ?></td>
+            <td><?php echo moneyFormatIndia(intVal($row['payable_amt'])); ?></td>
+            <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
+            <td>
+                <?php if ($row['due_amt_track'] > 0) {
+                    echo moneyFormatIndia($row['due_amt_track']);
+                } ?>
+            </td>
+            <td><?php echo moneyFormatIndia($bal_amt); ?></td>
+            <td> 
+                <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> 
+                    <i class="fa fa-print" aria-hidden="true"></i> 
+                </a> 
+            </td>
+            <?php
+        } else {
+            ?>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><?php echo moneyFormatIndia(intval($row['pending_amt'])); ?></td>
+            <td><?php echo moneyFormatIndia(intVal($row['payable_amt'])); ?></td>
+            <td><?php echo date('d-m-Y', strtotime($row['coll_date'])); ?></td>
+            <td>
+                <?php if ($row['due_amt_track'] > 0) {
+                    echo moneyFormatIndia($row['due_amt_track']);
+                } ?>
+            </td>
+            <td><?php echo moneyFormatIndia($bal_amt); ?></td>
+            <td> 
+                <a class='print_due_coll' id="" value="<?php echo $row['id']; ?>"> 
+                    <i class="fa fa-print" aria-hidden="true"></i> 
+                </a> 
+            </td>
+            </tr>
+        <?php
         }
-
+    }
+}
         //For showing collection after due start date
         $due_amt_track = 0;
         $jj = 0;
@@ -302,10 +328,8 @@ function moneyFormatIndia($num)
     
     $initial_balance_result = $initial_balance_query->fetch();
     $initial_balance = floor($initial_balance_result['total_amount_calc'] / $initial_balance_result['total_customer']);
- // Use total_amount_calc or any other dynamic value
-    
-    $bal_amt = $initial_balance;
-        $bal_amt = $initial_balance;
+
+    $bal_amt = $bal_amt > 0 ? $bal_amt : $initial_balance;
         $lastCusdueMonth = '1970-00-00';
         foreach ($dueMonth as $cusDueMonth) {
             if ($loanFrom['due_month'] == '1') {
@@ -315,7 +339,7 @@ function moneyFormatIndia($num)
                 LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                 LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
                 WHERE c.cus_mapping_id = '$cus_mapping_id'
-                AND c.due_amt_track != ''
+                AND c.due_amt_track != '' AND c.due_amt_track > 0
                 AND (
                     MONTH(c.coll_date) = MONTH('$cusDueMonth') 
                     AND YEAR(c.coll_date) = YEAR('$cusDueMonth')
@@ -327,7 +351,7 @@ function moneyFormatIndia($num)
             LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
             WHERE c.cus_mapping_id = '$cus_mapping_id'
-            AND c.due_amt_track != ''
+            AND c.due_amt_track != '' AND c.due_amt_track > 0
             AND (
                 WEEK(c.coll_date) = WEEK('$cusDueMonth') 
                 AND YEAR(c.coll_date) = YEAR('$cusDueMonth')
@@ -343,7 +367,8 @@ function moneyFormatIndia($num)
                     } else {
                         $row['overall_amount'] = 0;
                     }
-                    $bal_amt -= $due_amt_track;
+                $bal_amt = max(0,$bal_amt - $due_amt_track);
+
 
 
                 ?>
@@ -525,8 +550,7 @@ function moneyFormatIndia($num)
     $initial_balance = floor($initial_balance_result['total_amount_calc'] / $initial_balance_result['total_customer']);
  // Use total_amount_calc or any other dynamic value
     
-    $bal_amt = $initial_balance;
-        $bal_amt = $initial_balance;
+ $bal_amt = $bal_amt > 0 ? $bal_amt : $initial_balance;
         $currentMonth = date('Y-m-d');
 
 if ($loanFrom['due_month'] == '1') {
@@ -538,7 +562,7 @@ if ($loanFrom['due_month'] == '1') {
                         LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
                         WHERE c.`cus_mapping_id` = '$cus_mapping_id' 
-                        AND (c.due_amt_track != '') 
+                        AND (c.due_amt_track != '') AND c.due_amt_track > 0
                         AND (MONTH(c.coll_date) > MONTH('$maturity_month') AND Year(c.coll_date) > Year('$maturity_month') 
                              AND MONTH(c.coll_date) <= MONTH('$currentMonth') AND  Year(c.coll_date) <= Year('$currentMonth') 
                              AND c.coll_date != '0000-00-00')");
@@ -552,7 +576,7 @@ if ($loanFrom['due_month'] == '1') {
                         LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
                         WHERE c.`cus_mapping_id` = '$cus_mapping_id' 
-                        AND (c.due_amt_track != '') 
+                        AND (c.due_amt_track != '') AND c.due_amt_track > 0
                         AND (WEEK(c.coll_date) > WEEK('$maturity_month') AND Year(c.coll_date) > Year('$maturity_month') 
                              AND WEEK(c.coll_date) <= WEEK('$currentMonth') AND Year(c.coll_date) <= Year('$maturity_month') 
                              AND c.coll_date != '0000-00-00')");

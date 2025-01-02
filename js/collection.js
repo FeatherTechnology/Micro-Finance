@@ -26,36 +26,8 @@ $(document).ready(function () {
         $('#loan_id').val(loan_id)
         $('#pageHeaderName').text(` - Collection - Loan ID: ${loan_id}, Centre ID: ${centre_id}, Centre Name: ${centre_name}`);
         collectionCustomerList(loan_id)
-        $.ajax({
-            url: 'api/collection_files/collection_details.php',
-            type: 'POST',
-            data: {
-                loan_id: loan_id,
-            },
-            dataType: 'json',
-            success: function (response) {
-                if (response.success) {
-                    // Populate the form fields with the fetched and rounded data
-                    $('#tot_amt').val(moneyFormatIndia(response.total_amount_calc));
-                    $('#paid_amt').val(moneyFormatIndia(response.total_paid));
-                    $('#bal_amt').val(moneyFormatIndia(response.balance));
-                    $('#due_amt').val(moneyFormatIndia(response.due_amount_calc));
-                    $('#pending_amt').val(moneyFormatIndia(response.total_pending));
-                    $('#payable_amt').val(moneyFormatIndia(response.total_payable));
-                    $('#penalty').val(moneyFormatIndia(response.penalty));
-                    $('#fine_charge').val(moneyFormatIndia(response.fine_charge));
+        collectionLoanDetails(loan_id)
 
-                } else {
-                    console.error('Required data fields are missing in the response.');
-                    swalError('Warning', 'Failed to retrieve the required details.');
-                }
-
-            },
-            error: function (xhr, status, error) {
-                console.error('AJAX Error:', error);
-                swalError('Error', 'An error occurred while fetching payment details.');
-            }
-        });
 
         $('#submit_collection').unbind('click').click(function (event) {
             event.preventDefault();
@@ -112,8 +84,8 @@ $(document).ready(function () {
             if (collectionData.length === 0) {
                 swalError('Warning', 'Please fill in the total collection.');
                 return; // Exit if no rows have data to submit
-            }else{
-                $('#submit_collection').attr('disabled', false); 
+            } else {
+                $('#submit_collection').attr('disabled', false);
             }
 
             // Send the collected data to the server using AJAX
@@ -204,64 +176,64 @@ $(document).ready(function () {
 
 
     //////////////////////////////////////////////Fine End//////////////////////////////////////////////
-////////////////////////////////////////////Penalty Chart////////////////////////
-$(document).on('click','.penalty-chart', function(e){
-    e.preventDefault(); // Prevent default anchor behavior
-    var cus_mapping_id = $(this).attr('data-id'); // Capture data-id from the clicked element
-    $('#penalty_model').modal('show'); // Show the modal
-    penaltyChartList(cus_mapping_id); 
-});
-///////////////////////////////////////////////Penalty cahrt End///////////////////////////////////////////
-//////////////////////////////////////////Due Chart start//////////////////////////////
-$(document).on('click','.due-chart', function(){
-    var cus_mapping_id = $(this).attr('data-id');
-    let loan_id= $('#loan_id').val()
-    $('#due_chart_model').modal('show');
-    dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
-    setTimeout(()=>{
-        $('.print_due_coll').click(function(){
-            var id = $(this).attr('value');
-            Swal.fire({
-                title: 'Print',
-                text: 'Do you want to print this collection?',
-                imageUrl: 'img/printer.png',
-                imageWidth: 300,
-                imageHeight: 210,
-                imageAlt: 'Custom image',
-                showCancelButton: true,
-                confirmButtonColor: '#009688',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'No',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url:'api/collection_files/print_collection.php',
-                        data:{'coll_id':id},
-                        type:'post',
-                        cache:false,
-                        success:function(html){
-                            $('#printcollection').html(html)
-                            // Get the content of the div element
-                            var content = $("#printcollection").html();
-                        }
-                    })
-                }
+    ////////////////////////////////////////////Penalty Chart////////////////////////
+    $(document).on('click', '.penalty-chart', function (e) {
+        e.preventDefault(); // Prevent default anchor behavior
+        var cus_mapping_id = $(this).attr('data-id'); // Capture data-id from the clicked element
+        $('#penalty_model').modal('show'); // Show the modal
+        penaltyChartList(cus_mapping_id);
+    });
+    ///////////////////////////////////////////////Penalty cahrt End///////////////////////////////////////////
+    //////////////////////////////////////////Due Chart start//////////////////////////////
+    $(document).on('click', '.due-chart', function () {
+        var cus_mapping_id = $(this).attr('data-id');
+        let loan_id = $('#loan_id').val()
+        $('#due_chart_model').modal('show');
+        dueChartList(cus_mapping_id, loan_id); // To show Due Chart List.
+        setTimeout(() => {
+            $('.print_due_coll').click(function () {
+                var id = $(this).attr('value');
+                Swal.fire({
+                    title: 'Print',
+                    text: 'Do you want to print this collection?',
+                    imageUrl: 'img/printer.png',
+                    imageWidth: 300,
+                    imageHeight: 210,
+                    imageAlt: 'Custom image',
+                    showCancelButton: true,
+                    confirmButtonColor: '#009688',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'No',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: 'api/collection_files/print_collection.php',
+                            data: { 'coll_id': id },
+                            type: 'post',
+                            cache: false,
+                            success: function (html) {
+                                $('#printcollection').html(html)
+                                // Get the content of the div element
+                                var content = $("#printcollection").html();
+                            }
+                        })
+                    }
+                })
             })
-        })
-    },1000)
-});
-//////////////////////////Due Chart End/////////////////////////////////////////
-//////////////////////////////Ledger View Start///////////////////////////////////
-$(document).on('click', '.ledgerViewBtn', function (event) {
-    event.preventDefault();
-    $('.ledger_view_chart_model').show();
-    $('#back_to_coll_list').show();
-    $('#collection_list').hide();
-    let loan_id= $(this).attr('value');
-    getLedgerViewChart(loan_id);
-});
-////////////////////////////////Ledger View End/////////////////////////
+        }, 1000)
+    });
+    //////////////////////////Due Chart End/////////////////////////////////////////
+    //////////////////////////////Ledger View Start///////////////////////////////////
+    $(document).on('click', '.ledgerViewBtn', function (event) {
+        event.preventDefault();
+        $('.ledger_view_chart_model').show();
+        $('#back_to_coll_list').show();
+        $('#collection_list').hide();
+        let loan_id = $(this).attr('value');
+        getLedgerViewChart(loan_id);
+    });
+    ////////////////////////////////Ledger View End/////////////////////////
 });
 
 
@@ -336,32 +308,37 @@ function collectionCustomerList(loan_id) {
             tbody.empty(); // Clear existing rows
 
             var hasRows = false;
-
+            var serialNo = 1;
             $.each(response, function (index, item) {
-                var isReadOnly = (!item.issue_status || item.issue_status === "") ? "disabled" : "";    
+                var isReadOnly = (!item.issue_status || item.issue_status === "") ? "disabled" : "";
+                var individual_amount = item.individual_amount ? item.individual_amount : 0;
+                var pending = item.pending ? item.pending : 0;
+                var payable = item.payable ? item.payable : 0;
+                var penalty = item.penalty ? item.penalty : 0;
+                var fine_charge = item.fine_charge ? item.fine_charge : 0;
                 var customer_amnt = item.total_cus_amnt ? item.total_cus_amnt : '';
                 var dropdownContent = "<div class='dropdown'>" +
-                "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
+                    "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +
                     "<a href='#' class='due-chart' data-id='" + item.id + "'>Due Chart</a>" +
                     "<a href='#' class='penalty-chart' data-id='" + item.id + "'>Penalty Chart</a>" +
-                    "<a href='#' class='fine-chart' data-id='" + item.id  + "'>Fine Chart</a>" +
+                    "<a href='#' class='fine-chart' data-id='" + item.id + "'>Fine Chart</a>" +
                     "</div>" +
                     "</div>";
                 var row = '<tr>' +
-                    '<td>' + (index + 1) + '</td>' +
+                    '<td>' + serialNo  + '</td>' +
                     '<td>' + item.cus_id + '</td>' +
                     '<td>' + item.first_name + '</td>' +
-                    '<td>' + moneyFormatIndia(item.individual_amount) + '</td>' +
-                    '<td>' + moneyFormatIndia(item.pending) + '</td>' +
-                    '<td>' + moneyFormatIndia(item.payable) + '</td>' +
-                    '<td>' + moneyFormatIndia(item.penalty) + '</td>' +
-                    '<td>' + moneyFormatIndia(item.fine_charge) + '</td>' +
+                    '<td>' + moneyFormatIndia(individual_amount) + '</td>' +
+                    '<td>' + moneyFormatIndia(pending) + '</td>' +
+                    '<td>' + moneyFormatIndia(payable) + '</td>' +
+                    '<td>' + moneyFormatIndia(penalty) + '</td>' +
+                    '<td>' + moneyFormatIndia(fine_charge) + '</td>' +
                     '<td>' + formattedDate + '</td>' +
                     // Input fields for collection due amount, penalty, and fine
 
                     '<td><input type="number" class="form-control collection_due" data-id="' + item.id + '" data-individual-amount="' + item.total_cus_amnt + '" value="" ' + isReadOnly + '></td>' +
-                    '<td><input type="number" class="form-control collection_penalty" data-id="' + item.id + '" data-penalty-amount="' + item.pending + '" value=" " ' + isReadOnly + '></td>' +
+                    '<td><input type="number" class="form-control collection_penalty" data-id="' + item.id + '" data-penalty-amount="' + item.penalty + '" value=" " ' + isReadOnly + '></td>' +
                     '<td><input type="number" class="form-control collection_fine" data-id="' + item.id + '" data-fine-amount="' + item.fine_charge + '" value=" " ' + isReadOnly + '></td>' +
                     // Calculated total collection
                     '<td><input type="number" class="form-control total_collection" data-id="' + item.id + '" value=" " readonly></td>' +
@@ -369,6 +346,7 @@ function collectionCustomerList(loan_id) {
                     '</tr>';
 
                 tbody.append(row);
+                serialNo++;
                 hasRows = true;
             });
 
@@ -376,7 +354,7 @@ function collectionCustomerList(loan_id) {
                 tbody.append('<tr><td colspan="13">No data available</td></tr>'); // Adjust colspan as necessary
             }
             setDropdownScripts();
-        
+       
             // Bind input changes for calculating Total Collection
             $('input.collection_due, input.collection_penalty, input.collection_fine').on('input', function () {
                 var rowId = $(this).data('id');  // Use item.id here instead of index
@@ -417,9 +395,42 @@ function collectionCustomerList(loan_id) {
                     $('input.total_collection[data-id="' + rowId + '"]').val("");
                 }
             });
+            collectionLoanDetails(loan_id);
         },
         error: function (xhr, status, error) {
             console.error('AJAX Error: ' + status + error);
+        }
+    });
+}
+function collectionLoanDetails(loan_id) {
+    $.ajax({
+        url: 'api/collection_files/collection_details.php',
+        type: 'POST',
+        data: {
+            loan_id: loan_id,
+        },
+        dataType: 'json',
+        success: function (response) {
+            if (response.success) {
+                // Populate the form fields with the fetched and rounded data
+                $('#tot_amt').val(moneyFormatIndia(response.total_amount_calc));
+                $('#paid_amt').val(moneyFormatIndia(response.total_paid));
+                $('#bal_amt').val(moneyFormatIndia(response.balance));
+                $('#due_amt').val(moneyFormatIndia(response.due_amount_calc));
+                $('#pending_amt').val(moneyFormatIndia(response.total_pending));
+                $('#payable_amt').val(moneyFormatIndia(response.total_payable));
+                $('#penalty').val(moneyFormatIndia(response.penalty));
+                $('#fine_charge').val(moneyFormatIndia(response.fine_charge));
+
+            } else {
+                console.error('Required data fields are missing in the response.');
+                swalError('Warning', 'Failed to retrieve the required details.');
+            }
+
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', error);
+            swalError('Error', 'An error occurred while fetching payment details.');
         }
     });
 }
@@ -429,53 +440,53 @@ function closeChartsModal() {
     $('#fine_model').modal('hide');
 }
 //Fine Chart List
-function fineChartList(cus_mapping_id){
+function fineChartList(cus_mapping_id) {
     $.ajax({
         url: 'api/collection_files/get_fine_chart_list.php',
-        data: {'cus_mapping_id':cus_mapping_id},
-        type:'post',
+        data: { 'cus_mapping_id': cus_mapping_id },
+        type: 'post',
         cache: false,
-        success: function(response){
+        success: function (response) {
             $('#fine_chart_table_div').empty()
             $('#fine_chart_table_div').html(response)
         }
     });//Ajax End.
 }
 //Penalty chart
-function penaltyChartList(cus_mapping_id){
+function penaltyChartList(cus_mapping_id) {
     $.ajax({
         url: 'api/collection_files/get_penalty_chart_list.php',
-        data: {'cus_mapping_id':cus_mapping_id},
-        type:'post',
+        data: { 'cus_mapping_id': cus_mapping_id },
+        type: 'post',
         cache: false,
-        success: function(response){
+        success: function (response) {
             $('#penalty_chart_table_div').empty()
             $('#penalty_chart_table_div').html(response)
         }
     });//Ajax End.
 }
 ////////////////////Due Chart List
-function dueChartList(cus_mapping_id,loan_id){
+function dueChartList(cus_mapping_id, loan_id) {
     $.ajax({
         url: 'api/collection_files/get_due_chart_list.php',
-        data: {'cus_mapping_id':cus_mapping_id},
-        type:'post',
+        data: { 'cus_mapping_id': cus_mapping_id },
+        type: 'post',
         cache: false,
-        success: function(response){
+        success: function (response) {
             $('#due_chart_table_div').empty();
             $('#due_chart_table_div').html(response);
         }
-    }).then(function(){   
-        $.post('api/collection_files/get_due_method_name.php', {loan_id: loan_id, cus_mapping_id: cus_mapping_id}, function(response) {
-            $('#dueChartTitle').text('Due Chart ( ' + response['due_month'] + ' - ' + response['loan_type'] + ' ) - Customer ID: ' 
-            + response['cus_id'] + ' - Customer Name: ' + response['cus_name'] + ' - Loan ID: ' + response['loan_id'] 
-            + ' - Centre ID: ' + response['centre_id'] + ' - Centre Name: ' + response['centre_name']);
+    }).then(function () {
+        $.post('api/collection_files/get_due_method_name.php', { loan_id: loan_id, cus_mapping_id: cus_mapping_id }, function (response) {
+            $('#dueChartTitle').text('Due Chart ( ' + response['due_month'] + ' - ' + response['loan_type'] + ' ) - Customer ID: '
+                + response['cus_id'] + ' - Customer Name: ' + response['cus_name'] + ' - Loan ID: ' + response['loan_id']
+                + ' - Centre ID: ' + response['centre_id'] + ' - Centre Name: ' + response['centre_name']);
         }, 'json');
     })
 
 }
-function getLedgerViewChart(loan_id){
-    $.post('api/collection_files/ledger_view_data.php', {loan_id:loan_id}, function(response){
+function getLedgerViewChart(loan_id) {
+    $.post('api/collection_files/ledger_view_data.php', { loan_id: loan_id }, function (response) {
         $('#ledger_view_table_div').empty();
         $('#ledger_view_table_div').html(response);
 

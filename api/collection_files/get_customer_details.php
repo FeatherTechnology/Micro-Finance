@@ -6,7 +6,7 @@ $response = array();
 
 // SQL query to fetch loan details and customer mapping
 
-$query = "SELECT
+ $query = "SELECT
               lcm.id,
               lcm.loan_id,
               cc.cus_id,
@@ -128,7 +128,6 @@ if ($result->rowCount() > 0) {
                 }
                 $row['total_cus_amnt'] = $row['overall_amount'] - $totalPaidAmt;
                 // If payable exceeds balance, adjust to balance amount
-                $response[$cus_mapping_id]['penalty'] = $penaltyRaised - $penaltyPaid;
             } else {
                 // If due date hasn't been exceeded, no pending or penalty
                 $row['pending'] = 0;
