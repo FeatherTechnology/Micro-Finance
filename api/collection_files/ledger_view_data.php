@@ -101,7 +101,7 @@ $customer_details = $qry->fetchAll(PDO::FETCH_ASSOC);
         ?>
             <tr class="th_bg">
                 <th colspan="<?php echo intval($grp['due_period']) + 4; ?>" style="font-size: 22px; text-align: center;">
-                    <?php echo "Loan ID: " . $grp['loan_id'] . " | Centre ID: " . $grp['centre_id'] . " | Centre Name: " . $grp['centre_name'] . " | Due Method: Monthly | Date: " . $combined_date; ?>
+                    <?php echo "Loan ID: " . $grp['loan_id'] . " | Centre ID: " . $grp['centre_id'] . " | Centre Name: " . $grp['centre_name'] . " | Due Method: Monthly | Date: " . $scheme_day; ?>
                 </th>
                 <th></th>
             </tr>
@@ -114,25 +114,16 @@ $customer_details = $qry->fetchAll(PDO::FETCH_ASSOC);
                 ?>
                 <th></th>
             </tr>
-            <tr class="th_bg2">
-                <th colspan="4" class="th_cls"></th>
-                <?php
-                foreach ($dueMonth as $date) {
-                    echo "<th>" . date('M-Y', strtotime($date)) . "</th>";
-                }
-                ?>
-                <th></th>
-            </tr>
             <tr class="th_bg1">
                 <th class="th_cls">Sl.No</th>
                 <th>Customer ID</th>
                 <th>Customer Name</th>
                 <th>Due Amount</th>
-                <?php
-                foreach ($dueMonth as $date) {
-                    echo "<th>" . date('d-m-Y', strtotime($date)) . "</th>";
-                }
-                ?>
+               <?php
+               foreach ($dueMonth as $date) {
+                   echo "<th>" . date('M-Y', strtotime($date)) . "</th>";
+               }
+               ?>
                 <th>Chart</th>
             </tr>
         <?php

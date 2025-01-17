@@ -967,21 +967,26 @@ function getCentreMapTable(id) {
 // Function to remove row
 function removeCusMap(id) {
     // Find the row with the matching ID and remove it
+    let loan_id = $('#loan_id_calc').val()
     $('#cus_mapping_table tbody tr').each(function () {
         if ($(this).attr('data-id') == id) {
             $(this).remove(); // Remove the row
-            swalSuccess('Success', 'Customer mapping removed successfully.')
+            swalSuccess('Success', 'Customer mapping removed successfully.');
+    
+            // Reindex the remaining rows
+            $('#cus_mapping_table tbody tr').each(function (index) {
+                $(this).find('td:first').text(index + 1); // Update the serial number (first column)
+            });
+    
             return false; // Exit the loop once the row is removed
         }
     });
-    $.post('api/loan_entry_files/delete_cus_mapping.php', { id }, function (response) {
+    $.post('api/loan_entry_files/delete_cus_mapping.php', { id,loan_id }, function (response) {
         if (response == 1) {
             swalSuccess('Success', 'Customer mapping removed successfully.')
-
             getCusMapTable();
             getLoanEntryTable();
         } else {
-            swalError('Alert', 'Customer mapping remove failed.')
         }
     }, 'json');
 }
