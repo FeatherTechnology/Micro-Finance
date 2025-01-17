@@ -130,7 +130,9 @@ if ($result->rowCount() > 0) {
     
             // Calculate months elapsed since due start
             $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12)+1;
-           // echo "Months Elapsed: " . $monthsElapsed . "<br>";
+            if ($start_date_obj > $current_date_obj) {
+                $monthsElapsed = 1;
+            }
             if ($monthsElapsed == 1) {
                 // For the first month, payable = individual_amount + totalPaidAmt
                 $row['payable'] = $row['individual_amount'] - $totalPaidAmt;
@@ -159,7 +161,9 @@ if ($result->rowCount() > 0) {
             $current_date_obj = DateTime::createFromFormat('Y-m-d', $current_date);
     
             $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) +1;
-    
+            if ($start_date_obj > $current_date_obj) {
+                $weeksElapsed = 1;
+            }
             if ($weeksElapsed == 1) {
                 // For the first week, payable = individual_amount + totalPaidAmt
                 $row['payable'] = $row['individual_amount'] - $totalPaidAmt;

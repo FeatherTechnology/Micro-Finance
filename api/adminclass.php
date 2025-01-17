@@ -7,7 +7,7 @@ class overallClass
     {
         $customer_status = '';
 $qry = $pdo->query("SELECT COALESCE(lelc.total_amount_calc, 0) AS total_amount_calc,
-    COALESCE(lelc.total_customer, 0) AS total_customer,SUM(COALESCE(c.total_paid_track, 0) + COALESCE(c.fine_charge_track, 0) + COALESCE(c.penalty_track, 0)) AS total_paid,
+    COALESCE(lelc.total_customer, 0) AS total_customer,SUM(COALESCE(c.total_paid_track, 0)) AS total_paid,
     SUM(COALESCE(fc.fine_charge, 0) + COALESCE(pc.penalty, 0)) AS payable_charge
                             from loan_cus_mapping cm
                             left join fine_charges fc On fc.cus_mapping_id = cm.id
@@ -20,7 +20,7 @@ $qry = $pdo->query("SELECT COALESCE(lelc.total_amount_calc, 0) AS total_amount_c
 
             $total_loan_amount = $res['total_amount_calc'];
             $total_customer = $res['total_customer'];
-            $amount_per_cus = ($total_loan_amount / $total_customer);
+            $amount_per_cus = round($total_loan_amount / $total_customer);
             $total_payable = $amount_per_cus + $res['payable_charge'];
             $paid_amount = $res['total_paid'];
             if ($total_payable == $paid_amount) {

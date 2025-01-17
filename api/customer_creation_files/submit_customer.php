@@ -62,8 +62,15 @@ if ($qry->rowCount() > 0) {
     $cus_data = 'New';        // No matching record found, it's considered 'New'
     $cus_status = '';         // cus_status should be empty for new customers
 }
-$check_query = $pdo->query("SELECT *
-              FROM customer_creation cc where cc.aadhar_number='$aadhar_number'");
+try {
+    // Begin transaction
+    $pdo->beginTransaction();
+
+    // Check if customer exists based on Aadhar number
+    $check_query = $pdo->query("SELECT * FROM customer_creation WHERE aadhar_number = '$aadhar_number'");
+
+    // Get the latest customer ID
+    $selectIC = $pdo->query("SELECT cus_id FROM customer_creation WHERE cus_id != '' ORDER BY id DESC LIMIT 1 FOR UPDATE");
 
 if ($check_query->rowCount() > 0) {
     $row = $check_query->fetch();
@@ -71,9 +78,27 @@ if ($check_query->rowCount() > 0) {
     $qry = $pdo->query("UPDATE `customer_creation` SET `cus_id`='$cus_id', `aadhar_number`='$aadhar_number', `cus_data`='$cus_data',`cus_status`='$cus_status',`first_name`='$first_name', `last_name`='$last_name', `dob`='$dob',`age`='$age',`area`='$area', `mobile1`='$mobile1', `mobile2`='$mobile2', `whatsapp`='$whatsapp', `occupation`='$occupation',`occ_detail`='$occ_detail',`address`='$address', `native_address`='$native_address',`pic`='$picture',`multiple_loan`='$multiple_loan',  `update_login_id`='$user_id', updated_on = now() WHERE `id`='$customer_profile_id'");
     $result = 0; // Update
 } else {
+    if ($selectIC->rowCount() > 0) {
+        $row = $selectIC->fetch();
+        $ac2 = $row["cus_id"];
+        $appno2 = ltrim(strstr($ac2, '-'), '-'); // Extract numeric part after the hyphen
+        $appno2 = $appno2 + 1;
+        $cus_id = "C-" . $appno2;
+    } else {
+        $cus_id = "C-101"; // If no previous customer ID exists, start with C-1
+    } 
+    
     $qry = $pdo->query("INSERT INTO `customer_creation`(`cus_id`,`aadhar_number`, `cus_data`,`cus_status`,`first_name`, `last_name`,`dob`,`age`,`area`, `mobile1`, `mobile2`, `whatsapp`,`occupation`,`occ_detail`, `address`, `native_address`,`pic`, `multiple_loan`, `insert_login_id`, `created_on`) VALUES ('$cus_id','$aadhar_number', '$cus_data','$cus_status','$first_name', '$last_name','$dob','$age','$area', '$mobile1', '$mobile2', '$whatsapp','$occupation','$occ_detail', '$address', '$native_address', '$picture','$multiple_loan', '$user_id', now())");
     $result = 1; // Insert
 
 }
+   // Commit transaction
+   $pdo->commit();
 
-echo json_encode($result);
+} catch (Exception $e) {
+    // Rollback the transaction on error
+    $pdo->rollBack();
+    echo "Error: " . $e->getMessage();
+    exit;
+}
+  echo json_encode($result);

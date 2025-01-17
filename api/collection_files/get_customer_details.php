@@ -68,7 +68,6 @@ if ($result->rowCount() > 0) {
             $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12) + 1;
             $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];
             $toPayTillNow = $monthsElapsed * $row['individual_amount'];
-
             $penalty = 0;
             $count = 0;
             while ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) {

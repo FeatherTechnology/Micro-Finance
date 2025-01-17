@@ -720,7 +720,6 @@ function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_f
     if (roundedInterest < new_int) {
         roundedInterest += 5;
     }
-
     $('.int-diff').text('* (Difference: +' + parseInt(roundedInterest - interest_rate) + ')'); //To show the difference amount from old to new
     $('#interest_amnt_calc').val(parseInt(roundedInterest));
 

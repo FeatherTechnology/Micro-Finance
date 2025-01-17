@@ -290,7 +290,7 @@ function moneyFormatIndia($num1) {
                         <table id="accounts_other_trans_table" class="table custom-table">
                             <thead>
                                 <tr>
-                                    <th>S.NO</th>
+                                    <th width ='20'>S.NO</th>
                                     <th>Coll Mode</th>
                                     <th>Bank Name</th>
                                     <th>Transaction Category</th>
