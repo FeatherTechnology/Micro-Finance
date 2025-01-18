@@ -703,23 +703,27 @@ function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_f
     $('#total_amnt_calc').val(parseInt(tot_amt).toFixed(0));
 
     var due_amt = parseInt(tot_amt) / parseInt(due_period);//To calculate due amt by dividing total amount and due period given on loan info
-    var roundDue = Math.ceil(due_amt / 5) * 5; //to increase Due Amt to nearest multiple of 5
-    if (roundDue < due_amt) {
+    let total_cus = $("#total_cus").val();
+    var individual_amount = parseInt(due_amt)/total_cus
+    var roundDue = Math.ceil(individual_amount / 5) * 5; //to increase Due Amt to nearest multiple of 5
+    if (roundDue < individual_amount) {
         roundDue += 5;
     }
-    $('.due-diff').text('* (Difference: +' + parseInt(roundDue - due_amt) + ')'); //To show the difference amount
-    $('#due_amnt_calc').val(parseInt(roundDue).toFixed(0));
+    let newDue = parseInt(roundDue)*(total_cus);
+    $('.due-diff').text('* (Difference: +' + parseInt(newDue - due_amt) + ')'); //To show the difference amount
+    $('#due_amnt_calc').val(parseInt(newDue).toFixed(0));
 
     ////////////////////recalculation of total, principal, interest///////////////////
-    var new_tot = parseInt(roundDue) * due_period;
+    var new_tot = parseInt(newDue) * due_period;
     $('#total_amnt_calc').val(new_tot)
 
     //to get new interest rate using round due amt
-    let new_int = (roundDue * due_period) - loan_amt;
+    let new_int = (newDue * due_period) - loan_amt;
     var roundedInterest = Math.ceil(new_int / 5) * 5;
     if (roundedInterest < new_int) {
         roundedInterest += 5;
     }
+
     $('.int-diff').text('* (Difference: +' + parseInt(roundedInterest - interest_rate) + ')'); //To show the difference amount from old to new
     $('#interest_amnt_calc').val(parseInt(roundedInterest));
 
@@ -762,22 +766,25 @@ function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee
     $('#total_amnt_calc').val(parseInt(tot_amt).toFixed(0));
 
     // Calculate due amount by dividing the total amount by the due period
-    var due_amt = parseInt(tot_amt) / parseInt(due_period);
-    var roundDue = Math.ceil(due_amt / 5) * 5; // rounding due amount to nearest multiple of 5
-    if (roundDue < due_amt) {
+    var due_amt = parseInt(tot_amt) / parseInt(due_period);//To calculate due amt by dividing total amount and due period given on loan info
+    let total_cus = $("#total_cus").val();
+    var individual_amount = parseInt(due_amt)/total_cus
+    var roundDue = Math.ceil(individual_amount / 5) * 5; //to increase Due Amt to nearest multiple of 5
+    if (roundDue < individual_amount) {
         roundDue += 5;
     }
-    $('.due-diff').text('* (Difference: +' + parseInt(roundDue - due_amt) + ')'); // show the difference amount
-    $('#due_amnt_calc').val(parseInt(roundDue).toFixed(0));
+    let newDue = parseInt(roundDue)*(total_cus);
+    $('.due-diff').text('* (Difference: +' + parseInt(newDue - due_amt) + ')'); //To show the difference amount
+    $('#due_amnt_calc').val(parseInt(newDue).toFixed(0));
 
     //////////////////// recalculation of total, interest, and principal /////////////////////
 
     // New total amount based on rounded due amount
-    var new_tot = parseInt(roundDue) * due_period;
+    var new_tot = parseInt(newDue) * due_period;
     $('#total_amnt_calc').val(new_tot);
 
     // Recalculate interest based on the new total amount and rounded due
-    let new_int = (roundDue * due_period) - loan_amt;
+    let new_int = (newDue * due_period) - loan_amt;
     var roundedInterest = Math.ceil(new_int / 5) * 5;
     if (roundedInterest < new_int) {
         roundedInterest += 5;
@@ -968,6 +975,16 @@ function getCentreMapTable(id) {
 function removeCusMap(id) {
     // Find the row with the matching ID and remove it
     let loan_id = $('#loan_id_calc').val()
+    let centre_id = $('#Centre_id').val();
+    var customerMappingData = [];
+    $('#cus_mapping_table tbody tr').each(function () {
+        var cus_id = $(this).data('id'); // Retrieve the customer.id from data-id attribute
+        var cus_mapping = $(this).find('.cus_mapping').text(); // Use .text() instead of .val() for non-input elements
+        var designation = $(this).find('.designation').text(); // Use .text() to get the content of the td
+
+        customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation });
+    });
+    // Add customer mapping data
     $('#cus_mapping_table tbody tr').each(function () {
         if ($(this).attr('data-id') == id) {
             $(this).remove(); // Remove the row
@@ -981,7 +998,7 @@ function removeCusMap(id) {
             return false; // Exit the loop once the row is removed
         }
     });
-    $.post('api/loan_entry_files/delete_cus_mapping.php', { id,loan_id }, function (response) {
+    $.post('api/loan_entry_files/delete_cus_mapping.php', { id,loan_id,'customer_mapping_data': customerMappingData,centre_id}, function (response) {
         if (response == 1) {
             swalSuccess('Success', 'Customer mapping removed successfully.')
             getCusMapTable();
