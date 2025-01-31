@@ -81,6 +81,8 @@ foreach ($result as $row) {
 
     $status = $collectionSts->updateCollectStatus($row['loan_id']);
     $customer_status = $obj->custStatus($row['id'],$row['loan_id']);
+    $status = $customer_status['status'];  // Get the status
+    
     if($status == "Paid"){
         $collection_status = "Completed";
     }else{
@@ -98,7 +100,7 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['loan_amount']) ? moneyFormatIndia($row['loan_amount']) : '';
     $sub_array[] = $centre_status;
     $sub_array[] = $collection_status;
-    $sub_array[] = $customer_status;
+    $sub_array[] = $status;
     $sub_array[] = "<button class='btn btn-primary closed_due_chart' value='" . $row['id'] . "'  loan_id='" . $row['loan_id'] . "'>&nbsp;Due Chart</button>";
     $data[] = $sub_array;
 }

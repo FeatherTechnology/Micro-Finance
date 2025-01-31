@@ -98,6 +98,8 @@ $(document).ready(function () {
         let loan_date = $('#loan_date_calc').val();
         let due_startdate_calc = $('#due_startdate_calc').val();
         let maturity_date_calc = $('#maturity_date_calc').val();
+        let total_amnt_calc = $('#total_amnt_calc').val().replace(/,/g, '');
+        console.log("jkhjkhf"+total_amnt_calc);
         var isValid = true;
 
         // Validate each field
@@ -114,6 +116,7 @@ $(document).ready(function () {
 
             // Get the values from the row (checkbox, payment type, issue type, issue amount)
             var id = row.find('.form-check-input').data('id');
+            var cusId = row.find('.cus_id').text();
             var paymentType = row.find('.payment-type').val();
             var issueType = row.find('.issue-type').val();
             var issueAmount = row.find('.issue-amount').val().replace(/,/g, '');
@@ -127,7 +130,8 @@ $(document).ready(function () {
                     issue_type: issueType,
                     issue_amount: issueAmount,
                     net_cash: netCashCalc,
-                    issue_date: issueDate
+                    issue_date: issueDate,
+                    cus_id: cusId
 
                 });
             }
@@ -146,7 +150,8 @@ $(document).ready(function () {
             loan_date: loan_date,
             due_startdate_calc: due_startdate_calc,
             maturity_date_calc: maturity_date_calc,
-            loan_issue_data: loanIssueData // The array of loan issues
+            loan_issue_data: loanIssueData, // The array of loan issues
+            total_amnt_calc:total_amnt_calc
         };
         if (isValid) {
             $('#submit_loan_issue').prop('disabled', true);
@@ -399,7 +404,7 @@ function issueList() {
 
                 var row = '<tr>' +
                     '<td>' + (index + 1) + '</td>' +
-                    '<td>' + item.cus_id + '</td>' +
+                    '<td class="cus_id">' + item.cus_id + '</td>' +
                     '<td>' + item.first_name + '</td>' +
                     '<td class="netcash">' + netcashCalc + '</td>' +
                     '<td class="issued-amount">' + issuedAmount + '</td>' +

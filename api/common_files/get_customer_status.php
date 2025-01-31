@@ -52,8 +52,9 @@ class CustomerStatus
 
         $result = $this->pdo->query($query);
 
-        $status = 'Payable';
-
+        // $status = 'Payable';
+        $cus_status = 'Payable'; // Default status
+    $balanceAmount = 0;  // Default individual amount
 
         if ($result->rowCount() > 0) {
             $customers = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -97,11 +98,17 @@ class CustomerStatus
                 $penalty = $this->getPenalty($cus_mapping_id, $fine, $penalty_track);
                 // Calculate and update status based on the due period (monthly/weekly)
                 $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty);
+                $cus_status = $status['status'];
+                $balanceAmount = $status['balanceAmount'];
 
             }
         }
 
-        return $status;
+        // return $status;
+        return [
+            'status' => $cus_status,
+            'balanceAmount' => $balanceAmount
+        ];
     }
 
     private function getFineCharge($cus_mapping_id, $fine)
@@ -127,6 +134,7 @@ class CustomerStatus
     {
         $currentDate = new DateTime();
         $status = 'Payable'; // Default status
+        $balanceAmount= round($row['individual_amount'] - $totalPaidAmt);
         // Monthly calculation
         if ($row['due_month'] == 1) {
             $due_start_from = date('Y-m', strtotime($row['due_start']));
@@ -137,6 +145,7 @@ class CustomerStatus
             $current_date_obj = DateTime::createFromFormat('Y-m', $current_month);
             $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12) + 1;
             if ($monthsElapsed > 1) {
+               
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillPrev - $totalPaidAmt;
@@ -205,6 +214,7 @@ class CustomerStatus
                 }
             }
         }
-        return $status;
+        // return $status;
+        return ['status' => $status, 'balanceAmount' => $balanceAmount];
     }
 }
