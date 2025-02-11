@@ -33,7 +33,6 @@ if ($type == 'today') {
 }
 
 $result = array();
-
 $qry = $pdo->query("
     SELECT
         lcm.loan_id,

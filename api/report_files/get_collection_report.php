@@ -18,7 +18,8 @@ $column = array(
     'SUM(c.total_paid_track)'
 );
 
-$query = "SELECT c.id, lelc.loan_id , lelc.loan_date ,lelc.due_month,lelc.due_start,lelc.scheme_date,lelc.scheme_day_calc,lelc.principal_amount_calc, lelc.intrest_amount_calc, cntr.centre_id , cntr.centre_no , cntr.centre_name , bc.branch_name , cc.mobile1 , lc.loan_category , u.name , r.role ,c.status,  c.sub_status ,c.coll_date, lelc.due_amount_calc ,SUM(c.total_paid_track) as total_paid_track FROM collection c JOIN loan_entry_loan_calculation lelc ON c.loan_id = lelc.loan_id JOIN centre_creation cntr ON cntr.centre_id = lelc.centre_id JOIN loan_cus_mapping lcm ON lcm.loan_id = lelc.loan_id JOIN customer_creation cc ON cc.id = lcm.cus_id JOIN branch_creation bc ON cntr.branch = bc.id JOIN loan_category lc ON lelc.loan_category = lc.id  JOIN users u ON u.id = c.insert_login_id LEFT JOIN role r ON u.role = r.id WHERE u.id ='$user_id'  AND DATE(c.coll_date) BETWEEN '$from_date' AND '$to_date'GROUP by lelc.loan_id";
+$query = "SELECT c.id, lelc.loan_id , lelc.loan_date ,lelc.due_month,lelc.due_start,lelc.scheme_date,lelc.scheme_day_calc,lelc.principal_amount_calc, lelc.intrest_amount_calc, cntr.centre_id , cntr.centre_no , cntr.centre_name , bc.branch_name , cc.mobile1 , lc.loan_category , u.name , r.role ,c.status,  c.sub_status ,c.coll_date, lelc.due_amount_calc ,SUM(c.total_paid_track) as total_paid_track FROM collection c JOIN loan_entry_loan_calculation lelc ON c.loan_id = lelc.loan_id JOIN centre_creation cntr ON cntr.centre_id = lelc.centre_id JOIN loan_cus_mapping lcm ON
+    c.cus_mapping_id = lcm.id JOIN customer_creation cc ON cc.id = lcm.cus_id JOIN branch_creation bc ON cntr.branch = bc.id JOIN loan_category lc ON lelc.loan_category = lc.id  JOIN users u ON u.id = c.insert_login_id LEFT JOIN role r ON u.role = r.id WHERE u.id ='$user_id'  AND DATE(c.coll_date) BETWEEN '$from_date' AND '$to_date'GROUP by lelc.loan_id";
 
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
@@ -38,7 +39,6 @@ if (isset($_POST['order'])) {
 } else {
     $query .= ' ';
 }
-
 $query1 = "";
 if ($_POST['length'] != -1) {
     $query1 = " LIMIT " . $_POST['start'] . ", " . $_POST['length'];

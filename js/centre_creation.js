@@ -37,6 +37,14 @@ $(document).ready(function () {
     $('#mobile1, #mobile2,#rep_mobile').change(function () {
         checkMobileNo($(this).val(), $(this).attr('id'));
     });
+    $('#getlatlong').click(function () {
+        event.preventDefault();
+        navigator.geolocation.getCurrentPosition((position) => {
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+            $('#latlong').val(latitude + ',' + longitude);
+        });
+    })
     ///////////////////////////////////////////Representative Info////////////////////////////////
 
     $('#submit_rep').click(function (event) {
@@ -110,6 +118,7 @@ $(document).ready(function () {
         let mobile2 = $('#mobile2').val();
         let area = $('#area').val();
         let branch = $('#branch').val();
+        let latlong = $('#latlong').val();
         let pic = $('#pic')[0].files[0];
         let per_pic = $('#per_pic').val();
         let centre_create_id = $('#centre_create_id').val();
@@ -122,6 +131,7 @@ $(document).ready(function () {
         centreDetail.append('mobile2', mobile2);
         centreDetail.append('area', area);
         centreDetail.append('branch', branch);
+        centreDetail.append('latlong', latlong);
         centreDetail.append('pic', pic);
         centreDetail.append('per_pic', per_pic);
         centreDetail.append('centre_create_id', centre_create_id);
@@ -304,6 +314,7 @@ function editCentreCreation(id) {
         $('#centre_name').val(response[0].centre_name);
         $('#area_edit').val(response[0].area);
         $('#branch_edit').val(response[0].branch);
+        $('#latlong').val(response[0].latlong);
         $('#mobile1').val(response[0].mobile1);
         $('#mobile2').val(response[0].mobile2);
         getAreaName()
