@@ -32,7 +32,7 @@ if ($result->rowCount() > 0) {
     foreach ($response as &$row) {
         // Calculate individual_amount if total_customer is not zero
         if (!empty($row['net_cash_calc']) && !empty($row['total_customer']) && $row['total_customer'] > 0) {
-            $row['individual_amount'] = $row['net_cash_calc'] / $row['total_customer'];
+            $row['individual_amount'] = round($row['net_cash_calc'] / $row['total_customer']);
         } else {
             $row['individual_amount'] = 0; // If total_customer is 0 or net_cash_calc is empty, set to 0
         }
