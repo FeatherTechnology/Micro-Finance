@@ -71,8 +71,8 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['mobile1']) ? $row['mobile1'] : '';
     $sub_array[] = isset($row['areaname']) ? $row['areaname'] : '';
     $sub_array[] = isset($row['cus_data']) ? $row['cus_data']: '';
-    $action = "<span class='icon-border_color customerActionBtn' value='" . $row['id'] . "'></span>&nbsp;&nbsp;&nbsp;";
-    $action .= "<span class='icon-delete customerDeleteBtn' value='" . $row['id'] . "'></span>";
+    $action = "<span class='icon-border_color customerActionBtn' value='" . $row['id'] . "' cus_id='" . $row['cus_id'] . "'></span>&nbsp;&nbsp;&nbsp;";
+    $action .= "<span class='icon-delete customerDeleteBtn' value='" . $row['id'] . "' cus_id='" . $row['cus_id'] . "'></span>";
     $sub_array[] = $action;
     $data[] = $sub_array;
 }

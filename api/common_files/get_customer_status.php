@@ -55,6 +55,9 @@ class CustomerStatus
         // $status = 'Payable';
         $cus_status = 'Payable'; // Default status
     $balanceAmount = 0;  // Default individual amount
+    $pendings=0;
+    $totalPaidAmt=0;
+    $payable=0;
 
         if ($result->rowCount() > 0) {
             $customers = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -100,6 +103,8 @@ class CustomerStatus
                 $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty);
                 $cus_status = $status['status'];
                 $balanceAmount = $status['balanceAmount'];
+                $pendings= $status['pending'];
+                $payable= $status['payable'];
 
             }
         }
@@ -107,7 +112,10 @@ class CustomerStatus
         // return $status;
         return [
             'status' => $cus_status,
-            'balanceAmount' => $balanceAmount
+            'balanceAmount' => $balanceAmount,
+            'pendings'=> $pendings,
+            'totalPaidAmt'=> $totalPaidAmt,
+            'payable'=> $payable
         ];
     }
 
@@ -135,6 +143,8 @@ class CustomerStatus
         $currentDate = new DateTime();
         $status = 'Payable'; // Default status
         $balanceAmount= round($row['individual_amount'] - $totalPaidAmt);
+        $pending=0;
+        $payable =0;
         // Monthly calculation
         if ($row['due_month'] == 1) {
             $due_start_from = date('Y-m', strtotime($row['due_start']));
@@ -149,6 +159,7 @@ class CustomerStatus
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillPrev - $totalPaidAmt;
+                $payable = $toPayTillNow-$totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                 } else if ($toPayTillPrev == $totalPaidAmt) {
@@ -165,6 +176,7 @@ class CustomerStatus
                 }
             } else {
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
+                $payable = $toPayTillNow-$totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                 } else {
@@ -189,6 +201,7 @@ class CustomerStatus
              
                 $toPayTillPrev = ($weeksElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillPrev - $totalPaidAmt;
+                $payable=$toPayTillNow-$totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                 } else if ($toPayTillPrev == $totalPaidAmt) {
@@ -207,6 +220,7 @@ class CustomerStatus
             } else {
                 // Handle the case where only 1 week has elapsed or less
                 $toPayTillNow = $weeksElapsed * $row['individual_amount'];
+                $payable = $toPayTillNow-$totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                 } else {
@@ -215,6 +229,6 @@ class CustomerStatus
             }
         }
         // return $status;
-        return ['status' => $status, 'balanceAmount' => $balanceAmount];
+        return ['status' => $status, 'balanceAmount' => $balanceAmount , 'pending'=>$pending ,'payable'=>$payable];
     }
 }
