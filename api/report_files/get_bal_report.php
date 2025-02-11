@@ -4,9 +4,10 @@ include '../../ajaxconfig.php';
 $user_id = $_SESSION['user_id'];
 
 $to_date = $_POST['to_date'];
+$current_time = '23:59:59';
+$dateTime = $to_date . ' ' . $current_time;
 
 $query = "SELECT
-    C.id,
     lelc.loan_id,
     lelc.loan_date,
     cntr.centre_id,
@@ -25,18 +26,18 @@ $query = "SELECT
     c.loan_due_amnt,
     c.coll_date,
     lelc.due_period,
-    sum(c.total_paid_track) AS total_paid,
+    SUM(c.due_amt_track) AS total_paid,
     lelc.principal_amount_calc,
     lelc.intrest_amount_calc,
     lelc.total_amount_calc,
     c.status,
     c.sub_status
 FROM
-    collection c
+    loan_entry_loan_calculation lelc
+JOIN collection c ON
+    c.loan_id = lelc.loan_id
 JOIN loan_cus_mapping lcm ON
     lcm.id = c.cus_mapping_id
-JOIN loan_entry_loan_calculation lelc ON
-    lcm.loan_id = lelc.loan_id
 JOIN centre_creation cntr ON
     lelc.centre_id = cntr.centre_id
 JOIN branch_creation bc ON
@@ -48,8 +49,9 @@ JOIN loan_category lc ON
 JOIN users u ON
     u.id = c.insert_login_id
     WHERE
- c.coll_date <= '$to_date'
-group by loan_id
+ c.coll_date <= '$dateTime'
+GROUP BY
+    lelc.loan_id
 ";
 
 if (isset($_POST['search']) && $_POST['search'] != "") {
@@ -59,17 +61,15 @@ if (isset($_POST['search']) && $_POST['search'] != "") {
         lelc.loan_date LIKE '%$search%' OR
         cntr.centre_id LIKE '%$search%' OR
         cntr.centre_name LIKE '%$search%' OR
-        li.issue_date LIKE '%$search%' OR
+        u.name LIKE '%$search%' OR
         lelc.due_end LIKE '%$search%' OR
-        cp.cus_name LIKE '%$search%' OR
-        anc.areaname LIKE '%$search%' OR
+        lelc.due_month LIKE '%$search%' OR
+        c.coll_date LIKE '%$search%' OR
         bc.branch_name LIKE '%$search%' OR
         cc.mobile1 LIKE '%$search%' OR
         lc.loan_category LIKE '%$search%'
     )";
 }
-
-
 
 $statement = $pdo->prepare($query);
 $statement->execute();

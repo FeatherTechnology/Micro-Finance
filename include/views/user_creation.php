@@ -171,7 +171,7 @@
                                             <label for="centre">Centre</label><span class="text-danger">*</span>
                                             <input type="hidden" id="centre_edit_it">
                                             <select class="form-control" id="centre" name="centre" tabindex="16" multiple>
-                                                <option value="">Select centre Name</option>
+                                                <option value="">Select Centre Name</option>
                                             </select>
                                         </div>
                                     </div>

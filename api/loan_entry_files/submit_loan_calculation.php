@@ -39,8 +39,22 @@ if ($current_mapping_count > $total_cus) {
     echo json_encode(['result' => 3, 'message' => 'Remove The Customer Mapping Details']);
     exit;
 }
+try {
+    // Begin transaction
+    $pdo->beginTransaction();
+    // Get the latest customer ID
+    $selectIC = $pdo->query("SELECT loan_id FROM loan_entry_loan_calculation WHERE loan_id != '' ORDER BY id DESC LIMIT 1 FOR UPDATE");
 
 if ($id == '') {
+    if ($selectIC->rowCount() > 0) {
+        $row = $selectIC->fetch();
+        $ac2 = $row["loan_id"];
+        $appno2 = ltrim(strstr($ac2, '-'), '-'); // Extract numeric part after the hyphen
+        $appno2 = $appno2 + 1;
+        $loan_id_calc = "L-" . $appno2;
+    } else {
+        $loan_id_calc = "L-101"; // If no previous customer ID exists, start with C-1
+    }
     $qry = $pdo->query("INSERT INTO `loan_entry_loan_calculation`( `centre_id`, `loan_id`,`loan_category`, `loan_amount`, `total_customer`, `loan_amt_per_cus`, `profit_type`, `due_month`, `benefit_method`,`scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`,  `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_status`, `insert_login_id`,`created_on`) 
                             VALUES ('$Centre_id','$loan_id_calc','$loan_category_calc','$loan_amount_calc','$total_cus','$loan_amount_per_cus','$profit_type_calc','$due_method_calc','$profit_method_calc','$scheme_day_calc','$interest_rate_calc','$due_period_calc','$doc_charge_calc','$processing_fees_calc','$scheme_name_calc','$scheme_date_calc','$loan_amnt_calc','$principal_amnt_calc','$interest_amnt_calc','$total_amnt_calc','$due_amnt_calc','$doc_charge_calculate','$processing_fees_calculate','$net_cash_calc','$due_startdate_calc','$maturity_date_calc','1','$user_id',NOW()) ");
     $result = 2;
@@ -171,6 +185,13 @@ if ($qry) {
     $result = 0; // Failure
     $last_id = '';
 }
+$pdo->commit();
 
+} catch (Exception $e) {
+    // Rollback the transaction on error
+    $pdo->rollBack();
+    echo "Error: " . $e->getMessage();
+    exit;
+}
 echo json_encode(['result' => $result, 'last_id' => $last_id]);
 ?>

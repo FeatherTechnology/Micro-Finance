@@ -87,6 +87,18 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12">
+                                        <div class="form-group">
+                                            <label for="latlong">Location</label>
+                                            <input type="text" class="form-control" name="latlong" id="latlong" placeholder="Enter Latitude Longitude">
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-12">
+                                        <div class="form-group">
+                                            <label style="visibility:hidden">Location</label>
+                                            <button class="btn btn-primary" id="getlatlong" name="getlatlong" style="padding: 5px 35px;"><span class="icon-my_location"></span></button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-4">
