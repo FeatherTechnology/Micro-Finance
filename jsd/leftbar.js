@@ -8,7 +8,7 @@ $(document).ready(function () {
         'area_creation': 'master',
         'bank_creation': 'admin',
         'user_creation': 'admin',
-        'customer_creation': 'profile',
+        'customer_creation': 'customer_creation',
         'centre_creation': 'profile',
         'customer_data': 'profile',
         'centre_summary': 'profile',
@@ -25,6 +25,7 @@ $(document).ready(function () {
         'collection_report':'reports',
         'balance_report':'reports',
         'closed_report':'reports',
+        'due_list_report':'reports',
         'bulk_upload':'bulk_upload',
     };
 
