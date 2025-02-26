@@ -19,6 +19,13 @@ const loan_category = new Choices('#loan_category', {
     allowHTML: true
 });
 
+//Loan Category Multi select initialization
+const accountAccess = new Choices('#account_access', {
+    removeItemButton: true,
+    noChoicesText: 'Select Account Accesss',
+    allowHTML: true
+});
+
 $(document).ready(function () {
 
     $('.add_user_btn, .back_to_userList_btn').click(function () {
@@ -142,6 +149,7 @@ $(document).ready(function () {
             confirm_password: $('#confirm_password').val(),
             branch_name: $('#branch_name').val(),
             centre_name: $('#centre').val(),
+            account_access: $('#account_access').val(),
 
             loan_category: $('#loan_category').val(),
             collection_access: $('#collection_access').val(),
@@ -217,6 +225,7 @@ $(document).ready(function () {
                 getBranchName(response[0].branch);
                 getCentreName(response[0].centre_name);
                 getLoanCategoryName(response[0].loan_category);
+                getAccountAccess(response[0].account_access);
             }, 1000);
 
         }, 'json');
@@ -334,6 +343,7 @@ function swapTableAndCreation() {
         getCentreName('');
         getLoanCategoryName('');
         getMenuSubMenuList(userid);
+        getAccountAccess("");
     } else {
         $('.user_creation_table_content').show();
         $('.add_user_btn').show();
@@ -609,6 +619,37 @@ function getLoanCategoryName(loan_cat_edit_it) {
         });
     }, 'json');
 }
+function getAccountAccess(account_access) {
+    const valueToLabelMap = {
+        '1': 'Collection',
+        '2': 'Loan Issued',
+        '3': 'Expenses',
+        '4': 'Other Transaction'
+    };
+
+    let selectedValues = account_access.split(',');
+
+    accountAccess.clearStore();
+
+    let items = [];
+
+    $.each(valueToLabelMap, function(val, label) {
+        let selected = '';
+
+        if (selectedValues.includes(val)) {
+            selected = 'selected';
+        }
+
+        items.push({
+            value: val,  
+            label: label,
+            selected: selected 
+        });
+    });
+    accountAccess.setChoices(items);
+    accountAccess.init(); 
+}
+
 
 
 function deleteUser(id) {

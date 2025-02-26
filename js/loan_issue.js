@@ -68,6 +68,7 @@ $(document).ready(function () {
                 cache: false,
                 success: function (response) {
                     $('#submit_doc_info').prop('disabled', false);
+                    getAutoGenDocId('');
                     if (response == '1') {
                         swalSuccess('Success', 'Document Info Added Successfully')
                     } else {
@@ -381,7 +382,6 @@ function issueList() {
                 var issueTypeOptions = `
                     <select class="form-control issue-type" data-id="${item.id}" ${item.issue_status === '1' ? 'disabled' : ''}>
                         <option value="1" ${item.issue_type == 1 ? 'selected' : ''}>Cash</option>
-                        <option value="2" ${item.issue_type == 2 ? 'selected' : ''}>Bank Transfer</option>
                     </select>
                 `;
                 var netcashCalc = item.individual_amount ? moneyFormatIndia(item.individual_amount) : '';

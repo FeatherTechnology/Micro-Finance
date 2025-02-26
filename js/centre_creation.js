@@ -37,14 +37,42 @@ $(document).ready(function () {
     $('#mobile1, #mobile2,#rep_mobile').change(function () {
         checkMobileNo($(this).val(), $(this).attr('id'));
     });
+    // $('#getlatlong').click(function () {
+    //     console.log("event");
+    //     event.preventDefault();
+    //     navigator.geolocation.getCurrentPosition((position) => {
+    //         let latitude = position.coords.latitude;
+    //         let longitude = position.coords.longitude;
+    //         console.log("latitude",latitude);
+    //         console.log("longitude",longitude);
+    //         $('#latlong').val(latitude + ',' + longitude);
+    //     });
+    // })
     $('#getlatlong').click(function () {
         event.preventDefault();
-        navigator.geolocation.getCurrentPosition((position) => {
-            let latitude = position.coords.latitude;
-            let longitude = position.coords.longitude;
-            $('#latlong').val(latitude + ',' + longitude);
+        
+        $.getJSON('http://ip-api.com/json', function (data) {
+            console.log("Latitude:", data.lat);
+            console.log("Longitude:", data.lon);
+            $('#latlong').val(data.lat + ',' + data.lon);
         });
-    })
+    });
+    
+    // $(document).on("click", "#getlatlong", function (event) {
+    //     event.preventDefault();
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(function (position) {
+    //             let latitude = position.coords.latitude;
+    //             let longitude = position.coords.longitude;
+    //             let locationText = `${latitude}, ${longitude}`;
+    //             $("#latlong").val(locationText);
+    //         }, function (error) {
+    //             alert("Error getting location: " + error.message);
+    //         });
+    //     } else {
+    //         alert("Geolocation is not supported by your browser.");
+    //     }
+    // });
     ///////////////////////////////////////////Representative Info////////////////////////////////
 
     $('#submit_rep').click(function (event) {

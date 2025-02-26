@@ -186,24 +186,30 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-3 col-sm-4">
+                                    <div class="col-md-3 col-sm-4 mt-2">
                                         <div class="form-group">
-                                            <label for="processing_fee_min">Processing Fee</label><span class="text-danger">*</span>
+                                            <label for="processing_fee_min">Processing Fee</label><span class="text-danger">*</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="hidden" id="processing_type" value="percentage">
+                                            <input type="radio" name="doc_charge_type" id="docpercentage" value="percentage" tabindex="16" checked >
+                                            <label for="docpercentage">&nbsp;&nbsp;<b>%</b></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                            <input type="radio" name="doc_charge_type" value="rupee" id="docamt">
+                                            <label for="docamt">&nbsp;&nbsp;₹</label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control processing_minmax" id="processing_fee_min" name="processing_fee_min" tabindex="14" placeholder="Enter Min Processing Fee">
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text">%</span>
+                                                    <span class="input-group-text document-span-val">%</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-sm-4">
+                                    <div class="col-md-3 col-sm-4 mt-3">
                                         <div class="form-group">
                                             <label for="processing_fee_max"> </label>
                                             <div class="input-group">
                                                 <input type="number" class="form-control form-group-label-emptywith-input processing_minmax" id="processing_fee_max" name="processing_fee_max" tabindex="15" placeholder="Enter Max Processing Fee">
                                                 <div class="input-group-append form-group-label-emptywith-input">
-                                                    <span class="input-group-text">%</span>
+                                                    <span class="input-group-text document-span-val">%</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -412,7 +418,7 @@
                                     </div>
 
                                 </div>
-                            
+
                                 <div class="row">
                                     <div class="col-12 overflow-x-cls">
                                         <table id="scheme_modal_table" class="custom-table">
@@ -508,4 +514,3 @@
     </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////// Loan Category Modal END ////////////////////////////////////////////////////////////////////// -->
-

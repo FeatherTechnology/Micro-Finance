@@ -34,7 +34,7 @@
         <div id="user_creation_content" style="display: none;">
             <form id="user_creation_form" name="user_creation_form" method="post" enctype="multipart/form-data">
                 <input type="hidden" id="user_creation_id" value="0">
-                <input type="hidden" id="session_user_id" >
+                <input type="hidden" id="session_user_id">
                 <!-- Row start -->
                 <div class="row gutters">
                     <div class="col-12">
@@ -175,7 +175,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                
+
                                     <div class="col-sm-4 col-md-4 col-lg-4">
                                         <div class="form-group">
                                             <label for="loan_category">Loan Category</label><span class="text-danger">*</span>
@@ -189,7 +189,7 @@
                                         <div class="form-group">
                                             <label for="collection_access">Collection Access</label><span class="text-danger">*</span>
                                             <input type="hidden" id="loan_cat_edit_it">
-                                            <select class="form-control" id="collection_access" name="collection_access" tabindex="18" >
+                                            <select class="form-control" id="collection_access" name="collection_access" tabindex="18">
                                                 <option value="">Select Collection Access</option>
                                                 <option value="1">YES</option>
                                                 <option value="2">NO</option>
@@ -199,10 +199,23 @@
                                     <div class="col-sm-4 col-md-4 col-lg-4">
                                         <div class="form-group">
                                             <label for="download_access">Download Access</label><span class="text-danger">*</span>
-                                            <select class="form-control" id="download_access" name="download_access" tabindex="19" >
+                                            <select class="form-control" id="download_access" name="download_access" tabindex="19">
                                                 <option value="">Select Download Access</option>
                                                 <option value="1">YES</option>
                                                 <option value="2">NO</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label for="account_access">Accounts</label><span class="text-danger">*</span>
+                                            <input type="hidden" id="account_access_id">
+                                            <select class="form-control" id="account_access" name="account_access" tabindex="20" multiple>
+                                            <option value="">Select Account Access</option>
+                                                <option value='1'>Collection</option>
+                                                <option value='2'>Loan Issued</option>
+                                                <option value='3'>Expenses</option>
+                                                <option value='4'>Other Transaction</option>
                                             </select>
                                         </div>
                                     </div>

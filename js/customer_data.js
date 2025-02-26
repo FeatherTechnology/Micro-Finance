@@ -550,7 +550,7 @@ function getFamilyInfoTable() {
         "fam_mobile",
       ];
       appendDataToTable("#fam_info_table", response, columnMapping);
-      setdtable("#fam_info_table");
+      // setdtable("#fam_info_table");
     },
     "json"
   );
@@ -642,7 +642,7 @@ function getDocumentDetails(cus_id){
         "action"
     ]
     appendDataToTable('#document_info', response, docInfoColumn);
-    setdtable('#document_info')
+    // setdtable('#document_info')
     console.log("helooooooooo");
     console.log("response"+response)
     $('#documentation_form input').each(function () {

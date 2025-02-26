@@ -120,7 +120,7 @@
                                     <!-- First row: Spanning headers for sections -->
                                     <tr>
                                         <th colspan="8">Collection Info</th>
-                                        <th colspan="6">Collection Track</th>
+                                        <th colspan="7">Collection Track</th>
                                     </tr>
                                     <!-- Second row: Column headers -->
                                     <tr>
@@ -138,6 +138,7 @@
                                         <th>Collection Fine</th>
                                         <th>Total Collection</th>
                                         <th>Charts</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

@@ -7,9 +7,6 @@ $user_id = $_SESSION['user_id'];
 
 $search_date = $_POST['search_date'];
 $due_type = $_POST['due_type'];
-$week_days = $_POST['week_days'];
-
-
 
 $column = array(
     'lelc.loan_id',
@@ -62,13 +59,8 @@ left JOIN closed_loan cl ON
 JOIN loan_issue li ON
     li.loan_id = lelc.loan_id
 WHERE
-    li.issue_date <= '$search_date' and lelc.due_month='$due_type'";
+    li.issue_date <= '$search_date' and lelc.due_month='$due_type' and lcm.cus_status='12'  GROUP by lcm.id ";
 
-if (isset($_POST['week_days'])) {
-    $query .=" and lelc.scheme_day_calc='$week_days' GROUP by lcm.id";
-}else{
-     $query .=" GROUP by lcm.id";
-}
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $query .= " and (anc.areaname LIKE '%" . $_POST['search'] . "%' OR

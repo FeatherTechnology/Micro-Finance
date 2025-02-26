@@ -327,13 +327,15 @@ $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, functio
     let due_period = $("#due_period_calc").val();
     let doc_charge = $("#doc_charge_calc").val();
     let proc_fee = $("#processing_fees_calc").val();
+    let proc_fee_type = $("#proc_fees_type").val();
    
     if (
       loan_amt != "" &&
       int_rate != "" &&
       due_period != "" &&
       doc_charge != "" &&
-      proc_fee != ""
+      proc_fee != "" && 
+      proc_fee_type != "" 
     ) {
       let benefit_method = $("#profit_method_calc").val(); //If Changes not found in profit method, calculate loan amt for monthly basis
       if (benefit_method == 1 || benefit_method == "Pre Benefit") {
@@ -342,7 +344,8 @@ $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, functio
           int_rate,
           due_period,
           doc_charge,
-          proc_fee
+          proc_fee,
+          proc_fee_type
         );
       } else if (benefit_method == 2 || benefit_method == "After Benefit") {
         getLoanAfterInterest(
@@ -350,7 +353,8 @@ $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, functio
           int_rate,
           due_period,
           doc_charge,
-          proc_fee
+          proc_fee,
+          proc_fee_type
         );
       }
       //   changeInttoBen();
@@ -796,22 +800,33 @@ function getLoanCatDetails(id, profitType) {
         );
         $("#doc_charge_calc").val(doc_charge_upd);
 
-        $(".min-max-proc").text(
-          "* (" +
-            response[0].processing_fee_min +
-            "% - " +
-            response[0].processing_fee_max +
-            "%) "
-        );
-        $("#processing_fees_calc").attr(
-          "onChange",
-          `if( parseFloat($(this).val()) > '` +
-            response[0].processing_fee_max +
-            `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` +
-            response[0].processing_fee_min +
-            `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `
-        );
-        $("#processing_fees_calc").val(proc_fee_upd);
+        // $(".min-max-proc").text(
+        //   "* (" +
+        //     response[0].processing_fee_min +
+        //     "% - " +
+        //     response[0].processing_fee_max +
+        //     "%) "
+        // );
+        // $("#processing_fees_calc").attr(
+        //   "onChange",
+        //   `if( parseFloat($(this).val()) > '` +
+        //     response[0].processing_fee_max +
+        //     `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` +
+        //     response[0].processing_fee_min +
+        //     `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `
+        // );
+        // $("#processing_fees_calc").val(proc_fee_upd);
+        if(response[0].procrssing_fees_type==='rupee'){
+          $('.min-max-proc').text('* (' + response[0].processing_fee_min + '₹ - ' + response[0].processing_fee_max + '₹) ');
+          $('#processing_fees_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].processing_fee_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].processing_fee_min + `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `);
+          $('#processing_fees_calc').val(proc_fee_upd);
+      }
+      else{
+      $('.min-max-proc').text('* (' + response[0].processing_fee_min + '% - ' + response[0].processing_fee_max + '%) ');
+      $('#processing_fees_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].processing_fee_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].processing_fee_min + `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `);
+      $('#processing_fees_calc').val(proc_fee_upd);
+      }
+
 
         if (profitType == 2) {
           $("#interest_rate_calc").val("");
@@ -1017,7 +1032,7 @@ function schemeCalAjax(id) {
 
 
 //To Get Loan Calculation for After Interest
-function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee) {
+function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee,proc_fee_type) {
 
   $('#loan_amnt_calc').val(parseInt(loan_amt).toFixed(0)); //get loan amt from loan info card
   $('#principal_amnt_calc').val(parseInt(loan_amt).toFixed(0)); // principal amt as same as loan amt for after interest
@@ -1066,18 +1081,24 @@ function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_f
   $('.doc-diff').text('* (Difference: +' + parseInt(roundeddoccharge - doc_charge) + ')'); //To show the difference amount from old to new
   $('#doc_charge_calculate').val(parseInt(roundeddoccharge));
 
-  var proc_fee = parseInt(loan_amt) * (parseFloat(proc_fee) / 100);//Get processing fee from loan info and multiply with loan amt to get actual proc fee
-  var roundeprocfee = Math.ceil(proc_fee / 5) * 5; //to increase Processing fee to nearest multiple of 5
-  if (roundeprocfee < proc_fee) {
-      roundeprocfee += 5;
-  }
-  $('.proc-diff').text('* (Difference: +' + parseInt(roundeprocfee - proc_fee) + ')'); //To show the difference amount from old to new
-  $('#processing_fees_calculate').val(parseInt(roundeprocfee));
+  if(proc_fee_type=='percentage'){
+    var proc_fee = parseInt(loan_amt) * (parseFloat(proc_fee) / 100);//Get processing fee from loan info and multiply with loan amt to get actual proc fee
+    var roundeprocfee = Math.ceil(proc_fee / 5) * 5; //to increase Processing fee to nearest multiple of 5
+    if (roundeprocfee < proc_fee) {
+        roundeprocfee += 5;
+    }
+    $('.proc-diff').text('* (Difference: +' + parseInt(roundeprocfee - proc_fee) + ')'); //To show the difference amount from old to new
+    $('#processing_fees_calculate').val(parseInt(roundeprocfee));
+}else{
+    var roundeprocfee =parseInt(proc_fee);
+    $('#processing_fees_calculate').val(parseInt(proc_fee));
+
+}
 
   var net_cash = parseInt(loan_amt) - parseFloat(roundeddoccharge) - parseFloat(roundeprocfee); //Net cash will be calculated by subracting other charges
   $('#net_cash_calc').val(parseInt(net_cash).toFixed(0));
 }
-function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee) {
+function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee,proc_fee_type) {
 
   // Principal Amount for Pre-Interest is the loan amount itself
   $('#loan_amnt_calc').val(parseInt(loan_amt).toFixed(0)); // get loan amt from loan info card
@@ -1134,14 +1155,20 @@ function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee
   $('.doc-diff').text('* (Difference: +' + parseInt(roundeddoccharge - doc_charge) + ')'); // show doc charge difference
   $('#doc_charge_calculate').val(parseInt(roundeddoccharge));
 
-  // Calculate processing fee based on loan amount
-  var proc_fee = parseInt(loan_amt) * (parseFloat(proc_fee) / 100);
-  var roundeprocfee = Math.ceil(proc_fee / 5) * 5; // round to nearest multiple of 5
-  if (roundeprocfee < proc_fee) {
-      roundeprocfee += 5;
-  }
-  $('.proc-diff').text('* (Difference: +' + parseInt(roundeprocfee - proc_fee) + ')'); // show proc fee difference
-  $('#processing_fees_calculate').val(parseInt(roundeprocfee));
+  if(proc_fee_type=='percentage'){
+    // Calculate processing fee based on loan amount
+    var proc_fee = parseInt(loan_amt) * (parseFloat(proc_fee) / 100);
+    var roundeprocfee = Math.ceil(proc_fee / 5) * 5; // round to nearest multiple of 5
+    if (roundeprocfee < proc_fee) {
+        roundeprocfee += 5;
+    }
+    $('.proc-diff').text('* (Difference: +' + parseInt(roundeprocfee - proc_fee) + ')'); // show proc fee difference
+    $('#processing_fees_calculate').val(parseInt(roundeprocfee));
+}else{
+    var roundeprocfee =parseInt(proc_fee);
+    $('#processing_fees_calculate').val(parseInt(proc_fee));
+
+}
 
   // Calculate net cash: loan amount - document charge - processing fee
   var net_cash = parseInt(loan_amt) - parseFloat(roundeddoccharge) - parseFloat(roundeprocfee);
@@ -1365,6 +1392,7 @@ function loanCalculationEdit(id) {
         $("#due_period_upd").val(response[0].due_period);
         $("#doc_charge_upd").val(response[0].doc_charge);
         $("#proc_fees_upd").val(response[0].processing_fees);
+        $("#proc_fees_type").val(response[0].procrssing_fees_type);
         $("#loan_amnt_calc").val(response[0].loan_amount_calc);
         $("#principal_amnt_calc").val(response[0].principal_amount_calc);
         $("#interest_amnt_calc").val(response[0].intrest_amount_calc);

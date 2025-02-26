@@ -12,7 +12,7 @@ $loan_id_calc = isset($_POST['loan_id_calc']) ? $_POST['loan_id_calc'] : ''; // 
 // Check if loan_id_calc is not empty or invalid
 if ($loan_id_calc != '') {
     // Directly inject the loan_id_calc value into the query (be cautious)
-    $qry = $pdo->query("SELECT gcm.id, cc.cus_id, cc.first_name, gcm.customer_mapping, cc.aadhar_number, cc.mobile1, anc.areaname, gcm.designation
+    $qry = $pdo->query("SELECT gcm.id, cc.cus_id, cc.first_name, gcm.customer_mapping, cc.aadhar_number, cc.mobile1, anc.areaname, gcm.designation ,gcm.loan_amount
                           FROM loan_cus_mapping gcm 
                           JOIN customer_creation cc ON gcm.cus_id = cc.id 
                           LEFT JOIN area_name_creation anc ON cc.area = anc.id  
@@ -25,7 +25,7 @@ if ($loan_id_calc != '') {
             // Map the customer mapping to its corresponding label
             
             // Add the delete button action
-            $gcm_info['action'] = "<span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'></span>";
+            $gcm_info['action'] = "<span class='icon-border_color cusActionBtn' value='" . $gcm_info['id'] . "'> &nbsp; </span><span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'></span>";
 
             // Add the processed record to the response array
             $cus_map_arr[] = $gcm_info;

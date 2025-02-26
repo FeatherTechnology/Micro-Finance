@@ -12,7 +12,7 @@ if ($qry->rowCount() > 0) {
 
 } else {
     if ($id != '0' && $id != '') {
-        $pdo->query("UPDATE `role` SET `role`='$role',`update_login_id`='$user_id',`updated_on`=$currentDate WHERE `id`='$id' ");
+        $pdo->query("UPDATE `role` SET `role`='$role',`update_login_id`='$user_id',`updated_on`='$currentDate' WHERE `id`='$id' ");
         $result = 1; //update
 
     } else {

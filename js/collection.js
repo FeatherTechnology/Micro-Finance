@@ -234,9 +234,51 @@ $(document).ready(function () {
         getLedgerViewChart(loan_id);
     });
     ////////////////////////////////Ledger View End/////////////////////////
+
+    $(document).on('click', '.move_to_error', function () {
+        var id = $(this).attr('data-id');
+        var loan_id = $(this).attr('value');
+        var action="move";   
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do You Want To Move This Cuatomer To Error?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#009688',
+		cancelButtonColor: '#d33',
+        confirmButtonText: "Yes",
+        cancelButtonText: "No"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            moverToError(id,loan_id,action);
+        }
+    });
+});
+
+    $(document).on('click', '.back_to_collection', function () {
+        var id = $(this).attr('data-id');
+        var loan_id = $(this).attr('value');
+        var action='back';  
+        moverToError(id,loan_id,action);
+        collectionCustomerList(loan_id);
 });
 
 
+});
+
+function moverToError(id,loan_id,action) {
+    console.log("loan idddd",loan_id);
+    $.post('api/collection_files/move_to_error.php', { id: id, action: action}, function (response) {
+    if(response === 0){
+    swalSuccess('Success', 'Customer Moved successfully.');
+    console.log("loan id   ",loan_id)
+    collectionCustomerList(loan_id);
+    }else{
+        swalError('Warning', "Not Moved to Error");
+    }
+     }, 'json');
+    
+}
 $(function () {
     getCollectionListTable();
 });
@@ -310,7 +352,7 @@ function collectionCustomerList(loan_id) {
             var hasRows = false;
             var serialNo = 1;
             $.each(response, function (index, item) {
-                var isReadOnly = (!item.issue_status || item.issue_status === "") ? "disabled" : "";
+                var isReadOnly = (!item.issue_status || item.issue_status === "" || item.cus_status===12) ? "disabled" : "";
                 var individual_amount = item.individual_amount ? item.individual_amount : 0;
                 var pending = item.pending ? item.pending : 0;
                 var payable = item.payable ? item.payable : 0;
@@ -325,6 +367,21 @@ function collectionCustomerList(loan_id) {
                     "<a href='#' class='fine-chart' data-id='" + item.id + "'>Fine Chart</a>" +
                     "</div>" +
                     "</div>";
+                    if(item.cus_status === 12){
+                        var action = "<div class='dropdown'>" +
+                    "<button class='btn btn-outline-secondary' "  + "><i class='fa'>&#xf107;</i></button>" +
+                    "<div class='dropdown-content'>" +
+                    "<a href='#' class='back_to_collection' data-id='" + item.id + "' value='" + item.loan_id + "'>Back To Collection</a>" +
+                    "</div>" +
+                    "</div>";
+                    }else{
+                        var action = "<div class='dropdown'>" +
+                    "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
+                    "<div class='dropdown-content'>" +
+                    "<a href='#' class='move_to_error' data-id='" + item.id + "' value='" + item.loan_id + "'>Move To Error</a>" +
+                    "</div>" +
+                    "</div>";
+                    }
                 var row = '<tr>' +
                     '<td>' + serialNo  + '</td>' +
                     '<td>' + item.cus_id + '</td>' +
@@ -343,6 +400,7 @@ function collectionCustomerList(loan_id) {
                     // Calculated total collection
                     '<td><input type="number" class="form-control total_collection" data-id="' + item.id + '" value=" " readonly></td>' +
                     '<td>' + dropdownContent + '</td>' +
+                    '<td>' + action + '</td>' +
                     '</tr>';
 
                 tbody.append(row);

@@ -4,7 +4,7 @@ require "../../../ajaxconfig.php";
 $user_id = $_SESSION['user_id'];
 
 $coll_mode = $_POST['coll_mode'];
-$bank_id = $_POST['bank_id'];
+$bank_id = isset($_POST['bank_id']) ? $_POST['bank_id'] : "";
 $trans_category = $_POST['trans_category'];
 $other_trans_name = $_POST['other_trans_name'];
 $cat_type = $_POST['cat_type'];
