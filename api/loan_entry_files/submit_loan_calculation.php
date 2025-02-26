@@ -8,7 +8,7 @@ $Centre_id = $_POST['Centre_id'];
 $loan_category_calc = $_POST['loan_category_calc'];
 $loan_amount_calc = $_POST['loan_amount_calc'];
 $total_cus = $_POST['total_cus'];
-$loan_amount_per_cus = $_POST['loan_amount_per_cus'];
+// $loan_amount_per_cus = $_POST['loan_amount_per_cus'];
 $profit_type_calc = $_POST['profit_type_calc'];
 $due_method_calc = $_POST['due_method_calc'];
 $profit_method_calc = $_POST['profit_method_calc'];
@@ -55,8 +55,8 @@ if ($id == '') {
     } else {
         $loan_id_calc = "L-101"; // If no previous customer ID exists, start with C-1
     }
-    $qry = $pdo->query("INSERT INTO `loan_entry_loan_calculation`( `centre_id`, `loan_id`,`loan_category`, `loan_amount`, `total_customer`, `loan_amt_per_cus`, `profit_type`, `due_month`, `benefit_method`,`scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`,  `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_status`, `insert_login_id`,`created_on`) 
-                            VALUES ('$Centre_id','$loan_id_calc','$loan_category_calc','$loan_amount_calc','$total_cus','$loan_amount_per_cus','$profit_type_calc','$due_method_calc','$profit_method_calc','$scheme_day_calc','$interest_rate_calc','$due_period_calc','$doc_charge_calc','$processing_fees_calc','$scheme_name_calc','$scheme_date_calc','$loan_amnt_calc','$principal_amnt_calc','$interest_amnt_calc','$total_amnt_calc','$due_amnt_calc','$doc_charge_calculate','$processing_fees_calculate','$net_cash_calc','$due_startdate_calc','$maturity_date_calc','1','$user_id',NOW()) ");
+    $qry = $pdo->query("INSERT INTO `loan_entry_loan_calculation`( `centre_id`, `loan_id`,`loan_category`, `loan_amount`, `total_customer`, `profit_type`, `due_month`, `benefit_method`,`scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`,  `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_status`, `insert_login_id`,`created_on`) 
+                            VALUES ('$Centre_id','$loan_id_calc','$loan_category_calc','$loan_amount_calc','$total_cus','$profit_type_calc','$due_method_calc','$profit_method_calc','$scheme_day_calc','$interest_rate_calc','$due_period_calc','$doc_charge_calc','$processing_fees_calc','$scheme_name_calc','$scheme_date_calc','$loan_amnt_calc','$principal_amnt_calc','$interest_amnt_calc','$total_amnt_calc','$due_amnt_calc','$doc_charge_calculate','$processing_fees_calculate','$net_cash_calc','$due_startdate_calc','$maturity_date_calc','1','$user_id',NOW()) ");
     $result = 2;
 } else {
     $qry = $pdo->query("UPDATE `loan_entry_loan_calculation` 
@@ -119,6 +119,27 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
             continue;
         }
 
+        if (isset($customer['intrest_amount'])) {
+            $intrest_amount = $customer['intrest_amount'];
+        } else {
+            // Handle missing designation
+            continue;
+        }
+
+        if (isset($customer['principle'])) {
+            $principle = $customer['principle'];
+        } else {
+            // Handle missing designation
+            continue;
+        }
+
+        if (isset($customer['due_amount'])) {
+            $due_amount = $customer['due_amount'];
+        } else {
+            // Handle missing designation
+            continue;
+        }
+
         // Check if the customer is already mapped to the same loan_id
         $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$cus_id' AND lcm.centre_id = '$Centre_id'");
         $existing_mapping = $stmt->fetchColumn();
@@ -128,8 +149,8 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
             $response = ['result' => 4, 'message' => 'The customer is already mapped to this loan.'];
         } else {
             // Insert the new customer mapping
-            $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, centre_id, cus_id, customer_mapping, designation, inserted_login_id, created_on) 
-                                VALUES ('$loan_id_calc', '$Centre_id', '$cus_id', '$cus_mapping', '$designation', '$user_id', NOW())");
+            $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, centre_id, cus_id, `intrest_amount`, `principle_amount`, `due_amount`, customer_mapping, designation, inserted_login_id, created_on) 
+                                VALUES ('$loan_id_calc', '$Centre_id', '$cus_id','$intrest_amount','$principle ',' $due_amount', '$cus_mapping', '$designation', '$user_id', NOW())");
         }
         if ($cus_mapping == 'Renewal') {
             // Check if any loan has a status between 1 and 7 (inclusive)

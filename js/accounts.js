@@ -187,7 +187,7 @@ $(document).ready(function(){
             catTypeOptn +="<option value='1'>Credit</option>";
             catTypeOptn +="<option value='2'>Debit</option>";
 
-        } else if(category == '5'){ //debit || category == '7'
+        } else if(category == '5'|| category == '7' ){ //debit || category == '7'
             catTypeOptn +="<option value='2'>Debit</option>";            
         
         } else if(category == '6' || category == '8'){ //credit
@@ -376,8 +376,31 @@ $(document).ready(function(){
 
 $(function(){
     getOpeningBal();
-    
+    getAccountAccess();
 });
+function getAccountAccess() {
+    $.post('api/accounts_files/accounts/account_access.php', function(response) {
+        if (Array.isArray(response) && response.length > 0) {
+            let accessString = response[0].account_access; 
+            let accessArray = accessString.split(",").map(Number);
+            $(".selector-item").hide();
+            accessArray.forEach(value => {
+                if (value === 1) {
+                    $("#collection").closest(".selector-item").show();
+                } 
+                if (value === 2) {
+                    $("#loan_issued").closest(".selector-item").show();
+                } 
+                if (value === 3) {
+                    $("#expenses").closest(".selector-item").show();
+                }
+                if (value === 4) {
+                    $("#other_transaction").closest(".selector-item").show();
+                }
+            });
+        }
+    }, 'json');
+}
 
 function getOpeningBal(){
     $.post('api/accounts_files/accounts/opening_balance.php',function(response){
@@ -507,13 +530,12 @@ function expensesTable(tableId){
         let expensesColumn = [
             'sno',
             'coll_mode',
-            'bank_id',
             'invoice_id',
             'branch',
             'expenses_category',
             'description',
             'amount',
-            'trans_id',
+            // 'trans_id',
             'action'
         ];
 
@@ -595,12 +617,11 @@ function otherTransTable(tableId){
         let expensesColumn = [
             'sno',
             'coll_mode',
-            'bank_namecash',
             'trans_cat',
             'name',
             'type',
             'ref_id',
-            'trans_id',
+            // 'trans_id',
             // 'username',
             'amount',
             'remark',

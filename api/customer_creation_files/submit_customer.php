@@ -33,6 +33,7 @@ $native_address = $_POST['native_address'];
 $multiple_loan = $_POST['multiple_loan'];
 $customer_profile_id = $_POST['customer_profile_id'];
 $user_id = $_SESSION['user_id'];
+$latlong = $_POST['latlong'];
 // Query to get customer profile along with customer status
 $cus_status = ''; 
 $qry = $pdo->query("SELECT lelc.loan_status 
@@ -75,7 +76,7 @@ try {
 if ($check_query->rowCount() > 0) {
     $row = $check_query->fetch();
     $customer_profile_id = $row['id']; // Get the existing customer's ID
-    $qry = $pdo->query("UPDATE `customer_creation` SET `cus_id`='$cus_id', `aadhar_number`='$aadhar_number', `cus_data`='$cus_data',`cus_status`='$cus_status',`first_name`='$first_name', `last_name`='$last_name', `dob`='$dob',`age`='$age',`area`='$area', `mobile1`='$mobile1', `mobile2`='$mobile2', `whatsapp`='$whatsapp', `occupation`='$occupation',`occ_detail`='$occ_detail',`address`='$address', `native_address`='$native_address',`pic`='$picture',`multiple_loan`='$multiple_loan',  `update_login_id`='$user_id', updated_on = now() WHERE `id`='$customer_profile_id'");
+    $qry = $pdo->query("UPDATE `customer_creation` SET `cus_id`='$cus_id', `aadhar_number`='$aadhar_number', `cus_data`='$cus_data',`cus_status`='$cus_status',`first_name`='$first_name', `last_name`='$last_name', `dob`='$dob',`age`='$age',`area`='$area', `mobile1`='$mobile1', `mobile2`='$mobile2', `whatsapp`='$whatsapp', `occupation`='$occupation',`occ_detail`='$occ_detail',`address`='$address', `native_address`='$native_address',`pic`='$picture',`multiple_loan`='$multiple_loan',`cus_location`='$latlong',  `update_login_id`='$user_id', updated_on = now() WHERE `id`='$customer_profile_id'");
     $result = 0; // Update
 } else {
     if ($selectIC->rowCount() > 0) {
@@ -88,7 +89,7 @@ if ($check_query->rowCount() > 0) {
         $cus_id = "C-101"; // If no previous customer ID exists, start with C-1
     } 
     
-    $qry = $pdo->query("INSERT INTO `customer_creation`(`cus_id`,`aadhar_number`, `cus_data`,`cus_status`,`first_name`, `last_name`,`dob`,`age`,`area`, `mobile1`, `mobile2`, `whatsapp`,`occupation`,`occ_detail`, `address`, `native_address`,`pic`, `multiple_loan`, `insert_login_id`, `created_on`) VALUES ('$cus_id','$aadhar_number', '$cus_data','$cus_status','$first_name', '$last_name','$dob','$age','$area', '$mobile1', '$mobile2', '$whatsapp','$occupation','$occ_detail', '$address', '$native_address', '$picture','$multiple_loan', '$user_id', now())");
+    $qry = $pdo->query("INSERT INTO `customer_creation`(`cus_id`,`aadhar_number`, `cus_data`,`cus_status`,`first_name`, `last_name`,`dob`,`age`,`area`, `mobile1`, `mobile2`, `whatsapp`,`occupation`,`occ_detail`, `address`, `native_address`,`pic`, `multiple_loan`,`cus_location`, `insert_login_id`, `created_on`) VALUES ('$cus_id','$aadhar_number', '$cus_data','$cus_status','$first_name', '$last_name','$dob','$age','$area', '$mobile1', '$mobile2', '$whatsapp','$occupation','$occ_detail', '$address', '$native_address', '$picture','$multiple_loan','$latlong','$user_id', now())");
     $result = 1; // Insert
 
 }

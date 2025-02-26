@@ -92,7 +92,7 @@ function moneyFormatIndia($num1) {
                             </div>
                         </div>
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-sm-3 col-md-3 col-lg-3"></div>
                             <div class="col-sm-1 col-md-1 col-lg-1">
                                 <div class="form-group">
@@ -116,7 +116,7 @@ function moneyFormatIndia($num1) {
                                     <label for="closing_bank_cash_val" class="lbl-style-cls clse_bank_cash_val"><?php echo moneyFormatIndia(0); ?></label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -124,19 +124,19 @@ function moneyFormatIndia($num1) {
         <!----------------------------- CARD END ACCOUNTS ------------------------------>
         <div class="coll-radio-container">
             <div class="selector">
-                <div class="selector-item">
+                <div class="selector-item" style="display: none;">
                     <input type="radio" id="collection" name="accounts_type" class="selector-item_radio" value="1">
                     <label for="collection" class="selector-item_label">Collection</label>
                 </div>
-                <div class="selector-item">
+                <div class="selector-item" style="display: none;">
                     <input type="radio" id="loan_issued" name="accounts_type" class="selector-item_radio" value="2">
                     <label for="loan_issued" class="selector-item_label">Loan Issued</label>
                 </div>
-                <div class="selector-item">
+                <div class="selector-item" style="display: none;">
                     <input type="radio" id="expenses" name="accounts_type" class="selector-item_radio" value="3">
                     <label for="expenses" class="selector-item_label">Expenses</label>
                 </div>
-                <div class="selector-item">
+                <div class="selector-item" style="display: none;">
                     <input type="radio" id="other_transaction" name="accounts_type" class="selector-item_radio" value="4">
                     <label for="other_transaction" class="selector-item_label">Other Transaction</label>
                 </div>
@@ -256,13 +256,13 @@ function moneyFormatIndia($num1) {
                                 <tr>
                                     <th>S.NO</th>
                                     <th>Cash Mode</th>
-                                    <th>Bank Name</th>
+                                    <!-- <th>Bank Name</th> -->
                                     <th>Invoice ID</th>
                                     <th>Branch</th>
                                     <th>Expense Category</th>
                                     <th>Description</th>
                                     <th>Amount</th>
-                                    <th>Transaction ID</th>
+                                    <!-- <th>Transaction ID</th> -->
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -292,12 +292,12 @@ function moneyFormatIndia($num1) {
                                 <tr>
                                     <th width ='20'>S.NO</th>
                                     <th>Coll Mode</th>
-                                    <th>Bank Name</th>
+                                    <!-- <th>Bank Name</th> -->
                                     <th>Transaction Category</th>
                                     <th>Name</th>
                                     <th>Type</th>
                                     <th>Reference ID</th>
-                                    <th>Transaction ID</th>
+                                    <!-- <th>Transaction ID</th> -->
                                     <!-- <th>User Name</th> -->
                                     <th>Amount</th>
                                     <th>Remark</th>
@@ -337,7 +337,7 @@ function moneyFormatIndia($num1) {
                                     <input type="radio" id="expenses_hand_cash" name="expenses_cash_type" tabindex="2" value='1'/>&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+                            <!-- <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <input type="radio" id="expenses_bank_cash" name="expenses_cash_type" tabindex="3" value='2'/>&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
                                 </div>
@@ -348,7 +348,7 @@ function moneyFormatIndia($num1) {
                                         <option value="">Select Bank</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                         </div></br>
 
                         <div class="row">
@@ -402,12 +402,12 @@ function moneyFormatIndia($num1) {
                                     <input type="number" class="form-control" name="expenses_amnt" id="expenses_amnt" tabindex="12">
                                 </div>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 exp_trans_div" style="display: none;">
+                            <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 exp_trans_div" style="display: none;">
                                 <div class="form-group">
                                     <label for="expenses_trans_id">Transaction ID</label><span class="text-danger">*</span>
                                     <input type="number" class="form-control" name="expenses_trans_id" id="expenses_trans_id" tabindex="13">
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <button name="submit_expenses_creation" id="submit_expenses_creation" class="btn btn-primary" tabindex="14" style="margin-top: 18px;"><span class="icon-check"></span>&nbsp;Submit</button>
@@ -425,13 +425,13 @@ function moneyFormatIndia($num1) {
                                 <tr>
                                     <th>S.NO</th>
                                     <th>Cash Mode</th>
-                                    <th>Bank Name</th>
+                                    <!-- <th>Bank Name</th> -->
                                     <th>Invoice ID</th>
                                     <th>Branch</th>
                                     <th>Expense Category</th>
                                     <th>Description</th>
                                     <th>Amount</th>
-                                    <th>Transaction ID</th>
+                                    <!-- <th>Transaction ID</th> -->
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -469,18 +469,18 @@ function moneyFormatIndia($num1) {
                                     <input type="radio" id="othertransaction_hand_cash" name="othertransaction_cash_type" tabindex="2" value='1'/>&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+                            <!-- <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
                                 <div class="form-group">
                                     <input type="radio" id="othertransaction_bank_cash" name="othertransaction_cash_type" tabindex="3" value='2'/>&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
                                 </div>
-                            </div>
-                            <div class="col-sm-3 col-md-3 col-lg-3">
+                            </div> -->
+                            <!-- <div class="col-sm-3 col-md-3 col-lg-3">
                                 <div class="form-group">
                                     <select class="form-control" name="othertransaction_bank_name" id="othertransaction_bank_name" tabindex="4" disabled>
                                         <option value="">Select Bank Name</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                         </div></br>
 
                         <div class="row">
@@ -495,7 +495,7 @@ function moneyFormatIndia($num1) {
                                         <option value="4">Exchange</option>
                                         <option value="5">Bank Deposit</option>
                                         <option value="6">Bank Withdrawal</option>
-                                        <!-- <option value="7">Loan Advance</option> -->
+                                        <option value="7">Salary</option>
                                         <option value="8">Other Income</option>
                                         <option value="9">Bank Unbilled</option>
                                     </select>
@@ -563,12 +563,12 @@ function moneyFormatIndia($num1) {
                                 <tr>
                                     <th>S.NO</th>
                                     <th>Coll Mode</th>
-                                    <th>Bank Name</th>
+                                    <!-- <th>Bank Name</th> -->
                                     <th>Transaction Category</th>
                                     <th>Name</th>
                                     <th>Type</th>
                                     <th>Reference ID</th>
-                                    <th>Transaction ID</th>
+                                    <!-- <th>Transaction ID</th> -->
                                     <!-- <th>User Name</th> -->
                                     <th>Amount</th>
                                     <th>Remark</th>

@@ -98,11 +98,12 @@ class CollectStsClass
                     $all_paid = false;
                 }
             }
-        }
+        
 
         if ($all_paid) {
             $overall_status = 'Paid';
         }
+    }
 
         // if ($overall_status == 'Paid') {
         //     $update_query = "UPDATE loan_entry_loan_calculation SET sub_status = 2 WHERE loan_id = $loan_id";

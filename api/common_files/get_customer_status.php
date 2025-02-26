@@ -97,8 +97,8 @@ class CustomerStatus
                 $fine = $checkrow['fine_charge'] ?? 0;
                 $penalty_track = $checkrow['penalty_track'] ?? 0;
                 // Fine and penalty calculations
-                $fine_charge = $this->getFineCharge($cus_mapping_id, $fine, $penalty_track);
-                $penalty = $this->getPenalty($cus_mapping_id, $fine, $penalty_track);
+                $fine_charge = $this->getFineCharge($cus_mapping_id, $fine);
+                $penalty = $this->getPenalty($cus_mapping_id,  $penalty_track);
                 // Calculate and update status based on the due period (monthly/weekly)
                 $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty);
                 $cus_status = $status['status'];
@@ -142,7 +142,7 @@ class CustomerStatus
     {
         $currentDate = new DateTime();
         $status = 'Payable'; // Default status
-        $balanceAmount= round($row['individual_amount'] - $totalPaidAmt);
+        $balanceAmount = max(0, round($row['individual_amount'] - $totalPaidAmt));
         $pending=0;
         $payable =0;
         // Monthly calculation

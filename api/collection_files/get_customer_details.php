@@ -9,6 +9,7 @@ $response = array();
  $query = "SELECT
               lcm.id,
               lcm.loan_id,
+              lcm.cus_status,
               cc.cus_id,
               lelc.due_amount_calc,
               lelc.total_customer,

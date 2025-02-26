@@ -27,7 +27,7 @@
         </div>
     </div>
 </div>
-<div id="customer_creation_content"style="display:none;">
+<div id="customer_creation_content" style="display:none;">
     <form id="customer_creation" name="customer_creation">
         <input type="hidden" id="customer_profile_id">
         <div class="row gutters">
@@ -164,6 +164,22 @@
                                                 <option value="1">Enable</option>
                                                 <option value="0">Disable</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="row">
+                                            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-12">
+                                                <div class="form-group">
+                                                    <label for="latlong">Location</label><span class="text-danger">*</span>
+                                                    <input type="text" class="form-control" name="latlong" id="latlong" placeholder="Enter Latitude Longitude">
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 ">
+                                                <div class="form-group">
+                                                    <label style="visibility:hidden">Location</label>
+                                                    <button class="btn btn-primary" id="getlatlong" name="getlatlong" style="padding: 5px 35px;"><span class="icon-my_location"></span></button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -361,68 +377,68 @@
 <!--Family Modal End-->
 <!-- Add KYC info Modal  START -->
 <div class="modal fade addkyc" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content" style="background-color: white">
-			<div class="modal-header">
-				<h5 class="modal-title" id="myLargeModalLabel">Add KYC Info</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetkycinfoList()">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-						<div class="form-group">
-							<label for="kyc_lable"> Label </label> <span class="required">&nbsp;*</span>
-							<input type="text" class="form-control" id="kyc_lable" name="kyc_lable" placeholder="Enter Lable" tabindex='1'>
-							<span class="text-danger" id="lableCheck" style="display:none"> Enter Lable </span>
-						</div>
-					</div>
-					<div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-						<div class="form-group">
-							<label for="kyc_details"> Details </label> <span class="required">&nbsp;*</span>
-							<input type="text" class="form-control" id="kyc_details" name="kyc_details" placeholder="Enter Details" tabindex='2'>
-							<span class="text-danger" id="detailCheck" style="display:none"> Enter Details </span>
-						</div>
-					</div>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myLargeModalLabel">Add KYC Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="resetkycinfoList()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        <div class="form-group">
+                            <label for="kyc_lable"> Label </label> <span class="required">&nbsp;*</span>
+                            <input type="text" class="form-control" id="kyc_lable" name="kyc_lable" placeholder="Enter Lable" tabindex='1'>
+                            <span class="text-danger" id="lableCheck" style="display:none"> Enter Lable </span>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        <div class="form-group">
+                            <label for="kyc_details"> Details </label> <span class="required">&nbsp;*</span>
+                            <input type="text" class="form-control" id="kyc_details" name="kyc_details" placeholder="Enter Details" tabindex='2'>
+                            <span class="text-danger" id="detailCheck" style="display:none"> Enter Details </span>
+                        </div>
+                    </div>
 
-					<div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-						<div class="form-group">
-							<label for="upload"> Upload </label>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        <div class="form-group">
+                            <label for="upload"> Upload </label><span class="required">&nbsp;*</span>
                             <input type="hidden" id="upload_files">
-							<input type="file" class="form-control" id="upload" name="upload" accept=".pdf,.jpg,.png,.jpeg" tabindex='1'>
-							<span class="text-danger" id="proofUploadCheck" style="display:none"> Upload </span>
-						</div>
-					</div>
+                            <input type="file" class="form-control" id="upload" name="upload" accept=".pdf,.jpg,.png,.jpeg" tabindex='1'>
+                            <span class="text-danger" id="proofUploadCheck" style="display:none"> Upload </span>
+                        </div>
+                    </div>
 
-					<div class="col-xl-2 col-lg-2 col-md-6 col-sm-4 col-12">
-						<input type="hidden" name="kycID" id="kycID">
-						<button type="button" name="kycInfoBtn" id="kycInfoBtn" class="btn btn-primary" style="margin-top: 19px;" tabindex='1'>Submit</button>
-					</div>
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-4 col-12">
+                        <input type="hidden" name="kycID" id="kycID">
+                        <button type="button" name="kycInfoBtn" id="kycInfoBtn" class="btn btn-primary" style="margin-top: 19px;" tabindex='1'>Submit</button>
+                    </div>
 
-				</div>
-				</br>
+                </div>
+                </br>
 
-				<div id="kycTable">
-					<table class="table custom-table modalTable">
-						<thead>
-							<tr>
-								<th width="50"> S.No </th>
-								<th> Label </th>
-								<th> Details </th>
-								<th> Uploads </th>
-								<th> Action </th>
-							</tr>
-						</thead>
-						<tbody>
+                <div id="kycTable">
+                    <table class="table custom-table modalTable">
+                        <thead>
+                            <tr>
+                                <th width="50"> S.No </th>
+                                <th> Label </th>
+                                <th> Details </th>
+                                <th> Uploads </th>
+                                <th> Action </th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetkycinfoList()" tabindex='1'>Close</button>
-			</div>
-		</div>
-	</div>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetkycinfoList()" tabindex='1'>Close</button>
+            </div>
+        </div>
+    </div>
 </div>

@@ -40,6 +40,14 @@ $(document).ready(function () {
         $('#penalty_type').val(typeValue); 
 
     });
+        $('input[name=doc_charge_type]').click(function () {
+        let Value = $(this).val(); 
+        console.log("Selected Value: " + Value);
+        
+        let type = (Value === 'percentage') ? '%' : '₹'; 
+        $('.document-span-val').text(type); 
+        $('#processing_type').val(Value); 
+    });
     
     $('.scheme_interest_minmax').change(function () {
         checkMinMaxValue('#scheme_interest_rate_min', '#scheme_interest_rate_max');
@@ -196,6 +204,7 @@ $(document).ready(function () {
             due_period_max: $('#due_period_max').val(),
             doc_charge_min: $('#doc_charge_min').val(),
             doc_charge_max: $('#doc_charge_max').val(),
+            processing_fee_type: $('#processing_type').val(),
             processing_fee_min: $('#processing_fee_min').val(),
             processing_fee_max: $('#processing_fee_max').val(),
             overdue_penalty: $('#overdue_penalty').val(),
@@ -279,7 +288,9 @@ $(document).ready(function () {
             $('#processing_fee_max').val(response[0].processing_fee_max);
             $('#overdue_penalty').val(response[0].overdue_penalty);
             $('#penalty_type').val(response[0].penalty_type);
+            $('#processing_type').val(response[0].procrssing_fees_type);
            let penalty= $('#penalty_type').val();
+           let procrssing_fees_type= $('#processing_type').val();
           //  $('#scheme_name2').val(response[0].scheme_name);
             if (penalty=== 'percent') {
                 $('#penalty_type_percent').prop('checked', true).closest('label').addClass('active');
@@ -289,6 +300,15 @@ $(document).ready(function () {
                 $('#penalty_type_rupee').prop('checked', true).closest('label').addClass('active');
                 $('#penalty_type_percent').prop('checked', false).closest('label').removeClass('active');
                 $('.calculation-span-val').text('₹');
+            }
+            if (procrssing_fees_type=== 'percentage') {
+                $('#docpercentage').prop('checked', true).closest('label').addClass('active');
+                $('#docamt').prop('checked', false).closest('label').removeClass('active');
+                $('.document-span-val').text('%');
+            } else if (procrssing_fees_type === 'rupee') {
+                $('#docamt').prop('checked', true).closest('label').addClass('active');
+                $('#docpercentage').prop('checked', false).closest('label').removeClass('active');
+                $('.document-span-val').text('₹');
             }
            
             // Populate profit_type dynamically
@@ -579,7 +599,7 @@ function clearLoanCategory() {
 
 function clearLoanCategoryCreationForm() {
     // Reset all input fields except the ones specified
-    $('input:not(#due_type, #profit_method, #penalty_type_percent, #penalty_type_rupee, #scheme_penalty_type, #scheme_type_rupee, #scheme_type_percent,#scheme_name)').val('');
+    $('input:not(#due_type, #profit_method, #penalty_type_percent, #penalty_type_rupee, #scheme_penalty_type, #scheme_type_rupee, #scheme_type_percent,#scheme_name,#docamt,#docpercentage,#processing_type)').val('');
     
     // Reset all select fields to their first option
     $('select').each(function () {
@@ -594,6 +614,8 @@ function clearLoanCategoryCreationForm() {
     $('#penalty_type_rupee').prop('checked', false).closest('label').removeClass('active');
     $('.calculation-span-val').text('%');
     $('#penalty_type').val('percent');
+    $('#docpercentage').prop('checked', true).closest('label').addClass('active');
+    $('#docamt').prop('checked', false).closest('label').removeClass('active');
     // Remove active items from profit_type (Choices.js)
     if (typeof profit_type !== 'undefined') {
         profit_type.removeActiveItems(); // Remove all selected items

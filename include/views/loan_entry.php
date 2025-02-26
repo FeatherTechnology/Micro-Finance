@@ -37,6 +37,7 @@
         <input type="hidden" id="due_period_upd">
         <input type="hidden" id="doc_charge_upd">
         <input type="hidden" id="proc_fees_upd">
+        <input type="hidden" id="proc_type">
 
         <div class="row gutters">
             <div class="col-12">
@@ -102,12 +103,12 @@
                                     <input type="number" class="form-control" id="total_cus" name="total_cus" tabindex="8">
                                 </div>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                            <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="loan_amount_per_cus"> Loan Amount Per Customer</label><span class="text-danger">*</span>
                                     <input type="number" class="form-control" id="loan_amount_per_cus" name="loan_amount_per_cus" tabindex="9" readonly>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="profit_type_calc">Profit Type</label><span class="text-danger">*</span>
@@ -329,13 +330,20 @@
                             </div>
                             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
                                 <div class="form-group">
+                                    <label for="customer_amount">Amount</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control" id="customer_amount" name="customer_amount" tabindex="34">
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+                                <div class="form-group">
                                     <label for="designation">Designation</label>
                                     <input type="text" class="form-control" id="designation" name="designation" tabindex="33">
                                 </div>
                             </div>
+                            
                             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 align-self-end">
                                 <div class="form-group">
-                                    <input type="button" class="btn btn-primary modalBtnCss" id="submit_cus_map" name="submit_cus_map" value="Add" tabindex="34">
+                                    <input type="button" class="btn btn-primary modalBtnCss" id="submit_cus_map" name="submit_cus_map" value="Add" tabindex="35">
                                 </div>
                             </div>
                         </div>
@@ -350,8 +358,9 @@
                                             <th>Customer Data</th>
                                             <th>Aadhar No</th>
                                             <th>Mobile No</th>
-                                            <th>Area</th>
-                                            <th>Designation</th>
+                                            <th style="width: 80px;">Area</th>
+                                            <th style="width: 150px;">Customer Loan Amount</th>
+                                            <th style="width: 110px;">Designation</th>
                                             <th>Action</th>
                                        </tr>
                                     </thead>
@@ -365,8 +374,9 @@
 
 
                 <div class="col-12 mt-3 text-right">
-                    <button name="submit_loan_calculation" id="submit_loan_calculation" class="btn btn-primary" tabindex="35"><span class="icon-check"></span>&nbsp;Submit</button>
-                    <button type="reset" id="clear_loan_calc_form" class="btn btn-outline-secondary" tabindex="36">Clear</button>
+                    <input type="hidden" id="cus_map_id">
+                    <button name="submit_loan_calculation" id="submit_loan_calculation" class="btn btn-primary" tabindex="36"><span class="icon-check"></span>&nbsp;Submit</button>
+                    <button type="reset" id="clear_loan_calc_form" class="btn btn-outline-secondary" tabindex="37">Clear</button>
                 </div>
             </div>
         </div>

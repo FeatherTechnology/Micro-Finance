@@ -98,6 +98,7 @@
         <input type="hidden" id="due_period_upd">
         <input type="hidden" id="doc_charge_upd">
         <input type="hidden" id="proc_fees_upd">
+        <input type="hidden" id="proc_fees_type">
 
         <div class="row gutters">
             <div class="col-12">
