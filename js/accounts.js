@@ -2,17 +2,21 @@ $(document).ready(function(){
     $('input[name=accounts_type]').click(function () {
         let accountsType = $(this).val();
         if (accountsType == '1') { //Collection List
-            $('#coll_card').show(); $('#loan_issued_card').hide(); $('#expenses_card').hide(); $('#other_transaction_card').hide();
+            $('#coll_card').show(); $('#loan_issued_card').hide(); $('#expenses_card').hide(); $('#other_transaction_card').hide();$('#customer_savings_card').hide();
             getBankName('#coll_bank_name');
         } else if (accountsType == '2') { //Loan Issued
-            $('#coll_card').hide(); $('#loan_issued_card').show(); $('#expenses_card').hide(); $('#other_transaction_card').hide();
+            $('#coll_card').hide(); $('#loan_issued_card').show(); $('#expenses_card').hide(); $('#other_transaction_card').hide();$('#customer_savings_card').hide();
             getBankName('#issue_bank_name');
         } else if (accountsType == '3') { //Expenses
-            $('#coll_card').hide(); $('#loan_issued_card').hide(); $('#expenses_card').show(); $('#other_transaction_card').hide();
+            $('#coll_card').hide(); $('#loan_issued_card').hide(); $('#expenses_card').show(); $('#other_transaction_card').hide();$('#customer_savings_card').hide();
             expensesTable('#accounts_expenses_table');
         } else if (accountsType == '4') { //Other Transaction
-            $('#coll_card').hide(); $('#loan_issued_card').hide(); $('#expenses_card').hide(); $('#other_transaction_card').show();
+            $('#coll_card').hide(); $('#loan_issued_card').hide(); $('#expenses_card').hide(); $('#other_transaction_card').show();$('#customer_savings_card').hide();
             otherTransTable('#accounts_other_trans_table');
+        }
+        else if (accountsType == '5') { //Other Transaction
+            $('#coll_card').hide(); $('#loan_issued_card').hide(); $('#expenses_card').hide(); $('#other_transaction_card').hide();$('#customer_savings_card').show();
+            savingsTable('#customer_savings_table');
         }
     });
 
@@ -69,6 +73,10 @@ $(document).ready(function(){
         getInvoiceNo();
         getBranchList();
         expensesTable('#expenses_creation_table');
+    });
+    $('#savings_add').click(function(){
+        getInvoiceID();
+        savingsTable('#customer_savings_table_list');
     });
     
     $("input[name='expenses_cash_type']").click(function(){
@@ -141,6 +149,9 @@ $(document).ready(function(){
 
     $(document).on('click', '.exp-clse', function(){
         expensesTable('#accounts_expenses_table');
+    });
+    $(document).on('click', '.sav-clse', function(){
+        savingsTable('#customer_savings_table');
     });
 
 
@@ -330,9 +341,43 @@ $(document).ready(function(){
         }, 'json');
     });
     
+    $('#submit_savings_creation').click(function(event){
+        event.preventDefault();
+        let savingsData = {
+            'coll_mode' : $("input[name='savings_hand_cash']:checked").val(),
+            'aadhar_number' : $('#aadhar_number').val(),
+            'invoice' : $('#invoice').val(),
+            'cus_name' : $('#cus_name').val(),
+            'description' : $('#descriptions').val(),
+            'savings_amnt' : $('#savings_amnt').val(),
+            'cat_type' : $('#catType').val()
+        }
+        if (Savingsvalidation(savingsData)) {
+
+            $.post('api/accounts_files/accounts/submit_savings.php', savingsData, function (response) {
+                if (response == '1') {
+                    swalSuccess('Success', 'Savings added successfully.');
+                    savingsTable('#customer_savings_table_list');
+                    getInvoiceID()
+                    getClosingBal();
+                } else {
+                    swalError('Error', 'Failed to add transaction.');
+                }
+            }, 'json');
+        }
+        else {
+            swalError('Warning', 'Please fill required fields.');
+        }
+        
+    });
+    
     $(document).on('click', '.transDeleteBtn', function () {
         let id = $(this).attr('value');
         swalConfirm('Delete', 'Are you sure you want to delete this Other Transaction?', deleteTrans, id);
+    });
+    $(document).on('click', '.savingsDeleteBtn', function () {
+        let id = $(this).attr('value');
+        swalConfirm('Delete', 'Are you sure you want to delete this Savings?', deletesavings, id);
     });
 
 
@@ -368,6 +413,23 @@ $(document).ready(function(){
             getIDEBalanceSheet();
         }
     });
+    $('input[data-type="adhaar-number"]').keyup(function () {
+        var value = $(this).val();
+        value = value
+          .replace(/\D/g, "")
+          .split(/(?:([\d]{4}))/g)
+          .filter((s) => s.length > 0)
+          .join(" ");
+        $(this).val(value);
+      });
+    
+      $('input[data-type="adhaar-number"]').change(function () {
+        let len = $(this).val().length;
+        if (len < 14) {
+          $(this).val("");
+          swalError("Warning", "Kindly Enter Valid Aadhaar Number");
+        }
+      });
 
 
 });  /////Document END.
@@ -394,6 +456,9 @@ function getAccountAccess() {
                 }
                 if (value === 4) {
                     $("#other_transaction").closest(".selector-item").show();
+                }
+                if (value === 5) {
+                    $("#customer_savings").closest(".selector-item").show();
                 }
             });
         }
@@ -490,6 +555,11 @@ function getBankName(dropdowndId) {
 function getInvoiceNo(){
     $.post('api/accounts_files/accounts/get_invoice_no.php',{},function(response){
         $('#invoice_id').val(response);
+    },'json');
+}
+function getInvoiceID(){
+    $.post('api/accounts_files/accounts/get_savings_invoice_no.php',{},function(response){
+        $('#invoice').val(response);
     },'json');
 }
 
@@ -611,8 +681,6 @@ function otherTransTable(tableId){
             'name',
             'type',
             'ref_id',
-            // 'trans_id',
-            // 'username',
             'amount',
             'remark',
             'action'
@@ -624,12 +692,39 @@ function otherTransTable(tableId){
     },'json');
 }
 
+function savingsTable(tableId){
+    $.post('api/accounts_files/accounts/get_savings_list.php',function(response){
+        let expensesColumn = [
+            'sno',
+            'invoice_id',
+            'coll_mode',
+            'aadhar_number',
+            'cus_name',
+            'description',
+            'amount',
+            'cat_type',
+            'action'
+        ];
+
+        appendDataToTable(tableId, response, expensesColumn);
+        setdtable(tableId);
+        clearsavingsForm();
+    },'json');
+}
+
 function clearTransForm(){
     $('#other_ref_id').val('');
     $('#other_trans_id').val('');
     $('#other_amnt').val('');
     $('#other_transaction_form select').val('');
     $('#other_transaction_form textarea').val('');
+}
+function clearsavingsForm(){
+    $('#aadhar_number').val('');
+    $('#cus_name').val('');
+    $('#savings_amnt').val('');
+    $('#catType').val('');
+    $('#descriptions').val('');
 }
 
 function deleteTrans(id) {
@@ -638,6 +733,18 @@ function deleteTrans(id) {
             swalSuccess('success', 'Other Transaction Deleted Successfully');
             otherTransTable('#other_transaction_table');
             otherTransTable('#accounts_other_trans_table');
+            getClosingBal();
+        } else {
+            swalError('Alert', 'Delete Failed')
+        }
+    }, 'json');
+}
+function deletesavings(id) {
+    $.post('api/accounts_files/accounts/delete_customer_savings.php', { id }, function (response) {
+        if (response == '1') {
+            swalSuccess('success', 'Savings Deleted Successfully');
+            savingsTable('#customer_savings_table_list');
+            savingsTable('#customer_savings_table');
             getClosingBal();
         } else {
             swalError('Alert', 'Delete Failed')
@@ -684,4 +791,13 @@ function resetBlncSheet() {
     $('#IDE_type').val('');
     $('#IDE_view_type').val('');
     $('#IDE_name_list').val('');
+}
+function Savingsvalidation(data){
+    console.log("ddd",data);
+    for(key in data){
+        if(data[key] =='' || data[key] ==null || data[key] ==undefined){
+            return false;
+        }    
+    }
+    return true;
 }

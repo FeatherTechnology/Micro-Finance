@@ -216,6 +216,7 @@
                                                 <option value='2'>Loan Issued</option>
                                                 <option value='3'>Expenses</option>
                                                 <option value='4'>Other Transaction</option>
+                                                <option value='5'>Customer Savings</option>
                                             </select>
                                         </div>
                                     </div>
