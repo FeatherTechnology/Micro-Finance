@@ -25,7 +25,7 @@ if ($loan_id_calc != '') {
             // Map the customer mapping to its corresponding label
             
             // Add the delete button action
-            $gcm_info['action'] = "<span class='icon-border_color cusActionBtn' value='" . $gcm_info['id'] . "'> &nbsp; </span><span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'></span>";
+            $gcm_info['action'] = "</span><span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'></span>";
 
             // Add the processed record to the response array
             $cus_map_arr[] = $gcm_info;

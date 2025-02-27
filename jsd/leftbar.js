@@ -26,7 +26,7 @@ $(document).ready(function () {
         'balance_report':'reports',
         'closed_report':'reports',
         'due_list_report':'reports',
-        'nipe_report':'reports',
+        'nip_report':'reports',
         'bulk_upload':'bulk_upload',
     };
 

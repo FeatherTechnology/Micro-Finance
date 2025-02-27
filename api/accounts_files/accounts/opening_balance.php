@@ -70,6 +70,22 @@ if ($ot_dr_b_qry->rowCount() > 0) {
     $ot_dr_b = 0;
 }
 
+
+//savings Credit / Debit.
+$ot_cr_h_qry = $pdo->query("SELECT SUM(amount) AS ot_amnt FROM savings WHERE coll_mode = 1 AND type = 1 AND DATE(created_on) = '$current_date' "); //Hand Cash //credit
+if ($ot_cr_h_qry->rowCount() > 0) {
+    $ot_cr_h = $ot_cr_h_qry->fetch()['ot_amnt'];
+} else {
+    $ot_cr_h = 0;
+}
+
+$ot_dr_h_qry = $pdo->query("SELECT SUM(amount) AS ot_amnt FROM savings WHERE coll_mode = 1 AND type = 2 AND DATE(created_on) = '$current_date' "); //Hand Cash //debit
+if ($ot_dr_h_qry->rowCount() > 0) {
+    $ot_dr_h = $ot_dr_h_qry->fetch()['ot_amnt'];
+} else {
+    $ot_dr_h = 0;
+}
+
 $hand_cr = intval($c_cr_h) + intval($ot_cr_h);
 $hand_dr = intval($e_dr_h) + intval($ot_dr_h) + intval($l_cr_h);
 $bank_cr = intval($c_cr_b) + intval($ot_cr_b);

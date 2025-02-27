@@ -8,7 +8,7 @@ $Centre_id = $_POST['Centre_id'];
 $loan_category_calc = $_POST['loan_category_calc'];
 $loan_amount_calc = $_POST['loan_amount_calc'];
 $total_cus = $_POST['total_cus'];
-$loan_amount_per_cus = $_POST['loan_amount_per_cus'];
+// $loan_amount_per_cus = $_POST['loan_amount_per_cus'];
 $profit_type_calc = $_POST['profit_type_calc'];
 $due_method_calc = $_POST['due_method_calc'];
 $profit_method_calc = $_POST['profit_method_calc'];
@@ -30,18 +30,16 @@ $scheme_day_calc = $_POST['scheme_day_calc'];
 $due_startdate_calc = $_POST['due_startdate_calc'];
 $maturity_date_calc = $_POST['maturity_date_calc'];
 $id = $_POST['id'];
-$current_mapping_count=$_POST['current_mapping_count'];
 
 $current_date = date('Y-m-d');
+
+// Check Customer Mapping
+$mappingCountStmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping WHERE loan_id = '$loan_id_calc'");
+$current_mapping_count = $mappingCountStmt->fetchColumn();
 
 if ($current_mapping_count > $total_cus) {
     echo json_encode(['result' => 3, 'message' => 'Remove The Customer Mapping Details']);
     exit;
-}
-else if($current_mapping_count < $total_cus){
-    echo json_encode(['result' => 4, 'message' => "Add Customer Mapping Details"]);
-    exit;
-
 }
 
 else if($current_mapping_count == $total_cus){
@@ -52,7 +50,6 @@ else if($current_mapping_count == $total_cus){
         `loan_category` = '$loan_category_calc',
         `loan_amount` = '$loan_amount_calc',
         `total_customer` = '$total_cus',
-        `loan_amt_per_cus` = '$loan_amount_per_cus',
         `profit_type` = '$profit_type_calc',
         `due_month` = '$due_method_calc',
         `benefit_method` = '$profit_method_calc',
@@ -105,6 +102,38 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
             // Handle missing designation
             continue;
         }
+        if (isset($customer['intrest_amount'])) {
+            $intrest_amount = $customer['intrest_amount'];
+        } else {
+            // Handle missing designation
+            continue;
+        }
+
+        if (isset($customer['principle'])) {
+            $principle = $customer['principle'];
+        } else {
+            // Handle missing designation
+            continue;
+        }
+
+        if (isset($customer['due_amount'])) {
+            $due_amount = $customer['due_amount'];
+        } else {
+            // Handle missing designation
+            continue;
+        }
+        if (isset($customer['net_cash'])) {
+            $net_cash = $customer['net_cash'];
+        } else {
+            // Handle missing designation
+            continue;
+        }
+        if (isset($customer['customer_loan_amount'])) {
+            $customer_loan_amount = $customer['customer_loan_amount'];
+        } else {
+            // Handle missing designation
+            continue;
+        }
 
         // Check if the customer is already mapped to the same loan_id
         $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$cus_id' AND lcm.centre_id = '$Centre_id'");
@@ -115,8 +144,8 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
             $response = ['result' => 4, 'message' => 'The customer is already mapped to this loan.'];
         } else {
             // Insert the new customer mapping
-            $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, centre_id, cus_id, customer_mapping, designation, inserted_login_id, created_on) 
-                                VALUES ('$loan_id_calc', '$Centre_id', '$cus_id', '$cus_mapping', '$designation', '$user_id', '$current_date')");
+            $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, centre_id, cus_id, net_cash , customer_mapping,loan_amount , `intrest_amount`, `principle_amount`, `due_amount`,  designation, inserted_login_id, created_on) 
+                                VALUES ('$loan_id_calc', '$Centre_id', '$cus_id','$net_cash','$cus_mapping','$customer_loan_amount','$intrest_amount','$principle ',' $due_amount',  '$designation', '$user_id', NOW())");
         }
         if ($cus_mapping == 'Renewal') {
             // Check if any loan has a status between 1 and 7 (inclusive)
