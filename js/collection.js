@@ -83,10 +83,9 @@ $(document).ready(function () {
             // Check if there's any valid data to submit
             if (collectionData.length === 0) {
                 swalError('Warning', 'Please fill in the total collection.');
-                return; // Exit if no rows have data to submit
-            } else {
                 $('#submit_collection').attr('disabled', false);
-            }
+                return; // Exit if no rows have data to submit
+            } 
 
             // Send the collected data to the server using AJAX
             $.ajax({
@@ -189,6 +188,8 @@ $(document).ready(function () {
         var cus_mapping_id = $(this).attr('data-id');
         let loan_id = $('#loan_id').val()
         $('#due_chart_model').modal('show');
+        var tbody = $('#due_chart_table_div tbody');
+        tbody.empty(); // Clear existing rows
         dueChartList(cus_mapping_id, loan_id); // To show Due Chart List.
         setTimeout(() => {
             $('.print_due_coll').click(function () {
@@ -221,7 +222,7 @@ $(document).ready(function () {
                     }
                 })
             })
-        }, 1000)
+        }, 3000)
     });
     //////////////////////////Due Chart End/////////////////////////////////////////
     //////////////////////////////Ledger View Start///////////////////////////////////

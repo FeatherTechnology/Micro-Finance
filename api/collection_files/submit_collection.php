@@ -19,7 +19,9 @@ $loanPendingAmnt = $_POST['loanPendingAmnt'];
 $loanPenaltyAmnt = $_POST['loanPenaltyAmnt'];
 $loanFineAmnt = $_POST['loanFineAmnt'];
 $collectionData = $_POST['collectionData'];  // This is an array containing individual row data
-
+$overall_collection = 0;
+$overall_penalty = 0;
+$overall_fine = 0;
 // Loop through each row of collectionData to insert individual rows
 foreach ($collectionData as $data) {
   $cus_mapping_id = $data['id'];  // Get customer mapping ID from the row
@@ -70,15 +72,22 @@ foreach ($collectionData as $data) {
   
   $status = $customer_status['status'];  // Get the status
   $balanceAmount = $customer_status['balanceAmount'];  // Get the individual amount
+  
+  $payable_amount = intval($payable_amt) - $collection_due;
+  $payable_amnts = ($payable_amount > 0) ? $payable_amount : 0;
 
   if ($query) {
-    $qry2 = $pdo->query("UPDATE `customer_status` SET `sub_status`=' $status',`payable_amount`='$payable_amt',`balance_amount`='$balanceAmount',`insert_login_id`='$user_id',`created_date`='$currentDate'WHERE  `cus_map_id`='$cus_mapping_id' and `loan_id`='$loan_id'");
+    $qry2 = $pdo->query("UPDATE `customer_status` SET `sub_status`=' $status',`payable_amount`='$payable_amnts',`balance_amount`='$balanceAmount',`insert_login_id`='$user_id',`created_date`='$currentDate'WHERE  `cus_map_id`='$cus_mapping_id' and `loan_id`='$loan_id'");
   }
+ 
+  $overall_collection += $collection_due;
+  $overall_penalty += $collection_penalty;
+  $overall_fine += $collection_fine;
+}
 
-  $check = intval($collection_due)  - intval($loanBalance);
-
-  $penalty_check = intval($collection_penalty) - intval($penalty);
-  $fine_charge_check = intval($collection_fine)  - intval($fine_charge);
+  $check = intval($overall_collection)  - intval($loanBalance);
+  $penalty_check = intval($overall_penalty) - intval($loanPenaltyAmnt);
+  $fine_charge_check = intval($overall_fine)  - intval($loanFineAmnt);
 
   if ($check == 0 && $penalty_check == 0 && $fine_charge_check == 0) {
     $closedQry = $pdo->query("UPDATE `loan_entry_loan_calculation` SET `loan_status`='8',`update_login_id`='$user_id',`updated_on`=now() WHERE `loan_id`='$loan_id' "); //balance is zero change the customer status as 8, moved to closed.
@@ -86,7 +95,7 @@ foreach ($collectionData as $data) {
       $result = '3';
     }
   }
-}
+
 
 // Return response to the client
 echo json_encode($response);

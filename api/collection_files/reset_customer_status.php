@@ -27,7 +27,7 @@ class CollectStsClass
         }
 
         // Fetch customer mapping and scheme details
-        $query = "SELECT lcm.id AS cus_mapping_id, lcm.loan_id, cc.cus_id, lelc.due_amount_calc, lelc.total_customer, cc.first_name, lelc.due_month, lelc.due_start, lelc.scheme_name, lelc.loan_category, lcm.issue_status,lelc.due_end 
+        $query = "SELECT lcm.id AS cus_mapping_id, lcm.loan_id, cc.cus_id, lelc.due_amount_calc, lelc.due_period, cc.first_name, lelc.due_month, lelc.due_start, lelc.scheme_name, lelc.loan_category, lcm.issue_status,lelc.due_end,lcm.due_amount
                   FROM loan_cus_mapping lcm 
                   JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id 
                   JOIN customer_creation cc ON lcm.cus_id = cc.id 
@@ -46,8 +46,8 @@ class CollectStsClass
                 $row['pending'] = 0;
                 $row['payable'] = 0;
 
-                if (!empty($row['due_amount_calc']) && $row['total_customer'] > 0) {
-                    $row['individual_amount'] = $row['due_amount_calc'] / $row['total_customer'];
+                if (!empty($row['due_amount']) > 0) {
+                    $row['individual_amount'] = $row['due_amount'];
                 } else {
                     $row['individual_amount'] = 0;
                 }

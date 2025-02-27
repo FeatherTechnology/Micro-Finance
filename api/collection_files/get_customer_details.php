@@ -19,8 +19,10 @@ $response = array();
               lelc.due_end,
               lelc.scheme_name,
               lelc.loan_category,
-              lelc.total_amount_calc,
-              lcm.issue_status
+              lelc.due_period,
+              lcm.issue_status,
+              lcm.due_amount,
+              lcm.loan_amount
           FROM loan_cus_mapping lcm
           JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
           JOIN customer_creation cc ON lcm.cus_id = cc.id
@@ -36,14 +38,14 @@ if ($result->rowCount() > 0) {
     foreach ($response as &$row) {
         $row['pending'] = 0;
         // Calculate individual_amount
-        if (!empty($row['due_amount_calc']) && $row['total_customer'] > 0) {
-            $row['individual_amount'] = round($row['due_amount_calc'] / $row['total_customer']);
+        if (!empty($row['due_amount'])) {
+            $row['individual_amount'] = round($row['due_amount']);
 
         } else {
             $row['individual_amount'] = 0;
         }
-        if (!empty($row['total_amount_calc']) && $row['total_amount_calc'] > 0) {
-            $row['overall_amount'] = round($row['total_amount_calc'] / $row['total_customer']);
+        if (!empty($row['due_amount']) && $row['due_period'] > 0) {
+            $row['overall_amount'] = round($row['due_amount'] * $row['due_period']);
         } else {
             $row['overall_amount'] = 0;
         }
@@ -71,13 +73,14 @@ if ($result->rowCount() > 0) {
             $toPayTillNow = $monthsElapsed * $row['individual_amount'];
             $penalty = 0;
             $count = 0;
+            $penalty_counter = 0;
             while ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) {
                 $penalty_checking_date = $start_date_obj->format('Y-m-d');
-
+              
                 $penalty_date = $start_date_obj->format('Y-m');
                 $checkcollection = $pdo->query("SELECT * FROM `collection` WHERE `cus_mapping_id` = '$cus_mapping_id' AND MONTH(coll_date) = MONTH('$penalty_checking_date') AND YEAR(coll_date) = YEAR('$penalty_checking_date')");
                 $collectioncount = $checkcollection->rowCount();
-
+                $pending_for_penalty = $row['individual_amount'] * $penalty_counter - $totalPaidAmt;
                 // Fetch penalty percentage
                 if (empty($row['scheme_name'])) {
                     $penalty_result = $pdo->query("SELECT overdue_penalty AS overdue, penalty_type  AS penal_type  FROM loan_category_creation WHERE id = '" . $row['loan_category'] . "'");
@@ -88,11 +91,11 @@ if ($result->rowCount() > 0) {
                 $penalty_per = $penalty_row['overdue'];
                 $penalty_type = $penalty_row['penal_type'];
                 $count++;
-                if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
+                if ($pending_for_penalty > 0) {
                     $checkPenalty = $pdo->query("SELECT * FROM penalty_charges WHERE penalty_date = '$penalty_date' AND cus_mapping_id = '$cus_mapping_id'");
                     if ($checkPenalty->rowCount() == 0) {
                         if ($penalty_type == 'percent') {
-                            $penalty += round(($row['individual_amount'] * $penalty_per) / 100);
+                            $penalty += round(($pending_for_penalty * $penalty_per) / 100);
                         } else {
                             $penalty += $penalty_per;
                         }
@@ -100,6 +103,9 @@ if ($result->rowCount() > 0) {
                     }
                 }
                 $start_date_obj->add($interval); // Move to the next month
+                if ($penalty_counter < $count) {
+                    $penalty_counter++;
+                }
             }
             if ($count > 0) {
 
@@ -156,35 +162,49 @@ if ($result->rowCount() > 0) {
 
             $penalty = 0;
             $count = 0;
-
+            $penalty_counter = 0;
             while ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) {
                 $penalty_checking_date = $start_date_obj->format('Y-m-d');
                 $penalty_date = $start_date_obj->format('Y-m-d');
+             
+                // Check if there is a collection for this specific customer in the same week and year
                 $checkcollection = $pdo->query("SELECT * FROM `collection` WHERE `cus_mapping_id` = '$cus_mapping_id' AND WEEK(coll_date) = WEEK('$penalty_checking_date') AND YEAR(coll_date) = YEAR('$penalty_checking_date')");
                 $collectioncount = $checkcollection->rowCount();
-
+                $pending_for_penalty = $row['individual_amount'] * $penalty_counter - $totalPaidAmt;
+                // Fetch penalty configuration based on scheme or loan category
                 if (empty($row['scheme_name'])) {
                     $penalty_result = $pdo->query("SELECT overdue_penalty AS overdue, penalty_type AS penal_type FROM loan_category_creation WHERE id = '" . $row['loan_category'] . "'");
                 } else {
                     $penalty_result = $pdo->query("SELECT overdue_penalty_percent AS overdue, scheme_penalty_type AS penal_type FROM scheme WHERE id = '" . $row['scheme_name'] . "'");
                 }
+            
                 $penalty_row = $penalty_result->fetch();
                 $penalty_per = $penalty_row['overdue'];
                 $penalty_type = $penalty_row['penal_type'];
                 $count++;
-                if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
+                // Only add a penalty if the customer has paid less than required and hasn't made a collection that week
+               if ($pending_for_penalty > 0) {
+                    // Check if the penalty has already been recorded for this specific customer
                     $checkPenalty = $pdo->query("SELECT * FROM penalty_charges WHERE penalty_date = '$penalty_date' AND cus_mapping_id = '$cus_mapping_id'");
+            
+                    // Only insert a penalty if it doesn't already exist for that date and customer
                     if ($checkPenalty->rowCount() == 0) {
                         if ($penalty_type == 'percent') {
-                            $penalty += round(($row['individual_amount'] * $penalty_per) / 100);
+                            $penalty_amount = round(($pending_for_penalty * $penalty_per) / 100);
                         } else {
-                            $penalty += $penalty_per;
+                            $penalty_amount = $penalty_per;
                         }
-                        $qry = $pdo->query("INSERT INTO penalty_charges (cus_mapping_id,loan_id, penalty_date, penalty, created_date) VALUES ('$cus_mapping_id','$loan_id', '$penalty_date', '$penalty', CURRENT_TIMESTAMP)");
+                        $qry = $pdo->query("INSERT INTO penalty_charges (cus_mapping_id, loan_id, penalty_date, penalty, created_date) VALUES ('$cus_mapping_id', '$loan_id', '$penalty_date', '$penalty_amount', CURRENT_TIMESTAMP)");
                     }
                 }
-                $start_date_obj->add($interval); // Move to the next week
+            
+                // Move to the next week
+                $start_date_obj->add($interval);
+                if ($penalty_counter < $count) {
+                    $penalty_counter++;
+                }
             }
+            
       
             if ($count > 0) {
                 // If Due month exceeded, calculate pending amount with how many months are exceeded and subtract pre closure amount if available

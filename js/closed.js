@@ -81,6 +81,8 @@ $(document).ready(function () {
         var cus_mapping_id = $(this).attr('data-id');
         let loan_id= $('#loan_id').val()
         $('#due_chart_model').modal('show');
+        var tbody = $('#due_chart_table_div tbody');
+        tbody.empty(); // Clear existing rows
         dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
         setTimeout(()=>{
             $('.print_due_coll').click(function(){
@@ -174,21 +176,22 @@ function closeChartsModal() {
     $('#fine_model').modal('hide');
 }
 
-function dueChartList(cus_mapping_id,loan_id){
+function dueChartList(cus_mapping_id, loan_id) {
     $.ajax({
         url: 'api/collection_files/get_due_chart_list.php',
-        data: {'cus_mapping_id':cus_mapping_id},
-        type:'post',
+        data: { 'cus_mapping_id': cus_mapping_id },
+        type: 'post',
         cache: false,
-        success: function(response){
+        success: function (response) {
             $('#due_chart_table_div').empty();
             $('#due_chart_table_div').html(response);
         }
-    }).then(function(){
-      
-        $.post('api/collection_files/get_due_method_name.php',{loan_id},function(response){
-            $('#dueChartTitle').text('Due Chart ( '+ response['due_month'] + ' - '+ response['loan_type'] +' )');
-        },'json');
+    }).then(function () {
+        $.post('api/collection_files/get_due_method_name.php', { loan_id: loan_id, cus_mapping_id: cus_mapping_id }, function (response) {
+            $('#dueChartTitle').text('Due Chart ( ' + response['due_month'] + ' - ' + response['loan_type'] + ' ) - Customer ID: '
+                + response['cus_id'] + ' - Customer Name: ' + response['cus_name'] + ' - Loan ID: ' + response['loan_id']
+                + ' - Centre ID: ' + response['centre_id'] + ' - Centre Name: ' + response['centre_name']);
+        }, 'json');
     })
 
 }

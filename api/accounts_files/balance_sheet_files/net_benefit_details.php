@@ -38,7 +38,7 @@ $qry = $pdo->query("
         lcm.loan_id,
         lcm.id,
         lelc.total_customer,
-        (lelc.intrest_amount_calc) / (lelc.total_customer) AS benefit,
+        (lcm.intrest_amount)  AS benefit,
         (lelc.document_charge_cal) / (lelc.total_customer) AS doc_charges,
         (lelc.processing_fees_cal)/(lelc.total_customer) AS proc_charges
     FROM

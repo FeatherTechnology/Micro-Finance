@@ -14,6 +14,7 @@ $query = "SELECT
               lelc.net_cash_calc,
               lelc.total_customer,
               lelc.loan_date,
+              lcm.net_cash,
                COALESCE(SUM(ls.issue_amount), 0) as issued_amount
           FROM loan_cus_mapping lcm
           JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
@@ -31,8 +32,8 @@ if ($result->rowCount() > 0) {
     // Loop through each row and calculate individual_amount
     foreach ($response as &$row) {
         // Calculate individual_amount if total_customer is not zero
-        if (!empty($row['net_cash_calc']) && !empty($row['total_customer']) && $row['total_customer'] > 0) {
-            $row['individual_amount'] = round($row['net_cash_calc'] / $row['total_customer']);
+        if (!empty($row['net_cash'])  > 0) {
+            $row['individual_amount'] = round($row['net_cash'] );
         } else {
             $row['individual_amount'] = 0; // If total_customer is 0 or net_cash_calc is empty, set to 0
         }

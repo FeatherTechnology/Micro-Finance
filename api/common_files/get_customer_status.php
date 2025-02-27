@@ -29,11 +29,11 @@ class CustomerStatus
         SUM(c.total_paid_track) AS total_paid_track,
         SUM(c.fine_charge_track) AS total_fine_charge_track,
         SUM(c.penalty_track) AS total_penalty_track,
-        (SUM(c.total_paid_track) + SUM(c.fine_charge_track) + SUM(c.penalty_track)) AS total_paid,
+        (SUM(c.due_amt_track) + SUM(c.fine_charge_track) + SUM(c.penalty_track)) AS total_paid,
         IFNULL(f.total_fine_charge, 0) AS total_fine_charge,
         IFNULL(p.total_penalty, 0) AS total_penalty,
         (SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0) + IFNULL(p.total_penalty, 0)) AS payable_charge,
-        lelc.due_amount_calc,lelc.total_customer,lelc.due_month,lelc.due_start,lelc.due_end
+        lelc.due_amount_calc,lelc.total_customer,lelc.due_month,lelc.due_start,lelc.due_end,lcm.due_amount,lelc.due_period
         FROM
         collection c
         LEFT JOIN
@@ -45,6 +45,9 @@ class CustomerStatus
         LEFT JOIN
         loan_entry_loan_calculation lelc
         ON lelc.loan_id = c.loan_id
+          LEFT JOIN
+        loan_cus_mapping lcm
+        ON c.cus_mapping_id = lcm.id
         WHERE
         c.cus_mapping_id = $cus_mapping_id and c.loan_id =  $loan_id 
         GROUP BY
@@ -66,8 +69,9 @@ class CustomerStatus
                 $row['pending'] = 0;
                 $row['payable'] = 0;
 
-                if (!empty($row['due_amount_calc']) && $row['total_customer'] > 0) {
-                    $row['individual_amount'] = $row['due_amount_calc'] / $row['total_customer'];
+                if (!empty($row['due_amount'])  > 0) {
+                    $row['individual_amount'] = $row['due_amount'];
+                    $row['overall_amount'] = $row['due_amount'] * $row['due_period'] ;
                 } else {
                     $row['individual_amount'] = 0;
                 }
@@ -142,7 +146,7 @@ class CustomerStatus
     {
         $currentDate = new DateTime();
         $status = 'Payable'; // Default status
-        $balanceAmount = max(0, round($row['individual_amount'] - $totalPaidAmt));
+        $balanceAmount = max(0, round($row['overall_amount'] - $totalPaidAmt));
         $pending=0;
         $payable =0;
         // Monthly calculation
@@ -154,27 +158,31 @@ class CustomerStatus
             $end_date_obj = DateTime::createFromFormat('Y-m-d', $due_end_from);
             $current_date_obj = DateTime::createFromFormat('Y-m', $current_month);
             $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12) + 1;
+            if ($start_date_obj > $current_date_obj) {
+                $monthsElapsed = 1;
+            }
             if ($monthsElapsed > 1) {
-               
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillPrev - $totalPaidAmt;
-                $payable = $toPayTillNow-$totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
+                    if ($fine_charge > 0 || $penalty > 0) {
+                        $status = 'Pending';
+                    }
                 } else if ($toPayTillPrev == $totalPaidAmt) {
                     $status = 'Payable';
                 } else if ($current_date_obj > $end_date_obj) {
                     $status = 'OD';
                 } else {
                     // Check for outstanding or pending status
-                    if ($pending > 0 || $fine_charge > 0 || $penalty > 0) {
+                    if ($pending > 0) {
                         $status = 'Pending';
                     } else {
                         $status = 'Payable';
                     }
                 }
-            } else {
+            }  else {
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $payable = $toPayTillNow-$totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
@@ -193,25 +201,31 @@ class CustomerStatus
             $end_date_obj = DateTime::createFromFormat('Y-m-d', $due_end_from);
             $current_date_obj = DateTime::createFromFormat('Y-m-d', $current_date);
             $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) + 1;
-            
+            if ($start_date_obj > $current_date_obj) {
+                $weeksElapsed =1;
+            }
     
             if ($weeksElapsed > 1) {
                 // Calculate amount to be paid till now and till the previous week
                 $toPayTillNow = $weeksElapsed * $row['individual_amount'];
-             
                 $toPayTillPrev = ($weeksElapsed - 1) * $row['individual_amount'];
                 $pending = $toPayTillPrev - $totalPaidAmt;
-                $payable=$toPayTillNow-$totalPaidAmt;
+
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
-                } else if ($toPayTillPrev == $totalPaidAmt) {
+                    // If there are fines or penalties, the status should be 'Pending' even if the amount is fully paid
+                    if ($fine_charge > 0 || $penalty > 0) {
+                        $status = 'Pending';
+                    }
+                } elseif ($toPayTillPrev == $totalPaidAmt) {
+                    // If the total paid amount equals the amount due till the previous period, set status to 'Payable'
                     $status = 'Payable';
-                } else if ($current_date_obj > $end_date_obj) {
+                } elseif ($current_date_obj > $end_date_obj) {
+                    // If the current date is past the end date, set status to 'OD' (Overdue)
                     $status = 'OD';
                 } else {
-                    // Check for outstanding or pending status
-                    if ($pending > 0 || $fine_charge > 0 || $penalty > 0) {
-                        
+                    // Check if there is any pending amount
+                    if ($pending > 0) {
                         $status = 'Pending';
                     } else {
                         $status = 'Payable';

@@ -167,11 +167,11 @@ function moneyFormatIndia($num)
 
 function getBalance($pdo, $cus_mapping_id, $coll_date, $loan_id)
 {
-    $result = $pdo->query("SELECT * FROM `loan_entry_loan_calculation` WHERE loan_id = '$loan_id' ");
+    $result = $pdo->query("SELECT lcm.due_amount,lelc.due_period,lelc.* FROM loan_cus_mapping lcm JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id WHERE lcm.id = '$cus_mapping_id' ");
     if ($result->rowCount() > 0) {
         $row = $result->fetch();
         $loan_arr = $row;
-        $response['total_amt'] =   floatval($loan_arr['total_amount_calc']) / $loan_arr['total_customer'];
+        $response['total_amt'] =   floatval($loan_arr['due_amount']) * $loan_arr['due_period'];
     }
     $coll_arr = array();
     $result = $pdo->query("SELECT * FROM `collection` WHERE cus_mapping_id ='" . $cus_mapping_id . "' and date(coll_date) <= date('" . $coll_date . "') ");

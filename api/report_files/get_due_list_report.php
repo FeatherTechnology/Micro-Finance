@@ -134,19 +134,20 @@ foreach ($result as $row) {
     }
     $loan_id = $row['loan_id'];
     $centre = $row['centre_id'];
-    $query = $pdo->query("SELECT `total_amount_calc`,`loan_id`,`total_customer`,`due_period` FROM `loan_entry_loan_calculation` WHERE`loan_id`='$loan_id' and  centre_id='$centre'");
+    $cus_mapping_id = $row['id'];
+    $due_period = $row['due_period'];
+    $query = $pdo->query("SELECT due_amount FROM `loan_cus_mapping` WHERE`id`='$cus_mapping_id'");
     $issueDate = $query->fetch(PDO::FETCH_ASSOC);
-    $loan_amount = round(floatval($issueDate['total_amount_calc']) / floatval($issueDate['total_customer']));
-    $due_amount = round($loan_amount / floatval($issueDate['due_period']));
+    $loan_amount = round(floatval($issueDate['due_amount']) * $due_period);
+    $due_amount = round(floatval($issueDate['due_amount']));
 
-$cus_mapping_id=$row['id'];
     $customer_status = $obj->custStatus($cus_mapping_id, $loan_id);
     $status = $customer_status['status'];
     $pending = $customer_status['pendings'];
     $payable = $customer_status['payable'];
     $totalPaidAmt = $customer_status['totalPaidAmt'];
     $paid_due=$totalPaidAmt/$due_amount;
-    $balance_due=$issueDate['due_period']-$paid_due;
+    $balance_due= $due_period-$paid_due;
     $balance_due_pending = number_format($balance_due, 2, '.', '');
 
 
@@ -164,7 +165,7 @@ $cus_mapping_id=$row['id'];
     $sub_array[] = isset($row['areaname']) ? $row['areaname'] : '';
     $sub_array[] = moneyFormatIndia($loan_amount);
     $sub_array[] = moneyFormatIndia($due_amount);
-    $sub_array[] = isset($issueDate['due_period']) ? $issueDate['due_period'] : '';
+    $sub_array[] = isset($row['due_period']) ? $row['due_period'] : '';
     $sub_array[] = isset($pending) ? ($pending < 0 ? 0 : $pending) : '';
     $sub_array[] = isset($balance_due_pending) ? $balance_due_pending : '';
     $sub_array[] = isset($payable) ? ($payable < 0 ? 0 : $payable) : '';
