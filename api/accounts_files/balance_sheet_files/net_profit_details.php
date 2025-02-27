@@ -37,8 +37,8 @@ SELECT
     due_summary.due_track, 
     COALESCE(ROUND(SUM(
         CASE 
-            WHEN due_summary.due_track > ((lelc.principal_amount_calc / lelc.total_customer) / lelc.due_period) 
-            THEN due_summary.due_track - ((lelc.principal_amount_calc / lelc.total_customer) / lelc.due_period) 
+            WHEN due_summary.due_track > (lcm.principle_amount) 
+            THEN due_summary.due_track - (lcm.principle_amount) 
             ELSE 0 
         END
     ), 0), 0) AS total_interest_paid 
@@ -54,6 +54,7 @@ JOIN (
 ) AS due_summary ON lcm.id = due_summary.cus_mapping_id
 GROUP BY lcm.loan_id, lcm.id
 ");
+
 $total_interest_paid = 0;
 if ($qry1->rowCount() > 0) {
     while ($row = $qry1->fetch(PDO::FETCH_ASSOC)) {

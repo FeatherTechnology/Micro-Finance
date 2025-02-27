@@ -65,7 +65,7 @@ $(document).ready(function(){
     });
 
     $('#expenses_add').click(function(){
-        getBankName('#expenses_bank_name');
+        // getBankName('#expenses_bank_name');
         getInvoiceNo();
         getBranchList();
         expensesTable('#expenses_creation_table');
@@ -73,7 +73,7 @@ $(document).ready(function(){
     
     $("input[name='expenses_cash_type']").click(function(){
         let expCashType = $(this).val();
-        $('#expenses_trans_id').val('');
+        // $('#expenses_trans_id').val('');
 
         if (expCashType == '2') {
             $('#expenses_bank_name').val('').attr('disabled', false);
@@ -90,13 +90,11 @@ $(document).ready(function(){
 
         let expensesData = {
             'coll_mode': $("input[name='expenses_cash_type']:checked").val(),
-            'bank_id': $('#expenses_bank_name :selected').val(),
             'invoice_id': $('#invoice_id').val(),
             'branch_name': $('#branch_name :selected').val(),
             'expenses_category': $('#expenses_category :selected').val(),
             'description': $('#description').val(),
             'expenses_amnt': $('#expenses_amnt').val(),
-            'expenses_trans_id': $('#expenses_trans_id').val(),
         };
 
         // Fetch closing balance and validate the expense amount before submitting
@@ -509,19 +507,12 @@ function getBranchList(){
 
 function expensesFormValid(expensesData){
     for(key in expensesData){
-        if( key !='expenses_total_issued' && key !='expenses_total_amnt' && key !='bank_id' && key !='expenses_trans_id'){
+        if(key !='expenses_total_issued' && key !='expenses_total_amnt' && key !='bank_id' && key !='expenses_trans_id'){
             if(expensesData[key] =='' || expensesData[key] ==null || expensesData[key] ==undefined){
                 return false;
             }
         }
     }
-
-    if(expensesData['coll_mode'] =='2'){
-        if(expensesData['bank_id'] =='' || expensesData['bank_id'] ==null || expensesData['bank_id'] == undefined || expensesData['expenses_trans_id'] =='' || expensesData['expenses_trans_id'] ==null || expensesData['expenses_trans_id'] == undefined ){
-            return false;
-        }
-    }
-
     return true;
 }
 
@@ -549,7 +540,6 @@ function clearExpForm(){
     $('#expenses_total_issued').val('');
     $('#expenses_total_amnt').val('');
     $('#expenses_amnt').val('');
-    $('#expenses_trans_id').val('');
     $('#expenses_form select').val('');
     $('#expenses_form textarea').val('');
     $('.agentDiv').hide();

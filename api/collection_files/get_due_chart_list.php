@@ -46,7 +46,9 @@ function moneyFormatIndia($num)
               lelc.scheme_name,
               lelc.loan_category,
               lelc.total_amount_calc,
-              lcm.issue_status
+              lcm.issue_status,
+             lcm.due_amount,
+              lcm.loan_amount
           FROM loan_cus_mapping lcm
           JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
           WHERE lcm.id = '$cus_mapping_id' ");
@@ -108,7 +110,7 @@ function moneyFormatIndia($num)
         }
     }
 
-    $issueDate = $pdo->query("SELECT lelc.due_amount_calc, lelc.intrest_amount_calc, lelc.total_amount_calc, lelc.principal_amount_calc,lelc.total_customer ,li.issue_date,lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
+    $issueDate = $pdo->query("SELECT lelc.due_amount_calc,lelc.due_period, lelc.intrest_amount_calc, lelc.total_amount_calc, lelc.principal_amount_calc,lelc.total_customer ,li.issue_date,lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date,lcm.due_amount,lcm.loan_amount
     FROM loan_issue li 
     JOIN loan_cus_mapping lcm ON li.cus_mapping_id = lcm.id
       JOIN loan_entry_loan_calculation lelc ON li.loan_id = lelc.loan_id  
@@ -116,12 +118,12 @@ function moneyFormatIndia($num)
 
     $loanIssue = $issueDate->fetch();
     //If Due method is Monthly, Calculate penalty by checking the month has ended or not  
-    $loan_amt = round($loanIssue['total_amount_calc'] / $loanIssue['total_customer']);
+    $loan_amt = round($loanIssue['due_amount'] * $loanIssue['due_period']);
     $loan_type = 'emi';
 
     $scheme_day = $loanIssue['scheme_day_calc'];
     $scheme_date = $loanIssue['scheme_date'];
-    $due_amt_1 = round($loanIssue['due_amount_calc'] / $loanIssue['total_customer']);
+    $due_amt_1 = round($loanIssue['due_amount']);
 
 
     $issue_date = $loanIssue['issue_date'];
@@ -174,7 +176,7 @@ function moneyFormatIndia($num)
             <?php if ($due_month == 1): ?>
                 <!-- TDs for due_month 1 -->
                 <td> </td>
-                <td><?php echo date('m-Y', strtotime($issue_date)); // For Monthly. Show month and year 
+                <td><?php echo date('M-Y', strtotime($issue_date)); // For Monthly. Show month and year 
                     ?></td>
                 <td><?php echo $scheme_date; // Display scheme date 
                     ?></td>
@@ -321,20 +323,20 @@ if ($run->rowCount() > 0) {
         $jj = 0;
         $last_int_amt = $due_amt_1;
 
-        $initial_balance_query = $pdo->query("SELECT lelc.total_amount_calc,lelc.total_customer 
+        $initial_balance_query = $pdo->query("SELECT lcm.due_amount,lelc.due_period 
         FROM loan_cus_mapping lcm
         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
         WHERE lcm.id = '$cus_mapping_id'");
     
     $initial_balance_result = $initial_balance_query->fetch();
-    $initial_balance = floor($initial_balance_result['total_amount_calc'] / $initial_balance_result['total_customer']);
+    $initial_balance = floor($initial_balance_result['due_amount'] * $initial_balance_result['due_period']);
 
     $bal_amt = $bal_amt > 0 ? $bal_amt : $initial_balance;
         $lastCusdueMonth = '1970-00-00';
         foreach ($dueMonth as $cusDueMonth) {
             if ($loanFrom['due_month'] == '1') {
                 //Query for Monthly.
-                $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.total_amount_calc,lelc.total_customer,lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
+                $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end, lelc.total_amount_calc,lelc.total_customer,lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date,lcm.due_amount,lelc.due_period
                 FROM `collection` c
                 LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                 LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
@@ -346,7 +348,7 @@ if ($run->rowCount() > 0) {
                 ) ");
             } elseif ($loanFrom['due_month'] == '2') {
                 //Query For Weekly.
-                $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end,lelc.total_amount_calc,lelc.total_customer, lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date
+                $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, lelc.due_start, lelc.due_end,lelc.total_amount_calc,lelc.total_customer, lelc.due_month,lelc.scheme_day_calc,lelc.scheme_date,lcm.due_amount,lelc.due_period
             FROM `collection` c
             LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
             LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
@@ -362,8 +364,8 @@ if ($run->rowCount() > 0) {
 
                 while ($row = $run->fetch()) {
                     $due_amt_track = intVal($row['due_amt_track']);
-                    if (!empty($row['total_amount_calc']) && $row['total_amount_calc'] > 0) {
-                        $row['overall_amount'] = $row['total_amount_calc'] / $row['total_customer'];
+                    if (!empty($row['due_amount']) && $row['due_amount'] > 0) {
+                        $row['overall_amount'] = $row['due_amount'] * $row['due_period'];
                     } else {
                         $row['overall_amount'] = 0;
                     }
@@ -381,7 +383,7 @@ if ($run->rowCount() > 0) {
                                 <td><?php echo $i;
                                     $i++; ?></td>
                                 <td><?php //For Monthly.
-                                    echo date('m-Y', strtotime($cusDueMonth));
+                                    echo date('M-Y', strtotime($cusDueMonth));
                                     ?>
                                 </td>
                                 <td><?php echo $scheme_date; // Display scheme date 
@@ -469,7 +471,7 @@ if ($run->rowCount() > 0) {
                     <?php if ($loanFrom['due_month'] == '1') { // For Monthly Due Method 
                     ?>
                         <!-- For Monthly Dues -->
-                        <td><?php echo date('m-Y', strtotime($cusDueMonth)); // Due No (Month-Year) 
+                        <td><?php echo date('M-Y', strtotime($cusDueMonth)); // Due No (Month-Year) 
                             ?></td>
                         <td><?php echo $scheme_date; // Month 
                             ?></td>
@@ -542,13 +544,13 @@ if ($run->rowCount() > 0) {
                 $i++;
             }
         }
-        $initial_balance_query = $pdo->query("SELECT lelc.total_amount_calc,lelc.total_customer 
+        $initial_balance_query = $pdo->query("SELECT lelc.total_amount_calc,lelc.due_period ,lcm.due_amount
         FROM loan_cus_mapping lcm
         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
         WHERE lcm.id = '$cus_mapping_id'");
     
     $initial_balance_result = $initial_balance_query->fetch();
-    $initial_balance = floor($initial_balance_result['total_amount_calc'] / $initial_balance_result['total_customer']);
+    $initial_balance = floor($initial_balance_result['due_amount'] * $initial_balance_result['due_period']);
  // Use total_amount_calc or any other dynamic value
     
  $bal_amt = $bal_amt > 0 ? $bal_amt : $initial_balance;
@@ -557,8 +559,8 @@ if ($run->rowCount() > 0) {
 if ($loanFrom['due_month'] == '1') {
     //Query for Monthly.
     $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, 
-                                lelc.due_start, lelc.due_end, lelc.due_month, lelc.total_amount_calc, lelc.total_customer, 
-                                lelc.scheme_day_calc, lelc.scheme_date
+                                lelc.due_start, lelc.due_end, lelc.due_month, lelc.total_amount_calc, lelc.due_period, 
+                                lelc.scheme_day_calc, lelc.scheme_date,lcm.due_amount,lcm.loan_amount
                         FROM `collection` c
                         LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
@@ -571,8 +573,8 @@ if ($loanFrom['due_month'] == '1') {
 } else if ($loanFrom['due_month'] == '2') {
     //Query for Weekly.
     $run = $pdo->query("SELECT c.id, c.due_amnt, c.pending_amt, c.payable_amt, c.coll_date, c.due_amt_track, c.fine_charge_track, 
-                                lelc.due_start, lelc.due_end, lelc.due_month, lelc.total_amount_calc, lelc.total_customer, 
-                                lelc.scheme_day_calc, lelc.scheme_date
+                                lelc.due_start, lelc.due_end, lelc.due_month, lelc.total_amount_calc, lelc.due_period, 
+                                lelc.scheme_day_calc, lelc.scheme_date,lcm.due_amount,lcm.loan_amount
                         FROM `collection` c
                         LEFT JOIN loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
                         LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
@@ -591,8 +593,8 @@ if ($run->rowCount() > 0) {
         $due_amt_track = intVal($row['due_amt_track']);
         
         // Calculate overall_amount if total_amount_calc exists
-        if (!empty($row['total_amount_calc']) && $row['total_amount_calc'] > 0) {
-            $row['overall_amount'] = $row['total_amount_calc'] / $row['total_customer'];
+        if (!empty($row['due_amount']) && $row['due_amount'] > 0) {
+            $row['overall_amount'] = $row['due_amount'] * $row['due_period'];
         } else {
             $row['overall_amount'] = 0;
         }
@@ -675,16 +677,16 @@ function getNextLoanDetails($pdo, $cus_mapping_id, $date)
     $coll_arr = array();
     $response = array(); //Final array to return
 
-    $result = $pdo->query("SELECT lelc.* FROM `loan_entry_loan_calculation` lelc LEFT JOIN loan_cus_mapping lcm ON lcm.loan_id = lelc.loan_id WHERE lcm.id = $cus_mapping_id ");
+    $result = $pdo->query("SELECT lcm.due_amount ,lelc.* FROM `loan_entry_loan_calculation` lelc LEFT JOIN loan_cus_mapping lcm ON lcm.loan_id = lelc.loan_id WHERE lcm.id = $cus_mapping_id ");
     if ($result->rowCount() > 0) {
         $row = $result->fetch();
         $loan_arr = $row;
 
         //(For monthly interest total amount will not be there, so take principals)
-        $response['total_amt'] = floatval($loan_arr['total_amount_calc']) / $loan_arr['total_customer'];;
+        $response['total_amt'] = floatval($loan_arr['due_amount']) * $loan_arr['due_period'];;
         $response['loan_type'] = 'emi';
 
-        $response['due_amnt'] = $loan_arr['due_amount_calc'] / $loan_arr['total_customer']; //Due amount will remain same
+        $response['due_amnt'] = $loan_arr['due_amount'] ; //Due amount will remain same
     }
     $coll_arr = array();
     $result = $pdo->query("SELECT * FROM `collection` WHERE cus_mapping_id = $cus_mapping_id ");
@@ -758,9 +760,9 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
     $checkcollection = $pdo->query("SELECT SUM(`due_amt_track`) as totalPaidAmt FROM `collection` WHERE `cus_mapping_id` = '$cus_mapping_id'"); // To Find total paid amount till Now.
     $checkrow = $checkcollection->fetch();
     $totalPaidAmt = $checkrow['totalPaidAmt'] ?? 0; //null collation operator
-    $checkack = $pdo->query("SELECT lelc.intrest_amount_calc,lelc.due_amount_calc,lelc.total_customer FROM `loan_entry_loan_calculation` lelc LEFT JOIN loan_cus_mapping lcm ON lelc.loan_id = lcm.loan_id  WHERE lcm.id = '$cus_mapping_id'"); // To Find Due Amount.
+    $checkack = $pdo->query("SELECT lelc.intrest_amount_calc,lelc.due_amount_calc,lelc.due_period,lcm.due_amount FROM `loan_entry_loan_calculation` lelc LEFT JOIN loan_cus_mapping lcm ON lelc.loan_id = lcm.loan_id  WHERE lcm.id = '$cus_mapping_id'"); // To Find Due Amount.
     $checkAckrow = $checkack->fetch();
-    $due_amnt = $checkAckrow['due_amount_calc'] / $checkAckrow['total_customer'];
+    $due_amnt = $checkAckrow['due_amount'];
 
     if ($loan_arr['due_month'] == '1') {
 

@@ -73,7 +73,7 @@ $penaltyRaised = $row1['penalty'] ?? 0;
 $response['penalty'] = $penaltyRaised - $penaltyPaid;
 
 // Query to fetch customer details mapped to the loan
- $query = "SELECT
+$query = "SELECT
               lcm.id AS cus_mapping_id,
               lcm.loan_id,
               cc.cus_id,
@@ -84,7 +84,9 @@ $response['penalty'] = $penaltyRaised - $penaltyPaid;
               lelc.due_start,
               lelc.scheme_name,
               lelc.loan_category,
-              lcm.issue_status
+              lcm.issue_status,
+              lcm.due_amount,
+              lcm.loan_amount
           FROM loan_cus_mapping lcm
           JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
           JOIN customer_creation cc ON lcm.cus_id = cc.id
@@ -105,62 +107,60 @@ if ($result->rowCount() > 0) {
     foreach ($customers as &$row) {
         $row['pending'] = 0;
         $row['payable'] = 0;  // Initialize 'payable' here as well
-        
+
         // Calculate individual_amount for each customer
-        if (!empty($row['due_amount_calc']) && $row['total_customer'] > 0) {
-            $row['individual_amount'] = round($row['due_amount_calc'] / $row['total_customer']);
+        if (!empty($row['due_amount'])) {
+            $row['individual_amount'] = round($row['due_amount']);
         } else {
             $row['individual_amount'] = 0;
         }
-    
+
         // Fetch total paid amount for this customer
         $cus_mapping_id = $row['cus_mapping_id'];
         $checkcollection = $pdo->query("SELECT SUM(due_amt_track) as totalPaidAmt FROM collection WHERE cus_mapping_id = '$cus_mapping_id'");
         $checkrow = $checkcollection->fetch();
         $totalPaidAmt = $checkrow['totalPaidAmt'] ?? 0;
-    
+
         // Penalty calculations for monthly dues
         if ($row['due_month'] == 1) { // Monthly calculation
             $due_start_from = date('Y-m', strtotime($row['due_start']));
             $current_date = date('Y-m');
             $interval = new DateInterval('P1M'); // One month interval
-    
+
             $start_date_obj = DateTime::createFromFormat('Y-m', $due_start_from);
             $current_date_obj = DateTime::createFromFormat('Y-m', $current_date);
-    
+
             // Calculate months elapsed since due start
-            $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12)+1;
+            $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12) + 1;
             if ($start_date_obj > $current_date_obj) {
                 $monthsElapsed = 1;
             }
             if ($monthsElapsed == 1) {
                 // For the first month, payable = individual_amount + totalPaidAmt
                 $row['payable'] = $row['individual_amount'] - $totalPaidAmt;
-              //  echo "Payable: " . $row['payable'] . "<br>";
-            } elseif ($monthsElapsed >1) {
+                //  echo "Payable: " . $row['payable'] . "<br>";
+            } elseif ($monthsElapsed > 1) {
                 // For subsequent months, calculate pending and add to individual_amount for payable
-                $toPayTillPrev = ($monthsElapsed -1) * $row['individual_amount'];
+                $toPayTillPrev = ($monthsElapsed - 1) * $row['individual_amount'];
                 $toPayTillNow = $monthsElapsed * $row['individual_amount'];
                 $row['pending'] = max(0, $toPayTillPrev - $totalPaidAmt);
                 if ($row['pending'] > 0) {
                     $row['payable'] = max(0, $row['pending'] + $row['individual_amount']);
-                }else{
-                    $row['payable'] = max(0, $toPayTillNow - $totalPaidAmt);  
+                } else {
+                    $row['payable'] = max(0, $toPayTillNow - $totalPaidAmt);
                 }
                 // Add to total pending
                 $total_pending += max(0, $row['pending']);
-               
             }
-            
         } elseif ($row['due_month'] == 2) { // Weekly calculation
             $due_start_from = date('Y-m-d', strtotime($row['due_start']));
             $current_date = date('Y-m-d');
             $interval = new DateInterval('P1W'); // One week interval
-    
+
             $start_date_obj = DateTime::createFromFormat('Y-m-d', $due_start_from);
             $current_date_obj = DateTime::createFromFormat('Y-m-d', $current_date);
-    
-            $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) +1;
+
+            $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) + 1;
             if ($start_date_obj > $current_date_obj) {
                 $weeksElapsed = 1;
             }
@@ -169,24 +169,24 @@ if ($result->rowCount() > 0) {
                 $row['payable'] = $row['individual_amount'] - $totalPaidAmt;
             } elseif ($weeksElapsed > 1) {
                 // For subsequent weeks, calculate pending and add to individual_amount for payable
-                $toPayTillPrev = ($weeksElapsed - 1)* $row['individual_amount'];
-                $toPayTillNow = ($weeksElapsed)* $row['individual_amount'];
-                $toPayTillPrev = ($weeksElapsed - 1)* $row['individual_amount'];
+                $toPayTillPrev = ($weeksElapsed - 1) * $row['individual_amount'];
+                $toPayTillNow = ($weeksElapsed) * $row['individual_amount'];
+                $toPayTillPrev = ($weeksElapsed - 1) * $row['individual_amount'];
                 $row['pending'] = max(0, $toPayTillPrev - $totalPaidAmt);
                 if ($row['pending'] > 0) {
                     $row['payable'] = max(0, $row['pending'] + $row['individual_amount']);
-                }else{
-                    $row['payable'] = max(0, $toPayTillNow - $totalPaidAmt);  
+                } else {
+                    $row['payable'] = max(0, $toPayTillNow - $totalPaidAmt);
                 }
                 $total_pending += max(0, $row['pending']); // Add to total pending only after 1 week
             }
         }
-    
+
         // Add individual payable to total payable
         $total_payable += max(0, $row['payable']);
     }
-    
-    
+
+
 
     // Add total pending and total payable to the response
     $response['total_pending'] = $total_pending;
@@ -200,4 +200,3 @@ $response['success'] = true; // Set success to true after all data is fetched
 
 // Return the final response as JSON
 echo json_encode($response);
-?>

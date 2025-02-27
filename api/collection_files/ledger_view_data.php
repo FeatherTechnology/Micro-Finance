@@ -56,7 +56,7 @@ if ($grp['due_month'] == '1') {
 
    
 }
-$qry = $pdo->query("SELECT lcm.id as cus_mapping_id, lelc.loan_id, lelc.centre_id, cuc.cus_id, cuc.first_name,lelc.due_amount_calc,lelc.due_month,lelc.total_customer,lcm.issue_status,lelc.due_start
+$qry = $pdo->query("SELECT lcm.id as cus_mapping_id, lelc.loan_id, lelc.centre_id, cuc.cus_id, cuc.first_name,lelc.due_amount_calc,lelc.due_month,lelc.due_period,lcm.due_amount,lcm.issue_status,lelc.due_start
 FROM loan_cus_mapping lcm
 LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
 LEFT JOIN customer_creation cuc ON lcm.cus_id = cuc.id
@@ -193,7 +193,7 @@ $customer_details = $qry->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo $customer['first_name']; ?></td>
                 <td>
                     <?php
-                    $individual_amount = floor($customer['due_amount_calc'] / $customer['total_customer']);
+                    $individual_amount = floor($customer['due_amount']);
                     echo $individual_amount;
                     ?>
                 </td>

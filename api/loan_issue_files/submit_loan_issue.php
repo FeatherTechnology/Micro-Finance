@@ -13,14 +13,7 @@ $maturity_date_calc = isset($_POST['maturity_date_calc']) ? $_POST['maturity_dat
 $total_amnt_calc = isset($_POST['total_amnt_calc']) ? (int) $_POST['total_amnt_calc'] : '';
 $loan_issue_data = isset($_POST['loan_issue_data']) ? $_POST['loan_issue_data'] : [];
 
-$query= $pdo->query("SELECT `total_customer`,`due_amount_calc` FROM `loan_entry_loan_calculation` WHERE `loan_id`='$loan_id'");
-$result = $query->fetch(PDO::FETCH_ASSOC);
-$total_cus = isset($result['total_customer']) ? (int) $result['total_customer'] : 0;
-$due_amount_calc = isset($result['due_amount_calc']) ? (float) $result['due_amount_calc']:0;
 
-
-$payable=round($due_amount_calc / $total_cus);
-$indudual_amount=round($total_amnt_calc/$total_cus);
 $result = 0;  // Default result
 
 // Loop through each loan issue data
@@ -33,7 +26,13 @@ foreach ($loan_issue_data as $issue) {
     $net_cash = $issue['net_cash'];
     $issue_date = $issue['issue_date'];
     $formatted_issue_date = DateTime::createFromFormat('d/m/Y', $issue_date)->format('Y-m-d');
+    $query = $pdo->query("SELECT lcm.due_amount , lelc.due_period FROM loan_cus_mapping lcm JOIN loan_entry_loan_calculation lelc WHERE lcm.id = '$cus_mapping_id'AND lcm.loan_id ='$loan_id'");
+    $result = $query->fetch(PDO::FETCH_ASSOC);
+    $due_period = isset($result['due_period']) ? (int) $result['due_period'] : 0;
+    $due_amount_calc = isset($result['due_amount']) ? (float) $result['due_amount'] : 0;
     
+    $payable = round($due_amount_calc);
+    $indudual_amount = round($due_amount_calc * $due_period);
     $qry1 = $pdo->query("INSERT INTO loan_issue 
         (cus_mapping_id, loan_id, loan_amnt, net_cash, payment_mode, issue_type, issue_amount, issue_date, insert_login_id, created_on) 
         VALUES 
@@ -51,7 +50,7 @@ foreach ($loan_issue_data as $issue) {
         $qry = $pdo->query("INSERT INTO `customer_status`( `loan_id`,`cus_id`, `cus_map_id`, `sub_status`, `payable_amount`,`balance_amount`, `insert_login_id`, `created_date`) VALUES ('$loan_id','$cus_id','$cus_mapping_id','Payable','$payable','$indudual_amount','$user_id','$currentDate')");
     }
 
-    if ($qry1 ) {
+    if ($qry1) {
         $result = 1;  // If both queries executed successfully
     } else {
         $result = 0;  // If any query failed
