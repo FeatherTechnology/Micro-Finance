@@ -624,7 +624,8 @@ function getAccountAccess(account_access) {
         '1': 'Collection',
         '2': 'Loan Issued',
         '3': 'Expenses',
-        '4': 'Other Transaction'
+        '4': 'Other Transaction',
+        '5':'Customer Savings'
     };
 
     let selectedValues = account_access.split(',');
