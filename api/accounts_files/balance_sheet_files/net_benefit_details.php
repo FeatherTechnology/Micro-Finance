@@ -3,33 +3,30 @@ require "../../../ajaxconfig.php";
 
 $type = $_POST['type'];
 // $user_id = ($_POST['user_id'] != '') ? $userwhere = " AND insert_login_id = '" . $_POST['user_id'] . "' " : $userwhere = ''; //for user based
-if($_POST['user_id'] != ''){
+if ($_POST['user_id'] != '') {
     $userwhere = " AND insert_login_id = '" . $_POST['user_id'] . "' "; //for user based    
     $lelcuserswhere = " AND li.insert_login_id = '" . $_POST['user_id'] . "' "; //for user based    
-}else{
-    $userwhere = '';    
-    $lelcuserswhere = '';    
-} 
+} else {
+    $userwhere = '';
+    $lelcuserswhere = '';
+}
 
 if ($type == 'today') {
     $where = " DATE(created_on) = CURRENT_DATE $userwhere";
     $collwhere = " DATE(created_on) = CURRENT_DATE $userwhere";
     $lelcwhere = " DATE(li.issue_date) = CURRENT_DATE $lelcuserswhere";
-
 } else if ($type == 'day') {
     $from_date = $_POST['from_date'];
     $to_date = $_POST['to_date'];
     $where = " (DATE(created_on) >= '$from_date' && DATE(created_on) <= '$to_date' ) $userwhere ";
     $collwhere = " (DATE(created_on) >= '$from_date' && DATE(created_on) <= '$to_date' ) $userwhere ";
     $lelcwhere = " (DATE(li.issue_date) >= '$from_date' && DATE(li.issue_date) <= '$to_date' ) $lelcuserswhere ";
-
 } else if ($type == 'month') {
     $month = date('m', strtotime($_POST['month']));
     $year = date('Y', strtotime($_POST['month']));
     $where = " (MONTH(created_on) = '$month' AND YEAR(created_on) = $year) $userwhere";
     $collwhere = " (MONTH(created_on) = '$month' AND YEAR(created_on) = $year) $userwhere";
     $lelcwhere = " (MONTH(li.issue_date) = '$month' AND YEAR(li.issue_date) = $year) $lelcuserswhere";
-
 }
 
 $result = array();
@@ -38,9 +35,9 @@ $qry = $pdo->query("
         lcm.loan_id,
         lcm.id,
         lelc.total_customer,
-        (lcm.intrest_amount)  AS benefit,
-        (lelc.document_charge_cal) / (lelc.total_customer) AS doc_charges,
-        (lelc.processing_fees_cal)/(lelc.total_customer) AS proc_charges
+        ((lcm.intrest_amount)* lelc.due_period) AS benefit,
+        ROUND((lcm.loan_amount / lelc.loan_amount_calc) * lelc.document_charge_cal) AS doc_charges,
+ROUND((lcm.loan_amount / lelc.loan_amount_calc) * lelc.processing_fees_cal) AS proc_charges
     FROM
         `loan_issue` li
     JOIN

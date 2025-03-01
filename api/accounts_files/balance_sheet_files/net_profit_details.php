@@ -32,35 +32,46 @@ if ($type == 'today') {
 $result = array();
 
 $qry1 = $pdo->query("
-SELECT 
-    lcm.id, 
-    due_summary.due_track, 
-    COALESCE(ROUND(SUM(
-        CASE 
-            WHEN due_summary.due_track > (lcm.principle_amount) 
-            THEN due_summary.due_track - (lcm.principle_amount) 
-            ELSE 0 
-        END
-    ), 0), 0) AS total_interest_paid 
-FROM loan_cus_mapping lcm
-JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
+SELECT
+    lcm.id,
+    due_summary.due_track,
+    COALESCE(
+        SUM(
+            CASE
+                -- If due_track is greater than principle_amount * due_period, calculate the interest part
+                WHEN due_summary.due_track > (lcm.intrest_amount * lelc.due_period) THEN
+                    CASE
+                        WHEN (due_summary.due_track - lcm.principle_amount) >= (lcm.intrest_amount * lelc.due_period) THEN 
+                            -- If paidAmount >= interest, add the full interest
+                            (lcm.intrest_amount * lelc.due_period)
+                        ELSE 
+                            -- Otherwise, add only paidAmount as interest
+                            (due_summary.due_track - lcm.intrest_amount)
+                    END
+                ELSE 0
+            END
+        ),
+        0
+    ) AS total_interest_paid
+FROM
+    loan_cus_mapping lcm
+JOIN loan_entry_loan_calculation lelc ON
+    lcm.loan_id = lelc.loan_id
 JOIN (
-    SELECT 
-        c.cus_mapping_id, 
-        COALESCE(SUM(c.due_amt_track), 0) AS due_track 
-    FROM `collection` c 
+    SELECT c.cus_mapping_id,
+        COALESCE(SUM(c.due_amt_track), 0) AS due_track
+    FROM `collection` c
     WHERE $collwhere
     GROUP BY c.cus_mapping_id
 ) AS due_summary ON lcm.id = due_summary.cus_mapping_id
-GROUP BY lcm.loan_id, lcm.id
-");
+GROUP BY lcm.id;
 
+");
 $total_interest_paid = 0;
 if ($qry1->rowCount() > 0) {
     while ($row = $qry1->fetch(PDO::FETCH_ASSOC)) {
         $intreset_paid =  $row['total_interest_paid'];
         $total_interest_paid += $intreset_paid;
-
     }
 }
 
@@ -69,9 +80,9 @@ $qry = $pdo->query("
         lcm.loan_id,
         lcm.id,
         lelc.total_customer,
-        (lelc.intrest_amount_calc) / (lelc.total_customer) AS benefit,
-        (lelc.document_charge_cal) / (lelc.total_customer) AS doc_charges,
-        (lelc.processing_fees_cal)/(lelc.total_customer) AS proc_charges
+        ((lcm.intrest_amount)* lelc.due_period) AS benefit,
+  ROUND((lcm.loan_amount / lelc.loan_amount_calc) * lelc.document_charge_cal) AS doc_charges,
+ROUND((lcm.loan_amount / lelc.loan_amount_calc) * lelc.processing_fees_cal) AS proc_charges
     FROM
         `loan_issue` li
     JOIN
