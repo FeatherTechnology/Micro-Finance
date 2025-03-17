@@ -496,22 +496,27 @@ $('#cus_mapping_table tbody tr').each(function () {
     var cus_mapping = $(this).find('.cus_mapping').text(); // Use .text() instead of .val() for non-input elements
     var designation = $(this).find('.designation').text(); // Use .text() to get the content of the td
     var customer_loan_amount = $(this).find('.customer_amount').text(); // Use .text() to get the content of the td
+    
     var intrest_amount=customer_loan_amount*(intrest_rate/100);
-    var principle=(customer_loan_amount/due_period);
-    console.log("cus_")
+        var principle=(customer_loan_amount/due_period);
 
-        var processingfees=(customer_loan_amount/loanAmountCalc)*processing_fees;
-        var documentcharge=(customer_loan_amount/loanAmountCalc)*document_fees; 
-        console.log("processingfees",processingfees);
-        console.log("document_charge",documentcharge);
-        var net_cash=customer_loan_amount-( processingfees+documentcharge)
-        var due_amount = intrest_amount + principle ;
-        console.log("netcash ",net_cash);
-        console.log("due_amount ",due_amount);
-        
+        var roundint = Math.ceil(intrest_amount / 5) * 5; //to increase Due Amt to nearest multiple of 5
+        if (roundint < intrest_amount) {
+            roundint += 5;
+        }
+        var roundpri = Math.ceil(principle / 5) * 5; //to increase Due Amt to nearest multiple of 5
+        if (roundpri < principle) {
+            roundpri += 5;
+        }
+        var processingfees=Math.round((customer_loan_amount/loanAmountCalc)*processing_fees);
+        var documentcharge=Math.round((customer_loan_amount/loanAmountCalc)*document_fees); 
+        var net_cash=Math.round(customer_loan_amount-( processingfees+documentcharge));
 
-        customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation,intrest_amount:intrest_amount,principle:principle,due_amount:due_amount,customer_loan_amount:customer_loan_amount,net_cash:net_cash});
-    });
+        var due_amount = roundint + roundpri ;
+            
+
+            customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation,intrest_amount:intrest_amount,principle:principle,due_amount:due_amount,customer_loan_amount:customer_loan_amount,net_cash:net_cash});
+        });
 
 
     let formData = {
@@ -649,6 +654,7 @@ function getCentreMapTable(id) {
           "aadhar_number",
           "mobile1",
           "areaname",
+          'loan_amount',
           "designation",
           "action"
       ]

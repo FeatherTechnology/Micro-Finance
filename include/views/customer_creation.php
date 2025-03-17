@@ -170,7 +170,7 @@
                                         <div class="row">
                                             <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-12">
                                                 <div class="form-group">
-                                                    <label for="latlong">Location</label><span class="text-danger">*</span>
+                                                    <label for="latlong">Location</label>
                                                     <input type="text" class="form-control" name="latlong" id="latlong" placeholder="Enter Latitude Longitude">
                                                 </div>
                                             </div>

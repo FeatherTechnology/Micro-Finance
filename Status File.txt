@@ -9,3 +9,4 @@
 9 = closed
 10 = in  noc
 11 = noc completed
+12 = Missing

@@ -203,8 +203,7 @@ $(document).ready(function () {
       "aadhar_number",
       "area",
       "mobile1",
-      "multiple_loan",
-      "latlong",
+      "multiple_loan"
     ];
 
     var isValid = true;
@@ -357,19 +356,14 @@ $(document).ready(function () {
 
   $(document).on("click", "#getlatlong", function () {
     event.preventDefault();
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-          let latitude = position.coords.latitude;
-          let longitude = position.coords.longitude;
-          let locationText = `${latitude}, ${longitude}`;
-          $("#latlong").val(locationText);
-      }, function (error) {
-          alert("Error getting location: " + error.message);
-      });
-  } else {
-      alert("Geolocation is not supported by your browser.");
-  }
+        
+    $.getJSON('http://ip-api.com/json', function (data) {
+        console.log("Latitude:", data.lat);
+        console.log("Longitude:", data.lon);
+        $('#latlong').val(data.lat + ',' + data.lon);
+    });
   });
+  
 
 });
 

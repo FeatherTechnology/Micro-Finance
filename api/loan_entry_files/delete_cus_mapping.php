@@ -5,6 +5,7 @@ $user_id = $_SESSION['user_id'];
 $id = $_POST['id'];
 $loan_id = $_POST['loan_id'];
 $centre_id = $_POST['centre_id'];
+$loan_status = $_POST['loan_status'];
 
 $checkIdStmt = $pdo->query("SELECT COUNT(*) FROM `loan_cus_mapping` WHERE `id` = '$id' AND loan_id = '$loan_id'");
 $idExists = $checkIdStmt->fetchColumn();
@@ -19,16 +20,16 @@ if ($idExists > 0) {
             // Get the total number of members for the group
             $totalMembersStmt = $pdo->query("SELECT total_customer FROM `loan_entry_loan_calculation` WHERE loan_id = '$loan_id'");
             $total_members = $totalMembersStmt->fetchColumn();
-
-            // Update status based on the count
+    if($loan_status!='11'){
+     // Update status based on the count
             if ($current_mapping_count >= $total_members) {
-                // Update status to 2 if count matches or exceeds
-                $statusUpdateStmt = $pdo->query("UPDATE `loan_entry_loan_calculation` SET loan_status = '2' WHERE loan_id = '$loan_id'");
+                 $statusUpdateStmt = $pdo->query("UPDATE `loan_entry_loan_calculation` SET loan_status = '2' WHERE loan_id = '$loan_id'");
             } else {
                 // Update status to 1 if count does not match
                 $statusUpdateStmt = $pdo->query("UPDATE `loan_entry_loan_calculation` SET loan_status = '1' WHERE loan_id = '$loan_id'");
             }
-
+    }
+    $statusUpdateStmt='';
             // Check if status update was successful
             if ($statusUpdateStmt) {
                 $result = 1; // Success

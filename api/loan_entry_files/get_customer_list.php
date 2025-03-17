@@ -20,7 +20,7 @@ if ($customer_mapping == 1) {
               LEFT JOIN loan_cus_mapping lcm ON cc.id = lcm.cus_id
               LEFT JOIN loan_entry_loan_calculation lelc ON lcm.loan_id = lelc.loan_id
               LEFT JOIN area_name_creation anc ON cc.area = anc.id
-              WHERE lelc.loan_status IN (8,9) AND (lcm.closed_sub_status IS NULL OR lcm.closed_sub_status = 0 OR lcm.closed_sub_status = 1) GROUP BY cc.id;";
+              WHERE lelc.loan_status IN (10,11) AND (lcm.closed_sub_status IS NULL OR lcm.closed_sub_status = 0 OR lcm.closed_sub_status = 1) GROUP BY cc.id;";
 } elseif ($customer_mapping == 3) {
     // Fetch customers who are in loan_cus_mapping table (additional conditions can be applied here)
     $query = "SELECT cc.id, cc.cus_id, cc.first_name, cc.last_name, cc.mobile1, anc.areaname 
