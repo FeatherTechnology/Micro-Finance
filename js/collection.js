@@ -353,7 +353,7 @@ function collectionCustomerList(loan_id) {
             var hasRows = false;
             var serialNo = 1;
             $.each(response, function (index, item) {
-                var isReadOnly = (!item.issue_status || item.issue_status === "" || item.cus_status===12) ? "disabled" : "";
+                var isReadOnly = (!item.issue_status || item.issue_status === "" || item.cus_status === 12) ? "disabled" : "";
                 var individual_amount = item.individual_amount ? item.individual_amount : 0;
                 var pending = item.pending ? item.pending : 0;
                 var payable = item.payable ? item.payable : 0;
@@ -368,7 +368,7 @@ function collectionCustomerList(loan_id) {
                     "<a href='#' class='fine-chart' data-id='" + item.id + "'>Fine Chart</a>" +
                     "</div>" +
                     "</div>";
-                    if(item.cus_status === 12){
+                    if(item.cus_status == '12'){
                         var action = "<div class='dropdown'>" +
                     "<button class='btn btn-outline-secondary' "  + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +

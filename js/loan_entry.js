@@ -238,8 +238,15 @@ $(document).ready(function () {
     // Event listener for delete button click
     $(document).on('click', '.cusMapDeleteBtn', function () {
         let id = $(this).attr('value'); // Get the customer ID from the button
+        let loan_id = $(this).attr('loan_id'); 
+        let loan_status = $(this).attr('loan_status');
         // Show the confirmation dialog
-        swalConfirm('Delete', 'Do you want to remove this customer mapping?', removeCusMap, id, '');
+        let TableRowVal = {
+            'id' :id,
+            'laon_id' : loan_id,
+            'loan_status' : loan_status
+        };
+        swalConfirm('Delete', 'Do you want to remove this customer mapping?', removeCusMap, TableRowVal, '');
     });
 
     // $(document).on('click', '.cusActionBtn', function () {
@@ -445,14 +452,14 @@ $(document).ready(function () {
         // var doc_charge_calculate=parseFloat($('#doc_charge_calculate').val());
         // var processing_fees = 0;
         if(process_fees_type ==='rupee'){
-             var processing_fees=parseFloat($('#processing_fees_calculate').val());
-             let doc_charge_calculate=parseFloat($('#doc_charge_calculate').val());
+             var processing_fees=parseFloat($('#processing_fees_calc').val());
+             let doc_charge_calculate=parseFloat($('#doc_charge_calc').val());
              let doc_charge=loan_amount*(doc_charge_calculate/100);
             var document_fees=doc_charge;
         }
         else{
-            let processing_percentage=parseFloat($('#processing_fees_calculate').val());
-            let doc_charge_calculate=parseFloat($('#doc_charge_calculate').val());
+            let processing_percentage=parseFloat($('#processing_fees_calc').val());
+            let doc_charge_calculate=parseFloat($('#doc_charge_calc').val());
             let processingFees=loan_amount*(processing_percentage/100);
             var processing_fees=processingFees;
             let doc_charge=loan_amount*(doc_charge_calculate/100);
@@ -481,18 +488,13 @@ console.log("totalCustomerAmount",totalCustomerAmount);
         var cus_mapping = $(this).find('.cus_mapping').text(); // Use .text() instead of .val() for non-input elements
         var designation = $(this).find('.designation').text(); // Use .text() to get the content of the td
         var customer_loan_amount = $(this).find('.customer_amount').text(); // Use .text() to get the content of the td
-        var intrest_amount=customer_loan_amount*(intrest_rate/100);
-        var principle=(customer_loan_amount/due_period);
-        console.log("cus_")
+        var intrest_amount= Math.round(customer_loan_amount*(intrest_rate/100));
+        var principle= Math.round(customer_loan_amount/due_period);
+        var processingfees=Math.round((customer_loan_amount/loanAmountCalc)*processing_fees);
+        var documentcharge=Math.round((customer_loan_amount/loanAmountCalc)*document_fees); 
+        var net_cash=Math.round(customer_loan_amount-( processingfees+documentcharge));
 
-            var processingfees=(customer_loan_amount/loanAmountCalc)*processing_fees;
-            var documentcharge=(customer_loan_amount/loanAmountCalc)*document_fees; 
-            console.log("processingfees",processingfees);
-            console.log("document_charge",documentcharge);
-            var net_cash=customer_loan_amount-( processingfees+documentcharge)
-            var due_amount = intrest_amount + principle ;
-            console.log("netcash ",net_cash);
-            console.log("due_amount ",due_amount);
+        var due_amount = intrest_amount + principle ;
             
 
             customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation,intrest_amount:intrest_amount,principle:principle,due_amount:due_amount,customer_loan_amount:customer_loan_amount,net_cash:net_cash});
@@ -1063,6 +1065,7 @@ function getCentreMapTable(id) {
             "aadhar_number",
             "mobile1",
             "areaname",
+            "loan_amount",
             "designation",
             "action"
 
@@ -1071,9 +1074,12 @@ function getCentreMapTable(id) {
     }, 'json');
 }
 // Function to remove row
-function removeCusMap(id) {
+function removeCusMap(TableRowVal) {
     // Find the row with the matching ID and remove it
-    let loan_id = $('#loan_id_calc').val()
+    let id = TableRowVal.id; // Extract the 'id' value
+    let loan_id = TableRowVal.laon_id;
+    let loan_status = TableRowVal.loan_status;
+    // let loan_id = $('#loan_id_calc').val()
     let centre_id = $('#Centre_id').val();
     var customerMappingData = [];
     $('#cus_mapping_table tbody tr').each(function () {
@@ -1097,7 +1103,7 @@ function removeCusMap(id) {
             return false; // Exit the loop once the row is removed
         }
     });
-    $.post('api/loan_entry_files/delete_cus_mapping.php', { id,loan_id,'customer_mapping_data': customerMappingData,centre_id}, function (response) {
+    $.post('api/loan_entry_files/delete_cus_mapping.php', { id,loan_id,loan_status,'customer_mapping_data': customerMappingData,centre_id}, function (response) {
         if (response == 1) {
             swalSuccess('Success', 'Customer mapping removed successfully.')
             getCusMapTable();

@@ -169,8 +169,9 @@ $(document).ready(function () {
         let isBranchNameValid = validateMultiSelectField('branch_name', branch_name);
         let isCentreValid = validateMultiSelectField('centre', centre);
         let isLoanCategoryValid = validateMultiSelectField('loan_category', loan_category);
+        let account_access = validateMultiSelectField('account_access', accountAccess);
 
-        if (isValid && isBranchNameValid && isCentreValid && isLoanCategoryValid) {
+        if (isValid && isBranchNameValid && isCentreValid && isLoanCategoryValid && account_access ) {
             $('#submit_user_creation').prop('disabled', true);
             if (selectedSubmenuIds.length > 0) {
                 $.post('api/user_creation_files/submit_user_creation.php', userFormData, function (response) {
