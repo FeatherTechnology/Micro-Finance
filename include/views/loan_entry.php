@@ -191,13 +191,13 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="interest_rate_calc">Interest Rate</label><span class="text-danger min-max-int">*</span><!-- Min and max intrest rate-->
-                                    <input type="number" class="form-control to_clear" id="interest_rate_calc" name="interest_rate_calc" tabindex="16">
+                                    <input type="number" class="form-control to_clear" id="interest_rate_calc" name="interest_rate_calc" tabindex="16" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="due_period_calc">Due Period</label><span class="text-danger min-max-due">*</span><!-- Min and max Profit Method-->
-                                    <input type="number" class="form-control to_clear" id="due_period_calc" name="due_period_calc" tabindex="17">
+                                    <input type="number" class="form-control to_clear" id="due_period_calc" name="due_period_calc" tabindex="17" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">

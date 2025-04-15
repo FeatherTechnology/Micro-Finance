@@ -124,9 +124,9 @@ $(document).ready(function () {
             schemeDueMethod: $('#scheme_due_method').val(),
             schemeBenefitMethod: $('#scheme_ben_method').val(),
             schemeMinInterestRate: $('#scheme_interest_rate_min').val(),
-            schemeMaxInterestRate: $('#scheme_interest_rate_max').val(),
+            // schemeMaxInterestRate: $('#scheme_interest_rate_max').val(),
             schemeMinDuePeriod: $('#scheme_due_period_min').val(),
-            schemeMaxDuePeriod: $('#scheme_due_period_max').val(),
+            // schemeMaxDuePeriod: $('#scheme_due_period_max').val(),
             schemeOverduePenalty: $('#scheme_overdue_penalty').val(),
             schemePenaltyType: $('#scheme_penalty_type').val(),
             schemeDocChargeMin: $('#scheme_doc_charge_min').val(),
@@ -135,7 +135,7 @@ $(document).ready(function () {
             schemeProcessingFeeMax: $('#scheme_processing_fee_max').val(),
             id: $('#add_scheme_id').val()
         }
-        var data = ['add_scheme_name', 'scheme_due_method', 'scheme_ben_method', 'scheme_interest_rate_min', 'scheme_interest_rate_max','scheme_due_period_min','scheme_due_period_max', 'scheme_overdue_penalty', 'scheme_doc_charge_min', 'scheme_doc_charge_max', 'scheme_processing_fee_min', 'scheme_processing_fee_max']
+        var data = ['add_scheme_name', 'scheme_due_method', 'scheme_ben_method', 'scheme_interest_rate_min','scheme_due_period_min', 'scheme_overdue_penalty', 'scheme_doc_charge_min', 'scheme_doc_charge_max', 'scheme_processing_fee_min', 'scheme_processing_fee_max']
 
         var isValid = true;
         data.forEach(function (entry) {
@@ -444,7 +444,6 @@ function getSchemeTable() {
             "due_method",
             "benefit_method",
             "interest_rate_percent_min",
-            "interest_rate_percent_max",
             "due_period_percent_min",
             "due_period_percent_max",
             "doc_charge_min",
@@ -482,9 +481,7 @@ function getSchemeListTable(scheme_id) {
             "due_method",
             "benefit_method",
             "interest_rate_percent_min",
-            "interest_rate_percent_max",
             "due_period_percent_min",
-            "due_period_percent_max",
             "doc_charge_min",
             "doc_charge_max",
             "processing_fee_min",

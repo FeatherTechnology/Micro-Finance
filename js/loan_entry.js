@@ -282,7 +282,9 @@ $(document).ready(function () {
             $('#due_period_upd').val('')
             $('#doc_charge_upd').val('')
             $('#proc_fees_upd').val('')
+            $('#interest_rate_calc, #due_period_calc').removeAttr('readonly');
         } else if (profitType == '2') { // Scheme
+            $('#interest_rate_calc, #due_period_calc').attr('readonly', true);
             dueMethodScheme(id, profitType); // Fetch due method scheme details
             $('.calc').show();
             $('.scheme').show();
@@ -758,12 +760,14 @@ function schemeCalAjax(id) {
         var proc_fee_upd = ($('#proc_fees_upd').val()) ? $('#proc_fees_upd').val() : '';
         $.post('api/loan_category_creation/get_scheme_data.php', { id }, function (response) {
             //To set min and maximum
-            $('.min-max-int').text('* (' + response[0].interest_rate_percent_min + '% - ' + response[0].interest_rate_percent_max + '%) ');
-            $('#interest_rate_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].interest_rate_percent_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].interest_rate_percent_min + `' && parseFloat($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `); //To check value between range
-            $('#interest_rate_calc').val(int_rate_upd);
-            $('.min-max-due').text('* (' + response[0].due_period_percent_min + ' - ' + response[0].due_period_percent_max + ') ');
-            $('#due_period_calc').attr('onChange', `if( parseInt($(this).val()) > '` + response[0].due_period_percent_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseInt($(this).val()) < '` + response[0].due_period_percent_min + `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `); //To check value between range
-            $('#due_period_calc').val(due_period_upd);
+            // $('.min-max-int').text('* (' + response[0].interest_rate_percent_min + '% - ' + response[0].interest_rate_percent_max + '%) ');
+            // $('#interest_rate_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].interest_rate_percent_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].interest_rate_percent_min + `' && parseFloat($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `); //To check value between range
+            $('#interest_rate_calc').val(response[0].interest_rate_percent_min)
+            // $('#interest_rate_calc').val(int_rate_upd);
+            // $('.min-max-due').text('* (' + response[0].due_period_percent_min + ' - ' + response[0].due_period_percent_max + ') ');
+            // $('#due_period_calc').attr('onChange', `if( parseInt($(this).val()) > '` + response[0].due_period_percent_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseInt($(this).val()) < '` + response[0].due_period_percent_min + `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `); //To check value between range
+            // $('#due_period_calc').val(due_period_upd);
+            $('#due_period_calc').val(response[0].due_period_percent_min);
 
             $('.min-max-doc').text('* (' + response[0].doc_charge_min + '% - ' + response[0].doc_charge_max + '%) ');
             $('#doc_charge_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].doc_charge_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].doc_charge_min + `' && parseFloat($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `); //To check value between range
