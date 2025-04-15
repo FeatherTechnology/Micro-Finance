@@ -577,6 +577,7 @@ function clearSchemeForm() {
     $('.scheme_doc_minmax').val('');
     $('.scheme_processing_minmax').val('');
     $('#scheme_overdue_penalty').val('');
+    $('#add_scheme_name').val('');
     $('#add_scheme_details').trigger('reset');
     $('#scheme_type_percent').prop('checked', true).closest('label').addClass('active');
     $('#scheme_type_rupee').prop('checked', false).closest('label').removeClass('active');

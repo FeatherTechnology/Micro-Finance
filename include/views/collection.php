@@ -89,12 +89,12 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="disabledInput">Penalty</label>&nbsp;<span class="text-danger ">*</span>
                                         <input type="text" class="form-control" readonly id="penalty" name="penalty" value='' tabindex='8'>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="disabledInput">Fine</label>&nbsp;<span class="text-danger ">*</span>
@@ -130,11 +130,11 @@
                                         <th>Due Amount</th>
                                         <th>Pending</th>
                                         <th>Payable</th>
-                                        <th>Penalty</th>
+                                        <!-- <th>Penalty</th> -->
                                         <th>Fine</th>
                                         <th>Collection Date</th>
                                         <th>Collection Due Amount</th>
-                                        <th>Collection Penalty</th>
+                                        <th>Collection Savings</th>
                                         <th>Collection Fine</th>
                                         <th>Total Collection</th>
                                         <th>Charts</th>
