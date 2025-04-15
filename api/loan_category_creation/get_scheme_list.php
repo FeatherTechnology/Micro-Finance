@@ -2,7 +2,7 @@
 require "../../ajaxconfig.php";
 $scheme_arr = array();
 $enabled_schemes = array(); // Array to store enabled scheme IDs
-$qry = $pdo->query("SELECT `id`,`scheme_name`, `due_method`, `benefit_method`, `interest_rate_percent_min`, `interest_rate_percent_max`,`due_period_percent_min`, `due_period_percent_max`,`scheme_penalty_type`, `doc_charge_min`, `doc_charge_max`, `processing_fee_min`, `processing_fee_max`,`overdue_penalty_percent`,`scheme_status` FROM `scheme` ");
+$qry = $pdo->query("SELECT `id`,`scheme_name`, `due_method`, `benefit_method`, `interest_rate_percent_min`, `due_period_percent_min`, `scheme_penalty_type`, `doc_charge_min`, `doc_charge_max`, `processing_fee_min`, `processing_fee_max`,`overdue_penalty_percent`,`scheme_status` FROM `scheme` ");
 if ($qry->rowCount() > 0) {
     while ($scheme_info = $qry->fetch(PDO::FETCH_ASSOC)) {
         if($scheme_info['due_method'] == '1'){

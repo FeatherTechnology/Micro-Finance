@@ -294,42 +294,23 @@
                                                 <div class="form-group">
                                                     <label for="scheme_interest_rate_min">Interest Rate</label><span class="text-danger">*</span>
                                                     <div class="input-group">
-                                                        <input type="number" class="form-control scheme_interest_minmax" id="scheme_interest_rate_min" name="scheme_interest_rate_min" tabindex="22" placeholder="Enter Min Interest Rate">
+                                                        <input type="number" class="form-control scheme_interest_minmax" id="scheme_interest_rate_min" name="scheme_interest_rate_min" tabindex="22" placeholder="Enter Interest Rate">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">%</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-sm-4">
-                                                <div class="form-group">
-                                                    <label for="scheme_interest_rate_max"> </label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control form-group-label-emptywith-input scheme_interest_minmax" id="scheme_interest_rate_max" name="scheme_interest_rate_max" tabindex="23" placeholder="Enter Max Interest Rate">
-                                                        <div class="input-group-append form-group-label-emptywith-input">
-                                                            <span class="input-group-text">%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
+                                           
                                             <div class="col-md-3 col-sm-4">
                                                 <div class="form-group">
                                                     <label for="scheme_due_period_min">Due Period</label><span class="text-danger">*</span>
                                                     <div class="input-group">
-                                                        <input type="number" class="form-control scheme_due_period_minmax" id="scheme_due_period_min" name="scheme_due_period_min" tabindex="24" placeholder="Enter Min Due Period">
+                                                        <input type="number" class="form-control scheme_due_period_minmax" id="scheme_due_period_min" name="scheme_due_period_min" tabindex="24" placeholder="Enter  Due Period">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 col-sm-4">
-                                                <div class="form-group">
-                                                    <label for="scheme_due_period_max"> </label>
-                                                    <div class="input-group">
-                                                        <input type="number" class="form-control form-group-label-emptywith-input scheme_due_period_minmax" id="scheme_due_period_max" name="scheme_due_period_max" tabindex="25" placeholder="Enter Max Due Period">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                         <div class="row">
                                             <div class="col-md-3 col-sm-4">
@@ -428,10 +409,8 @@
                                                     <th>Scheme</th>
                                                     <th>Due Method</th>
                                                     <th>Benefit Method</th>
-                                                    <th>Interest Rate Min</th>
-                                                    <th>Interest Rate Max</th>
-                                                    <th>Due Period Min</th>
-                                                    <th>Due Period Max</th>
+                                                    <th>Interest Rate </th>
+                                                    <th>Due Period </th>
                                                     <th>Document Charge Min</th>
                                                     <th>Document Charge Max</th>
                                                     <th>Processing Fee Min</th>
