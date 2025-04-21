@@ -32,11 +32,15 @@ class loanIssueUploadClass
             'designation' => isset($Row[5]) ? $Row[5] : "",
             'loan_date' => isset($Row[6]) ? $Row[6] : "",
             'loan_amount' => isset($Row[7]) ? $Row[7] : "",
-            'net_cash' => isset($Row[8]) ? $Row[8] : "",
-            'payment_mode' => isset($Row[9]) ? $Row[9] : "",
-            'issue_type' => isset($Row[10]) ? $Row[10] : "",
-            'issue_amount' => isset($Row[11]) ? $Row[11] : "",
-            'issue_date' => isset($Row[12]) ? $Row[12] : "",
+            'cus_loan_amount' => isset($Row[8]) ? $Row[8] : "",
+            'net_cash' => isset($Row[9]) ? $Row[9] : "",
+            'intrest_amt' => isset($Row[10]) ? $Row[10] : "",
+            'principle_amt' => isset($Row[11]) ? $Row[11] : "",
+            'due_amount' => isset($Row[12]) ? $Row[12] : "",
+            'payment_mode' => isset($Row[13]) ? $Row[13] : "",
+            'issue_type' => isset($Row[14]) ? $Row[14] : "",
+            'issue_amount' => isset($Row[15]) ? $Row[15] : "",
+            'issue_date' => isset($Row[16]) ? $Row[16] : "",
         );
         $dataArray['cus_aadhar'] = strlen(trim($dataArray['cus_aadhar'])) == 12 ? $dataArray['cus_aadhar'] : 'Invalid';
         if (!empty($dataArray['loan_date'])) {
@@ -170,8 +174,8 @@ class loanIssueUploadClass
             $che_query = "SELECT id FROM loan_cus_mapping WHERE loan_id = '" . $data['loan_id'] . "' AND cus_id ='" . strip_tags($data['cust_id']) . "'";
             $result2 = $pdo->query($che_query);
             if ($result2->rowCount() == 0) {
-                $insert_query5 = "INSERT INTO loan_cus_mapping (loan_id,centre_id, cus_id, customer_mapping, designation, inserted_login_id, created_on) 
-                              VALUES ('" . strip_tags($data['loan_id']) . "', '" . strip_tags($data['centre_id']) . "','" . strip_tags($data['cust_id']) . "', '" . strip_tags($data['customer_mapping']) . "','" . strip_tags($data['designation']) . "', '$user_id', NOW())";
+                $insert_query5 = "INSERT INTO loan_cus_mapping (loan_id,centre_id, cus_id,net_cash, customer_mapping,loan_amount,intrest_amount,principle_amount,due_amount, designation, inserted_login_id, created_on) 
+                              VALUES ('" . strip_tags($data['loan_id']) . "', '" . strip_tags($data['centre_id']) . "','" . strip_tags($data['cust_id']) . "','" . strip_tags($data['net_cash']) . "', '" . strip_tags($data['customer_mapping']) . "','" . strip_tags($data['cus_loan_amount']) . "','" . strip_tags($data['intrest_amt']) . "','" . strip_tags($data['principle_amt']) . "','" . strip_tags($data['due_amount']) . "','" . strip_tags($data['designation']) . "', '$user_id', NOW())";
 
                 $pdo->query($insert_query5);
 

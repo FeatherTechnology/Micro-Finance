@@ -71,7 +71,7 @@ foreach ($result as $row) {
         $year = date('Y', strtotime($due_date));
         $month = date('m', strtotime($due_date));
 
-        $combined_date = date('d-m-Y', strtotime($scheme_day . '-' . $month . '-' . $year));
+        $date_day = date('d-m-Y', strtotime($scheme_day . '-' . $month . '-' . $year));
     } else {
         $daysOfWeek = [
             1 => 'Monday',
@@ -83,12 +83,12 @@ foreach ($result as $row) {
             7 => 'Sunday'
         ];
         $scheme_day = $row['scheme_day_calc'];
-        $combined_date = $daysOfWeek[$scheme_day];
+        $date_day = $daysOfWeek[$scheme_day];
     }
 
 
     $sub_array[] = $sno;
-    $sub_array[] = isset($combined_date) ?  $combined_date : '';
+    $sub_array[] = isset($date_day) ?  $date_day : '';
     $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';
     $sub_array[] = isset($row['loan_date']) ? date('d-m-Y', strtotime($row['loan_date'])) : '';
     $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';

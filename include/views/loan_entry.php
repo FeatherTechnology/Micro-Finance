@@ -12,6 +12,7 @@
                     <tr>
                         <th>S.NO</th>
                         <th>Loan ID</th>
+                        <th>Date / Day</th>
                         <th>Loan Category</th>
                         <th>Centre ID</th>
                         <th>Centre No</th>
@@ -354,6 +355,7 @@
                                         <tr>
                                             <th width="20">S.No.</th>
                                             <th>Customer ID</th>
+                                            <th style="display: none;">Customer Map Id</th>
                                             <th>Customer Name</th>
                                             <th>Customer Data</th>
                                             <th>Aadhar No</th>

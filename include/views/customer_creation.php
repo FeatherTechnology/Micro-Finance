@@ -325,14 +325,14 @@
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="fam_aadhar">Aadhar No</label><span class="text-danger">*</span>
+                                    <label for="fam_aadhar">Aadhar No</label>
                                     <input type="text" class="form-control" name="fam_aadhar" id="fam_aadhar" tabindex="5" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
                                     <input type="hidden" id="addaadhar_id" value='0'>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="fam_mobile">Mobile No</label><span class="text-danger">*</span>
+                                    <label for="fam_mobile">Mobile No</label>
                                     <input type="number" class="form-control" name="fam_mobile" id="fam_mobile" onKeyPress="if(this.value.length==10) return false;" tabindex="6" placeholder="Enter Mobile Number">
                                     <input type="hidden" id="addmobile_id" value='0'>
                                 </div>

@@ -38,15 +38,15 @@ SELECT
     COALESCE(
         SUM(
             CASE
-                -- If due_track is greater than principle_amount * due_period, calculate the interest part
-                WHEN due_summary.due_track > (lcm.intrest_amount * lelc.due_period) THEN
+                -- If due_track is greater than principle_amount , calculate the interest part
+                WHEN due_summary.due_track > (lcm.intrest_amount) THEN
                     CASE
-                        WHEN (due_summary.due_track - lcm.principle_amount) >= (lcm.intrest_amount * lelc.due_period) THEN 
+                        WHEN (due_summary.due_track - (lcm.principle_amount / lelc.due_period)) >= (lcm.intrest_amount) THEN 
                             -- If paidAmount >= interest, add the full interest
-                            (lcm.intrest_amount * lelc.due_period)
+                            (lcm.intrest_amount)
                         ELSE 
                             -- Otherwise, add only paidAmount as interest
-                            (due_summary.due_track - lcm.intrest_amount)
+                            (due_summary.due_track - lcm.intrest_amount / lelc.due_period)
                     END
                 ELSE 0
             END
@@ -80,7 +80,7 @@ $qry = $pdo->query("
         lcm.loan_id,
         lcm.id,
         lelc.total_customer,
-        ((lcm.intrest_amount)* lelc.due_period) AS benefit,
+        (lcm.intrest_amount) AS benefit,
   ROUND((lcm.loan_amount / lelc.loan_amount_calc) * lelc.document_charge_cal) AS doc_charges,
 ROUND((lcm.loan_amount / lelc.loan_amount_calc) * lelc.processing_fees_cal) AS proc_charges
     FROM

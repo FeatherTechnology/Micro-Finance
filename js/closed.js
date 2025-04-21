@@ -155,11 +155,11 @@ $(document).ready(function () {
             })
         },1000)
     });
-    $(document).on('click','.cus_penalty_chart', function(e){
+    $(document).on('click','.cus_savings_chart', function(e){
         e.preventDefault(); // Prevent default anchor behavior
         var cus_mapping_id = $(this).attr('value'); // Capture data-id from the clicked element
-        $('#penalty_model').modal('show'); // Show the modal
-        penaltyChartList(cus_mapping_id); 
+        $('#savings_model').modal('show'); // Show the modal
+        SavingsChartList(cus_mapping_id); 
     });
     $(document).on('click', '.cus_fine_chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
@@ -172,7 +172,7 @@ $(document).ready(function () {
 });
 function closeChartsModal() {
     $('#due_chart_model').modal('hide');
-    $('#penalty_model').modal('hide');
+    $('#savings_model').modal('hide');
     $('#fine_model').modal('hide');
 }
 
@@ -196,15 +196,15 @@ function dueChartList(cus_mapping_id, loan_id) {
 
 }
 //Penalty chart
-function penaltyChartList(cus_mapping_id){
+function SavingsChartList(cus_mapping_id){
     $.ajax({
-        url: 'api/collection_files/get_penalty_chart_list.php',
+        url: 'api/collection_files/get_savings_chart_list.php',
         data: {'cus_mapping_id':cus_mapping_id},
         type:'post',
         cache: false,
         success: function(response){
-            $('#penalty_chart_table_div').empty()
-            $('#penalty_chart_table_div').html(response)
+            $('#savings_chart_table_div').empty()
+            $('#savings_chart_table_div').html(response)
         }
     });//Ajax End.
 }

@@ -11,6 +11,7 @@ $(document).ready(function () {
     }, 1000);
     $(".cus_status_div").hide();
     $("#imgshow").attr("src", "img/avatar.png");
+    $("#multiple_loan").val("0").trigger("change");
   });
   $("#pic").change(function () {
     let pic = $("#pic")[0];
@@ -73,7 +74,7 @@ $(document).ready(function () {
     let fam_mobile = $("#fam_mobile").val();
     let family_id = $("#family_id").val();
 
-    var data = ["fam_name", "fam_relationship", "fam_mobile", "fam_aadhar"];
+    var data = ["fam_name", "fam_relationship"];
 
     var isValid = true;
     data.forEach(function (entry) {

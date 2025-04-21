@@ -23,7 +23,7 @@ $column = array(
     'lelc.net_cash_calc'   
 );
 
-$query = "SELECT lcm.id,cc.first_name, anc.areaname, bc.branch_name , cc.mobile1, lc.loan_category, li.issue_date,lelc.loan_id, lelc.loan_amount, lelc.principal_amount_calc , lelc.intrest_amount_calc, lelc.document_charge_cal, lelc.processing_fees_cal,lelc.loan_date,lelc.due_month,lelc.due_start,lelc.scheme_date,lelc.scheme_day_calc, lelc.total_amount_calc, lelc.net_cash_calc,cnt.centre_id,cnt.centre_no,cnt.centre_name FROM loan_issue li JOIN loan_cus_mapping lcm ON li.loan_id = lcm.loan_id JOIN customer_creation cc ON lcm.cus_id = cc.id JOIN loan_entry_loan_calculation lelc ON li.loan_id = lelc.loan_id JOIN area_name_creation anc ON cc.area = anc.id JOIN loan_category lc ON lc.id = lelc.loan_category JOIN centre_creation cnt ON cnt.centre_id = lelc.centre_id JOIN branch_creation bc ON cnt.branch = bc.id  WHERE li.issue_date BETWEEN '$from_date' AND '$to_date ' group by lelc.loan_id ";
+$query = "SELECT lcm.id, cc.first_name, anc.areaname, bc.branch_name , cc.mobile1, lc.loan_category, li.issue_date, lelc.loan_id, lelc.loan_amount, lelc.principal_amount_calc , lelc.intrest_amount_calc, lelc.document_charge_cal, lelc.processing_fees_cal, lelc.loan_date, lelc.due_month, lelc.due_start, lelc.scheme_date, lelc.scheme_day_calc, lelc.total_amount_calc,  lelc.net_cash_calc, cnt.centre_id, cnt.centre_no, cnt.centre_name FROM loan_issue li JOIN loan_cus_mapping lcm ON li.loan_id = lcm.loan_id JOIN customer_creation cc ON lcm.cus_id = cc.id JOIN loan_entry_loan_calculation lelc ON li.loan_id = lelc.loan_id JOIN area_name_creation anc ON cc.area = anc.id JOIN loan_category lc ON lc.id = lelc.loan_category JOIN centre_creation cnt ON cnt.centre_id = lelc.centre_id JOIN branch_creation bc ON cnt.branch = bc.id  WHERE li.issue_date BETWEEN '$from_date' AND '$to_date ' group by lelc.loan_id ";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];
@@ -78,7 +78,7 @@ foreach ($result as $row) {
         $year = date('Y', strtotime($due_date));
         $month = date('m', strtotime($due_date));
 
-        $combined_date = date('d-m-Y', strtotime($scheme_day . '-' . $month . '-' . $year));
+        $date_day = date('d-m-Y', strtotime($scheme_day . '-' . $month . '-' . $year));
     }
     else{
         $daysOfWeek = [
@@ -91,7 +91,7 @@ foreach ($result as $row) {
             7 => 'Sunday'
         ];
         $scheme_day = $row['scheme_day_calc'];
-        $combined_date= $daysOfWeek[$scheme_day];
+        $date_day= $daysOfWeek[$scheme_day];
     }
  
     $sub_array = array();
@@ -101,7 +101,7 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';
     $sub_array[] = isset($row['centre_no']) ? $row['centre_no'] : '';
     $sub_array[] = isset($row['centre_name']) ? $row['centre_name'] : '';
-    $sub_array[] = isset( $combined_date) ?  $combined_date : '';
+    $sub_array[] = isset( $date_day) ?  $date_day : '';
     $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
     $sub_array[] = isset($row['mobile1']) ? $row['mobile1'] : '';
     $sub_array[] = isset($row['loan_category']) ? $row['loan_category'] : '';

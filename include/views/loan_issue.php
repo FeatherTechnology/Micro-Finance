@@ -7,6 +7,7 @@
                     <tr>
                         <th>S.NO</th>
                         <th>Loan ID</th>
+                        <th>Date / Day</th>
                         <th>Centre ID</th>
                         <th>Centre No</th>
                         <th>Centre Name</th>

@@ -8,7 +8,7 @@ $id=$_POST['id'];
 // Check if loan_id_calc is not empty or invalid
 if ($id != '') {
     // Directly inject the loan_id_calc value into the query (be cautious)
-    $qry = $pdo->query("SELECT gcm.id, gcm.loan_id, cc.cus_id, cc.first_name, gcm.customer_mapping, cc.aadhar_number, cc.mobile1, anc.areaname, gcm.designation,gcm.loan_amount,lelc.loan_status
+    $qry = $pdo->query("SELECT gcm.id, gcm.loan_id, gcm.cus_id as map_id , cc.cus_id, cc.first_name, gcm.customer_mapping, cc.aadhar_number, cc.mobile1, anc.areaname, gcm.designation, gcm.loan_amount, lelc.loan_status, gcm.centre_id
                           FROM loan_cus_mapping gcm 
                           JOIN customer_creation cc ON gcm.cus_id = cc.id 
                           LEFT JOIN area_name_creation anc ON cc.area = anc.id  
@@ -21,7 +21,7 @@ if ($id != '') {
         while ($gcm_info = $qry->fetch(PDO::FETCH_ASSOC)) {
             // Map the customer mapping to its corresponding label
             // Add the delete button action
-            $gcm_info['action'] = "<span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'  loan_id='" . $gcm_info['loan_id'] . "' loan_status='" . $gcm_info['loan_status'] . "'></span>";
+            $gcm_info['action'] = "<span class='icon-trash-2 cusMapDeleteBtn' value='" . $gcm_info['id'] . "'  profile_id='" . $gcm_info['map_id'] . "' loan_id='" . " " . "' loan_status='" . $gcm_info['loan_status'] . "'></span>";
 
             // Add the processed record to the response array
             $cus_map_arr[] = $gcm_info;

@@ -12,6 +12,7 @@
                                 <tr>
                                     <th>S.NO</th>
                                     <th>Loan ID</th>
+                                    <th>Date / Day</th>
                                     <th>Centre ID</th>
                                     <th>Centre No</th>
                                     <th>Centre Name</th>
@@ -88,17 +89,10 @@
                                         <input type="hidden" class="form-control" readonly id="payableAmount" name="payableAmount">
                                     </div>
                                 </div>
-
-                                <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                    <div class="form-group">
-                                        <label for="disabledInput">Penalty</label>&nbsp;<span class="text-danger ">*</span>
-                                        <input type="text" class="form-control" readonly id="penalty" name="penalty" value='' tabindex='8'>
-                                    </div>
-                                </div> -->
                                 <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                     <div class="form-group">
                                         <label for="disabledInput">Fine</label>&nbsp;<span class="text-danger ">*</span>
-                                        <input type="text" class="form-control" readonly id="fine_charge" name="fine_charge" value='' tabindex='9'>
+                                        <input type="text" class="form-control" readonly id="fine_charge" name="fine_charge" value='' tabindex='7'>
                                     </div>
                                 </div>
 
@@ -130,7 +124,6 @@
                                         <th>Due Amount</th>
                                         <th>Pending</th>
                                         <th>Payable</th>
-                                        <!-- <th>Penalty</th> -->
                                         <th>Fine</th>
                                         <th>Collection Date</th>
                                         <th>Collection Due Amount</th>
@@ -153,7 +146,7 @@
             <!-- Submit Button Start -->
             <div class="col-md-12 coll_details">
                 <div class="text-right">
-                    <button type="submit" name="submit_collection" id="submit_collection" class="btn btn-primary" value="Submit" tabindex='10'><span class="icon-check"></span>&nbsp;Submit</button>
+                    <button type="submit" name="submit_collection" id="submit_collection" class="btn btn-primary" value="Submit" tabindex='8'><span class="icon-check"></span>&nbsp;Submit</button>
                 </div>
             </div>
             <!-- Submit Button End -->
@@ -268,25 +261,23 @@
     </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////// Fine Add Modal END /////////////////////////////////////////////////////////////-->
-<!-- ////////////////////////////////////////////////////////////////// Penalty Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
-<div class="modal fade" id="penalty_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<!-- ////////////////////////////////////////////////////////////////// Savings Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
+<div class="modal fade" id="Savings_chart_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content" style="background-color: white">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Penalty Chart</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Savings Chart</h5>
                 <button type="button" class="close" data-dismiss="modal" tabindex="1" aria-label="Close" onclick="closeChartsModal()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body overflow-x-cls" id="penalty_chart_table_div">
+            <div class="modal-body overflow-x-cls" id="savings_chart_table_div">
                 <table class="table custom-table">
                     <thead>
                         <th>S No.</th>
-                        <th>Penalty Date</th>
-                        <th>Penalty</th>
-                        <th>Paid Date</th>
-                        <th>Paid Amount</th>
-                        <th>Balance Amount</th>
+                        <th>Date</th>
+                        <th>Savings</th>
+                        <th>Total Savings</th>
                     </thead>
                 </table>
             </div>
@@ -297,7 +288,7 @@
         </div>
     </div>
 </div>
-<!-- /////////////////////////////////////////////////////////////////// Penalty Chart Modal END ////////////////////////////////////////////////////////////////////// -->
+<!-- /////////////////////////////////////////////////////////////////// Savings Chart Modal END ////////////////////////////////////////////////////////////////////// -->
 <!-- /////////////////////////////////////////////////////////////////// Fine Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="fine_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg " role="document">

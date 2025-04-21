@@ -43,7 +43,7 @@ foreach ($result as $row) {
             // If loan_status is 5 or 6 and loan_id > 9, mark as can_show
             if (in_array($loan_row['loan_status'], [5, 6]) || $loan_row['loan_status'] >= 9) {
                 $can_show = true;
-                break; // No need to check further once the condition is met
+                // break; // No need to check further once the condition is met
             }
 
             // If loan_status is in [1, 2, 3, 4, 7, 8, 9], mark as not_show

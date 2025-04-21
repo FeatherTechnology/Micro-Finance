@@ -51,9 +51,9 @@ $(document).ready(function () {
                 let individualAmount = row.find('td:nth-child(4)').text().replace(/,/g, '');
                 let pendingAmount = row.find('td:nth-child(5)').text().replace(/,/g, '');
                 let payableAmount = row.find('td:nth-child(6)').text().replace(/,/g, '');
-                let penaltyAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
-                let fineChargeAmount = row.find('td:nth-child(8)').text().replace(/,/g, '');
-                let collectionDate = row.find('td:nth-child(9)').text()
+                // let penaltyAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
+                let fineChargeAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
+                let collectionDate = row.find('td:nth-child(8)').text()
                 let collectionDue = parseFloat(row.find('input.collection_due').val()) || 0;
                 let collectionsavings = parseFloat(row.find('input.collection_savings').val()) || 0;
                 let collectionFine = parseFloat(row.find('input.collection_fine').val()) || 0;
@@ -70,7 +70,7 @@ $(document).ready(function () {
                     individual_amount: individualAmount,
                     pending: pendingAmount,
                     payable: payableAmount,
-                    penalty: penaltyAmount,
+                    // penalty: penaltyAmount,
                     fine_charge: fineChargeAmount,
                     collection_date: collectionDate,
                     collection_due: collectionDue,
@@ -176,10 +176,10 @@ console.log("collDate",collectionData);
 
     //////////////////////////////////////////////Fine End//////////////////////////////////////////////
     ////////////////////////////////////////////Penalty Chart////////////////////////
-    $(document).on('click', '.penalty-chart', function (e) {
+    $(document).on('click', '.Savings-chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
         var cus_mapping_id = $(this).attr('data-id'); // Capture data-id from the clicked element
-        $('#penalty_model').modal('show'); // Show the modal
+        $('#Savings_chart_model').modal('show'); // Show the modal
         penaltyChartList(cus_mapping_id);
     });
     ///////////////////////////////////////////////Penalty cahrt End///////////////////////////////////////////
@@ -495,7 +495,7 @@ function collectionLoanDetails(loan_id) {
 }
 function closeChartsModal() {
     $('#due_chart_model').modal('hide');
-    $('#penalty_model').modal('hide');
+    $('#Savings_chart_model').modal('hide');
     $('#fine_model').modal('hide');
 }
 //Fine Chart List
@@ -514,13 +514,13 @@ function fineChartList(cus_mapping_id) {
 //Penalty chart
 function penaltyChartList(cus_mapping_id) {
     $.ajax({
-        url: 'api/collection_files/get_penalty_chart_list.php',
+        url: 'api/collection_files/get_savings_chart_list.php',
         data: { 'cus_mapping_id': cus_mapping_id },
         type: 'post',
         cache: false,
         success: function (response) {
-            $('#penalty_chart_table_div').empty()
-            $('#penalty_chart_table_div').html(response)
+            $('#savings_chart_table_div').empty()
+            $('#savings_chart_table_div').html(response)
         }
     });//Ajax End.
 }
