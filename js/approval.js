@@ -47,6 +47,7 @@ $("#Centre_id").change(function () {
   if ($(this).val() != "") {
       getCentreDetails($(this).val());
       getCentreMapTable($(this).val())
+      getRepresentInfoTable($(this).val());
       $("#Centre_id_edit").val($(this).val());
   } else {
       $("#centre_no").val("");
@@ -1483,6 +1484,7 @@ function loanCalculationEdit(id) {
           $("#maturity_date_calc").val(response[0].due_end);
           $("#total_cus").trigger("blur");
           getCusMapTable();
+          getRepresentInfoTable(response[0].centre_id)
         }, 1000);
       }
     },
@@ -1507,7 +1509,7 @@ function getCentrelimit(centre_id) {
 function getCentreId() {
   $.post("api/loan_entry_files/get_centre_id.php", function (response) {
       let appendLoanCatOption = "";
-      appendLoanCatOption += '<option value="">Select Centre ID</option>';
+      appendLoanCatOption += '<option value=" ">Select Centre ID</option>';
       // Get the Centre_id_edit value to pre-select the correct option in edit mode
       let Centre_id_edit = $("#Centre_id_edit").val();
       let centreEditOptionAdded = false;
@@ -1537,4 +1539,19 @@ function getCentreId() {
       // Empty the dropdown and append the options
       $("#Centre_id").empty().append(appendLoanCatOption);
   }, "json");
+}
+function getRepresentInfoTable(centre_id) {
+  $.post('api/centre_creation_files/represent_creation_list.php', { centre_id }, function (response) {
+      var columnMapping = [
+          'sno',
+          'rep_name',
+          'rep_aadhar',
+          'rep_occupation',
+          'rep_mobile',
+          'designation',
+          'remark'
+      ];
+      appendDataToTable('#rep_info_table', response, columnMapping);
+      setdtable('#rep_info_table');
+  }, 'json')
 }

@@ -16,7 +16,6 @@
                         <th>Aadhar Number</th>
                         <th>Mobile No</th>
                         <th>Area</th>
-                        <th>Customer Data</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -40,18 +39,18 @@
                         <div class="row">
                             <div class="col-8">
                                 <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="aadhar_number">Aadhar No</label><span class="text-danger">*</span>
+                                            <input type="text" class="form-control" name="aadhar_number" id="aadhar_number" tabindex="2" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
+                                            <input type="hidden" id="addaadhar_id" value='0'>
+                                        </div>
+                                    </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="cus_id"> Customer ID</label>
                                             <input type="text" class="form-control" id="cus_id" name="cus_id" placeholder="Enter Customer ID" tabindex="1" readonly>
                                             <input type="hidden" id="cus_id_upd" name="cus_id_upd">
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <label for="aadhar_number">Aadhar No</label><span class="text-danger">*</span>
-                                            <input type="text" class="form-control" name="aadhar_number" id="aadhar_number" tabindex="2" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
-                                            <input type="hidden" id="addaadhar_id" value='0'>
                                         </div>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">

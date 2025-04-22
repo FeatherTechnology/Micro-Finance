@@ -18,6 +18,7 @@ $(document).on("click", "#add_loan,#back_btn", function () {
     getLoanCategoryName();
     clearLoanCalcForm();
     getLoanEntryTable();
+    getRepresentInfoTable("")
     $('#profit_type_calc_scheme').hide();
 });
 $(document).on('click', '.edit-loan-entry', function () {
@@ -51,6 +52,7 @@ $("#Centre_id").change(function () {
         getCentreDetails($(this).val());
         getCentreMapTable($(this).val())
         $("#Centre_id_edit").val($(this).val());
+        getRepresentInfoTable($(this).val());
     } else {
         $("#centre_no").val("");
         $("#centre_name").val("");
@@ -1147,7 +1149,8 @@ function loanCalculationEdit(id) {
                 $('#maturity_date_calc').val(response[0].due_end);
                 $('#total_cus').trigger('blur');
                 // $('#loan_amount_per_cus').val(response[0].loan_amt_per_cus);
-                getCusMapTable()
+                getCusMapTable();
+                getRepresentInfoTable(response[0].centre_id)
             }, 2000);
         }
     }, 'json');
@@ -1155,7 +1158,7 @@ function loanCalculationEdit(id) {
 function getCentreId() {
     $.post("api/loan_entry_files/get_centre_id.php", function (response) {
         let appendLoanCatOption = "";
-        appendLoanCatOption += '<option value="">Select Centre ID</option>';
+        appendLoanCatOption += '<option value=" ">Select Centre ID</option>';
 
         // Get the Centre_id_edit value to pre-select the correct option in edit mode
         let Centre_id_edit = $("#Centre_id_edit").val();
@@ -1205,4 +1208,21 @@ function moveToNext(loan_id) {
         }
     }, 'json');
 }
+
+function getRepresentInfoTable(centre_id) {
+    $.post('api/centre_creation_files/represent_creation_list.php', { centre_id }, function (response) {
+        var columnMapping = [
+            'sno',
+            'rep_name',
+            'rep_aadhar',
+            'rep_occupation',
+            'rep_mobile',
+            'designation',
+            'remark'
+        ];
+        appendDataToTable('#rep_info_table', response, columnMapping);
+        setdtable('#rep_info_table');
+    }, 'json')
+}
+
 //////////////////////////////////////////////////////////////// Loan Calculation END //////////////////////////////////////////////////////////////////////

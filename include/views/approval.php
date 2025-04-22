@@ -122,7 +122,7 @@
                                     <label for="Centre_id"> Centre ID</label><span class="text-danger">*</span>
                                     <input type="hidden" id="Centre_id_edit">
                                     <select class="form-control" id="Centre_id" name="Centre_id" tabindex="2">
-                                        <option value="">Select Centre ID</option>
+                                        <option value=" ">Select Centre ID</option>
                                     </select>
                                 </div>
                             </div>
@@ -357,6 +357,37 @@
                     </div>
                 </div>
                 <!--- -------------------------------------- Collection Info END ------------------------------- -->
+                 <!--- -------------------------------------- Reference Info START ------------------------------- -->
+
+                 <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Reference Info
+                            <!-- <button type="button" class="btn btn-primary" id="add_rep" name="add_rep" data-toggle="modal" data-target="#add_rep_info_modal" onclick="getRepresentTable()" style="padding: 5px 35px; float: right;" tabindex='9'><span class="icon-add"></span></button> -->
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="form-group">
+                                    <table id="rep_info_table" class="table custom-table">
+                                        <thead>
+                                            <tr>
+                                                <th width="20">S.NO</th>
+                                                <th>Name</th>
+                                                <th>Aadhar No</th>
+                                                <th>Occupation</th>
+                                                <th>Mobile No</th>
+                                                <th>Designation</th>
+                                                <th>Remark</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!--- -------------------------------------- Other Info START ------------------------------- -->
                 <div class="card">

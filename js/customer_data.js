@@ -448,6 +448,53 @@ $(document).on("click", "#cancel_btn", function () {
 
 })
 
+$(document).on("click", "#kycInfoBtn", function () {
+  let lable = $("#kyc_lable").val();
+  let Details = $("#kyc_details").val();
+  let upload = $("#upload")[0].files[0];
+  let upload_files = $("#upload_files").val();
+  let KycID = $("#kycID").val();
+  var isValid = true;
+  if (lable === "") {
+    isValid = false;
+    $("#kyc_lable").css("border", "1px solid #ff0000");
+    $("#lableCheck").show();
+  } else if (Details === "") {
+    isValid = false;
+    $("#kyc_details").css("border", "1px solid #ff0000");
+    $("#detailCheck").show();
+  } else {
+    $("#doc_name").css("border", "1px solid #cecece");
+  }
+  if (upload === undefined && upload_files === "") {
+    let isUploadValid = validateField("", "upload");
+    if (!isUploadValid) {
+      isValid = false;
+    } else {
+      $("#upload").css("border", "1px solid #cecece");
+    }
+  } else {
+    $("#upload").css("border", "1px solid #cecece");
+  }
+  if (isValid) {
+    let cus_id = $("#cus_id").val();
+    var formData = new FormData();
+    formData.append("lable", lable);
+    formData.append("Details", Details);
+    formData.append("upload", upload);
+    formData.append("cus_id", cus_id);
+    formData.append("kycID", KycID);
+    formData.append("upload_files", upload_files);
+
+    submitkyc(formData)
+      .then(() => {
+        kyctable(cus_id);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+});
 
 });
 
@@ -492,6 +539,7 @@ function getCustomerDetails(id) {
       setTimeout(() => {
         $("#area").trigger("change");
         getFamilyInfoTable();
+        kyctable();
       }, 1000);
 
       if (response[0].cus_data == "Existing") {
@@ -554,6 +602,65 @@ function getFamilyInfoTable() {
     },
     "json"
   );
+}
+function kyctable() {
+  let cus_id = $("#cus_id").val();
+  $.post(
+    "api/customer_creation_files/getkyc.php",
+    { cus_id },
+    function (response) {
+      let columnMapping = ["sno", "label", "details", "upload", "action"];
+      let columnMapping1 = ["sno", "label", "details", "upload"];
+      appendDataToTable(".modalTable", response, columnMapping);
+      appendDataToTable(".modalTable_list", response, columnMapping1);
+    },
+    "json"
+  );
+}
+function resetkycinfo() {
+  let cus_id = $("#cus_id").val();
+  kyctable(cus_id);
+  $("#kyc_lable").val("");
+  $("#kyc_details").val("");
+  $("#upload").val("");
+  $("#kycID").val("");
+  $("#upload_files").val("");
+}
+function submitkyc(formData) {
+  let cus_id = $("#cus_id").val();
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "api/customer_creation_files/submit_kyc.php",
+      type: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      cache: false,
+      success: function (response) {
+        if (response === 1) {
+          $("#kyc_lable").val("");
+          $("#kyc_details").val("");
+          $("#upload").val("");
+          $("#upload_files").val("");
+          $("#kycID").val("");
+          swalSuccess("Success", "KYC Added Successfully!");
+          resolve(response);
+        } else if (response === 2) {
+          $("#kyc_lable").val("");
+          $("#kyc_details").val("");
+          $("#upload").val("");
+          $("#kycID").val("");
+          $("#upload_files").val("");
+          swalSuccess("Success", "KYC Updated Successfully!");
+          resolve(response);
+        } else {
+          alert("error");
+          reject(error);
+        }
+      },
+    });
+  });
 }
 function checkAdditionalRenewal(cus_id) {
   $.post(

@@ -274,7 +274,8 @@ function getBranchList() {
         $('#branch').empty().append(appendBranchOption);
 
     }, 'json');
-}function getRepresentInfoTable() {
+}
+function getRepresentInfoTable() {
     let centre_id = $('#centre_id').val()
     $.post('api/centre_creation_files/represent_creation_list.php', { centre_id }, function (response) {
         var columnMapping = [
