@@ -79,7 +79,7 @@ $(document).ready(function () {
                     total_collection: totalCollection
                 });
             });
-console.log("collDate",collectionData);
+
             // Check if there's any valid data to submit
             if (collectionData.length === 0) {
                 swalError('Warning', 'Please fill in the total collection.');
@@ -268,11 +268,11 @@ console.log("collDate",collectionData);
 });
 
 function moverToError(id,loan_id,action) {
-    console.log("loan idddd",loan_id);
+
     $.post('api/collection_files/move_to_error.php', { id: id, action: action}, function (response) {
     if(response === 0){
     swalSuccess('Success', 'Customer Moved successfully.');
-    console.log("loan id   ",loan_id)
+
     collectionCustomerList(loan_id);
     }else{
         swalError('Warning', "Not Moved to Error");

@@ -37,7 +37,6 @@ $(document).ready(function () {
             submitCustomer();
         } else {
             let loan_id=$("#loan_id").val();
-            console.log("loan id"+loan_id);
             let sub_status=$("#sub_status").val();
             let centre_id=$("#centre_id").val();
             let remarks=$("#centre_remarks").val();
@@ -45,7 +44,6 @@ $(document).ready(function () {
             $('#closed_customer_table tbody tr').each(function() {
                 let selectBox = $(this).find('.sub_status'); 
                 let selectedValue = selectBox.val(); 
-                console.log('Row Select Value:', selectedValue); 
                 if (selectedValue === "") {
                     allValid = false; 
                     selectBox.addClass('is-invalid');
@@ -314,7 +312,6 @@ function getCustomerList(loan_id){
             $('#closed_customer_table tbody tr').each(function() {
                 // Get the text content of the specific <td> by class
                 let status = $(this).find(`td.status-column`).text().trim();
-                console.log('Column content:'+ status); // Debugging output
             
                 if (status != 'Closed') { // Check if it's "Closed"
                     allClosed = false; 

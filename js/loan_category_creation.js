@@ -42,7 +42,6 @@ $(document).ready(function () {
     });
         $('input[name=doc_charge_type]').click(function () {
         let Value = $(this).val(); 
-        console.log("Selected Value: " + Value);
         
         let type = (Value === 'percentage') ? '%' : '₹'; 
         $('.document-span-val').text(type); 

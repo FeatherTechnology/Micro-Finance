@@ -793,7 +793,6 @@ function resetBlncSheet() {
     $('#IDE_name_list').val('');
 }
 function Savingsvalidation(data){
-    console.log("ddd",data);
     for(key in data){
         if(data[key] =='' || data[key] ==null || data[key] ==undefined){
             return false;

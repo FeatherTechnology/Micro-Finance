@@ -359,8 +359,7 @@ $(document).ready(function () {
     event.preventDefault();
         
     $.getJSON('http://ip-api.com/json', function (data) {
-        console.log("Latitude:", data.lat);
-        console.log("Longitude:", data.lon);
+     
         $('#latlong').val(data.lat + ',' + data.lon);
     });
   });

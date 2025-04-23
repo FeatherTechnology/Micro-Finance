@@ -16,7 +16,7 @@ $column = array(
     'lelc.loan_status', 
     'lelc.id'
 );
-$query = "SELECT lelc.id, lelc.loan_id, lelc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, cc.centre_limit, bc.branch_name ,lc.loan_category, lelc.loan_status, lelc.due_month, lelc.due_start, lelc.scheme_date, lelc.scheme_day_calc
+$query = "SELECT lelc.id, lelc.loan_id, lelc.loan_amount, lelc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, cc.centre_limit, bc.branch_name ,lc.loan_category, lelc.loan_status, lelc.due_month, lelc.due_start, lelc.scheme_date, lelc.scheme_day_calc
  FROM loan_entry_loan_calculation lelc 
  LEFT JOIN loan_category lc ON lc.id= lelc.loan_category  
  LEFT JOIN centre_creation cc ON lelc.centre_id = cc.centre_id
@@ -102,7 +102,7 @@ foreach ($result as $row) {
    <div class='dropdown-content'>";
     if ($row['loan_status'] == '3') {
         $action .= "<a href='#' class='approval-edit' value='" . $row['id'] . "' centre_id='" . $row['centre_id'] . "' title='Edit details'>Edit</a>";
-        $action .= "<a href='#' class='approval-approve' value='" . $row['id'] . "'  centre_limit='" . $row['centre_limit'] . "' title='Approve'>Approve</a>";
+        $action .= "<a href='#' class='approval-approve' value='" . $row['id'] . "'  centre_limit='" . $row['centre_limit'] . "' loan_amount='" . $row['loan_amount'] . "' title='Approve'>Approve</a>";
         $action .= "<a href='#' class='approval-cancel' value='" . $row['id'] . "' title='Cancel'>Cancel</a>";
         $action .= "<a href='#' class='approval-revoke' value='" . $row['id'] . "' title='Revoke'>Revoke</a>";
     }

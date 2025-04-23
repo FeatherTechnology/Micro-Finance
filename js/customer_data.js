@@ -18,7 +18,6 @@ $(document).ready(function () {
 
     if (customerDataType == "customer_info") {
       let cus_id = $("#cus_id_upd").val();
-      console.log("cus_map_id"+cus_id);
       $(".customer_info_table_content").show();
       $(".centre_table_content").hide();
       $(".document_table_content").hide();
@@ -26,7 +25,6 @@ $(document).ready(function () {
       getCustomerDetails(cus_id);
     } else if (customerDataType == "centre_summary") {
       let cus_id = $("#cus_id").val();
-      console.log("cus_id  in centre_cummary "+cus_id);
       $(".customer_info_table_content").hide();
       $(".centre_table_content").show();
       $(".document_table_content").hide();
@@ -295,7 +293,6 @@ $(document).ready(function () {
     }
 })
 $(document).on("click", ".addDocument", function () {
-  console.log("kkkkk");
   event.preventDefault();
   var cus_id = $(this).attr("value");
   $('#documentation_form').show();
@@ -443,7 +440,6 @@ $(document).on('click','.closed_due_chart', function(){
 });
 
 $(document).on("click", "#cancel_btn", function () {
-  console.log("hlll");
   $("#documentation").trigger("click");
 
 })
@@ -495,7 +491,42 @@ $(document).on("click", "#kycInfoBtn", function () {
       });
   }
 });
+$(document).on("click", ".kycedit", function () {
+  var id = $(this).attr("value");
+  $.post(
+    "api/customer_creation_files/get_kyc_details.php",
+    { id: id },
+    function (response) {
+      if (response) {
+        $("#kycID").val(response[0].id);
+        $("#kyc_lable").val(response[0].label);
+        $("#kyc_details").val(response[0].details);
+        $("#upload_files").val(response[0].upload);
+      }
+    },
+    "json"
+  );
+});
 
+$(document).on("click", ".kycdelet", function () {
+  var id = $(this).attr("value");
+  let cus_id = $("#cus_id").val();
+
+  swalConfirm(
+    "Delete",
+    "Do you want to Delete this KYC?",
+    (id) => {
+      deletekyc(id)
+        .then(() => {
+          kyctable(cus_id); // Run only after deletekyc completes
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    },
+    id
+  );
+});
 });
 
 function getcustomerlist() {
@@ -617,6 +648,24 @@ function kyctable() {
     "json"
   );
 }
+function deletekyc(id) {
+  return new Promise((resolve, reject) => {
+    $.post(
+      "api/customer_creation_files/delet_kyc_details.php",
+      { id },
+      function (response) {
+        if (response === 1) {
+          swalSuccess("Success", "KYC Deleted Successfully");
+          resolve(response); // Resolve the Promise on success
+        } else {
+          swalError("Warning", "Error occurred while deleting KYC.");
+          reject("Error occurred while deleting KYC");
+        }
+      },
+      "json"
+    );
+  });
+}
 function resetkycinfo() {
   let cus_id = $("#cus_id").val();
   kyctable(cus_id);
@@ -713,7 +762,6 @@ function getCentreClosedTable(cus_id) {
 // documentation function 
 function addDocumentation(){
     let cus_id = $("#cus_id").val();
-    console.log("customer id "+cus_id);
     $.post(
       "api/customer_data_files/get_loan_details.php",
       { cus_id: cus_id },
@@ -749,9 +797,6 @@ function getDocumentDetails(cus_id){
         "action"
     ]
     appendDataToTable('#document_info', response, docInfoColumn);
-    // setdtable('#document_info')
-    console.log("helooooooooo");
-    console.log("response"+response)
     $('#documentation_form input').each(function () {
         var id = $(this).attr('id');
         if (id !== 'doc_id' && id !== 'loan_id') {

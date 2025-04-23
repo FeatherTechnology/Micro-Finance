@@ -564,6 +564,7 @@ $('#cus_mapping_table tbody tr').each(function () {
   });
   $(document).on("click", ".approval-approve", function () {
     let loan_id = $(this).attr("value");
+    let loan_amount = $(this).attr("loan_amount");
     let centre_limit = $(this).attr("centre_limit");
     let total_cus = $("#total_cus").val();
   
@@ -572,7 +573,11 @@ $('#cus_mapping_table tbody tr').each(function () {
          // Prevent approval and show an alert or message
          swalError('Warning', 'Kindly Enter the centre Limit');
          return; // Stop further execution
-     }
+     }else if(loan_amount > centre_limit){
+      swalError('Warning', 'Centre limit is less than the loan amount. Please update either the centre limit or the loan amount.');
+      return; 
+    }
+    
 validationForApproval(loan_id);
 
   });

@@ -3,7 +3,6 @@ $(document).ready(function () {
     let branch_id = $(this).val();
     $("#branch_hidden_id").val(branch_id);
 
-    console.log(branch_id);
     setTimeout(() => {
     getLoanEntryCounts(branch_id);
     getApprovalCounts(branch_id);
