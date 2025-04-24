@@ -40,7 +40,7 @@ $(document).ready(function () {
             let loanDueAmnt = $('#due_amt').val().replace(/,/g, '');
             let loanPendingAmnt = $('#pending_amt').val().replace(/,/g, '');
             let loanPayableAmnt = $('#payable_amt').val().replace(/,/g, '');
-            let loanPenaltyAmnt = $('#penalty').val().replace(/,/g, ''); // Round off payable amount
+            // let loanPenaltyAmnt = $('#penalty').val().replace(/,/g, ''); // Round off payable amount
             let loanFineAmnt = $('#fine_charge').val().replace(/,/g, ''); // Round off chit amount
             // Loop through each row in the customer list table
             $('#customer_list_table tbody tr').each(function () {
@@ -51,11 +51,11 @@ $(document).ready(function () {
                 let individualAmount = row.find('td:nth-child(4)').text().replace(/,/g, '');
                 let pendingAmount = row.find('td:nth-child(5)').text().replace(/,/g, '');
                 let payableAmount = row.find('td:nth-child(6)').text().replace(/,/g, '');
-                let penaltyAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
-                let fineChargeAmount = row.find('td:nth-child(8)').text().replace(/,/g, '');
-                let collectionDate = row.find('td:nth-child(9)').text()
+                // let penaltyAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
+                let fineChargeAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
+                let collectionDate = row.find('td:nth-child(8)').text()
                 let collectionDue = parseFloat(row.find('input.collection_due').val()) || 0;
-                let collectionPenalty = parseFloat(row.find('input.collection_penalty').val()) || 0;
+                let collectionsavings = parseFloat(row.find('input.collection_savings').val()) || 0;
                 let collectionFine = parseFloat(row.find('input.collection_fine').val()) || 0;
                 let totalCollection = parseFloat(row.find('input.total_collection').val()) || 0;
 
@@ -70,11 +70,11 @@ $(document).ready(function () {
                     individual_amount: individualAmount,
                     pending: pendingAmount,
                     payable: payableAmount,
-                    penalty: penaltyAmount,
+                    // penalty: penaltyAmount,
                     fine_charge: fineChargeAmount,
                     collection_date: collectionDate,
                     collection_due: collectionDue,
-                    collection_penalty: collectionPenalty,
+                    collection_savings: collectionsavings,
                     collection_fine: collectionFine,
                     total_collection: totalCollection
                 });
@@ -101,7 +101,7 @@ $(document).ready(function () {
                     loanDueAmnt: loanDueAmnt,
                     loanPayableAmnt: loanPayableAmnt,
                     loanPendingAmnt: loanPendingAmnt,
-                    loanPenaltyAmnt: loanPenaltyAmnt,
+                    // loanPenaltyAmnt: loanPenaltyAmnt,
                     loanFineAmnt: loanFineAmnt,
                     collectionData: collectionData
                 },
@@ -176,10 +176,10 @@ $(document).ready(function () {
 
     //////////////////////////////////////////////Fine End//////////////////////////////////////////////
     ////////////////////////////////////////////Penalty Chart////////////////////////
-    $(document).on('click', '.penalty-chart', function (e) {
+    $(document).on('click', '.Savings-chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
         var cus_mapping_id = $(this).attr('data-id'); // Capture data-id from the clicked element
-        $('#penalty_model').modal('show'); // Show the modal
+        $('#Savings_chart_model').modal('show'); // Show the modal
         penaltyChartList(cus_mapping_id);
     });
     ///////////////////////////////////////////////Penalty cahrt End///////////////////////////////////////////
@@ -268,11 +268,11 @@ $(document).ready(function () {
 });
 
 function moverToError(id,loan_id,action) {
-    console.log("loan idddd",loan_id);
+
     $.post('api/collection_files/move_to_error.php', { id: id, action: action}, function (response) {
     if(response === 0){
     swalSuccess('Success', 'Customer Moved successfully.');
-    console.log("loan id   ",loan_id)
+
     collectionCustomerList(loan_id);
     }else{
         swalError('Warning', "Not Moved to Error");
@@ -357,14 +357,14 @@ function collectionCustomerList(loan_id) {
                 var individual_amount = item.individual_amount ? item.individual_amount : 0;
                 var pending = item.pending ? item.pending : 0;
                 var payable = item.payable ? item.payable : 0;
-                var penalty = item.penalty ? item.penalty : 0;
+                // var penalty = item.penalty ? item.penalty : 0;
                 var fine_charge = item.fine_charge ? item.fine_charge : 0;
                 var customer_amnt = item.total_cus_amnt ? item.total_cus_amnt : '';
                 var dropdownContent = "<div class='dropdown'>" +
                     "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +
                     "<a href='#' class='due-chart' data-id='" + item.id + "'>Due Chart</a>" +
-                    "<a href='#' class='penalty-chart' data-id='" + item.id + "'>Penalty Chart</a>" +
+                    "<a href='#' class='Savings-chart' data-id='" + item.id + "'>Savings Chart</a>" +
                     "<a href='#' class='fine-chart' data-id='" + item.id + "'>Fine Chart</a>" +
                     "</div>" +
                     "</div>";
@@ -390,13 +390,13 @@ function collectionCustomerList(loan_id) {
                     '<td>' + moneyFormatIndia(individual_amount) + '</td>' +
                     '<td>' + moneyFormatIndia(pending) + '</td>' +
                     '<td>' + moneyFormatIndia(payable) + '</td>' +
-                    '<td>' + moneyFormatIndia(penalty) + '</td>' +
+                    // '<td>' + moneyFormatIndia(penalty) + '</td>' +
                     '<td>' + moneyFormatIndia(fine_charge) + '</td>' +
                     '<td>' + formattedDate + '</td>' +
                     // Input fields for collection due amount, penalty, and fine
 
                     '<td><input type="number" class="form-control collection_due" data-id="' + item.id + '" data-individual-amount="' + item.total_cus_amnt + '" value="" ' + isReadOnly + '></td>' +
-                    '<td><input type="number" class="form-control collection_penalty" data-id="' + item.id + '" data-penalty-amount="' + item.penalty + '" value=" " ' + isReadOnly + '></td>' +
+                    '<td><input type="number" class="form-control collection_savings" data-id="' + item.id + '"  value=" " ' + isReadOnly + '></td>' +
                     '<td><input type="number" class="form-control collection_fine" data-id="' + item.id + '" data-fine-amount="' + item.fine_charge + '" value=" " ' + isReadOnly + '></td>' +
                     // Calculated total collection
                     '<td><input type="number" class="form-control total_collection" data-id="' + item.id + '" value=" " readonly></td>' +
@@ -415,20 +415,20 @@ function collectionCustomerList(loan_id) {
             setDropdownScripts();
        
             // Bind input changes for calculating Total Collection
-            $('input.collection_due, input.collection_penalty, input.collection_fine').on('input', function () {
+            $('input.collection_due, input.collection_savings, input.collection_fine').on('input', function () {
                 var rowId = $(this).data('id');  // Use item.id here instead of index
                 var collectionDue = parseFloat($('input.collection_due[data-id="' + rowId + '"]').val()) || 0;
-                var collectionPenalty = parseFloat($('input.collection_penalty[data-id="' + rowId + '"]').val()) || 0;
+                var collectionSavings = parseFloat($('input.collection_savings[data-id="' + rowId + '"]').val()) || 0;
                 var collectionFine = parseFloat($('input.collection_fine[data-id="' + rowId + '"]').val()) || 0;
 
                 // Calculate Total Collection and update it
-                var totalCollection = collectionDue + collectionPenalty + collectionFine;
+                var totalCollection = collectionDue + collectionSavings + collectionFine;
                 $('input.total_collection[data-id="' + rowId + '"]').val(totalCollection);
 
                 // Validation: Ensure collection_due is not greater than individual_amount
                 var payable = parseFloat($('input.collection_due[data-id="' + rowId + '"]').data('individual-amount'));
                 var overPay = moneyFormatIndia(payable);
-                var penaltyAmount = parseFloat($('input.collection_penalty[data-id="' + rowId + '"]').data('penalty-amount'));
+                // var penaltyAmount = parseFloat($('input.collection_penalty[data-id="' + rowId + '"]').data('penalty-amount'));
                 var fineAmount = parseFloat($('input.collection_fine[data-id="' + rowId + '"]').data('fine-amount'));
 
                 if (collectionDue > payable) {
@@ -439,13 +439,13 @@ function collectionCustomerList(loan_id) {
                     $('input.total_collection[data-id="' + rowId + '"]').val("");
                 }
 
-                if (collectionPenalty > penaltyAmount) {
-                    // Show warning using Swal or any other method
-                    swalError('Warning', "Penalty Exceeds Penalty Amount");
-                    // Optionally, reset the collection_due field to its previous value or clear it
-                    $('input.collection_penalty[data-id="' + rowId + '"]').val("");
-                    $('input.total_collection[data-id="' + rowId + '"]').val("");
-                }
+                // if (collectionPenalty > penaltyAmount) {
+                //     // Show warning using Swal or any other method
+                //     swalError('Warning', "Penalty Exceeds Penalty Amount");
+                //     // Optionally, reset the collection_due field to its previous value or clear it
+                //     $('input.collection_penalty[data-id="' + rowId + '"]').val("");
+                //     $('input.total_collection[data-id="' + rowId + '"]').val("");
+                // }
                 if (collectionFine > fineAmount) {
                     // Show warning using Swal or any other method
                     swalError('Warning', "Fine Exceeds Fine Amount");
@@ -478,7 +478,7 @@ function collectionLoanDetails(loan_id) {
                 $('#due_amt').val(moneyFormatIndia(response.due_amount_calc));
                 $('#pending_amt').val(moneyFormatIndia(response.total_pending));
                 $('#payable_amt').val(moneyFormatIndia(response.total_payable));
-                $('#penalty').val(moneyFormatIndia(response.penalty));
+                // $('#penalty').val(moneyFormatIndia(response.penalty));
                 $('#fine_charge').val(moneyFormatIndia(response.fine_charge));
 
             } else {
@@ -495,7 +495,7 @@ function collectionLoanDetails(loan_id) {
 }
 function closeChartsModal() {
     $('#due_chart_model').modal('hide');
-    $('#penalty_model').modal('hide');
+    $('#Savings_chart_model').modal('hide');
     $('#fine_model').modal('hide');
 }
 //Fine Chart List
@@ -514,13 +514,13 @@ function fineChartList(cus_mapping_id) {
 //Penalty chart
 function penaltyChartList(cus_mapping_id) {
     $.ajax({
-        url: 'api/collection_files/get_penalty_chart_list.php',
+        url: 'api/collection_files/get_savings_chart_list.php',
         data: { 'cus_mapping_id': cus_mapping_id },
         type: 'post',
         cache: false,
         success: function (response) {
-            $('#penalty_chart_table_div').empty()
-            $('#penalty_chart_table_div').html(response)
+            $('#savings_chart_table_div').empty()
+            $('#savings_chart_table_div').html(response)
         }
     });//Ajax End.
 }

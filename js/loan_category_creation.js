@@ -42,7 +42,6 @@ $(document).ready(function () {
     });
         $('input[name=doc_charge_type]').click(function () {
         let Value = $(this).val(); 
-        console.log("Selected Value: " + Value);
         
         let type = (Value === 'percentage') ? '%' : '₹'; 
         $('.document-span-val').text(type); 
@@ -577,6 +576,7 @@ function clearSchemeForm() {
     $('.scheme_doc_minmax').val('');
     $('.scheme_processing_minmax').val('');
     $('#scheme_overdue_penalty').val('');
+    $('#add_scheme_name').val('');
     $('#add_scheme_details').trigger('reset');
     $('#scheme_type_percent').prop('checked', true).closest('label').addClass('active');
     $('#scheme_type_rupee').prop('checked', false).closest('label').removeClass('active');

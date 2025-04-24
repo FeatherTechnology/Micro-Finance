@@ -118,7 +118,7 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Representative Info
+                        <div class="card-title">Reference Info
                             <button type="button" class="btn btn-primary" id="add_rep" name="add_rep" data-toggle="modal" data-target="#add_rep_info_modal" onclick="getRepresentTable()" style="padding: 5px 35px; float: right;" tabindex='9'><span class="icon-add"></span></button>
                         </div>
                     </div>

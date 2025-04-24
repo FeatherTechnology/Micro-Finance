@@ -16,7 +16,7 @@ $column = array(
     'lelc.loan_status', 
     'lelc.id'
 );
-$query = "SELECT lelc.id, lelc.loan_id, lelc.centre_id, cc.centre_no,cc.centre_name, cc.mobile1,anc.areaname,cc.centre_limit, bc.branch_name ,lc.loan_category,lelc.loan_status
+$query = "SELECT lelc.id, lelc.loan_id, lelc.loan_amount, lelc.centre_id, cc.centre_no, cc.centre_name, cc.mobile1, anc.areaname, cc.centre_limit, bc.branch_name ,lc.loan_category, lelc.loan_status, lelc.due_month, lelc.due_start, lelc.scheme_date, lelc.scheme_day_calc
  FROM loan_entry_loan_calculation lelc 
  LEFT JOIN loan_category lc ON lc.id= lelc.loan_category  
  LEFT JOIN centre_creation cc ON lelc.centre_id = cc.centre_id
@@ -63,9 +63,32 @@ $sno = isset($_POST['start']) ? $_POST['start'] + 1 : 1;
 $data = [];
 foreach ($result as $row) {
     $sub_array = array();
+    if ($row['due_month'] == 1) {
+        // For Monthly due method
+        $due_date = $row['due_start'];
+        $scheme_day = $row['scheme_date'];
+
+        $year = date('Y', strtotime($due_date));
+        $month = date('m', strtotime($due_date));
+
+        $date_day = date('d-m-Y', strtotime($scheme_day . '-' . $month . '-' . $year));
+    } else {
+        $daysOfWeek = [
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday',
+            7 => 'Sunday'
+        ];
+        $scheme_day = $row['scheme_day_calc'];
+        $date_day = $daysOfWeek[$scheme_day];
+    }
 
     $sub_array[] = $sno++;
     $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';
+    $sub_array[] = isset($date_day) ?  $date_day : '';
     $sub_array[] = isset($row['loan_category']) ? $row['loan_category'] : '';
     $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';
     $sub_array[] = isset($row['centre_no']) ? $row['centre_no'] : '';
@@ -79,7 +102,7 @@ foreach ($result as $row) {
    <div class='dropdown-content'>";
     if ($row['loan_status'] == '3') {
         $action .= "<a href='#' class='approval-edit' value='" . $row['id'] . "' centre_id='" . $row['centre_id'] . "' title='Edit details'>Edit</a>";
-        $action .= "<a href='#' class='approval-approve' value='" . $row['id'] . "'  centre_limit='" . $row['centre_limit'] . "' title='Approve'>Approve</a>";
+        $action .= "<a href='#' class='approval-approve' value='" . $row['id'] . "'  centre_limit='" . $row['centre_limit'] . "' loan_amount='" . $row['loan_amount'] . "' title='Approve'>Approve</a>";
         $action .= "<a href='#' class='approval-cancel' value='" . $row['id'] . "' title='Cancel'>Cancel</a>";
         $action .= "<a href='#' class='approval-revoke' value='" . $row['id'] . "' title='Revoke'>Revoke</a>";
     }

@@ -14,7 +14,7 @@ if (isset($_POST['add_customer'], $_POST['loan_id_calc'], $_POST['customer_mappi
     $customer_mapping = intval($_POST['customer_mapping']); // Assuming customer_mapping is also an integer
     $total_cus = intval($_POST['total_cus']);
     $designation = $_POST['designation']; // No need to quote for simple string use
-    $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$add_customer' AND lcm.centre_id = '$centre_id'");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$add_customer' AND lcm.centre_id = '$centre_id' and lcm.loan_id = '$loan_id_calc' ");
     $existing_mapping = $stmt->fetchColumn();
 
     if ($existing_mapping > 0) {
@@ -22,7 +22,7 @@ if (isset($_POST['add_customer'], $_POST['loan_id_calc'], $_POST['customer_mappi
         $response = ['result' => 4, 'message' => 'The customer is already mapped to this loan.'];
     }else{
             // Insert the new customer mapping
-            $qry = $pdo->query("SELECT cc.id,cc.cus_id, cc.first_name, cc.aadhar_number, cc.mobile1, anc.areaname
+            $qry = $pdo->query("SELECT cc.id, cc.cus_id, cc.first_name, cc.aadhar_number, cc.mobile1, anc.areaname
                                 FROM customer_creation cc
                                 LEFT JOIN area_name_creation anc ON cc.area = anc.id 
                                 WHERE cc.id = $add_customer");

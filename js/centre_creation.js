@@ -52,8 +52,6 @@ $(document).ready(function () {
         event.preventDefault();
         
         $.getJSON('http://ip-api.com/json', function (data) {
-            console.log("Latitude:", data.lat);
-            console.log("Longitude:", data.lon);
             $('#latlong').val(data.lat + ',' + data.lon);
         });
     });
@@ -274,7 +272,8 @@ function getBranchList() {
         $('#branch').empty().append(appendBranchOption);
 
     }, 'json');
-}function getRepresentInfoTable() {
+}
+function getRepresentInfoTable() {
     let centre_id = $('#centre_id').val()
     $.post('api/centre_creation_files/represent_creation_list.php', { centre_id }, function (response) {
         var columnMapping = [

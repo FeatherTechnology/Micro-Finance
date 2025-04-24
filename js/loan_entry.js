@@ -14,10 +14,11 @@ $(document).on("click", "#add_loan,#back_btn", function () {
     $('#submit_loan_calculation').prop('disabled', false);
     swapTableAndCreation();
     callLoanCaculationFunctions();
-    getCentreId();
+    // getCentreId();
     getLoanCategoryName();
     clearLoanCalcForm();
     getLoanEntryTable();
+    getRepresentInfoTable("")
     $('#profit_type_calc_scheme').hide();
 });
 $(document).on('click', '.edit-loan-entry', function () {
@@ -51,20 +52,13 @@ $("#Centre_id").change(function () {
         getCentreDetails($(this).val());
         getCentreMapTable($(this).val())
         $("#Centre_id_edit").val($(this).val());
+        getRepresentInfoTable($(this).val());
     } else {
         $("#centre_no").val("");
         $("#centre_name").val("");
         $("#centre_mobile").val("");
     }
 });
-// $("#total_cus").on("blur", function () {
-//     let loan_amount = $("#loan_amount_calc").val();
-//     let total_cus = $("#total_cus").val();
-//     let loan_amount_per_cus = loan_amount / total_cus;
-//     loan_amount_per_cus = Math.round(loan_amount_per_cus); // Round off the value
-//     $('#loan_amount_per_cus').val(loan_amount_per_cus);
-
-// });
 
 function getCentreDetails(id) {
     $.post("api/loan_entry_files/get_centre_details.php", { id }, function (response) {
@@ -88,8 +82,6 @@ $(document).ready(function () {
         if ($(this).val() != "") {
             const selectedOption = $("#loan_category_calc option:selected");
             const limitValue = selectedOption.attr("limit");
-            //  console.log("loan Limit " + limitValue);
-            let loanCatId = $("#loan_category_calc").val();
             $("#loan_amount_calc").val('');
             $("#loan_amount_calc").attr(
                 "onChange",
@@ -156,7 +148,7 @@ $(document).ready(function () {
             // Check if the customer already exists in the table
             let customerExists = false;
             $('#cus_mapping_table tbody tr').each(function () {
-                if ($(this).attr('data-id') == add_customer) { // Compare with data-id
+                if ($(this).find('td:nth-child(3)').text() == add_customer) { // Compare with data-id
                     customerExists = true;
                 }
             });
@@ -171,7 +163,7 @@ $(document).ready(function () {
        
         let totalAllocatedAmount = 0;
         $('#cus_mapping_table tbody tr').each(function () {
-            let existingAmount = parseFloat($(this).find('td:nth-child(8)').text()) || 0;
+            let existingAmount = parseFloat($(this).find('td:nth-child(9)').text()) || 0;
             totalAllocatedAmount += existingAmount;
         });
 
@@ -204,6 +196,7 @@ $(document).ready(function () {
                         <tr data-id="${customer.id}"> <!-- Add customer.id as data-id -->
                             <td>${$('#cus_mapping_table tbody tr').length + 1}</td> <!-- Auto-incremented serial number -->
                             <td>${customer.cus_id}</td>
+                            <td style="display:none">${customer.id}</td>
                             <td>${customer.first_name}</td>
                             <td class="cus_mapping">${customerMappingText}</td>
                             <td>${customer.aadhar_number}</td>
@@ -212,7 +205,7 @@ $(document).ready(function () {
                             <td class="customer_amount">${customer_amount}</td>
                             <td class="designation">${designation}</td> <!-- Direct from form -->
                             <td>
-                                <span class="icon-trash-2 cusMapDeleteBtn" value="${customer.id}"></span>
+                                <span class="icon-trash-2 cusMapDeleteBtn" profile_id="${customer.id}"></span>
                             </td>
                         </tr>
                     `;
@@ -240,21 +233,16 @@ $(document).ready(function () {
         let id = $(this).attr('value'); // Get the customer ID from the button
         let loan_id = $(this).attr('loan_id'); 
         let loan_status = $(this).attr('loan_status');
+        let profile_id = $(this).attr('profile_id');
         // Show the confirmation dialog
         let TableRowVal = {
             'id' :id,
             'laon_id' : loan_id,
-            'loan_status' : loan_status
+            'loan_status' : loan_status,
+            'profile_id' : profile_id
         };
         swalConfirm('Delete', 'Do you want to remove this customer mapping?', removeCusMap, TableRowVal, '');
     });
-
-    // $(document).on('click', '.cusActionBtn', function () {
-    //     let id = $(this).attr('value');
-    //     console.log("kjsjk",id);
-    //     getcustomerdata(id);
-        
-    // });
 
     /////////////////////////////////////////////////////////Submit Customer Mapping End//////////////////////////////////////////////////
     $('#profit_type_calc').change(function () {
@@ -263,7 +251,6 @@ $(document).ready(function () {
         // Check if the loan category is selected
         let id = $('#loan_category_calc').val();
         if (id == '') {
-            console.log('aaa')
             swalError('Alert', 'Kindly select Loan Category');
             $(this).val('');
             return;
@@ -313,7 +300,6 @@ $(document).ready(function () {
 
     $('#due_method_calc').change(function () {
         let schemeDueMethod = $(this).val();
-        let loanCatId = $('#loan_category_calc').val();
         let profitType = $('#profit_type_calc').val(); // Get the current profit type value
     
         // Handle showing/hiding .scheme_day and .scheme_date based on profitType and schemeDueMethod
@@ -368,10 +354,7 @@ $(document).ready(function () {
     $('#refresh_cal').click(function () {
         $('.int-diff').text('*'); $('.due-diff').text('*'); $('.doc-diff').text('*'); $('.proc-diff').text('*'); $('.refresh_loan_calc').val('');
         let loan_amt = $('#loan_amount_calc').val(); let int_rate = $('#interest_rate_calc').val(); let due_period = $('#due_period_calc').val(); let doc_charge = $('#doc_charge_calc').val(); let proc_fee = $('#processing_fees_calc').val();let proc_fee_type = $('#proc_type').val();
-        // if (loan_amt == '') {
-        //     swalError('Warning', 'Please fill the loan amount.'); // Show the warning if loan amount is empty
-        //     return; // Stop further execution
-        // }
+    
         if (loan_amt != '' && int_rate != '' && due_period != '' && doc_charge != '' && proc_fee != '') {
             let benefit_method = $('#profit_method_calc').val(); //If Changes not found in profit method, calculate loan amt for monthly basis
             if (benefit_method == 1 || benefit_method == 'Pre Benefit') {
@@ -451,8 +434,7 @@ $(document).ready(function () {
         var loan_amount=parseFloat($('#loan_amount_calc').val());
         var intrest_rate=parseFloat($('#interest_rate_calc').val());
         var due_period=parseFloat($('#due_period_calc').val());
-        // var doc_charge_calculate=parseFloat($('#doc_charge_calculate').val());
-        // var processing_fees = 0;
+
         if(process_fees_type ==='rupee'){
              var processing_fees=parseFloat($('#processing_fees_calc').val());
              let doc_charge_calculate=parseFloat($('#doc_charge_calc').val());
@@ -466,19 +448,15 @@ $(document).ready(function () {
             var processing_fees=processingFees;
             let doc_charge=loan_amount*(doc_charge_calculate/100);
             var document_fees=doc_charge;
-            console.log("proc",processing_fees);
         }
         var totalCustomerAmount = 0;
         var loanAmount = $('#loan_amount_calc').val();
         var loanAmountCalc = parseFloat(loanAmount);
 
     $('#cus_mapping_table tbody tr').each(function () {
-        var cus_mapping = parseFloat($(this).find('td:nth-child(8)').text());
-        console.log("map ",cus_mapping);
+        var cus_mapping = parseFloat($(this).find('td:nth-child(9)').text());
         totalCustomerAmount += cus_mapping;
     });
-
-console.log("totalCustomerAmount",totalCustomerAmount);
 
     if (totalCustomerAmount != loanAmountCalc) {
         swalError('Warning', 'Total Customer Amount does not match Loan Amount Calculation!');
@@ -486,20 +464,26 @@ console.log("totalCustomerAmount",totalCustomerAmount);
     }
     var customerMappingData = [];
     $('#cus_mapping_table tbody tr').each(function () {
-        var cus_id = $(this).data('id'); // Retrieve the customer.id from data-id attribute
-        var cus_mapping = $(this).find('.cus_mapping').text(); // Use .text() instead of .val() for non-input elements
-        var designation = $(this).find('.designation').text(); // Use .text() to get the content of the td
-        var customer_loan_amount = $(this).find('.customer_amount').text(); // Use .text() to get the content of the td
-        var intrest_amount= Math.round(customer_loan_amount*(intrest_rate/100));
-        var principle= Math.round(customer_loan_amount/due_period);
-        var processingfees=Math.round((customer_loan_amount/loanAmountCalc)*processing_fees);
-        var documentcharge=Math.round((customer_loan_amount/loanAmountCalc)*document_fees); 
-        var net_cash=Math.round(customer_loan_amount-( processingfees+documentcharge));
+        // var cus_id = $(this).text(); // Retrieve the customer.id from data-id attribute
+        var cus_id = $(this).find('td:nth-child(3)').text(); 
+        var cus_mapping = $(this).find('td:nth-child(5)').text(); 
+        var designation = $(this).find('td:nth-child(10)').text(); 
+        var customer_loan_amount = $(this).find('td:nth-child(9)').text(); 
 
-        var due_amount = intrest_amount + principle ;
+
+        var intrest_amount = (customer_loan_amount * (intrest_rate / 100)) * due_period;
+        var dueAmount = (parseFloat(customer_loan_amount) + parseFloat(intrest_amount)) / due_period;
+        var roundeddue = Math.ceil(dueAmount / 5) * 5;
+        if (roundeddue < dueAmount) {
+            roundeddue += 5;
+        }
+        
+        var principle = customer_loan_amount ;
+        var processingfees = Math.ceil((customer_loan_amount / loanAmountCalc) * processing_fees);
+        var documentcharge =Math.ceil((customer_loan_amount / loanAmountCalc) * document_fees); 
+        var net_cash = Math.ceil(customer_loan_amount - ( processingfees + documentcharge));
             
-
-            customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation,intrest_amount:intrest_amount,principle:principle,due_amount:due_amount,customer_loan_amount:customer_loan_amount,net_cash:net_cash});
+            customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation,intrest_amount:intrest_amount,principle:principle,due_amount:roundeddue,customer_loan_amount:customer_loan_amount,net_cash:net_cash});
         });
 
 
@@ -509,7 +493,6 @@ console.log("totalCustomerAmount",totalCustomerAmount);
             'loan_category_calc': $('#loan_category_calc').val(),
             'loan_amount_calc': $('#loan_amount_calc').val(),
             'total_cus': $('#total_cus').val(),
-            // 'loan_amount_per_cus': $('#loan_amount_per_cus').val(),
             'profit_type_calc': $('#profit_type_calc').val(),
             'due_method_calc': $('#due_method_calc').val(),
             'profit_method_calc': $('#profit_method_calc').val(),
@@ -563,7 +546,6 @@ console.log("totalCustomerAmount",totalCustomerAmount);
 
 function callLoanCaculationFunctions() {
     getLoanCategoryName();
-    // getCustomerList();
     setTimeout(() => {
         getCusMapTable();
     }, 500);
@@ -579,7 +561,6 @@ function getAutoGenLoanId(id) {
 $('#customer_mapping').change(function () {
     let customer_mapping = $(this).val();
     getCustomerList(customer_mapping);
-    //     $('#profit_type_calc').val('').trigger('change');
 
 });
 
@@ -759,14 +740,7 @@ function schemeCalAjax(id) {
         var doc_charge_upd = ($('#doc_charge_upd').val()) ? $('#doc_charge_upd').val() : '';
         var proc_fee_upd = ($('#proc_fees_upd').val()) ? $('#proc_fees_upd').val() : '';
         $.post('api/loan_category_creation/get_scheme_data.php', { id }, function (response) {
-            //To set min and maximum
-            // $('.min-max-int').text('* (' + response[0].interest_rate_percent_min + '% - ' + response[0].interest_rate_percent_max + '%) ');
-            // $('#interest_rate_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].interest_rate_percent_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].interest_rate_percent_min + `' && parseFloat($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `); //To check value between range
             $('#interest_rate_calc').val(response[0].interest_rate_percent_min)
-            // $('#interest_rate_calc').val(int_rate_upd);
-            // $('.min-max-due').text('* (' + response[0].due_period_percent_min + ' - ' + response[0].due_period_percent_max + ') ');
-            // $('#due_period_calc').attr('onChange', `if( parseInt($(this).val()) > '` + response[0].due_period_percent_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseInt($(this).val()) < '` + response[0].due_period_percent_min + `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `); //To check value between range
-            // $('#due_period_calc').val(due_period_upd);
             $('#due_period_calc').val(response[0].due_period_percent_min);
 
             $('.min-max-doc').text('* (' + response[0].doc_charge_min + '% - ' + response[0].doc_charge_max + '%) ');
@@ -1046,6 +1020,7 @@ function getCusMapTable() {
         let cusMapColumn = [
             "sno",
             "cus_id",
+            "map_id",
             "first_name",
             "customer_mapping",
             "aadhar_number",
@@ -1057,6 +1032,7 @@ function getCusMapTable() {
 
         ]
         appendDataToTable('#cus_mapping_table', response, cusMapColumn);
+        $('#cus_mapping_table').find('th:eq(2), td:nth-child(3)').hide();
     }, 'json');
 }
 function getCentreMapTable(id) {
@@ -1064,6 +1040,7 @@ function getCentreMapTable(id) {
         let cusMapColumn = [
             "sno",
             "cus_id",
+            "map_id",
             "first_name",
             "customer_mapping",
             "aadhar_number",
@@ -1075,6 +1052,7 @@ function getCentreMapTable(id) {
 
         ]
         appendDataToTable('#cus_mapping_table', response, cusMapColumn);
+        $('#cus_mapping_table').find('th:eq(2), td:nth-child(3)').hide();
     }, 'json');
 }
 // Function to remove row
@@ -1083,19 +1061,18 @@ function removeCusMap(TableRowVal) {
     let id = TableRowVal.id; // Extract the 'id' value
     let loan_id = TableRowVal.laon_id;
     let loan_status = TableRowVal.loan_status;
-    // let loan_id = $('#loan_id_calc').val()
+    let profile_id = TableRowVal.profile_id;
     let centre_id = $('#Centre_id').val();
     var customerMappingData = [];
     $('#cus_mapping_table tbody tr').each(function () {
-        var cus_id = $(this).data('id'); // Retrieve the customer.id from data-id attribute
-        var cus_mapping = $(this).find('.cus_mapping').text(); // Use .text() instead of .val() for non-input elements
-        var designation = $(this).find('.designation').text(); // Use .text() to get the content of the td
-
+        var cus_id = $(this).find('td:nth-child(3)').text(); // Use .text() instead of .val() for non-input elements
+        var cus_mapping = $(this).find('td:nth-child(5)').text(); 
+        var designation = $(this).find('td:nth-child(10)').text();
         customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation });
     });
     // Add customer mapping data
     $('#cus_mapping_table tbody tr').each(function () {
-        if ($(this).attr('data-id') == id) {
+        if (profile_id== $(this).find('td:nth-child(3)').text()) {
             $(this).remove(); // Remove the row
             swalSuccess('Success', 'Customer mapping removed successfully.');
     
@@ -1116,25 +1093,6 @@ function removeCusMap(TableRowVal) {
         }
     }, 'json');
 }
-// function getcustomerdata(id){
-//     $.post('api/loan_entry_files/getcustomerdata.php', {id}, function (response) {
-//         if (response.length > 0) {
-//             let mappingValues = {
-//                 "New": "1",
-//                 "Renewal": "2",
-//                 "Additional": "3"
-//             };
-//             let selectedValue = mappingValues[response[0].customer_mapping] || "";
-//             $('#customer_mapping').val(selectedValue).change();  
-//             setTimeout(() => {
-//                 $('#add_customer').val(response[0].cus_id);
-//             }, 500);         
-//             $('#customer_amount').val(response[0].loan_amount);
-//             $('#designation').val(response[0].designation);
-//             $('#cus_map_id').val(response[0].id);
-//         }
-//     }, 'json');
-// }
 
 function loanCalculationEdit(id) {
     $.post('api/loan_entry_files/loan_calculation_data.php', { id }, function (response) {
@@ -1191,7 +1149,8 @@ function loanCalculationEdit(id) {
                 $('#maturity_date_calc').val(response[0].due_end);
                 $('#total_cus').trigger('blur');
                 // $('#loan_amount_per_cus').val(response[0].loan_amt_per_cus);
-                getCusMapTable()
+                getCusMapTable();
+                getRepresentInfoTable(response[0].centre_id)
             }, 2000);
         }
     }, 'json');
@@ -1199,7 +1158,7 @@ function loanCalculationEdit(id) {
 function getCentreId() {
     $.post("api/loan_entry_files/get_centre_id.php", function (response) {
         let appendLoanCatOption = "";
-        appendLoanCatOption += '<option value="">Select Centre ID</option>';
+        appendLoanCatOption += '<option value=" ">Select Centre ID</option>';
 
         // Get the Centre_id_edit value to pre-select the correct option in edit mode
         let Centre_id_edit = $("#Centre_id_edit").val();
@@ -1249,4 +1208,21 @@ function moveToNext(loan_id) {
         }
     }, 'json');
 }
+
+function getRepresentInfoTable(centre_id) {
+    $.post('api/centre_creation_files/represent_creation_list.php', { centre_id }, function (response) {
+        var columnMapping = [
+            'sno',
+            'rep_name',
+            'rep_aadhar',
+            'rep_occupation',
+            'rep_mobile',
+            'designation',
+            'remark'
+        ];
+        appendDataToTable('#rep_info_table', response, columnMapping);
+        setdtable('#rep_info_table');
+    }, 'json')
+}
+
 //////////////////////////////////////////////////////////////// Loan Calculation END //////////////////////////////////////////////////////////////////////

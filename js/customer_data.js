@@ -18,7 +18,6 @@ $(document).ready(function () {
 
     if (customerDataType == "customer_info") {
       let cus_id = $("#cus_id_upd").val();
-      console.log("cus_map_id"+cus_id);
       $(".customer_info_table_content").show();
       $(".centre_table_content").hide();
       $(".document_table_content").hide();
@@ -26,7 +25,6 @@ $(document).ready(function () {
       getCustomerDetails(cus_id);
     } else if (customerDataType == "centre_summary") {
       let cus_id = $("#cus_id").val();
-      console.log("cus_id  in centre_cummary "+cus_id);
       $(".customer_info_table_content").hide();
       $(".centre_table_content").show();
       $(".document_table_content").hide();
@@ -295,7 +293,6 @@ $(document).ready(function () {
     }
 })
 $(document).on("click", ".addDocument", function () {
-  console.log("kkkkk");
   event.preventDefault();
   var cus_id = $(this).attr("value");
   $('#documentation_form').show();
@@ -443,12 +440,93 @@ $(document).on('click','.closed_due_chart', function(){
 });
 
 $(document).on("click", "#cancel_btn", function () {
-  console.log("hlll");
   $("#documentation").trigger("click");
 
 })
 
+$(document).on("click", "#kycInfoBtn", function () {
+  let lable = $("#kyc_lable").val();
+  let Details = $("#kyc_details").val();
+  let upload = $("#upload")[0].files[0];
+  let upload_files = $("#upload_files").val();
+  let KycID = $("#kycID").val();
+  var isValid = true;
+  if (lable === "") {
+    isValid = false;
+    $("#kyc_lable").css("border", "1px solid #ff0000");
+    $("#lableCheck").show();
+  } else if (Details === "") {
+    isValid = false;
+    $("#kyc_details").css("border", "1px solid #ff0000");
+    $("#detailCheck").show();
+  } else {
+    $("#doc_name").css("border", "1px solid #cecece");
+  }
+  if (upload === undefined && upload_files === "") {
+    let isUploadValid = validateField("", "upload");
+    if (!isUploadValid) {
+      isValid = false;
+    } else {
+      $("#upload").css("border", "1px solid #cecece");
+    }
+  } else {
+    $("#upload").css("border", "1px solid #cecece");
+  }
+  if (isValid) {
+    let cus_id = $("#cus_id").val();
+    var formData = new FormData();
+    formData.append("lable", lable);
+    formData.append("Details", Details);
+    formData.append("upload", upload);
+    formData.append("cus_id", cus_id);
+    formData.append("kycID", KycID);
+    formData.append("upload_files", upload_files);
 
+    submitkyc(formData)
+      .then(() => {
+        kyctable(cus_id);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+});
+$(document).on("click", ".kycedit", function () {
+  var id = $(this).attr("value");
+  $.post(
+    "api/customer_creation_files/get_kyc_details.php",
+    { id: id },
+    function (response) {
+      if (response) {
+        $("#kycID").val(response[0].id);
+        $("#kyc_lable").val(response[0].label);
+        $("#kyc_details").val(response[0].details);
+        $("#upload_files").val(response[0].upload);
+      }
+    },
+    "json"
+  );
+});
+
+$(document).on("click", ".kycdelet", function () {
+  var id = $(this).attr("value");
+  let cus_id = $("#cus_id").val();
+
+  swalConfirm(
+    "Delete",
+    "Do you want to Delete this KYC?",
+    (id) => {
+      deletekyc(id)
+        .then(() => {
+          kyctable(cus_id); // Run only after deletekyc completes
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    },
+    id
+  );
+});
 });
 
 function getcustomerlist() {
@@ -492,6 +570,7 @@ function getCustomerDetails(id) {
       setTimeout(() => {
         $("#area").trigger("change");
         getFamilyInfoTable();
+        kyctable();
       }, 1000);
 
       if (response[0].cus_data == "Existing") {
@@ -555,6 +634,83 @@ function getFamilyInfoTable() {
     "json"
   );
 }
+function kyctable() {
+  let cus_id = $("#cus_id").val();
+  $.post(
+    "api/customer_creation_files/getkyc.php",
+    { cus_id },
+    function (response) {
+      let columnMapping = ["sno", "label", "details", "upload", "action"];
+      let columnMapping1 = ["sno", "label", "details", "upload"];
+      appendDataToTable(".modalTable", response, columnMapping);
+      appendDataToTable(".modalTable_list", response, columnMapping1);
+    },
+    "json"
+  );
+}
+function deletekyc(id) {
+  return new Promise((resolve, reject) => {
+    $.post(
+      "api/customer_creation_files/delet_kyc_details.php",
+      { id },
+      function (response) {
+        if (response === 1) {
+          swalSuccess("Success", "KYC Deleted Successfully");
+          resolve(response); // Resolve the Promise on success
+        } else {
+          swalError("Warning", "Error occurred while deleting KYC.");
+          reject("Error occurred while deleting KYC");
+        }
+      },
+      "json"
+    );
+  });
+}
+function resetkycinfo() {
+  let cus_id = $("#cus_id").val();
+  kyctable(cus_id);
+  $("#kyc_lable").val("");
+  $("#kyc_details").val("");
+  $("#upload").val("");
+  $("#kycID").val("");
+  $("#upload_files").val("");
+}
+function submitkyc(formData) {
+  let cus_id = $("#cus_id").val();
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: "api/customer_creation_files/submit_kyc.php",
+      type: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      dataType: "json",
+      cache: false,
+      success: function (response) {
+        if (response === 1) {
+          $("#kyc_lable").val("");
+          $("#kyc_details").val("");
+          $("#upload").val("");
+          $("#upload_files").val("");
+          $("#kycID").val("");
+          swalSuccess("Success", "KYC Added Successfully!");
+          resolve(response);
+        } else if (response === 2) {
+          $("#kyc_lable").val("");
+          $("#kyc_details").val("");
+          $("#upload").val("");
+          $("#kycID").val("");
+          $("#upload_files").val("");
+          swalSuccess("Success", "KYC Updated Successfully!");
+          resolve(response);
+        } else {
+          alert("error");
+          reject(error);
+        }
+      },
+    });
+  });
+}
 function checkAdditionalRenewal(cus_id) {
   $.post(
     "api/customer_creation_files/check_additional_renewal.php",
@@ -606,7 +762,6 @@ function getCentreClosedTable(cus_id) {
 // documentation function 
 function addDocumentation(){
     let cus_id = $("#cus_id").val();
-    console.log("customer id "+cus_id);
     $.post(
       "api/customer_data_files/get_loan_details.php",
       { cus_id: cus_id },
@@ -642,9 +797,6 @@ function getDocumentDetails(cus_id){
         "action"
     ]
     appendDataToTable('#document_info', response, docInfoColumn);
-    // setdtable('#document_info')
-    console.log("helooooooooo");
-    console.log("response"+response)
     $('#documentation_form input').each(function () {
         var id = $(this).attr('id');
         if (id !== 'doc_id' && id !== 'loan_id') {

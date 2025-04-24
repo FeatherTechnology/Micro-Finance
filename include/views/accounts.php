@@ -231,7 +231,7 @@ function moneyFormatIndia($num1) {
                                         <th width=25>S.NO</th>
                                         <th>User</th>
                                         <th>Branch</th>
-                                        <th>No of Loans</th>
+                                        <th>No of Members</th>
                                         <th>Total Net Cash</th>
                                         <!-- <th>Balance in Hand</th> -->
                                     </tr>

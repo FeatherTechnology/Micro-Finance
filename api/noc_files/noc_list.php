@@ -13,7 +13,7 @@ $column = array(
     'bc.branch_name',
     
 );
-$query = "SELECT lelc.id, lelc.loan_id, lelc.centre_id, cc.centre_no,cc.centre_name, cc.mobile1,anc.areaname,bc.branch_name,lelc.loan_status,cl.closed_sub_status
+$query = "SELECT lelc.id, lelc.loan_id, lelc.centre_id, cc.centre_no,cc.centre_name, cc.mobile1,anc.areaname,bc.branch_name,lelc.loan_status,cl.closed_sub_status, lelc.due_month, lelc.due_start, lelc.scheme_date, lelc.scheme_day_calc
  FROM loan_entry_loan_calculation lelc 
  LEFT JOIN centre_creation cc ON lelc.centre_id = cc.centre_id
  LEFT JOIN closed_loan cl ON lelc.loan_id=cl.loan_id
@@ -60,8 +60,31 @@ $data = [];
 foreach ($result as $row) {
     $sub_array = array();
 
+    if ($row['due_month'] == 1) {
+        // For Monthly due method
+        $due_date = $row['due_start'];
+        $scheme_day = $row['scheme_date'];
+
+        $year = date('Y', strtotime($due_date));
+        $month = date('m', strtotime($due_date));
+
+        $date_day = date('d-m-Y', strtotime($scheme_day . '-' . $month . '-' . $year));
+    } else {
+        $daysOfWeek = [
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday',
+            7 => 'Sunday'
+        ];
+        $scheme_day = $row['scheme_day_calc'];
+        $date_day = $daysOfWeek[$scheme_day];
+    }
     $sub_array[] = $sno++;
     $sub_array[] = isset($row['loan_id']) ? $row['loan_id'] : '';
+    $sub_array[] = isset($date_day) ?  $date_day : '';
     $sub_array[] = isset($row['centre_id']) ? $row['centre_id'] : '';
     $sub_array[] = isset($row['centre_no']) ? $row['centre_no'] : '';
     $sub_array[] = isset($row['centre_name']) ? $row['centre_name'] : '';

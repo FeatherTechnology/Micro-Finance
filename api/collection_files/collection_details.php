@@ -60,17 +60,17 @@ if ($coll_charge_row['fine_charge'] !== null) {
     $response['fine_charge'] = 0;
 }
 
-// Penalty calculation
-$result = $pdo->query("SELECT SUM(penalty_track) as penalty FROM `collection` WHERE loan_id = '$loan_id'");
-$row = $result->fetch();
-$penaltyPaid = $row['penalty'] ?? 0;
+// // Penalty calculation
+// $result = $pdo->query("SELECT SUM(penalty_track) as penalty FROM `collection` WHERE loan_id = '$loan_id'");
+// $row = $result->fetch();
+// $penaltyPaid = $row['penalty'] ?? 0;
 
-// Fetch overall penalty raised till now for this customer
-$result1 = $pdo->query("SELECT SUM(penalty) as penalty FROM `penalty_charges` WHERE loan_id = '$loan_id'");
-$row1 = $result1->fetch();
-$penaltyRaised = $row1['penalty'] ?? 0;
+// // Fetch overall penalty raised till now for this customer
+// $result1 = $pdo->query("SELECT SUM(penalty) as penalty FROM `penalty_charges` WHERE loan_id = '$loan_id'");
+// $row1 = $result1->fetch();
+// $penaltyRaised = $row1['penalty'] ?? 0;
 
-$response['penalty'] = $penaltyRaised - $penaltyPaid;
+// $response['penalty'] = $penaltyRaised - $penaltyPaid;
 
 // Query to fetch customer details mapped to the loan
 $query = "SELECT

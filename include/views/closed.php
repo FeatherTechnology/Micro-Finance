@@ -7,6 +7,7 @@
                     <tr>
                         <th>S.NO</th>
                         <th>Loan ID</th>
+                        <th>Date / Day</th>
                         <th>Centre ID</th>
                         <th>Centre No</th>
                         <th>Centre Name</th>
@@ -29,8 +30,8 @@
 </div>
 <br>
 <div class="col-12 text-right" style="margin-bottom:10px">
-            <button class="btn btn-primary" id="back_to_coll_list" style="display: none;"><span class="icon-arrow-left"></span> Back</button>
-        </div>
+    <button class="btn btn-primary" id="back_to_coll_list" style="display: none;"><span class="icon-arrow-left"></span> Back</button>
+</div>
 <!-- centre infor content  -->
 <div id="closed_content" style="display: none;">
     <div class="text-right mb-3">
@@ -159,9 +160,8 @@
                         </div>
                     </div>
                     <div class="col-12 mt-3 text-right">
-                    <button name="submit_centre_closed" id="submit_centre_closed" class="btn btn-primary" tabindex="12"><span class="icon-check"></span>&nbsp;Submit</button>
-                   
-                </div>
+                        <button name="submit_centre_closed" id="submit_centre_closed" class="btn btn-primary" tabindex="12"><span class="icon-check"></span>&nbsp;Submit</button>
+                    </div>
                 </div>
             </div>
 
@@ -216,36 +216,34 @@
     <div class="card-body">
         <div class="row">
             <div class="col-12" id="ledger_view_table_div" style="overflow: auto;">
-                
+
             </div>
         </div>
     </div>
 </div>
 <!-----------------------------CARD END - Ledger View Chart --------------------------------->
-<div class="modal fade" id="penalty_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="savings_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content" style="background-color: white">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Penalty Chart</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Savings Chart</h5>
                 <button type="button" class="close" data-dismiss="modal" tabindex="1" aria-label="Close" onclick="closeChartsModal()">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row" id="penalty_chart_table_div">
+            <!-- <div class="modal-body">
+                <div class="container-fluid "> -->
+                    <div class="modal-body overflow-x-cls" id="savings_chart_table_div">
                         <table class="table custom-table">
                             <thead>
                                 <th>S No.</th>
-                                <th>Penalty Date</th>
-                                <th>Penalty</th>
-                                <th>Paid Date</th>
-                                <th>Paid Amount</th>
-                                <th>Balance Amount</th>
+                                <th>Date</th>
+                                <th>Savings</th>
+                                <th>Total Savings</th>
                             </thead>
                         </table>
-                    </div>
-                </div>
+                    <!-- </div>
+                </div> -->
 
             </div>
             <div class="modal-footer">

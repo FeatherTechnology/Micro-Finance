@@ -8,7 +8,6 @@ $Centre_id = $_POST['Centre_id'];
 $loan_category_calc = $_POST['loan_category_calc'];
 $loan_amount_calc = $_POST['loan_amount_calc'];
 $total_cus = $_POST['total_cus'];
-// $loan_amount_per_cus = $_POST['loan_amount_per_cus'];
 $profit_type_calc = $_POST['profit_type_calc'];
 $due_method_calc = $_POST['due_method_calc'];
 $profit_method_calc = $_POST['profit_method_calc'];
@@ -153,7 +152,7 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
         }
 
         // Check if the customer is already mapped to the same loan_id
-        $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$cus_id' AND lcm.centre_id = '$Centre_id'");
+        $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$cus_id' AND lcm.centre_id = '$Centre_id' and lcm.loan_id = '$loan_id_calc' ");
         $existing_mapping = $stmt->fetchColumn();
 
         if ($existing_mapping > 0) {

@@ -124,13 +124,9 @@ function getCustomerName(loan_id) {
 
 function appendCuatomerList(cus_id, date_of_noc, customer_name) {
   $("#document_list_table tbody tr").each(function () {
-    console.log("inside");
     let currentCusId = $(this).find("td").eq(2).text().trim();
-    console.log("currentCusId" + currentCusId);
-    console.log("customer id" + cus_id);
 
     if (currentCusId === cus_id) {
-      console.log("iside inside");
       $(this).find("td").eq(8).text(date_of_noc);
       $(this).find("td").eq(9).text(customer_name);
       $(".docCheckbox").prop("checked", true);
@@ -141,7 +137,6 @@ function appendCuatomerList(cus_id, date_of_noc, customer_name) {
 function submitCustomer() {
   var dataToSave = [];
   let loan_id = $("#loan_id").val();
-  console.log("login id" + loan_id);
   $("#document_list_table tbody tr").each(function () {
     var doc_id = $(this).find("td").eq(1).text().trim();
     var date_of_noc = $(this).find("td").eq(8).text().trim();
@@ -169,8 +164,7 @@ function submitCustomer() {
       });
     }
   });
-  console.log("Data to Save:", dataToSave);
-  if (dataToSave.length > 0) {
+  if ($('#document_list_table tbody tr').length != 0 && dataToSave.length > 0) {
     $.ajax({
       url: "api/noc_files/submit_customer_noc.php",
       type: "POST",
@@ -191,6 +185,28 @@ function submitCustomer() {
         alert("An error occurred while saving data.");
       },
     });
+  }
+  else if($('#document_list_table tbody tr').length === 0){
+    
+    let loan_status = 11;
+    $.ajax({
+      url: 'api/noc_files/submit_customer_noc.php',
+      data: { 'loan_id': loan_id , 'loan_status':loan_status},
+      type: 'post',
+      cache: false,
+      dataType: 'json',
+      success: function (response) {
+        if (response.success) {
+          alert("NOC submitted successfully.");
+          $("#submit_noc").hide();
+          getNocTable()
+        }
+        else {
+          alert("Failed to save data: " + response.message);
+        }
+      }
+  })
+
   } else {
     alert("Please Entre NOC Details");
   }
@@ -206,6 +222,7 @@ function setValuesInTables() {
     // if ($(this).is(":checked")) {
     let checkbox = $(this)
       .closest("tr")
+
       .find("td:nth-child(11) input[type='checkbox']");
     if ($(this).is(":checked") && !checkbox.prop("disabled")) {
       checked = true;
@@ -240,11 +257,12 @@ function setSubmittedDisabled() {
   });
 
   var cheque_checkDisabled =
-    $(".docCheckbox:disabled").length === $(".docCheckbox").length;
-
+    $(".docCheckbox:disabled").length === $(".docCheckbox").length && $(".docCheckbox:disabled").length  !== 0;
   if (cheque_checkDisabled) {
     $("#submit_noc").hide();
-  } else {
+  } else if($(".docCheckbox:disabled").length===0){
+    $("#submit_noc").show()
+  }else {
     $("#submit_noc").show();
   }
 }

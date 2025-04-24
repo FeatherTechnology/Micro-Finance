@@ -126,6 +126,7 @@
                                 <th>Area</th>
                                 <th>Branch</th>
                                 <th>Mobile Number</th>
+                                <th>Designation</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>

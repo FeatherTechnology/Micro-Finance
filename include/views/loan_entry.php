@@ -12,6 +12,7 @@
                     <tr>
                         <th>S.NO</th>
                         <th>Loan ID</th>
+                        <th>Date / Day</th>
                         <th>Loan Category</th>
                         <th>Centre ID</th>
                         <th>Centre No</th>
@@ -60,7 +61,7 @@
                                     <label for="Centre_id"> Centre ID</label><span class="text-danger">*</span>
                                     <input type="hidden" id="Centre_id_edit">
                                     <select class="form-control" id="Centre_id" name="Centre_id" tabindex="2">
-                                        <option value="">Select Centre ID</option>
+                                        <option value=" ">Select Centre ID</option>
                                     </select>
                                 </div>
                             </div>
@@ -302,6 +303,37 @@
                 </div>
                 <!--- -------------------------------------- Collection Info END ------------------------------- -->
 
+                <!--- -------------------------------------- Reference Info START ------------------------------- -->
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Reference Info
+                            <!-- <button type="button" class="btn btn-primary" id="add_rep" name="add_rep" data-toggle="modal" data-target="#add_rep_info_modal" onclick="getRepresentTable()" style="padding: 5px 35px; float: right;" tabindex='9'><span class="icon-add"></span></button> -->
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                <div class="form-group">
+                                    <table id="rep_info_table" class="table custom-table">
+                                        <thead>
+                                            <tr>
+                                                <th width="20">S.NO</th>
+                                                <th>Name</th>
+                                                <th>Aadhar No</th>
+                                                <th>Occupation</th>
+                                                <th>Mobile No</th>
+                                                <th>Designation</th>
+                                                <th>Remark</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!--- -------------------------------------- Other Info START ------------------------------- -->
                 <div class="card">
                     <div class="card-header">
@@ -340,13 +372,13 @@
                                     <input type="text" class="form-control" id="designation" name="designation" tabindex="33">
                                 </div>
                             </div>
-                            
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 align-self-end">
-                                <div class="form-group">
-                                    <input type="button" class="btn btn-primary modalBtnCss" id="submit_cus_map" name="submit_cus_map" value="Add" tabindex="35">
-                                </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group d-flex justify-content-end">
+                                <input type="button" class="btn btn-primary modalBtnCss" id="submit_cus_map" name="submit_cus_map" value="Add" tabindex="35">
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-12">
                                 <table id="cus_mapping_table" class="table custom-table">
@@ -354,6 +386,7 @@
                                         <tr>
                                             <th width="20">S.No.</th>
                                             <th>Customer ID</th>
+                                            <th style="display: none;">Customer Map Id</th>
                                             <th>Customer Name</th>
                                             <th>Customer Data</th>
                                             <th>Aadhar No</th>
@@ -362,7 +395,7 @@
                                             <th style="width: 150px;">Customer Loan Amount</th>
                                             <th style="width: 110px;">Designation</th>
                                             <th>Action</th>
-                                       </tr>
+                                        </tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>

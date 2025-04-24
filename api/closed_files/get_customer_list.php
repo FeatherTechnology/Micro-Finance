@@ -16,7 +16,7 @@ if ($loan_id!= '') {
             <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
            <div class='dropdown-content'>";
                 $action .= "<a href='#' class='cus_due_chart' value='" . $gcs_info['id'] . "'  title='Due Chart'>Due Chart</a>";
-                $action .= "<a href='#' class='cus_penalty_chart' value='" . $gcs_info['id'] . "' title='Penalty Chart'>Penalty Chart</a>";
+                $action .= "<a href='#' class='cus_savings_chart' value='" . $gcs_info['id'] . "' title='Savings_chart'>Savings Chart</a>";
                 $action .= "<a href='#' class='cus_fine_chart' value='" . $gcs_info['id']. "' title='Fine Chart'>Fine Chart</a>";
             $action .= "</div></div>";
             $gcs_info['chart'] = $action;

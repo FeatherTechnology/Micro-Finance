@@ -100,7 +100,6 @@ $(document).ready(function () {
         let due_startdate_calc = $('#due_startdate_calc').val();
         let maturity_date_calc = $('#maturity_date_calc').val();
         let total_amnt_calc = $('#total_amnt_calc').val().replace(/,/g, '');
-        console.log("jkhjkhf"+total_amnt_calc);
         var isValid = true;
 
         // Validate each field

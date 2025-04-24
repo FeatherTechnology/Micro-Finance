@@ -37,7 +37,6 @@ $(document).ready(function () {
             submitCustomer();
         } else {
             let loan_id=$("#loan_id").val();
-            console.log("loan id"+loan_id);
             let sub_status=$("#sub_status").val();
             let centre_id=$("#centre_id").val();
             let remarks=$("#centre_remarks").val();
@@ -45,7 +44,6 @@ $(document).ready(function () {
             $('#closed_customer_table tbody tr').each(function() {
                 let selectBox = $(this).find('.sub_status'); 
                 let selectedValue = selectBox.val(); 
-                console.log('Row Select Value:', selectedValue); 
                 if (selectedValue === "") {
                     allValid = false; 
                     selectBox.addClass('is-invalid');
@@ -155,11 +153,11 @@ $(document).ready(function () {
             })
         },1000)
     });
-    $(document).on('click','.cus_penalty_chart', function(e){
+    $(document).on('click','.cus_savings_chart', function(e){
         e.preventDefault(); // Prevent default anchor behavior
         var cus_mapping_id = $(this).attr('value'); // Capture data-id from the clicked element
-        $('#penalty_model').modal('show'); // Show the modal
-        penaltyChartList(cus_mapping_id); 
+        $('#savings_model').modal('show'); // Show the modal
+        SavingsChartList(cus_mapping_id); 
     });
     $(document).on('click', '.cus_fine_chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
@@ -172,7 +170,7 @@ $(document).ready(function () {
 });
 function closeChartsModal() {
     $('#due_chart_model').modal('hide');
-    $('#penalty_model').modal('hide');
+    $('#savings_model').modal('hide');
     $('#fine_model').modal('hide');
 }
 
@@ -196,15 +194,15 @@ function dueChartList(cus_mapping_id, loan_id) {
 
 }
 //Penalty chart
-function penaltyChartList(cus_mapping_id){
+function SavingsChartList(cus_mapping_id){
     $.ajax({
-        url: 'api/collection_files/get_penalty_chart_list.php',
+        url: 'api/collection_files/get_savings_chart_list.php',
         data: {'cus_mapping_id':cus_mapping_id},
         type:'post',
         cache: false,
         success: function(response){
-            $('#penalty_chart_table_div').empty()
-            $('#penalty_chart_table_div').html(response)
+            $('#savings_chart_table_div').empty()
+            $('#savings_chart_table_div').html(response)
         }
     });//Ajax End.
 }
@@ -314,7 +312,6 @@ function getCustomerList(loan_id){
             $('#closed_customer_table tbody tr').each(function() {
                 // Get the text content of the specific <td> by class
                 let status = $(this).find(`td.status-column`).text().trim();
-                console.log('Column content:'+ status); // Debugging output
             
                 if (status != 'Closed') { // Check if it's "Closed"
                     allClosed = false; 

@@ -48,6 +48,23 @@ customer_creation cc ON lcm.cus_id = cc.id WHERE di.loan_id = '$loan_id'  ");
 
 
     echo json_encode(['success' => true]);
-} else {
+}
+ else if(isset($_POST['loan_id']) && isset($_POST['loan_status'])){
+    $loan_id = $_POST['loan_id'];
+    $loan_status = $_POST['loan_status'];
+
+    $updateQry = $pdo->prepare("UPDATE loan_entry_loan_calculation SET loan_status = :loan_status WHERE loan_id = :loan_id");
+    $updateQry->bindParam(':loan_status', $loan_status);
+    $updateQry->bindParam(':loan_id', $loan_id);
+
+    if ($updateQry->execute()) {
+        
+            echo json_encode(['success' => true]);
+            return ;
+    } else {
+        echo json_encode(['success' => false]);
+    }
+
+}else {
     echo json_encode(['success' => false, 'message' => 'No data received']);
 }

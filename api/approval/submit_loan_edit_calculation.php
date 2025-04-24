@@ -136,7 +136,7 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
         }
 
         // Check if the customer is already mapped to the same loan_id
-        $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$cus_id' AND lcm.centre_id = '$Centre_id'");
+        $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$cus_id' AND lcm.centre_id = '$Centre_id' and lcm.loan_id ='$loan_id_calc'");
         $existing_mapping = $stmt->fetchColumn();
 
         if ($existing_mapping > 0) {

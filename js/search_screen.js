@@ -239,6 +239,7 @@ function getcentreTable(data) {
     "area",
     "branch_name",
     "mobile1",
+    "designation",
     "action",
   ];
   appendDataToTable("#centre_list", response, columnMapping);
