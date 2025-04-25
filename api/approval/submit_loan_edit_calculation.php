@@ -8,7 +8,6 @@ $Centre_id = $_POST['Centre_id'];
 $loan_category_calc = $_POST['loan_category_calc'];
 $loan_amount_calc = $_POST['loan_amount_calc'];
 $total_cus = $_POST['total_cus'];
-// $loan_amount_per_cus = $_POST['loan_amount_per_cus'];
 $profit_type_calc = $_POST['profit_type_calc'];
 $due_method_calc = $_POST['due_method_calc'];
 $profit_method_calc = $_POST['profit_method_calc'];
@@ -32,49 +31,6 @@ $maturity_date_calc = $_POST['maturity_date_calc'];
 $id = $_POST['id'];
 
 $current_date = date('Y-m-d');
-
-// Check Customer Mapping
-$mappingCountStmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping WHERE loan_id = '$loan_id_calc'");
-$current_mapping_count = $mappingCountStmt->fetchColumn();
-
-if ($current_mapping_count > $total_cus) {
-    echo json_encode(['result' => 3, 'message' => 'Remove The Customer Mapping Details']);
-    exit;
-}
-
-else if($current_mapping_count == $total_cus){
-    $qry = $pdo->query("UPDATE `loan_entry_loan_calculation` 
-    SET 
-        `centre_id` = '$Centre_id',
-        `loan_id` = '$loan_id_calc',
-        `loan_category` = '$loan_category_calc',
-        `loan_amount` = '$loan_amount_calc',
-        `total_customer` = '$total_cus',
-        `profit_type` = '$profit_type_calc',
-        `due_month` = '$due_method_calc',
-        `benefit_method` = '$profit_method_calc',
-        `scheme_day_calc` = '$scheme_day_calc',
-        `interest_rate` = '$interest_rate_calc',
-        `due_period` = '$due_period_calc',
-        `doc_charge` = '$doc_charge_calc',
-        `processing_fees` = '$processing_fees_calc',
-        `scheme_name` = '$scheme_name_calc',
-        `scheme_date` = '$scheme_date_calc',
-        `loan_amount_calc` = '$loan_amnt_calc',
-        `principal_amount_calc` = '$principal_amnt_calc',
-        `intrest_amount_calc` = '$interest_amnt_calc',
-        `total_amount_calc` = '$total_amnt_calc',
-        `due_amount_calc` = '$due_amnt_calc',
-        `document_charge_cal` = '$doc_charge_calculate',
-        `processing_fees_cal` = '$processing_fees_calculate',
-        `net_cash_calc` = '$net_cash_calc',
-        `due_start` = '$due_startdate_calc',
-        `due_end` = '$maturity_date_calc',
-        `update_login_id` = '$user_id',
-        `updated_on` = '$current_date'
-    WHERE `id` = '$id'");
-}
-
 
 // Check if customer mapping data is provided
 if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_data'])) {
@@ -173,12 +129,54 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
     exit;
 }
 
+// Check Customer Mapping
+$mappingCountStmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping WHERE loan_id = '$loan_id_calc'");
+$current_mapping_count = $mappingCountStmt->fetchColumn();
 
+if ($current_mapping_count > $total_cus) {
+    echo json_encode(['result' => 3, 'message' => 'Remove The Customer Mapping Details']);
+    exit;
+}
+
+else if($current_mapping_count == $total_cus){
+    $qry = $pdo->query("UPDATE `loan_entry_loan_calculation` 
+    SET 
+        `centre_id` = '$Centre_id',
+        `loan_id` = '$loan_id_calc',
+        `loan_category` = '$loan_category_calc',
+        `loan_amount` = '$loan_amount_calc',
+        `total_customer` = '$total_cus',
+        `profit_type` = '$profit_type_calc',
+        `due_month` = '$due_method_calc',
+        `benefit_method` = '$profit_method_calc',
+        `scheme_day_calc` = '$scheme_day_calc',
+        `interest_rate` = '$interest_rate_calc',
+        `due_period` = '$due_period_calc',
+        `doc_charge` = '$doc_charge_calc',
+        `processing_fees` = '$processing_fees_calc',
+        `scheme_name` = '$scheme_name_calc',
+        `scheme_date` = '$scheme_date_calc',
+        `loan_amount_calc` = '$loan_amnt_calc',
+        `principal_amount_calc` = '$principal_amnt_calc',
+        `intrest_amount_calc` = '$interest_amnt_calc',
+        `total_amount_calc` = '$total_amnt_calc',
+        `due_amount_calc` = '$due_amnt_calc',
+        `document_charge_cal` = '$doc_charge_calculate',
+        `processing_fees_cal` = '$processing_fees_calculate',
+        `net_cash_calc` = '$net_cash_calc',
+        `due_start` = '$due_startdate_calc',
+        `due_end` = '$maturity_date_calc',
+        `update_login_id` = '$user_id',
+        `updated_on` = '$current_date'
+    WHERE `id` = '$id'");
+    $qry1 = $pdo->query("UPDATE `loan_entry_loan_calculation` SET  loan_status = 3  WHERE `id` = '$id'");
+}
 
 // Check if the query was successful
-if ($qry) {
+if ($qry && $qry1 ) {
     $result = 1;
 } else {
     $result = 0; // Failure
 }
+
 echo json_encode(['result' => $result]);

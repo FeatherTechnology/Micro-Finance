@@ -132,6 +132,7 @@
                                         <th>Total Collection</th>
                                         <th>Charts</th>
                                         <th>Action</th>
+                                        <th style="display: none;">aadhar</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -276,6 +277,7 @@
                     <thead>
                         <th>S No.</th>
                         <th>Date</th>
+                        <th>Credit / Debit</th>
                         <th>Savings</th>
                         <th>Total Savings</th>
                     </thead>

@@ -6,7 +6,7 @@ $response = array();
 
 // SQL query to fetch issue details
 $query = "SELECT
-lcm.id,
+              lcm.id,
               cc.cus_id,
               cc.first_name,
               cc.mobile1, anc.areaname 

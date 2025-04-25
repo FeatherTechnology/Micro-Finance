@@ -16,18 +16,14 @@ class overallClass
     (SELECT SUM(COALESCE(c.total_paid_track, 0)) 
      FROM collection c 
      WHERE c.cus_mapping_id = cm.id) AS total_paid,
-    -- Summing distinct fine_charge and penalty to avoid duplication
     COALESCE(SUM(DISTINCT fc.fine_charge), 0) AS fine_charge,
-    COALESCE(SUM(DISTINCT pc.penalty), 0) AS penalty,
-    COALESCE(SUM(DISTINCT fc.fine_charge), 0) + COALESCE(SUM(DISTINCT pc.penalty), 0) AS payable_charge
+    COALESCE(SUM(DISTINCT fc.fine_charge), 0) AS payable_charge
 FROM
     loan_cus_mapping cm
 LEFT JOIN fine_charges fc ON
     fc.cus_mapping_id = cm.id
 LEFT JOIN loan_entry_loan_calculation lelc ON
     lelc.loan_id = cm.loan_id
-LEFT JOIN penalty_charges pc ON
-    cm.id = pc.cus_mapping_id
 WHERE
     cm.id = '$customer_map_id'
 GROUP BY

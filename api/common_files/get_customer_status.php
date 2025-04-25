@@ -31,17 +31,13 @@ class CustomerStatus
         SUM(c.penalty_track) AS total_penalty_track,
         (SUM(c.due_amt_track) + SUM(c.fine_charge_track) + SUM(c.penalty_track)) AS total_paid,
         IFNULL(f.total_fine_charge, 0) AS total_fine_charge,
-        IFNULL(p.total_penalty, 0) AS total_penalty,
-        (SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0) + IFNULL(p.total_penalty, 0)) AS payable_charge,
+        (SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0) ) AS payable_charge,
         lelc.due_amount_calc,lelc.total_customer,lelc.due_month,lelc.due_start,lelc.due_end,lcm.due_amount,lelc.due_period
         FROM
         collection c
         LEFT JOIN
         (SELECT cus_mapping_id, SUM(fine_charge) AS total_fine_charge FROM fine_charges GROUP BY cus_mapping_id) f
         ON f.cus_mapping_id = c.cus_mapping_id
-        LEFT JOIN
-        (SELECT cus_mapping_id, SUM(penalty) AS total_penalty FROM penalty_charges GROUP BY cus_mapping_id) p
-        ON p.cus_mapping_id = c.cus_mapping_id
         LEFT JOIN
         loan_entry_loan_calculation lelc
         ON lelc.loan_id = c.loan_id
@@ -102,9 +98,9 @@ class CustomerStatus
                 $penalty_track = $checkrow['penalty_track'] ?? 0;
                 // Fine and penalty calculations
                 $fine_charge = $this->getFineCharge($cus_mapping_id, $fine);
-                $penalty = $this->getPenalty($cus_mapping_id,  $penalty_track);
+                // $penalty = $this->getPenalty($cus_mapping_id,  $penalty_track);
                 // Calculate and update status based on the due period (monthly/weekly)
-                $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty);
+                $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge);
                 $cus_status = $status['status'];
                 $balanceAmount = $status['balanceAmount'];
                 $pendings= $status['pending'];
@@ -133,16 +129,16 @@ class CustomerStatus
         return $final_fine;
     }
 
-    private function getPenalty($cus_mapping_id, $penalty_track)
-    {
-        $penalty_query = $this->pdo->query("SELECT SUM(penalty) as penalty FROM penalty_charges WHERE cus_mapping_id = $cus_mapping_id AND penalty_date <= CURDATE()");
-        $penalty_row = $penalty_query->fetch();
-        $pen_cal = $penalty_row['penalty'] ?? 0;
-        $final_penalty = $pen_cal - $penalty_track;
-        return $final_penalty;
-    }
+    // private function getPenalty($cus_mapping_id, $penalty_track)
+    // {
+    //     $penalty_query = $this->pdo->query("SELECT SUM(penalty) as penalty FROM penalty_charges WHERE cus_mapping_id = $cus_mapping_id AND penalty_date <= CURDATE()");
+    //     $penalty_row = $penalty_query->fetch();
+    //     $pen_cal = $penalty_row['penalty'] ?? 0;
+    //     $final_penalty = $pen_cal - $penalty_track;
+    //     return $final_penalty;
+    // }
 
-    private function calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty)
+    private function calculateStatus($row, $totalPaidAmt, $fine_charge)
     {
         $currentDate = new DateTime();
         $status = 'Payable'; // Default status
@@ -167,7 +163,7 @@ class CustomerStatus
                 $pending = $toPayTillPrev - $totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
-                    if ($fine_charge > 0 || $penalty > 0) {
+                    if ($fine_charge > 0) {
                         $status = 'Pending';
                     }
                 } else if ($toPayTillPrev == $totalPaidAmt) {
@@ -214,7 +210,7 @@ class CustomerStatus
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                     // If there are fines or penalties, the status should be 'Pending' even if the amount is fully paid
-                    if ($fine_charge > 0 || $penalty > 0) {
+                    if ($fine_charge > 0 ) {
                         $status = 'Pending';
                     }
                 } elseif ($toPayTillPrev == $totalPaidAmt) {

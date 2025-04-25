@@ -8,11 +8,13 @@ $user_id = ($_POST['user_id'] != '') ? $userwhere = " AND insert_login_id = '" .
 if ($type == 'today') {
     $current_date = date('Y-m-d');
     $where = " DATE(created_on) <='$current_date' - INTERVAL 1 DAY $userwhere";
+    $cus_sav_where = " DATE(paid_date) <='$current_date' - INTERVAL 1 DAY $userwhere";
 } else if ($type == 'day') {
     $from_date = $_POST['from_date'];
     $to_date = $_POST['to_date'];
     //$where = " (DATE(created_on) >= '$from_date' && DATE(created_on) <= '$from_date' ) $userwhere ";
     $where = " DATE(created_on) <= DATE('$from_date') - INTERVAL 1 DAY $userwhere";
+    $cus_sav_where = " DATE(paid_date) <= DATE('$from_date') - INTERVAL 1 DAY $userwhere";
 } else if ($type == 'month') {
     // Get the selected month and subtract one month
     $selectedMonth = $_POST['month'];
@@ -24,6 +26,7 @@ if ($type == 'today') {
 
     // Apply the filter to fetch data from the previous month
     $where = " (MONTH(created_on) <= '$month' AND YEAR(created_on) = '$year') $userwhere";
+    $cus_sav_where = " (MONTH(created_on) <= '$month' AND YEAR(created_on) = '$year') $userwhere";
 }
 
 $op_data = array();
@@ -97,14 +100,14 @@ if ($ot_dr_b_qry->rowCount() > 0) {
 }
 
 //savings Credit / Debit.
-$sa_cr_h_qry  = $pdo->query("SELECT SUM(amount) AS ot_amnt FROM savings WHERE coll_mode = 1 AND cat_type = 1 AND $where "); 
+$sa_cr_h_qry  = $pdo->query("SELECT SUM(savings_amount) AS ot_amnt FROM customer_savings WHERE credit_debit = 1 AND $cus_sav_where "); 
 if ($sa_cr_h_qry ->rowCount() > 0) {
     $sa_cr_h = $sa_cr_h_qry->fetch()['ot_amnt'];
 } else {
     $sa_cr_h = 0;
 }
 
-$sa_dr_h_qry = $pdo->query("SELECT SUM(amount) AS ot_amnt FROM savings WHERE coll_mode = 1 AND cat_type = 2 AND $where "); 
+$sa_dr_h_qry = $pdo->query("SELECT SUM(savings_amount) AS ot_amnt FROM customer_savings WHERE credit_debit = 2 AND $cus_sav_where "); 
 if ($sa_dr_h_qry ->rowCount() > 0) {
     $sa_dr_h = $sa_dr_h_qry->fetch()['ot_amnt'];
 } else {

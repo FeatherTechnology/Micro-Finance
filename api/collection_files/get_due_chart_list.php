@@ -824,12 +824,12 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
                 $penalty = $penalty_per;
             }
 
-            if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
-                $checkPenalty = $pdo->query("SELECT * FROM penalty_charges WHERE penalty_date = '$penalty_date' AND `cus_mapping_id` = '$cus_mapping_id'");
-                if ($checkPenalty->rowCount() == 0) {
-                }
-                $countForPenalty++;
-            }
+            // if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
+            //     $checkPenalty = $pdo->query("SELECT * FROM penalty_charges WHERE penalty_date = '$penalty_date' AND `cus_mapping_id` = '$cus_mapping_id'");
+            //     if ($checkPenalty->rowCount() == 0) {
+            //     }
+            //     $countForPenalty++;
+            // }
 
             $count++; //Count represents how many months are exceeded
         }
@@ -865,12 +865,12 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             $total_penalty = ($row['penalty'] === null) ? 0 : $row['penalty'];
 
             // Calculate total penalty raised till now
-            $result1 = $pdo->query("SELECT SUM(penalty) as penalty FROM `penalty_charges` WHERE cus_mapping_id = '$cus_mapping_id'");
-            $row1 = $result1->fetch();
-            $penalty = ($row1['penalty'] === null) ? 0 : $row1['penalty'];
+            // $result1 = $pdo->query("SELECT SUM(penalty) as penalty FROM `penalty_charges` WHERE cus_mapping_id = '$cus_mapping_id'");
+            // $row1 = $result1->fetch();
+            // $penalty = ($row1['penalty'] === null) ? 0 : $row1['penalty'];
 
             // Subtract penalty paid from total penalty
-            $response['penalty'] = $penalty - $total_penalty;
+            // $response['penalty'] = $penalty - $total_penalty;
 
             if ($response['pending']  > 0) {
                 $response['payable']  =   max(0, $response['pending']  + $response['due_amnt']);
@@ -943,13 +943,13 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             }
             $count++;
 
-            if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
-                $checkPenalty = $pdo->query("SELECT * from penalty_charges where penalty_date = '$penalty_checking_date' and cus_mapping_id = '$cus_mapping_id'");
-                if ($checkPenalty->rowCount() == 0) {
-                    // Handle penalty charge here if needed
-                }
-                $countForPenalty++;
-            }
+            // if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
+            //     $checkPenalty = $pdo->query("SELECT * from penalty_charges where penalty_date = '$penalty_checking_date' and cus_mapping_id = '$cus_mapping_id'");
+            //     if ($checkPenalty->rowCount() == 0) {
+            //         // Handle penalty charge here if needed
+            //     }
+            //     $countForPenalty++;
+            // }
         }
         //condition END
 
@@ -983,12 +983,12 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             $row = $result->fetch();
             $row['penalty'] = $row['penalty'] ?? 0;
 
-            $result1 = $pdo->query("SELECT SUM(penalty) as penalty FROM `penalty_charges` WHERE cus_mapping_id = '$cus_mapping_id'");
-            $row1 = $result1->fetch();
-            $penalty = $row1['penalty'] ?? 0;
+            // $result1 = $pdo->query("SELECT SUM(penalty) as penalty FROM `penalty_charges` WHERE cus_mapping_id = '$cus_mapping_id'");
+            // $row1 = $result1->fetch();
+            // $penalty = $row1['penalty'] ?? 0;
 
-            // Calculate pending penalty
-            $response['penalty'] = $penalty - $row['penalty'];
+            // // Calculate pending penalty
+            // $response['penalty'] = $penalty - $row['penalty'];
 
             if ($response['pending']  > 0) {
                 $response['payable']  =   max(0, $response['pending']  + $response['due_amnt']);

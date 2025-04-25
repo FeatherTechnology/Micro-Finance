@@ -81,9 +81,9 @@ class CollectStsClass
                 $penalty_track = $checkrow['penalty_track'] ?? 0;
                 // Fine and penalty calculations
                 $fine_charge = $this->getFineCharge($cus_mapping_id,$fine);
-                $penalty = $this->getPenalty($cus_mapping_id,$penalty_track);
+                // $penalty = $this->getPenalty($cus_mapping_id,$penalty_track);
                 // Calculate and update status based on the due period (monthly/weekly)
-                $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty);
+                $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge);
 
                 // Check if any customer has 'Pending' or 'OD' status
                 if ($status == 'Pending' || $status == 'OD') {
@@ -137,7 +137,7 @@ class CollectStsClass
         return $final_penalty;
     }
 
-    private function calculateStatus($row, $totalPaidAmt, $fine_charge, $penalty)
+    private function calculateStatus($row, $totalPaidAmt, $fine_charge)
     {
         $currentDate = new DateTime();
         $status = 'Payable'; // Default status
@@ -164,7 +164,7 @@ class CollectStsClass
                 $pending = $toPayTillPrev - $totalPaidAmt;
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
-                    if ($fine_charge > 0 || $penalty > 0) {
+                    if ($fine_charge > 0) {
                         $status = 'Pending';
                     }
                 } else if ($toPayTillPrev == $totalPaidAmt) {
@@ -212,7 +212,7 @@ class CollectStsClass
                 if ($totalPaidAmt >= $toPayTillNow) {
                     $status = 'Paid';
                     // If there are fines or penalties, the status should be 'Pending' even if the amount is fully paid
-                    if ($fine_charge > 0 || $penalty > 0) {
+                    if ($fine_charge > 0 ) {
                         $status = 'Pending';
                     }
                 } elseif ($toPayTillPrev == $totalPaidAmt) {

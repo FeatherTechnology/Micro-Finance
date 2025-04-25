@@ -238,6 +238,7 @@
                             <thead>
                                 <th>S No.</th>
                                 <th>Date</th>
+                                <th>Credit / Debit</th>
                                 <th>Savings</th>
                                 <th>Total Savings</th>
                             </thead>

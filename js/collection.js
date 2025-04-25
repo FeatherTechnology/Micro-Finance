@@ -48,6 +48,7 @@ $(document).ready(function () {
 
                 // Get values from the table for the current row
                 let rowId = row.find('input.total_collection').data('id');
+                let cus_id = row.find('td:nth-child(2)').text();
                 let individualAmount = row.find('td:nth-child(4)').text().replace(/,/g, '');
                 let pendingAmount = row.find('td:nth-child(5)').text().replace(/,/g, '');
                 let payableAmount = row.find('td:nth-child(6)').text().replace(/,/g, '');
@@ -58,6 +59,7 @@ $(document).ready(function () {
                 let collectionsavings = parseFloat(row.find('input.collection_savings').val()) || 0;
                 let collectionFine = parseFloat(row.find('input.collection_fine').val()) || 0;
                 let totalCollection = parseFloat(row.find('input.total_collection').val()) || 0;
+                let aadhar_num = row.find('td:nth-child(15)').text()
 
                 // Skip this row if total_collection is empty or zero
                 if (totalCollection === 0) {
@@ -70,13 +72,14 @@ $(document).ready(function () {
                     individual_amount: individualAmount,
                     pending: pendingAmount,
                     payable: payableAmount,
-                    // penalty: penaltyAmount,
+                    cus_id: cus_id,
                     fine_charge: fineChargeAmount,
                     collection_date: collectionDate,
                     collection_due: collectionDue,
                     collection_savings: collectionsavings,
                     collection_fine: collectionFine,
-                    total_collection: totalCollection
+                    total_collection: totalCollection,
+                    aadhar_num: aadhar_num
                 });
             });
 
@@ -178,9 +181,10 @@ $(document).ready(function () {
     ////////////////////////////////////////////Penalty Chart////////////////////////
     $(document).on('click', '.Savings-chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
-        var cus_mapping_id = $(this).attr('data-id'); // Capture data-id from the clicked element
+        var cus_id = $(this).attr('data-id'); // Capture data-id from the clicked element
+        var aadhar = $(this).attr('aadhar'); // Capture aadhar from the clicked element
         $('#Savings_chart_model').modal('show'); // Show the modal
-        penaltyChartList(cus_mapping_id);
+        savingsChartList(cus_id,aadhar);
     });
     ///////////////////////////////////////////////Penalty cahrt End///////////////////////////////////////////
     //////////////////////////////////////////Due Chart start//////////////////////////////
@@ -364,7 +368,7 @@ function collectionCustomerList(loan_id) {
                     "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +
                     "<a href='#' class='due-chart' data-id='" + item.id + "'>Due Chart</a>" +
-                    "<a href='#' class='Savings-chart' data-id='" + item.id + "'>Savings Chart</a>" +
+                    "<a href='#' class='Savings-chart' data-id='" + item.cus_id + "' aadhar='" + item.aadhar_number + "'>Savings Chart</a>" +
                     "<a href='#' class='fine-chart' data-id='" + item.id + "'>Fine Chart</a>" +
                     "</div>" +
                     "</div>";
@@ -402,6 +406,7 @@ function collectionCustomerList(loan_id) {
                     '<td><input type="number" class="form-control total_collection" data-id="' + item.id + '" value=" " readonly></td>' +
                     '<td>' + dropdownContent + '</td>' +
                     '<td>' + action + '</td>' +
+                    '<td style=display:none>' + item.aadhar_number + '</td>' +
                     '</tr>';
 
                 tbody.append(row);
@@ -512,10 +517,10 @@ function fineChartList(cus_mapping_id) {
     });//Ajax End.
 }
 //Penalty chart
-function penaltyChartList(cus_mapping_id) {
+function savingsChartList(cus_id,aadhar) {
     $.ajax({
         url: 'api/collection_files/get_savings_chart_list.php',
-        data: { 'cus_mapping_id': cus_mapping_id },
+        data: { 'cus_id': cus_id ,'aadhar':aadhar},
         type: 'post',
         cache: false,
         success: function (response) {

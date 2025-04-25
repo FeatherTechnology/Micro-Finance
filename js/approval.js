@@ -479,7 +479,8 @@ $('#cus_mapping_table tbody tr').each(function () {
   var designation = $(this).find('td:nth-child(10)').text(); 
   var customer_loan_amount = $(this).find('td:nth-child(9)').text(); 
     
-  var intrest_amount = (customer_loan_amount * (intrest_rate / 100)) * due_period;
+  var intrestamount = (customer_loan_amount * (intrest_rate / 100)) * due_period;
+  var intrest_amount =Math.round(intrestamount);
   var dueAmount = (parseFloat(customer_loan_amount) + parseFloat(intrest_amount)) / due_period;
   var roundeddue = Math.ceil(dueAmount / 5) * 5;
   if (roundeddue < dueAmount) {
@@ -573,7 +574,7 @@ $('#cus_mapping_table tbody tr').each(function () {
          // Prevent approval and show an alert or message
          swalError('Warning', 'Kindly Enter the centre Limit');
          return; // Stop further execution
-     }else if(loan_amount > centre_limit){
+     }else if(parseFloat(loan_amount)> parseFloat(centre_limit)){
       swalError('Warning', 'Centre limit is less than the loan amount. Please update either the centre limit or the loan amount.');
       return; 
     }

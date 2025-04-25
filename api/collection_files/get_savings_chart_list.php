@@ -28,6 +28,7 @@ function moneyFormatIndia($num)
         <tr>
             <th width='20'> S.No </th>
             <th> Date </th>
+            <th>Credit / Debit</th>
             <th> Savings </th>
             <th> Total Savings </th>
         </tr>
@@ -35,22 +36,40 @@ function moneyFormatIndia($num)
     <tbody>
 
         <?php
-        $cus_mapping_id = $_POST['cus_mapping_id'];
-        $run = $pdo->query("SELECT * FROM `customer_savings` WHERE `cus_map_id`= '$cus_mapping_id' ORDER BY paid_date ");
+        $cus_id = $_POST['cus_id'];
+        $run = $pdo->query("SELECT cs.id, cs.cus_id, cs.paid_date, cs.credit_debit, cs.savings_amount,
+       ( SELECT GREATEST(
+                    SUM(
+                      CASE 
+                        WHEN cs2.credit_debit = '1' THEN cs2.savings_amount
+                        WHEN cs2.credit_debit = '2' THEN -cs2.savings_amount
+                        ELSE 0
+                      END
+                    ), 0
+                )
+         FROM customer_savings cs2
+         WHERE cs2.cus_id = cs.cus_id
+           AND (cs2.paid_date < cs.paid_date 
+                OR (cs2.paid_date = cs.paid_date AND cs2.id < cs.id))
+       ) AS total_savings
+        FROM customer_savings cs
+        WHERE cs.cus_id = '$cus_id'
+        ORDER BY cs.paid_date, cs.id;");
 
         $i = 1;
         $totalsavings = 0;
         while ($row = $run->fetch()) {
             $paid_date = $row['paid_date'];
             $savings_amount =$row['savings_amount']; 
-            $total_savings =$pdo->query("SELECT sum(savings_amount)as savings FROM `customer_savings` WHERE `cus_map_id`= '$cus_mapping_id ' and paid_date < '$paid_date'"); 
-            $tot_savings = $total_savings->fetch()
+            $total_savings_amount =$row['total_savings']; 
+            $credit_debit = $row['credit_debit']; 
         ?>
             <tr>
                 <td><?php echo $i; ?></td>
                 <td><?php echo $row['paid_date']!=''?date('d-m-Y',strtotime($row['paid_date'])):''; ?></td>
+                <td><?php echo $row['credit_debit'] == 1 ? 'Credit' : ($row['credit_debit'] == 2 ? 'Debit' : ''); ?></td>
                 <td><?php echo moneyFormatIndia($savings_amount); ?></td>
-                <td><?php echo moneyFormatIndia(!empty($tot_savings['savings']) ? $tot_savings['savings'] : 0); ?></td>
+                <td><?php echo moneyFormatIndia(!empty($total_savings_amount) ? $total_savings_amount : 0); ?></td>
             </tr>
 
         <?php $i++;
