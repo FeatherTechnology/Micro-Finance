@@ -80,7 +80,7 @@ $data = [];
 foreach ($result as $row) {
 
     $status = $collectionSts->updateCollectStatus($row['loan_id']);
-    $customer_status = $obj->custStatus($row['id'],$row['loan_id']);
+    $customer_status = $obj->custStatus($row['id'],$row['loan_id'], '');
     $status = $customer_status['status'];  // Get the status
     
     if($status == "Paid"){

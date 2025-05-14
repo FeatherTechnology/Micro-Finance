@@ -2,7 +2,7 @@
 require "../../../ajaxconfig.php";
 
 $trans_cat = $_POST['trans_cat'];
-$transcat = ["1" => 'DEP', "2" => 'INV', "3" => 'EL', "4" => 'EXC', "5" => 'BDEP', "6" => 'BWDL', "7" => 'SAL', "8" => 'INC', "9" => 'UBL'];
+$transcat = ["1" => 'DEP', "2" => 'INV', "3" => 'EL', "4" => 'EXC', "5" => 'BDEP', "6" => 'BWDL', "8" => 'INC', "9" => 'UBL'];
 $trans = $transcat[$trans_cat];
 
 $qry = $pdo->query("SELECT id,ref_id FROM other_transaction WHERE trans_cat ='$trans_cat' AND ref_id !='' ORDER BY id DESC LIMIT 1");

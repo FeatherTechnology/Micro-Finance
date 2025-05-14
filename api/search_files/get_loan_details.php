@@ -16,7 +16,7 @@ where lcm.cus_id='$cus_id '");
 
     if ($qry->rowCount() > 0) {
         while ($gcm_info = $qry->fetch(PDO::FETCH_ASSOC)) {
-            $cus_status=$collectionSts->custStatus($gcm_info['cus_map_id'],$gcm_info['loan_id']);
+            $cus_status=$collectionSts->custStatus($gcm_info['cus_map_id'],$gcm_info['loan_id'],'');
             $status = $cus_status['status'];
             $gcm_info['status'] = $status;
             $loan_date = date('d-m-Y', strtotime($gcm_info['loan_date']));

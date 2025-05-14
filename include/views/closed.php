@@ -152,13 +152,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                        <div class="form-group">
-                            <label for="centre_remarks">Centre Remarks</label>
-                            <textarea class="form-control" name="centre_remarks" id="centre_remarks" tabindex="11" readonly></textarea>
-
-                        </div>
-                    </div>
                     <div class="col-12 mt-3 text-right">
                         <button name="submit_centre_closed" id="submit_centre_closed" class="btn btn-primary" tabindex="12"><span class="icon-check"></span>&nbsp;Submit</button>
                     </div>

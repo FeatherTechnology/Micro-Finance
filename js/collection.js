@@ -48,12 +48,12 @@ $(document).ready(function () {
 
                 // Get values from the table for the current row
                 let rowId = row.find('input.total_collection').data('id');
-                let individualAmount = row.find('td:nth-child(4)').text().replace(/,/g, '');
-                let pendingAmount = row.find('td:nth-child(5)').text().replace(/,/g, '');
-                let payableAmount = row.find('td:nth-child(6)').text().replace(/,/g, '');
+                let individualAmount = row.find('td:nth-child(5)').text().replace(/,/g, '');
+                let pendingAmount = row.find('td:nth-child(6)').text().replace(/,/g, '');
+                let payableAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
                 // let penaltyAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
-                let fineChargeAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
-                let collectionDate = row.find('td:nth-child(8)').text()
+                let fineChargeAmount = row.find('td:nth-child(8)').text().replace(/,/g, '');
+                let collectionDate = row.find('td:nth-child(9)').text()
                 let collectionDue = parseFloat(row.find('input.collection_due').val()) || 0;
                 let collectionsavings = parseFloat(row.find('input.collection_savings').val()) || 0;
                 let collectionFine = parseFloat(row.find('input.collection_fine').val()) || 0;
@@ -359,7 +359,7 @@ function collectionCustomerList(loan_id) {
                 var payable = item.payable ? item.payable : 0;
                 // var penalty = item.penalty ? item.penalty : 0;
                 var fine_charge = item.fine_charge ? item.fine_charge : 0;
-                var customer_amnt = item.total_cus_amnt ? item.total_cus_amnt : '';
+                var balance_amnt = item.total_cus_amnt ? item.total_cus_amnt : 0;
                 var dropdownContent = "<div class='dropdown'>" +
                     "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +
@@ -387,6 +387,7 @@ function collectionCustomerList(loan_id) {
                     '<td>' + serialNo  + '</td>' +
                     '<td>' + item.cus_id + '</td>' +
                     '<td>' + item.first_name + '</td>' +
+                    '<td>' + moneyFormatIndia(balance_amnt) + '</td>' +
                     '<td>' + moneyFormatIndia(individual_amount) + '</td>' +
                     '<td>' + moneyFormatIndia(pending) + '</td>' +
                     '<td>' + moneyFormatIndia(payable) + '</td>' +

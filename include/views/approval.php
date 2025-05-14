@@ -247,13 +247,13 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="interest_rate_calc">Interest Rate</label><span class="text-danger min-max-int">*</span><!-- Min and max intrest rate-->
-                                    <input type="number" class="form-control to_clear" id="interest_rate_calc" name="interest_rate_calc" tabindex="15">
+                                    <input type="number" class="form-control to_clear" id="interest_rate_calc" name="interest_rate_calc" tabindex="15" readonly> 
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="due_period_calc">Due Period</label><span class="text-danger min-max-due">*</span><!-- Min and max Profit Method-->
-                                    <input type="number" class="form-control to_clear" id="due_period_calc" name="due_period_calc" tabindex="16">
+                                    <input type="number" class="form-control to_clear" id="due_period_calc" name="due_period_calc" tabindex="16" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
@@ -284,49 +284,49 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="loan_amnt_calc">Loan Amount</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="loan_amnt_calc" name="loan_amnt_calc" tabindex="20" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="loan_amnt_calc" name="loan_amnt_calc" tabindex="20" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="principal_amnt_calc">Principal Amount</label><span class="text-danger princ-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="principal_amnt_calc" name="principal_amnt_calc" tabindex="21" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="principal_amnt_calc" name="principal_amnt_calc" tabindex="21" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="interest_amnt_calc">Interest Amount</label><span class="text-danger int-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="interest_amnt_calc" name="interest_amnt_calc" tabindex="22" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="interest_amnt_calc" name="interest_amnt_calc" tabindex="22" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="total_amnt_calc">Total Amount</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="total_amnt_calc" name="total_amnt_calc" tabindex="23" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="total_amnt_calc" name="total_amnt_calc" tabindex="23" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="due_amnt_calc">Due Amount</label><span class="text-danger due-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="due_amnt_calc" name="due_amnt_calc" tabindex="24" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="due_amnt_calc" name="due_amnt_calc" tabindex="24" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="doc_charge_calculate">Document Charges</label><span class="text-danger doc-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="doc_charge_calculate" name="doc_charge_calculate" tabindex="25" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="doc_charge_calculate" name="doc_charge_calculate" tabindex="25" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="processing_fees_calculate">Processing Fees</label><span class="text-danger proc-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="processing_fees_calculate" name="processing_fees_calculate" tabindex="26" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="processing_fees_calculate" name="processing_fees_calculate" tabindex="26" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="net_cash_calc">Net Cash</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="net_cash_calc" name="net_cash_calc" tabindex="27" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="net_cash_calc" name="net_cash_calc" tabindex="27" readonly>
                                 </div>
                             </div>
                         </div>
@@ -357,9 +357,9 @@
                     </div>
                 </div>
                 <!--- -------------------------------------- Collection Info END ------------------------------- -->
-                 <!--- -------------------------------------- Reference Info START ------------------------------- -->
+                <!--- -------------------------------------- Reference Info START ------------------------------- -->
 
-                 <div class="card">
+                <div class="card">
                     <div class="card-header">
                         <div class="card-title">Reference Info
                             <!-- <button type="button" class="btn btn-primary" id="add_rep" name="add_rep" data-toggle="modal" data-target="#add_rep_info_modal" onclick="getRepresentTable()" style="padding: 5px 35px; float: right;" tabindex='9'><span class="icon-add"></span></button> -->
@@ -427,17 +427,17 @@
                                     <input type="text" class="form-control" id="designation" name="designation" tabindex="33">
                                 </div>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 align-self-end">
-                                <div class="form-group">
-                                    <input type="button" class="btn btn-primary modalBtnCss" id="submit_cus_map" name="submit_cus_map" value="Add" tabindex="34">
-                                </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group d-flex justify-content-end">
+                                <input type="button" class="btn btn-primary modalBtnCss" id="submit_cus_map" name="submit_cus_map" value="Add" tabindex="35">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <table id="cus_mapping_table" class="table custom-table">
                                     <thead>
-                                    <tr>
+                                        <tr>
                                             <th width="20">S.No.</th>
                                             <th>Customer ID</th>
                                             <th style="display: none;">Customer Map Id</th>
@@ -449,7 +449,7 @@
                                             <th style="width: 150px;">Customer Loan Amount</th>
                                             <th style="width: 110px;">Designation</th>
                                             <th>Action</th>
-                                       </tr>
+                                        </tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
@@ -495,28 +495,28 @@
                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                         <div class="form-group">
                             <label for="lable"> Lable</label>
-                            <input type="text" class="form-control" id="lable" name="lable" tabindex="38" >
+                            <input type="text" class="form-control" id="lable" name="lable" tabindex="38">
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                         <div class="form-group">
                             <label for="feedback"> Feed Back</label>
-                            <input type="text" class="form-control" id="feedback" name="feedback" tabindex="39" >
+                            <input type="text" class="form-control" id="feedback" name="feedback" tabindex="39">
                         </div>
                     </div>
                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                         <div class="form-group">
                             <label for="remarks"> Remarks</label>
                             <!-- <input type="text" class="form-control" id="remarks" name="remarks" > -->
-                            <textarea class="form-control" name="remarks" id="remarks"  tabindex="40"></textarea>
+                            <textarea class="form-control" name="remarks" id="remarks" tabindex="40"></textarea>
 
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-12 mt-3 mb-5 text-right">
-                    <button name="submit_centre_limit" id="submit_centre_limit" class="btn btn-primary" tabindex="41"><span class="icon-check"></span>&nbsp;Submit</button>
-                </div>
+                <button name="submit_centre_limit" id="submit_centre_limit" class="btn btn-primary" tabindex="41"><span class="icon-check"></span>&nbsp;Submit</button>
+            </div>
         </div>
 
     </form>

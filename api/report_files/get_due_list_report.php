@@ -9,9 +9,8 @@ $search_date = $_POST['search_date'];
 $due_type = $_POST['due_type'];
 $week_days = $_POST['week_days'];
 
-
-
 $column = array(
+    'lelc.loan_id',
     'lelc.loan_id',
     'lelc.loan_id',
     'lelc.loan_id',
@@ -23,10 +22,14 @@ $column = array(
     'cc.first_name',
     'cc.mobile1',
     'anc.areaname',
-    'lelc.loan_amount_calc'
-
+    'lelc.loan_amount_calc',
+    'lelc.loan_id',
+    'lelc.loan_id',
+    'lelc.loan_id',
+    'lelc.loan_id',
+    'lelc.loan_id',
+    'lelc.loan_id'
 );
-
 
 $query = "SELECT
     lelc.due_month,
@@ -37,6 +40,9 @@ $query = "SELECT
     lelc.loan_date,
     lelc.due_end,
     lelc.due_period,
+    lelc.loan_amount_calc,
+    lcm.id AS cus_mapping_id,
+    lcm.due_amount,
     cntr.centre_id,
     cntr.centre_no,
     cntr.centre_name,
@@ -44,30 +50,31 @@ $query = "SELECT
     cc.first_name,
     cc.cus_id,
     anc.areaname,
-    lelc.loan_amount_calc,
-    cl.closed_sub_status,
-    lcm.id
-FROM
-    loan_entry_loan_calculation lelc
-JOIN centre_creation cntr ON
-    cntr.centre_id = lelc.centre_id
-JOIN loan_cus_mapping lcm ON
-    lcm.loan_id = lelc.loan_id
-JOIN area_name_creation anc ON
-    cntr.area = anc.id
-JOIN customer_creation cc ON
-    cc.id = lcm.cus_id
-left JOIN closed_loan cl ON
-    cl.centre_id = cntr.centre_id
-JOIN loan_issue li ON
-    li.loan_id = lelc.loan_id
-WHERE
-    li.issue_date <= '$search_date' and lelc.due_month='$due_type'";
+    col.total_paid,
+    col.total_paid_track
+FROM loan_entry_loan_calculation lelc
+JOIN centre_creation cntr ON cntr.centre_id = lelc.centre_id
+JOIN loan_cus_mapping lcm ON lcm.loan_id = lelc.loan_id
+JOIN customer_creation cc ON cc.id = lcm.cus_id
+JOIN area_name_creation anc ON cntr.area = anc.id
+LEFT JOIN closed_loan cl ON cl.centre_id = cntr.centre_id
+JOIN loan_issue li ON li.loan_id = lelc.loan_id
+LEFT JOIN (
+    SELECT 
+        loan_id, cus_mapping_id,
+        SUM(due_amt_track) AS total_paid,
+        SUM(total_paid_track) AS total_paid_track
+    FROM collection
+    WHERE DATE(coll_date) <= '$search_date'
+    GROUP BY loan_id, cus_mapping_id
+) col ON col.loan_id = lelc.loan_id AND col.cus_mapping_id = lcm.id
+WHERE li.issue_date <= '$search_date'
+AND lelc.due_month = '$due_type'";
 
 if (isset($_POST['week_days'])) {
-    $query .=" and lelc.scheme_day_calc='$week_days' GROUP by lcm.id";
-}else{
-     $query .=" GROUP by lcm.id";
+    $query .= " and lelc.scheme_day_calc='$week_days' GROUP by lcm.id";
+} else {
+    $query .= " GROUP by lcm.id";
 }
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
@@ -78,7 +85,6 @@ if (isset($_POST['search'])) {
             cc.mobile1 LIKE '%" . $_POST['search'] . "%' OR
             cc.first_name LIKE '%" . $_POST['search'] . "%' OR
             cc.cus_id LIKE '%" . $_POST['search'] . "%' OR
-            lc.loan_category LIKE '%" . $_POST['search'] . "%' OR
             lelc.due_end LIKE '%" . $_POST['search'] . "%' OR
             cl.closed_date LIKE '%" . $_POST['search'] . "%' ) ";
     }
@@ -134,22 +140,56 @@ foreach ($result as $row) {
     }
     $loan_id = $row['loan_id'];
     $centre = $row['centre_id'];
-    $cus_mapping_id = $row['id'];
+    $cus_mapping_id = $row['cus_mapping_id'];
     $due_period = $row['due_period'];
-    $query = $pdo->query("SELECT due_amount FROM `loan_cus_mapping` WHERE`id`='$cus_mapping_id'");
-    $issueDate = $query->fetch(PDO::FETCH_ASSOC);
-    $loan_amount = round(floatval($issueDate['due_amount']) * $due_period);
-    $due_amount = round(floatval($issueDate['due_amount']));
+    $due_amount = round(floatval($row['due_amount']));
+    $loan_amount = $due_amount * $due_period;
 
-    $customer_status = $obj->custStatus($cus_mapping_id, $loan_id);
+    // Step 1: Get due_start a
+    $due_start_date = $row['due_start'];
+    $totalPaidAmt = 0;
+
+    // Initialize these to avoid undefined variable warnings
+    $month_diff = 0;
+    $estimated_pending = 0;
+
+    if ($due_start_date && $due_amount > 0) {
+        $start = new DateTime($due_start_date);
+        $end = new DateTime($search_date);
+        $diff = $start->diff($end);
+        $totalPaidAmt = floatval($row['total_paid']);
+        $totalPaidTrack = floatval($row['total_paid_track']);
+
+        $month_diff = 0;
+        $estimated_pending = 0;
+
+        if ($due_type == '1') { // Monthly
+            if ($start->format('Y-m') !== $end->format('Y-m')) {
+                $month_diff = ($diff->y * 12) + $diff->m;
+                if ($diff->d > 0 && $month_diff > 0) {
+                    $month_diff++;
+                }
+                $estimated_pending = $due_amount * max(($month_diff - 1), 0);
+            }
+        } elseif ($due_type == '2') { // Weekly
+            $days = $diff->days;
+            $week_diff = intdiv($days, 7) + (($days % 7) > 0 ? 1 : 0);
+            $month_diff = $week_diff;
+            $estimated_pending = $due_amount * max(($week_diff - 1), 0);
+        }
+
+        // Step 4: Final pending
+        $pending = max(($estimated_pending - $totalPaidAmt), 0);
+
+        // Step 5: Pending due count
+        $pending_due_count = ($due_amount > 0) ? number_format($pending / $due_amount, 2, '.', '') : 0;
+
+        // Step 6: Payable amount
+        $payable_amount = max(($month_diff * $due_amount) - $totalPaidTrack, 0);
+    }
+
+    $customer_status = $obj->custStatus($cus_mapping_id, $loan_id, $search_date);
     $status = $customer_status['status'];
-    $pending = $customer_status['pendings'];
-    $payable = $customer_status['payable'];
-    $totalPaidAmt = $customer_status['totalPaidAmt'];
-    $paid_due=$totalPaidAmt/$due_amount;
-    $balance_due= $due_period-$paid_due;
-    $balance_due_pending = number_format($balance_due, 2, '.', '');
-
 
     $sub_array[] = $sno;
     $sub_array[] = isset($date_day) ?  $date_day : '';
@@ -166,13 +206,10 @@ foreach ($result as $row) {
     $sub_array[] = moneyFormatIndia($loan_amount);
     $sub_array[] = moneyFormatIndia($due_amount);
     $sub_array[] = isset($row['due_period']) ? $row['due_period'] : '';
-    $sub_array[] = isset($pending) ? ($pending < 0 ? 0 : $pending) : '';
-    $sub_array[] = isset($balance_due_pending) ? $balance_due_pending : '';
-    $sub_array[] = isset($payable) ? ($payable < 0 ? 0 : $payable) : '';
-    $sub_array[] = isset($status ) ? $status  : '';
-
-    $sub_array[] = isset($row['closed_sub_status']) ? ($row['closed_sub_status'] == 1 ? 'Consider' : ($row['closed_sub_status'] == 2 ? 'Blocked' : '')) : '';
-
+    $sub_array[] = moneyFormatIndia(isset($pending) ? ($pending < 0 ? 0 : $pending) : '');
+    $sub_array[] = isset($pending_due_count) ? $pending_due_count : '';
+    $sub_array[] = moneyFormatIndia(isset($payable_amount) ? ($payable_amount < 0 ? 0 : $payable_amount) : '');
+    $sub_array[] = isset($status) ? $status  : '';
     $data[]      = $sub_array;
     $sno = $sno + 1;
 }
