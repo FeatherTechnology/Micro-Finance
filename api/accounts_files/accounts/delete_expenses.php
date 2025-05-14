@@ -2,7 +2,7 @@
 require '../../../ajaxconfig.php';
 
 $id = $_POST['id'];
-$qry = $pdo->query("DELETE FROM `expenses` WHERE id='$id'");
+$qry = $pdo->query("DELETE FROM `expenses` WHERE id ='$id'");
 if ($qry) {
     $result = 1;
 } else {

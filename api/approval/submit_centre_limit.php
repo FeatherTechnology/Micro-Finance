@@ -7,7 +7,7 @@ $lable = $_POST['lable'];
 $feedback = $_POST['feedback'];
 $remarks = $_POST['remarks'];
 
-$qry = $pdo->query("UPDATE `centre_creation` SET `centre_limit`='$centre_limit',`lable`='$lable',`feedback`='$feedback',`remarks`='$remarks'WHERE centre_id='$centre_id '");
+$qry = $pdo->query("UPDATE `centre_creation` SET `centre_limit`='$centre_limit', `lable`='$lable', `feedback`='$feedback', `remarks`='$remarks' WHERE centre_id ='$centre_id '");
 if($qry){
     $result="0";
 }

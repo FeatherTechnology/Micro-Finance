@@ -7,15 +7,11 @@ $current_date = date('Y-m-d');
 $cash_type = ["1" => 'Hand Cash', "2" => 'Bank Cash'];
 $crdr = ["1" => 'Credit', "2" => 'Debit'];
 $trans_list_arr = array();
-$qry = $pdo->query("SELECT id, `invoice_id`, `coll_mode`, `aadhar_number`, `cus_name`, `description`, `amount`, `cat_type` FROM `savings` WHERE `insert_login_id`='$user_id' ");
+$qry = $pdo->query("SELECT * FROM `customer_savings` WHERE `insert_login_id` = '$user_id' ");
 if ($qry->rowCount() > 0) {
     while ($result = $qry->fetch()) {
-        
-        $result['coll_mode'] = $cash_type[$result['coll_mode']];
-        
-        $result['cat_type'] = $crdr[$result['cat_type']];
-
-        $result['amount'] = moneyFormatIndia($result['amount']);
+        $result['savings_amount'] = moneyFormatIndia($result['savings_amount']);
+        $result['credit_debit'] = ($result['credit_debit'] == 1) ? 'Credit' : (($result['credit_debit'] == 2) ? 'Debit' : '');
         $result['action'] = "<span class='icon-trash-2 savingsDeleteBtn' value='" . $result['id'] . "'></span>";
         $trans_list_arr[] = $result;
     }

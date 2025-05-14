@@ -464,37 +464,32 @@ $(document).ready(function () {
       totalCustomerAmount += cus_mapping;
     });
 
-    if (totalCustomerAmount != loanAmountCalc) {
-      swalError('Warning', 'Total Customer Amount does not match Loan Amount Calculation!');
-      return;
-    }
-    var customerMappingData = [];
-    $('#cus_mapping_table tbody tr').each(function () {
-      // var cus_id = $(this).text(); // Retrieve the customer.id from data-id attribute
-      var cus_id = $(this).find('td:nth-child(3)').text();
-      var cus_mapping = $(this).find('td:nth-child(5)').text();
-      var designation = $(this).find('td:nth-child(10)').text();
-      var customer_loan_amount = $(this).find('td:nth-child(9)').text();
-      if (customer_loan_amount) {
-        let benefit_method = $('#profit_method_calc').val();
-        let result;
-
-        if (benefit_method == 1 || benefit_method == 'Pre Benefit') {
-          result = getLoanPreInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee);
-        } else if (benefit_method == 2 || benefit_method == 'After Benefit') {
-          result = getLoanAfterInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee);
-        }
-
-        // Accumulate
-        customer_loan_amount = result.loan;
-        principle = result.principal;
-        intrest_amount = result.interest;
-        due_amount = result.due;
-        net_cash = result.net;
-      }
-
-      customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation, intrest_amount: intrest_amount, principle: principle, due_amount: due_amount, customer_loan_amount: customer_loan_amount, net_cash: net_cash });
-    });
+if (totalCustomerAmount != loanAmountCalc) {
+    swalError('Warning', 'Total Customer Amount does not match Loan Amount Calculation!');
+    return; 
+}
+var customerMappingData = [];
+$('#cus_mapping_table tbody tr').each(function () {
+  // var cus_id = $(this).text(); // Retrieve the customer.id from data-id attribute
+  var cus_id = $(this).find('td:nth-child(3)').text(); 
+  var cus_mapping = $(this).find('td:nth-child(5)').text(); 
+  var designation = $(this).find('td:nth-child(10)').text(); 
+  var customer_loan_amount = $(this).find('td:nth-child(9)').text(); 
+    
+  var intrest_amount = (customer_loan_amount * (intrest_rate / 100)) * due_period;
+  var dueAmount = (parseFloat(customer_loan_amount) + parseFloat(intrest_amount)) / due_period;
+  var roundeddue = Math.ceil(dueAmount / 5) * 5;
+  if (roundeddue < dueAmount) {
+      roundeddue += 5;
+  }
+  
+  var principle = customer_loan_amount ;
+  var processingfees = Math.ceil((customer_loan_amount / loanAmountCalc) * processing_fees);
+  var documentcharge =Math.ceil((customer_loan_amount / loanAmountCalc) * document_fees); 
+  var net_cash = Math.ceil(customer_loan_amount - ( processingfees + documentcharge));
+      
+      customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation,intrest_amount:intrest_amount,principle:principle,due_amount:roundeddue,customer_loan_amount:customer_loan_amount,net_cash:net_cash});
+  });
 
 
     let formData = {
@@ -579,13 +574,13 @@ $(document).ready(function () {
     let loan_amount = $(this).attr("loan_amount");
     let centre_limit = $(this).attr("centre_limit");
     let total_cus = $("#total_cus").val();
-
-    // Check if cus_limit is empty
-    if (centre_limit === '0' || !centre_limit) {
-      // Prevent approval and show an alert or message
-      swalError('Warning', 'Kindly Enter the centre Limit');
-      return; // Stop further execution
-    } else if (parseInt(loan_amount) > parseInt(centre_limit)) {
+  
+     // Check if cus_limit is empty
+     if (centre_limit==='0'|| !centre_limit ) {
+         // Prevent approval and show an alert or message
+         swalError('Warning', 'Kindly Enter the centre Limit');
+         return; // Stop further execution
+     }else if(loan_amount > centre_limit){
       swalError('Warning', 'Centre limit is less than the loan amount. Please update either the centre limit or the loan amount.');
       return;
     }

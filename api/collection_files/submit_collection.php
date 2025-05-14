@@ -32,6 +32,8 @@ foreach ($collectionData as $data) {
   $collection_savings = $data['collection_savings'];
   $collection_fine = $data['collection_fine'];
   $total_collection = $data['total_collection'];
+  $cus_id = $data['cus_id'];
+  $aadhar_num = $data['aadhar_num'];
   // Insert data into the collection table
   if ($collection_due >= $payable_amt) {
     $coll_status = '1';
@@ -58,7 +60,7 @@ foreach ($collectionData as $data) {
   }
 
   if (($collection_savings != '' and $collection_savings > 0)) {
-    $qry1 = $pdo->query("INSERT INTO `customer_savings`(`cus_map_id`,`loan_id`, `paid_date`, `savings_amount`) VALUES ('$cus_mapping_id','$loan_id','$coll_date','$collection_savings') ");
+    $qry1 = $pdo->query("INSERT INTO `customer_savings`(`cus_id`,`aadhar_num` , `savings_amount`, `credit_debit`,`insert_login_id`,`paid_date`) VALUES ('$cus_id', '$aadhar_num' ,'$collection_savings' , '1', '$user_id','$coll_date') ");
   }
 
   if ($collection_fine != '' and $collection_fine > 0) {

@@ -8,7 +8,6 @@ $Centre_id = $_POST['Centre_id'];
 $loan_category_calc = $_POST['loan_category_calc'];
 $loan_amount_calc = $_POST['loan_amount_calc'];
 $total_cus = $_POST['total_cus'];
-// $loan_amount_per_cus = $_POST['loan_amount_per_cus'];
 $profit_type_calc = $_POST['profit_type_calc'];
 $due_method_calc = $_POST['due_method_calc'];
 $profit_method_calc = $_POST['profit_method_calc'];
@@ -32,7 +31,6 @@ $maturity_date_calc = $_POST['maturity_date_calc'];
 $id = $_POST['id'];
 
 $current_date = date('Y-m-d');
-
 
 // Check if customer mapping data is provided
 if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_data'])) {
@@ -172,12 +170,11 @@ else if($current_mapping_count == $total_cus){
         `updated_on` = '$current_date'
     WHERE `id` = '$id'");
 }
-
-
 // Check if the query was successful
-if ($qry) {
+if ($qry && $qry1 ) {
     $result = 1;
 } else {
     $result = 0; // Failure
 }
+
 echo json_encode(['result' => $result]);

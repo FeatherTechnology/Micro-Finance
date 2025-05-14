@@ -70,14 +70,14 @@ if ($ot_dr_b_qry->rowCount() > 0) {
     $ot_dr_b = 0;
 }
 //savings Credit / Debit.
-$sa_cr_h_qry = $pdo->query("SELECT SUM(amount) AS ot_amnt FROM savings WHERE coll_mode = 1 AND cat_type = 1 AND DATE(created_on) = '$current_date' "); //Hand Cash //credit
+$sa_cr_h_qry = $pdo->query("SELECT SUM(savings_amount) AS ot_amnt FROM customer_savings WHERE credit_debit = 1 AND DATE(paid_date) = '$current_date' "); //Hand Cash //credit
 if ($sa_cr_h_qry->rowCount() > 0) {
     $sa_cr_h = $sa_cr_h_qry->fetch()['ot_amnt'];
 } else {
     $sa_cr_h = 0;
 }
 
-$sa_dr_h_qry = $pdo->query("SELECT SUM(amount) AS ot_amnt FROM savings WHERE coll_mode = 1 AND cat_type = 2 AND DATE(created_on) = '$current_date' "); //Hand Cash //debit
+$sa_dr_h_qry = $pdo->query("SELECT SUM(savings_amount) AS ot_amnt FROM customer_savings WHERE credit_debit = 2 AND DATE(paid_date) = '$current_date' "); //Hand Cash //debit
 if ($sa_dr_h_qry->rowCount() > 0) {
     $sa_dr_h = $sa_dr_h_qry->fetch()['ot_amnt'];
 } else {

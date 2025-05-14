@@ -75,7 +75,7 @@ $(document).ready(function(){
         expensesTable('#expenses_creation_table');
     });
     $('#savings_add').click(function(){
-        getInvoiceID();
+        // getInvoiceID();
         savingsTable('#customer_savings_table_list');
     });
     
@@ -344,11 +344,8 @@ $(document).ready(function(){
     $('#submit_savings_creation').click(function(event){
         event.preventDefault();
         let savingsData = {
-            'coll_mode' : $("input[name='savings_hand_cash']:checked").val(),
-            'aadhar_number' : $('#aadhar_number').val(),
-            'invoice' : $('#invoice').val(),
-            'cus_name' : $('#cus_name').val(),
-            'description' : $('#descriptions').val(),
+            'aadhar_number' : $('#aadhar_number').val().replace(/\D/g, ""),
+            'cus_id' : $('#cus_id').val(),
             'savings_amnt' : $('#savings_amnt').val(),
             'cat_type' : $('#catType').val()
         }
@@ -358,7 +355,7 @@ $(document).ready(function(){
                 if (response == '1') {
                     swalSuccess('Success', 'Savings added successfully.');
                     savingsTable('#customer_savings_table_list');
-                    getInvoiceID()
+                    // getInvoiceID()
                     getClosingBal();
                 } else {
                     swalError('Error', 'Failed to add transaction.');
@@ -557,11 +554,6 @@ function getInvoiceNo(){
         $('#invoice_id').val(response);
     },'json');
 }
-function getInvoiceID(){
-    $.post('api/accounts_files/accounts/get_savings_invoice_no.php',{},function(response){
-        $('#invoice').val(response);
-    },'json');
-}
 
 function getBranchList(){
     $.post('api/common_files/user_mapped_branches.php',function(response){
@@ -696,13 +688,11 @@ function savingsTable(tableId){
     $.post('api/accounts_files/accounts/get_savings_list.php',function(response){
         let expensesColumn = [
             'sno',
-            'invoice_id',
-            'coll_mode',
-            'aadhar_number',
-            'cus_name',
-            'description',
-            'amount',
-            'cat_type',
+            'cus_id',
+            'aadhar_num',
+            'paid_date',
+            'savings_amount',
+            'credit_debit',
             'action'
         ];
 
@@ -721,10 +711,9 @@ function clearTransForm(){
 }
 function clearsavingsForm(){
     $('#aadhar_number').val('');
-    $('#cus_name').val('');
+    $('#cus_id').val('');
     $('#savings_amnt').val('');
     $('#catType').val('');
-    $('#descriptions').val('');
 }
 
 function deleteTrans(id) {

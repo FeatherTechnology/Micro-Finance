@@ -3,16 +3,13 @@ require "../../../ajaxconfig.php";
 @session_start();
 $user_id = $_SESSION['user_id'];
 
-$coll_mode = $_POST['coll_mode'];
-$invoice_id = $_POST['invoice'];
 $aadhar_number = $_POST['aadhar_number'];
-$cus_name = $_POST['cus_name'];
-$description = $_POST['description'];
+$cus_id = $_POST['cus_id'];
 $savings_amnt = $_POST['savings_amnt'];
 $cat_type = $_POST['cat_type'];
-$current_date_time = date('Y-m-d H:i:s');
+$current_date_time = date('Y-m-d');
 
-$qry = $pdo->query("INSERT INTO `savings`( `invoice_id`, `coll_mode`, `aadhar_number`, `cus_name`, `description`, `amount`,`cat_type`, `insert_login_id`, `created_on`) VALUES ('$invoice_id','$coll_mode','$aadhar_number','$cus_name ','$description','$savings_amnt','$cat_type','$user_id ','$current_date_time')");
+$qry = $pdo->query("INSERT INTO `customer_savings`( `cus_id`, `aadhar_num`, `savings_amount`, `credit_debit`, `insert_login_id`,`paid_date`) VALUES ('$cus_id','$aadhar_number','$savings_amnt','$cat_type','$user_id','$current_date_time')");
 if ($qry) {
     $result = 1;
 } else {
