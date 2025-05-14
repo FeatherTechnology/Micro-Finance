@@ -67,7 +67,7 @@ foreach ($loan_issue_data as $issue) {
 
 // Update loan_entry_loan_calculation table (without prepared statement)
 $qry3 = $pdo->query("UPDATE loan_entry_loan_calculation 
-    SET loan_amount = '$loan_amount'  total_customer = '$total_cus' , loan_amount_calc = '$loan_amnt_calc' , principal_amount_calc = '$principal_amnt_calc' , intrest_amount_calc = '$interest_amnt_calc' , total_amount_calc = '$total_amnt_calc' , due_amount_calc = '$due_amnt_calc' , document_charge_cal = '$doc_charge_calculate' , processing_fees_cal = '$processing_fees_calculate' , net_cash_calc = '$net_cash_calc' , due_start = '$due_startdate_calc', due_end = '$maturity_date_calc', loan_date = '$loan_date', update_login_id = $user_id, updated_on = NOW() WHERE loan_id = '$loan_id'");
+    SET loan_amount = '$loan_amount' , total_customer = '$total_cus' , loan_amount_calc = '$loan_amnt_calc' , principal_amount_calc = '$principal_amnt_calc' , intrest_amount_calc = '$interest_amnt_calc' , total_amount_calc = '$total_amnt_calc' , due_amount_calc = '$due_amnt_calc' , document_charge_cal = '$doc_charge_calculate' , processing_fees_cal = '$processing_fees_calculate' , net_cash_calc = '$net_cash_calc' , due_start = '$due_startdate_calc', due_end = '$maturity_date_calc', loan_date = '$loan_date', update_login_id = $user_id, updated_on = NOW() WHERE loan_id = '$loan_id'");
 
 // Query to check if all customers mapped to the loan_id have issue_status as 'Issued'
 $qry5 = $pdo->query("SELECT COUNT(*) as total_customers, 

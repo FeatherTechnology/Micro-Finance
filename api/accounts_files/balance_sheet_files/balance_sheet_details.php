@@ -97,11 +97,10 @@ if ($qry7->rowCount() > 0) {
     $expdr = $qry7->fetch(PDO::FETCH_ASSOC)['exp_dr'];
 }
 
-$qry8 = $pdo->query("SELECT COALESCE(SUM(due_amt_track),0) AS due,COALESCE(SUM(penalty_track),0) AS penalty, COALESCE(SUM(fine_charge_track),0) AS fine FROM `collection` WHERE $where "); //Collection 
+$qry8 = $pdo->query("SELECT COALESCE(SUM(due_amt_track),0) AS due, COALESCE(SUM(fine_charge_track),0) AS fine FROM `collection` WHERE $where "); //Collection 
 if ($qry8->rowCount() > 0) {
     $row = $qry8->fetch(PDO::FETCH_ASSOC);
     $due = $row['due'];
-    $penalty = $row['penalty'];
     $fine = $row['fine'];
 }
 
@@ -121,7 +120,6 @@ $result[0]['advdr'] = $advdr;
 $result[0]['expdr'] = $expdr;
 
 $result[0]['due'] = $due;
-$result[0]['penalty'] = $penalty;
 $result[0]['fine'] = $fine;
 
 echo json_encode($result);

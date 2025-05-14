@@ -215,7 +215,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <!-- <div class="row">
                                     <div class="col-md-3 col-sm-4">
                                         <div class="form-group">
                                             <label for="overdue_penalty">Overdue Penalty</label><span class="text-danger">*</span>
@@ -243,7 +243,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <!--- ---------------------- Loan Calculation END  ----------------------------- -->
@@ -361,33 +361,6 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-3 col-sm-4">
-                                                <div class="form-group">
-                                                    <label for="scheme_overdue_penalty">Overdue Penalty</label><span class="text-danger">*</span>
-                                                    <input type="hidden" id="scheme_penalty_type" value="percent">
-                                                    <div class="input-group int-grp-label-empty">
-                                                        <div class="btn-group btn-group-toggle mb-1 radio-toggle-div-cls" data-toggle="buttons">
-                                                            <label class="btn btn-outline-primary active radio-toggle-label-cls scheme-penalty-type" id="label_scheme_type_percent">
-                                                                <input type="radio" class="form-control" name="scheme_penalty_type" id="scheme_type_percent" value="percent" tabindex="30" checked>%
-                                                            </label>
-                                                            <label class="btn btn-outline-primary radio-toggle-label-cls scheme-penalty-type" id="label_scheme_type_rupee">
-                                                                <input type="radio" class="form-control" name="scheme_penalty_type" id="scheme_type_rupee" value="rupee" tabindex="31"> ₹
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 col-sm-4">
-                                                <div class="form-group">
-                                                    <label for="scheme_overdue_penalty"> </label>
-                                                    <div class="input-group int-grp-label-empty">
-                                                        <input type="number" class="form-control form-group-label-emptywith-input" id="scheme_overdue_penalty" name="scheme_overdue_penalty" tabindex="32" placeholder="Enter Overdue Penalty">
-                                                        <div class="input-group-append form-group-label-emptywith-input">
-                                                            <span class="input-group-text scheme-penalty-span-val">%</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="col-md-3 col-sm-4 d-flex align-items-end">
                                                 <div class="form-group">
                                                     <button name="submit_scheme" id="submit_scheme" class="btn btn-primary" tabindex="33">
@@ -415,7 +388,6 @@
                                                     <th>Document Charge Max</th>
                                                     <th>Processing Fee Min</th>
                                                     <th>Processing Fee Max</th>
-                                                    <th>Overdue Penalty</th>
                                                     <th>Status</th>
                                                     <th>Action</th>
                                                 </tr>

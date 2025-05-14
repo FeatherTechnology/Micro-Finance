@@ -246,7 +246,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <!-- <div class="col-3">
                         <div class="card">
                             <div class="card-body">
                                 <div class="form-group">
@@ -255,7 +255,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-3">
                         <div class="card">
                             <div class="card-body">
@@ -278,7 +278,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <!-- <div class="col-3">
                         <div class="card">
                             <div class="card-body">
                                 <div class="form-group">
@@ -287,7 +287,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-3">
                         <div class="card">
                             <div class="card-body">
@@ -317,7 +317,7 @@
                 </div>
                 <br/><br/>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
                                 <div id="collection_paid"></div>
@@ -325,15 +325,15 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
                                 <div id="collection_pending"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="card">
                             <div class="card-body">
                                 <div id="collection_od"></div>

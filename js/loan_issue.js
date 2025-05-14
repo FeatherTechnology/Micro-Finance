@@ -279,7 +279,7 @@ $(document).ready(function () {
             }
 
             var totalCustomerAmount = 0;
-            var loanAmount = $('#loan_amt_calc').val();
+            var loanAmount = $('#loan_amount').val();
             var loanAmountCalc = parseFloat(loanAmount.replace(/,/g, '')) || 0;
 
             $('#issue_info_table tbody tr').each(function () {

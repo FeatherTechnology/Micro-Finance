@@ -11,9 +11,9 @@ $today_paid_current = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_paid_curr
 $today_paid_pending = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_paid_pending, COALESCE(SUM(total_paid_track),0) AS pending_todaypaid FROM `collection` c WHERE `sub_status` ='Pending' AND DATE(created_on) = $currentDate ";
 $today_paid_od = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_paid_od, COALESCE(SUM(total_paid_track),0) AS od_todaypaid FROM `collection` c WHERE `sub_status` ='OD' AND DATE(created_on) = $currentDate ";
 //Today
-$today_penalty_current = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_penalty_current, COALESCE(SUM(penalty_track),0) AS current_todaypenalty FROM `collection` c WHERE `sub_status` ='Payable' AND penalty_track != '' AND penalty_track != 0 AND DATE(created_on) = $currentDate ";
-$today_penalty_pending = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_penalty_pending, COALESCE(SUM(penalty_track),0) AS pending_todaypenalty FROM `collection` c WHERE `sub_status` ='Pending' AND penalty_track != '' AND penalty_track != 0 AND DATE(created_on) = $currentDate ";
-$today_penalty_od = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_penalty_od, COALESCE(SUM(penalty_track),0) AS od_todaypenalty FROM `collection` c WHERE `sub_status` ='OD' AND penalty_track != '' AND penalty_track != 0 AND DATE(created_on) = $currentDate ";
+// $today_penalty_current = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_penalty_current, COALESCE(SUM(penalty_track),0) AS current_todaypenalty FROM `collection` c WHERE `sub_status` ='Payable' AND penalty_track != '' AND penalty_track != 0 AND DATE(created_on) = $currentDate ";
+// $today_penalty_pending = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_penalty_pending, COALESCE(SUM(penalty_track),0) AS pending_todaypenalty FROM `collection` c WHERE `sub_status` ='Pending' AND penalty_track != '' AND penalty_track != 0 AND DATE(created_on) = $currentDate ";
+// $today_penalty_od = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_penalty_od, COALESCE(SUM(penalty_track),0) AS od_todaypenalty FROM `collection` c WHERE `sub_status` ='OD' AND penalty_track != '' AND penalty_track != 0 AND DATE(created_on) = $currentDate ";
 //Today
 $today_fine_current = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_fine_current, COALESCE(SUM(fine_charge_track),0) AS current_todayfine FROM `collection` c WHERE `sub_status` ='Payable' AND fine_charge_track !='' AND fine_charge_track != 0 AND DATE(created_on) = $currentDate ";
 $today_fine_pending = "SELECT COALESCE(COUNT(`sub_status`),0) AS today_fine_pending, COALESCE(SUM(fine_charge_track),0) AS pending_todayfine FROM `collection` c WHERE `sub_status` ='Pending' AND fine_charge_track !='' AND fine_charge_track != 0 AND DATE(created_on) = $currentDate ";
@@ -25,9 +25,9 @@ if ($branch_id != '' && $branch_id != '0') {
     $today_paid_current .= "AND cc.branch = '$branch_id' ";
     $today_paid_pending .= "AND cc.branch = '$branch_id' ";
     $today_paid_od .= "AND cc.branch = '$branch_id' ";
-    $today_penalty_current .= "AND cc.branch = '$branch_id' ";
-    $today_penalty_pending .= "AND cc.branch = '$branch_id' ";
-    $today_penalty_od .= "AND cc.branch = '$branch_id' ";
+    // $today_penalty_current .= "AND cc.branch = '$branch_id' ";
+    // $today_penalty_pending .= "AND cc.branch = '$branch_id' ";
+    // $today_penalty_od .= "AND cc.branch = '$branch_id' ";
     $today_fine_current .= "AND cc.branch = '$branch_id' ";
     $today_fine_pending .= "AND cc.branch = '$branch_id' ";
     $today_fine_od .= "AND cc.branch = '$branch_id' ";
@@ -36,9 +36,9 @@ if ($branch_id != '' && $branch_id != '0') {
     $today_paid_current .= " AND c.insert_login_id = '$user_id'";
     $today_paid_pending .= " AND c.insert_login_id = '$user_id'";
     $today_paid_od .= " AND c.insert_login_id = '$user_id'";
-    $today_penalty_current .= " AND c.insert_login_id = '$user_id'";
-    $today_penalty_pending .= " AND c.insert_login_id = '$user_id'";
-    $today_penalty_od .= " AND c.insert_login_id = '$user_id'";
+    // $today_penalty_current .= " AND c.insert_login_id = '$user_id'";
+    // $today_penalty_pending .= " AND c.insert_login_id = '$user_id'";
+    // $today_penalty_od .= " AND c.insert_login_id = '$user_id'";
     $today_fine_current .= " AND c.insert_login_id = '$user_id'";
     $today_fine_pending .= " AND c.insert_login_id = '$user_id'";
     $today_fine_od .= " AND c.insert_login_id = '$user_id'";
@@ -58,18 +58,18 @@ $row8 = $qry8->fetch();
 $response['today_paid_od'] = $row8['today_paid_od'];
 $response['od_todaypaid'] = $row8['od_todaypaid'];
 
-$qry9 = $pdo->query($today_penalty_current);
-$row9 = $qry9->fetch();
-$response['today_penalty_current'] = $row9['today_penalty_current'];
-$response['current_todaypenalty'] = $row9['current_todaypenalty'];
-$qry10 = $pdo->query($today_penalty_pending);
-$row10 = $qry10->fetch();
-$response['today_penalty_pending'] = $row10['today_penalty_pending'];
-$response['pending_todaypenalty'] = $row10['pending_todaypenalty'];
-$qry11 = $pdo->query($today_penalty_od);
-$row11 = $qry11->fetch();
-$response['today_penalty_od'] = $row11['today_penalty_od'];
-$response['od_todaypenalty'] = $row11['od_todaypenalty'];
+// $qry9 = $pdo->query($today_penalty_current);
+// $row9 = $qry9->fetch();
+// $response['today_penalty_current'] = $row9['today_penalty_current'];
+// $response['current_todaypenalty'] = $row9['current_todaypenalty'];
+// $qry10 = $pdo->query($today_penalty_pending);
+// $row10 = $qry10->fetch();
+// $response['today_penalty_pending'] = $row10['today_penalty_pending'];
+// $response['pending_todaypenalty'] = $row10['pending_todaypenalty'];
+// $qry11 = $pdo->query($today_penalty_od);
+// $row11 = $qry11->fetch();
+// $response['today_penalty_od'] = $row11['today_penalty_od'];
+// $response['od_todaypenalty'] = $row11['od_todaypenalty'];
 
 $qry12 = $pdo->query($today_fine_current);
 $row12 = $qry12->fetch();

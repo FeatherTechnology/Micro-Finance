@@ -112,10 +112,9 @@ if ($qry->rowCount() > 0) {
     }
 }
 
-$qry2 = $pdo->query("SELECT COALESCE(SUM(c.due_amt_track),0) AS due, COALESCE(SUM(c.penalty_track),0) AS penalty, COALESCE(SUM(c.fine_charge_track),0) AS fine FROM `collection`c WHERE $collwhere "); //Collection 
+$qry2 = $pdo->query("SELECT COALESCE(SUM(c.due_amt_track),0) AS due, COALESCE(SUM(c.fine_charge_track),0) AS fine FROM `collection`c WHERE $collwhere "); //Collection 
 if ($qry2->rowCount() > 0) {
     $row = $qry2->fetch(PDO::FETCH_ASSOC);
-    $penalty = $row['penalty'];
     $fine = $row['fine'];
 }
 
@@ -132,7 +131,6 @@ if ($qry4->rowCount() > 0) {
 $result[0]['total_interest_paid'] = $total_interest_paid;
 $result[0]['doc_charges'] = $total_doc_charges;
 $result[0]['proc_charges']  = $total_proc_charges;
-$result[0]['penalty'] = $penalty;
 $result[0]['fine'] = $fine;
 $result[0]['oicr'] = $oicr;
 
