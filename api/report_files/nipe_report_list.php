@@ -130,7 +130,7 @@ foreach ($result as $row) {
     $issueDate = $query->fetch(PDO::FETCH_ASSOC);
     $loan_amount = round(floatval($issueDate['due_amount']) * $due_period);
     $due_amount = round(floatval($issueDate['due_amount']));
-    $customer_status = $obj->custStatus($cus_mapping_id, $loan_id);
+    $customer_status = $obj->custStatus($cus_mapping_id, $loan_id, '');
     $status = $customer_status['status'];
     $pending = $customer_status['pendings'];
     $payable = $customer_status['payable'];

@@ -11,7 +11,7 @@ class CustomerStatus
         $this->pdo = $pdo;
     }
 
-    public function custStatus($cus_mapping_id,$loan_id)
+    public function custStatus($cus_mapping_id, $loan_id, $search_date)
     {
         // Escape loan_id to prevent SQL injection
         $cus_mapping_id = $this->pdo->quote($cus_mapping_id);
@@ -24,28 +24,43 @@ class CustomerStatus
             $total_paid += intval($coll_row['due_amt_track']);
         }
 
+        $whereClause = "WHERE c.cus_mapping_id = $cus_mapping_id AND c.loan_id = $loan_id";
+        if (!empty($search_date)) {
+            $search_date = $this->pdo->quote($search_date);
+            $whereClause .= " AND DATE(c.coll_date) <= $search_date";
+        }
+        
         $query = "SELECT
-        c.cus_mapping_id,
-        SUM(c.total_paid_track) AS total_paid_track,
-        SUM(c.fine_charge_track) AS total_fine_charge_track,
-        SUM(c.penalty_track) AS total_penalty_track,
-        (SUM(c.due_amt_track) + SUM(c.fine_charge_track) + SUM(c.penalty_track)) AS total_paid,
-        IFNULL(f.total_fine_charge, 0) AS total_fine_charge,
-        (SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0) ) AS payable_charge,
-        lelc.due_amount_calc,lelc.total_customer,lelc.due_month,lelc.due_start,lelc.due_end,lcm.due_amount,lelc.due_period
+            c.cus_mapping_id,
+            SUM(c.total_paid_track) AS total_paid_track,
+            SUM(c.fine_charge_track) AS total_fine_charge_track,
+            SUM(c.penalty_track) AS total_penalty_track,
+            (SUM(c.due_amt_track) + SUM(c.fine_charge_track) + SUM(c.penalty_track)) AS total_paid,
+            IFNULL(f.total_fine_charge, 0) AS total_fine_charge,
+            IFNULL(p.total_penalty, 0) AS total_penalty,
+            (SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0) + IFNULL(p.total_penalty, 0)) AS payable_charge,
+            lelc.due_amount_calc,
+            lelc.total_customer,
+            lelc.due_month,
+            lelc.due_start,
+            lelc.due_end,
+            lcm.due_amount,
+            lelc.due_period
         FROM
-        collection c
+            collection c
         LEFT JOIN
-        (SELECT cus_mapping_id, SUM(fine_charge) AS total_fine_charge FROM fine_charges GROUP BY cus_mapping_id) f
-        ON f.cus_mapping_id = c.cus_mapping_id
+            (SELECT cus_mapping_id, SUM(fine_charge) AS total_fine_charge FROM fine_charges GROUP BY cus_mapping_id) f
+            ON f.cus_mapping_id = c.cus_mapping_id
         LEFT JOIN
-        loan_entry_loan_calculation lelc
-        ON lelc.loan_id = c.loan_id
-          LEFT JOIN
-        loan_cus_mapping lcm
-        ON c.cus_mapping_id = lcm.id
-        WHERE
-        c.cus_mapping_id = $cus_mapping_id and c.loan_id =  $loan_id 
+
+            (SELECT cus_mapping_id, SUM(penalty) AS total_penalty FROM penalty_charges GROUP BY cus_mapping_id) p
+            ON p.cus_mapping_id = c.cus_mapping_id
+        LEFT JOIN
+            loan_entry_loan_calculation lelc ON lelc.loan_id = c.loan_id
+        LEFT JOIN
+            loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
+        $whereClause
+
         GROUP BY
         c.cus_mapping_id ";
 

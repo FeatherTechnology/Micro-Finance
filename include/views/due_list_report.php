@@ -7,7 +7,7 @@
                 <option value="1">Monthly</option>
                 <option value="2">Weekly</option>
             </select>
-            <select class="form-control col-xl-2 col-md-4" name="week_days" id="week_days" style="display: none;" >
+            <select class="form-control col-xl-2 col-md-4" name="week_days" id="week_days" style="display: none; margin-left:20px" >
                 <option value="">Select Date</option>
                 <option value="1">Monday</option>
                 <option value="2">Tuesday</option>
@@ -45,7 +45,6 @@
                                 <th>Number Of Pending Due</th>
                                 <th>Payable Amount</th>
                                 <th>Status</th>
-                                <th>Sub Status</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

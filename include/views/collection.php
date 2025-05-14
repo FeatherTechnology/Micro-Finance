@@ -114,13 +114,14 @@
                                     <!-- First row: Spanning headers for sections -->
                                     <tr>
                                         <th colspan="8">Collection Info</th>
-                                        <th colspan="7">Collection Track</th>
+                                        <th colspan="8">Collection Track</th>
                                     </tr>
                                     <!-- Second row: Column headers -->
                                     <tr>
                                         <th width="50">S.No.</th>
                                         <th>Customer ID</th>
                                         <th>Customer Name</th>
+                                        <th>Balance Amount</th>
                                         <th>Due Amount</th>
                                         <th>Pending</th>
                                         <th>Payable</th>

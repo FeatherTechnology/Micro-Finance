@@ -95,6 +95,7 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['branch_name']) ? $row['branch_name'] : '';
     $sub_array[] = $centre_status;
     $sub_array[] = $collection_status;
+    $sub_array[] = "<button class='btn btn-primary currentViewBtn' data-loan-id='" . $row['loan_id'] . "' data-centre-id='" . $row['centre_id'] . "'>&nbsp;View</button>";
     $sub_array[] = "<button class='btn btn-primary ledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
     $data[] = $sub_array;
 }

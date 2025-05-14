@@ -169,9 +169,7 @@ else if($current_mapping_count == $total_cus){
         `update_login_id` = '$user_id',
         `updated_on` = '$current_date'
     WHERE `id` = '$id'");
-    $qry1 = $pdo->query("UPDATE `loan_entry_loan_calculation` SET  loan_status = 3  WHERE `id` = '$id'");
 }
-
 // Check if the query was successful
 if ($qry && $qry1 ) {
     $result = 1;

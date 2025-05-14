@@ -210,7 +210,7 @@ window.alert = function (message) {
 		target: 'body',
 		toast: true,
 		position: 'top-right',
-		timer: 2000,
+		timer: 5000,
 		showConfirmButton: true,
 		confirmButtonColor: 'var(--primary-color)',
 		timerProgressBar: true,
@@ -424,7 +424,7 @@ function swalSuccess(title, text) {
 		text: text,
 		showConfirmButton: false,
 		timerProgressBar: true,
-		timer: 2000,
+		timer: 5000,
 	})
 }
 function swalError(title, text) {

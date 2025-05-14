@@ -249,7 +249,7 @@
                         <!--- ---------------------- Loan Calculation END  ----------------------------- -->
 
                         <!--- ---------------------- Loan scheme  START----------------------------- -->
-                        <div class="card">
+                        <div class="card" id="Scheme_validation">
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <h5 class="card-title mb-0">Loan Scheme</h5>
                             </div>

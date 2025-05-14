@@ -1,10 +1,10 @@
 1 => Loan Created(Process)
 2 => Loan Created with(Total Member == Customer Mapping)(Created)
-3=>IN Approval
+3 => IN Approval
 4 = Approve in Approval || In Loan Issue;
 5 = Cancel in Approval;
 6 = Revoke in Approval;
-7=Loan Issued/Collection;
+7 = Loan Issued/Collection;
 8 = collection finished/closed
 9 = closed
 10 = in  noc

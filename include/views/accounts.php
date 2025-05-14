@@ -414,7 +414,6 @@ function moneyFormatIndia($num1) {
                                         <option value="8">EB</option>
                                         <option value="9">Mobile bill</option>
                                         <option value="10">Office Maintenance</option>
-                                        <option value="11">Salary</option>
                                         <option value="12">Tax & Auditor</option>
                                         <option value="13">Int Less</option>
                                         <option value="14">Agent Incentive</option>
@@ -528,7 +527,6 @@ function moneyFormatIndia($num1) {
                                         <option value="4">Exchange</option>
                                         <option value="5">Bank Deposit</option>
                                         <option value="6">Bank Withdrawal</option>
-                                        <option value="7">Salary</option>
                                         <option value="8">Other Income</option>
                                         <option value="9">Bank Unbilled</option>
                                     </select>

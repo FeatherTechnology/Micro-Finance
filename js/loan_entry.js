@@ -5,79 +5,41 @@ $(document).ready(function () {
         swalConfirm('Approval', 'Are you ready to move to the Approval Screen?', moveToNext, loan_id);
         return;
     });
-    // Loan Entry Tab Change Radio buttons
+
+    $(document).on("click", "#add_loan,#back_btn", function () {
+        $('#submit_loan_calculation').prop('disabled', false);
+        clearLoanCalcForm();
+        swapTableAndCreation();
+        $('#profit_type_calc_scheme').hide();
+    });
+
+    $(document).on('click', '.edit-loan-entry', async function () {
+        let loanCalcId = $(this).attr('value');
+        $('#loan_calculation_id').val(loanCalcId);
+
+        try {
+            await loanCalculationEdit(loanCalcId); // wait for full edit process
+            swapTableAndCreation(); // then swap table UI
+        } catch (error) {
+            console.error('Loan edit failed:', error);
+            swalError('Error', 'Loan edit process failed.');
+        }
+    });
+
+    $("#Centre_id").change(function () {
+        if ($(this).val() != "") {
+            getCentreDetails($(this).val());
+            getCentreMapTable($(this).val())
+            $("#Centre_id_edit").val($(this).val());
+            getRepresentInfoTable($(this).val());
+        } else {
+            $("#centre_no").val("");
+            $("#centre_name").val("");
+            $("#centre_mobile").val("");
+        }
+    });
 
 
-});
-
-$(document).on("click", "#add_loan,#back_btn", function () {
-    $('#submit_loan_calculation').prop('disabled', false);
-    swapTableAndCreation();
-    callLoanCaculationFunctions();
-    // getCentreId();
-    getLoanCategoryName();
-    clearLoanCalcForm();
-    getLoanEntryTable();
-    getRepresentInfoTable("")
-    $('#profit_type_calc_scheme').hide();
-});
-$(document).on('click', '.edit-loan-entry', function () {
-    let loanCalcId = $(this).attr('value');
-    $('#loan_calculation_id').val(loanCalcId);
-    loanCalculationEdit(loanCalcId);
-    swapTableAndCreation();
-
-});
-function swapTableAndCreation() {
-    if ($(".loan_table_content").is(":visible")) {
-        $(".loan_table_content").hide();
-        $("#add_loan").hide();
-        $("#loan_entry_content").show();
-        $("#back_btn").show();
-        setTimeout(() => {
-            getCentreId();
-        }, 1000);
-
-        getLoanCategoryName();
-    } else {
-        $(".loan_table_content").show();
-        $("#add_loan").show();
-        $("#loan_entry_content").hide();
-        $("#back_btn").hide();
-    }
-}
-
-$("#Centre_id").change(function () {
-    if ($(this).val() != "") {
-        getCentreDetails($(this).val());
-        getCentreMapTable($(this).val())
-        $("#Centre_id_edit").val($(this).val());
-        getRepresentInfoTable($(this).val());
-    } else {
-        $("#centre_no").val("");
-        $("#centre_name").val("");
-        $("#centre_mobile").val("");
-    }
-});
-
-function getCentreDetails(id) {
-    $.post("api/loan_entry_files/get_centre_details.php", { id }, function (response) {
-        $("#centre_no").val(response[0].centre_no);
-        $("#centre_name").val(response[0].centre_name);
-        $("#centre_mobile").val(response[0].mobile1);
-    }, "json");
-}
-$(function () {
-    getLoanEntryTable();
-});
-
-function getLoanEntryTable() {
-    serverSideTable('#loan_entry_table', '', 'api/loan_entry_files/loan_entry_list.php');
-    // setDropdownScripts();   
-}
-/////////////////////////////////////////////////////////////// Loan Calculation START //////////////////////////////////////////////////////////////////////
-$(document).ready(function () {
-    ;
     $("#loan_category_calc").change(function () {
         if ($(this).val() != "") {
             const selectedOption = $("#loan_category_calc option:selected");
@@ -104,9 +66,8 @@ $(document).ready(function () {
         let customer_mapping = $('#customer_mapping').val().trim(); // Get the customer_mapping value
         let total_cus = $('#total_cus').val().trim(); // Total members limit
         let designation = $('#designation').val().trim(); // Get the designation value
-        let customer_amount = parseFloat($('#customer_amount').val()) || 0; 
-        let loan_amount_calc = parseFloat($('#loan_amount_calc').val()) || 0; 
-     
+        let customer_amount = parseFloat($('#customer_amount').val()) || 0;
+        let loan_amount_calc = parseFloat($('#loan_amount_calc').val()) || 0;
 
         var isValid = true;
 
@@ -160,20 +121,20 @@ $(document).ready(function () {
                 $('#customer_mapping').val('');
                 return; // Stop the process if customer is already mapped
             }
-       
-        let totalAllocatedAmount = 0;
-        $('#cus_mapping_table tbody tr').each(function () {
-            let existingAmount = parseFloat($(this).find('td:nth-child(9)').text()) || 0;
-            totalAllocatedAmount += existingAmount;
-        });
 
-        
-        let expectedTotal = totalAllocatedAmount + customer_amount;
+            let totalAllocatedAmount = 0;
+            $('#cus_mapping_table tbody tr').each(function () {
+                let existingAmount = parseFloat($(this).find('td:nth-child(9)').text()) || 0;
+                totalAllocatedAmount += existingAmount;
+            });
 
-        if (expectedTotal > loan_amount_calc) {
-            swalError('Warning', 'Total Customer Amount exceeds the allowed limit.');
-            return; 
-        }
+
+            let expectedTotal = totalAllocatedAmount + customer_amount;
+
+            if (expectedTotal > loan_amount_calc) {
+                swalError('Warning', 'Total Customer Amount exceeds the allowed limit.');
+                return;
+            }
 
             // If customer doesn't exist and count is within the limit, submit the data
             $.post('api/loan_entry_files/submit_cus_mappings.php', {
@@ -205,7 +166,7 @@ $(document).ready(function () {
                             <td class="customer_amount">${customer_amount}</td>
                             <td class="designation">${designation}</td> <!-- Direct from form -->
                             <td>
-                                <span class="icon-trash-2 cusMapDeleteBtn" profile_id="${customer.id}"></span>
+                                <span class="icon-trash-2 cusMapDeleteBtn" id="${customer.id}"></span>
                             </td>
                         </tr>
                     `;
@@ -227,20 +188,20 @@ $(document).ready(function () {
         }
     });
 
-
     // Event listener for delete button click
     $(document).on('click', '.cusMapDeleteBtn', function () {
-        let id = $(this).attr('value'); // Get the customer ID from the button
-        let loan_id = $(this).attr('loan_id'); 
-        let loan_status = $(this).attr('loan_status');
-        let profile_id = $(this).attr('profile_id');
-        // Show the confirmation dialog
+        let btn = $(this); 
+        let id = btn.attr('value');
+        let loan_id = btn.attr('loan_id');
+        let loan_status = btn.attr('loan_status');
+
         let TableRowVal = {
-            'id' :id,
-            'laon_id' : loan_id,
-            'loan_status' : loan_status,
-            'profile_id' : profile_id
+            id: id,
+            loan_id: loan_id,
+            loan_status: loan_status,
+            row: btn.closest('tr') 
         };
+
         swalConfirm('Delete', 'Do you want to remove this customer mapping?', removeCusMap, TableRowVal, '');
     });
 
@@ -301,40 +262,40 @@ $(document).ready(function () {
     $('#due_method_calc').change(function () {
         let schemeDueMethod = $(this).val();
         let profitType = $('#profit_type_calc').val(); // Get the current profit type value
-    
+
         // Handle showing/hiding .scheme_day and .scheme_date based on profitType and schemeDueMethod
-        if (profitType == '2' && schemeDueMethod == '2') { 
+        if (profitType == '2' && schemeDueMethod == '2') {
             // Profit Type 2 and Scheme Due Method 2 (weekly)
-            $('.scheme_day').show(); 
-            $('.scheme_date').hide(); 
-            $('.scheme_date_calc').val(''); 
-        } else if (profitType == '1' && schemeDueMethod == '2') { 
+            $('.scheme_day').show();
+            $('.scheme_date').hide();
+            $('.scheme_date_calc').val('');
+        } else if (profitType == '1' && schemeDueMethod == '2') {
             // Profit Type 1 and Scheme Due Method 2 (weekly)
-            $('.scheme_day').show(); 
-            $('.scheme_date').hide(); 
-            $('.scheme_date_calc').val(''); 
-        } else if (profitType == '2' && schemeDueMethod == '1') { 
+            $('.scheme_day').show();
+            $('.scheme_date').hide();
+            $('.scheme_date_calc').val('');
+        } else if (profitType == '2' && schemeDueMethod == '1') {
             // Profit Type 2 and Scheme Due Method 1 (monthly)
-            $('.scheme_day').hide(); 
-            $('.scheme_date').show(); 
+            $('.scheme_day').hide();
+            $('.scheme_date').show();
             getDateDropDown(); // Call getDateDropDown function
-        } else if (profitType == '1' && schemeDueMethod == '1') { 
+        } else if (profitType == '1' && schemeDueMethod == '1') {
             // Profit Type 1 and Scheme Due Method 1 (monthly)
-            $('.scheme_day').hide(); 
-            $('.scheme_date').show(); 
+            $('.scheme_day').hide();
+            $('.scheme_date').show();
             getDateDropDown(); // Call getDateDropDown function
         } else {
             // Default case if none of the above conditions are met
-            $('.scheme_day').hide(); 
+            $('.scheme_day').hide();
             $('.scheme_date').hide();
-            $('.scheme_date_calc').val(''); 
+            $('.scheme_date_calc').val('');
         }
-    
+
         // Clear the start date and maturity date fields
         $('#due_startdate_calc').val('');
         $('#maturity_date_calc').val('');
     });
-    
+
 
     $('#scheme_name_calc').change(function () { //Scheme Name change event
         let scheme_id = $(this).val();
@@ -352,23 +313,88 @@ $(document).ready(function () {
     });
 
     $('#refresh_cal').click(function () {
-        $('.int-diff').text('*'); $('.due-diff').text('*'); $('.doc-diff').text('*'); $('.proc-diff').text('*'); $('.refresh_loan_calc').val('');
-        let loan_amt = $('#loan_amount_calc').val(); let int_rate = $('#interest_rate_calc').val(); let due_period = $('#due_period_calc').val(); let doc_charge = $('#doc_charge_calc').val(); let proc_fee = $('#processing_fees_calc').val();let proc_fee_type = $('#proc_type').val();
-    
-        if (loan_amt != '' && int_rate != '' && due_period != '' && doc_charge != '' && proc_fee != '') {
-            let benefit_method = $('#profit_method_calc').val(); //If Changes not found in profit method, calculate loan amt for monthly basis
-            if (benefit_method == 1 || benefit_method == 'Pre Benefit') {
-                getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee,proc_fee_type)
 
-            } else if (benefit_method == 2 || benefit_method == 'After Benefit') {
-                getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee,proc_fee_type);
+        // Reset
+        $('.int-diff').text('*');
+        $('.due-diff').text('*');
+        $('.doc-diff').text('*');
+        $('.proc-diff').text('*');
+        $('.refresh_loan_calc').val('');
+
+        let int_rate = parseFloat($('#interest_rate_calc').val()) || 0;
+        let due_period = parseInt($('#due_period_calc').val()) || 0;
+        let doc_charge = parseFloat($('#doc_charge_calc').val()) || 0;
+        let proc_fee = parseFloat($('#processing_fees_calc').val()) || 0;
+
+        let totalCus = parseInt($('#total_cus').val()) || 0;
+        let cusMappingtable = $('#cus_mapping_table tbody tr').length;
+
+        if (totalCus === 0 || cusMappingtable === 0 || totalCus !== cusMappingtable) {
+            swalError('Warning', 'Please Map The Customers Before Calculating.');
+            return;
+        }
+
+        // Accumulators
+        let total = {
+            loan: 0,
+            principal: 0,
+            interest: 0,
+            interestDiff: 0,
+            total: 0,
+            due: 0,
+            dueDiff: 0,
+            doc: 0,
+            docDiff: 0,
+            proc: 0,
+            procDiff: 0,
+            net: 0
+        };
+
+        $('#cus_mapping_table tbody tr').each(function () {
+            let loan_amt = parseFloat($(this).find('td:nth-child(9)').text()) || 0;
+            if (loan_amt && int_rate && due_period) {
+                let benefit_method = $('#profit_method_calc').val();
+                let result;
+                if (benefit_method == 1 || benefit_method === 'Pre Benefit') {
+                    result = getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee);
+                } else if (benefit_method == 2 || benefit_method === 'After Benefit') {
+                    result = getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee);
+                } else {
+                    swalError('Warning', 'Kindly fill the calculation fields.');
+                    return;
+                }
+
+                // Accumulate
+                total.loan += result.loan;
+                total.principal += result.principal;
+                total.interest += result.interest;
+                total.interestDiff += result.interestDiff;
+                total.total += result.total;
+                total.due += result.due;
+                total.dueDiff += result.dueDiff;
+                total.doc += result.doc;
+                total.docDiff += result.docDiff;
+                total.proc += result.proc;
+                total.procDiff += result.procDiff;
+                total.net += result.net;
             }
-            //   changeInttoBen();
-        }
-        else {
-            swalError('Warning', 'Kindly Fill the Calculation fields.')
-        }
+        });
+
+        // Fill totals into final fields
+        $('#loan_amnt_calc').val(moneyFormatIndia(Math.round(total.loan)));
+        $('#principal_amnt_calc').val(moneyFormatIndia(Math.round(total.principal)));
+        $('#interest_amnt_calc').val(moneyFormatIndia(Math.round(total.interest)));
+        $('.int-diff').text('* (Difference: +' + Math.round(total.interestDiff) + ')');
+        $('#total_amnt_calc').val(moneyFormatIndia(Math.round(total.total)));
+        $('#due_amnt_calc').val(moneyFormatIndia(Math.round(total.due)));
+        $('.due-diff').text('* (Difference: +' + Math.round(total.dueDiff) + ')');
+        $('#doc_charge_calculate').val(moneyFormatIndia(Math.round(total.doc)));
+        $('.doc-diff').text('* (Difference: +' + Math.round(total.docDiff) + ')');
+        $('#processing_fees_calculate').val(moneyFormatIndia(Math.round(total.proc)));
+        $('.proc-diff').text('* (Difference: +' + Math.round(total.procDiff) + ')');
+        $('#net_cash_calc').val(moneyFormatIndia(Math.round(total.net)));
     });
+
 
     {
         // Get today's date
@@ -430,60 +456,50 @@ $(document).ready(function () {
     $('#submit_loan_calculation').click(function (event) {
         event.preventDefault();
         $('#refresh_cal').trigger('click'); //For calculate once again if user missed to refresh calculation
-        var process_fees_type= $('#proc_type').val();
-        var loan_amount=parseFloat($('#loan_amount_calc').val());
-        var intrest_rate=parseFloat($('#interest_rate_calc').val());
-        var due_period=parseFloat($('#due_period_calc').val());
+        let int_rate = parseFloat($('#interest_rate_calc').val()) || 0;
+        let due_period = parseInt($('#due_period_calc').val()) || 0;
+        let doc_charge = parseFloat($('#doc_charge_calc').val()) || 0;
+        let proc_fee = parseFloat($('#processing_fees_calc').val()) || 0;
 
-        if(process_fees_type ==='rupee'){
-             var processing_fees=parseFloat($('#processing_fees_calc').val());
-             let doc_charge_calculate=parseFloat($('#doc_charge_calc').val());
-             let doc_charge=loan_amount*(doc_charge_calculate/100);
-            var document_fees=doc_charge;
-        }
-        else{
-            let processing_percentage=parseFloat($('#processing_fees_calc').val());
-            let doc_charge_calculate=parseFloat($('#doc_charge_calc').val());
-            let processingFees=loan_amount*(processing_percentage/100);
-            var processing_fees=processingFees;
-            let doc_charge=loan_amount*(doc_charge_calculate/100);
-            var document_fees=doc_charge;
-        }
         var totalCustomerAmount = 0;
         var loanAmount = $('#loan_amount_calc').val();
         var loanAmountCalc = parseFloat(loanAmount);
 
-    $('#cus_mapping_table tbody tr').each(function () {
-        var cus_mapping = parseFloat($(this).find('td:nth-child(9)').text());
-        totalCustomerAmount += cus_mapping;
-    });
+        $('#cus_mapping_table tbody tr').each(function () {
+            var cus_mapping = parseFloat($(this).find('td:nth-child(9)').text());
+            totalCustomerAmount += cus_mapping;
+        });
 
-    if (totalCustomerAmount != loanAmountCalc) {
-        swalError('Warning', 'Total Customer Amount does not match Loan Amount Calculation!');
-        return; 
-    }
-    var customerMappingData = [];
-    $('#cus_mapping_table tbody tr').each(function () {
-        // var cus_id = $(this).text(); // Retrieve the customer.id from data-id attribute
-        var cus_id = $(this).find('td:nth-child(3)').text(); 
-        var cus_mapping = $(this).find('td:nth-child(5)').text(); 
-        var designation = $(this).find('td:nth-child(10)').text(); 
-        var customer_loan_amount = $(this).find('td:nth-child(9)').text(); 
-
-
-        var intrest_amount = (customer_loan_amount * (intrest_rate / 100)) * due_period;
-        var dueAmount = (parseFloat(customer_loan_amount) + parseFloat(intrest_amount)) / due_period;
-        var roundeddue = Math.ceil(dueAmount / 5) * 5;
-        if (roundeddue < dueAmount) {
-            roundeddue += 5;
+        if (totalCustomerAmount != loanAmountCalc) {
+            swalError('Warning', 'Total Customer Amount does not match Loan Amount Calculation!');
+            return;
         }
-        
-        var principle = customer_loan_amount ;
-        var processingfees = Math.ceil((customer_loan_amount / loanAmountCalc) * processing_fees);
-        var documentcharge =Math.ceil((customer_loan_amount / loanAmountCalc) * document_fees); 
-        var net_cash = Math.ceil(customer_loan_amount - ( processingfees + documentcharge));
-            
-            customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation,intrest_amount:intrest_amount,principle:principle,due_amount:roundeddue,customer_loan_amount:customer_loan_amount,net_cash:net_cash});
+        var customerMappingData = [];
+        $('#cus_mapping_table tbody tr').each(function () {
+            // var cus_id = $(this).text(); // Retrieve the customer.id from data-id attribute
+            var cus_id = $(this).find('td:nth-child(3)').text();
+            var cus_mapping = $(this).find('td:nth-child(5)').text();
+            var designation = $(this).find('td:nth-child(10)').text();
+            var customer_loan_amount = $(this).find('td:nth-child(9)').text();
+            if (customer_loan_amount) {
+                let benefit_method = $('#profit_method_calc').val();
+                let result;
+
+                if (benefit_method == 1 || benefit_method == 'Pre Benefit') {
+                    result = getLoanPreInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee);
+                } else if (benefit_method == 2 || benefit_method == 'After Benefit') {
+                    result = getLoanAfterInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee);
+                }
+
+                // Accumulate
+                customer_loan_amount = result.loan;
+                principle = result.principal;
+                intrest_amount = result.interest;
+                due_amount = result.due;
+                net_cash = result.net;
+            }
+
+            customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation, intrest_amount: intrest_amount, principle: principle, due_amount: due_amount, customer_loan_amount: customer_loan_amount, net_cash: net_cash });
         });
 
 
@@ -491,7 +507,7 @@ $(document).ready(function () {
             'loan_id_calc': $('#loan_id_calc').val(),
             'Centre_id': $('#Centre_id').val(),
             'loan_category_calc': $('#loan_category_calc').val(),
-            'loan_amount_calc': $('#loan_amount_calc').val(),
+            'loan_amount_calc': $('#loan_amount_calc').val().replace(/,/g, ''),
             'total_cus': $('#total_cus').val(),
             'profit_type_calc': $('#profit_type_calc').val(),
             'due_method_calc': $('#due_method_calc').val(),
@@ -502,14 +518,14 @@ $(document).ready(function () {
             'processing_fees_calc': $('#processing_fees_calc').val(),
             'scheme_name_calc': $('#scheme_name_calc').val(),
             'scheme_date_calc': $('#scheme_date_calc').val(),
-            'loan_amnt_calc': $('#loan_amnt_calc').val(),
-            'principal_amnt_calc': $('#principal_amnt_calc').val(),
-            'interest_amnt_calc': $('#interest_amnt_calc').val(),
-            'total_amnt_calc': $('#total_amnt_calc').val(),
-            'due_amnt_calc': $('#due_amnt_calc').val(),
-            'doc_charge_calculate': $('#doc_charge_calculate').val(),
-            'processing_fees_calculate': $('#processing_fees_calculate').val(),
-            'net_cash_calc': $('#net_cash_calc').val(),
+            'loan_amnt_calc': $('#loan_amnt_calc').val().replace(/,/g, ''),
+            'principal_amnt_calc': $('#principal_amnt_calc').val().replace(/,/g, ''),
+            'interest_amnt_calc': $('#interest_amnt_calc').val().replace(/,/g, ''),
+            'total_amnt_calc': $('#total_amnt_calc').val().replace(/,/g, ''),
+            'due_amnt_calc': $('#due_amnt_calc').val().replace(/,/g, ''),
+            'doc_charge_calculate': $('#doc_charge_calculate').val().replace(/,/g, ''),
+            'processing_fees_calculate': $('#processing_fees_calculate').val().replace(/,/g, ''),
+            'net_cash_calc': $('#net_cash_calc').val().replace(/,/g, ''),
             'scheme_day_calc': $('#scheme_day_calc').val(),
             'due_startdate_calc': $('#due_startdate_calc').val(),
             'maturity_date_calc': $('#maturity_date_calc').val(),
@@ -544,20 +560,68 @@ $(document).ready(function () {
 
 }); //Document END.
 
-function callLoanCaculationFunctions() {
-    getLoanCategoryName();
-    setTimeout(() => {
-        getCusMapTable();
-    }, 500);
-    let loan_calc_id = $('#loan_calculation_id').val();
-    getAutoGenLoanId(loan_calc_id);
+$(function () {
+    getLoanEntryTable();
+});
+
+function getCentreDetails(id) {
+    $.post("api/loan_entry_files/get_centre_details.php", { id }, function (response) {
+        $("#centre_no").val(response[0].centre_no);
+        $("#centre_name").val(response[0].centre_name);
+        $("#centre_mobile").val(response[0].mobile1);
+    }, "json");
+}
+
+function swapTableAndCreation() {
+    if ($(".loan_table_content").is(":visible")) {
+        $(".loan_table_content").hide();
+        $("#add_loan").hide();
+        $("#loan_entry_content").show();
+        $("#back_btn").show();
+        callLoanCaculationFunctions();
+    } else {
+        $(".loan_table_content").show();
+        $("#add_loan").show();
+        getLoanEntryTable();
+        $("#loan_entry_content").hide();
+        $("#back_btn").hide();
+    }
+}
+
+function getLoanEntryTable() {
+    serverSideTable('#loan_entry_table', '', 'api/loan_entry_files/loan_entry_list.php');
+    // setDropdownScripts();   
+}
+/////////////////////////////////////////////////////////////// Loan Calculation START //////////////////////////////////////////////////////////////////////
+
+
+async function callLoanCaculationFunctions() {
+    try {
+        getLoanCategoryName(); // This seems to be sync — leave as-is
+
+        let loan_calc_id = $('#loan_calculation_id').val();
+        await getAutoGenLoanId(loan_calc_id); // wait for loan ID to be set
+
+        await getCusMapTable(); // wait for customer map table to be filled
+        await getCentreId(); // wait for centre options to load
+
+        // Optional: await getRepresentInfoTable(""); // if needed later
+
+    } catch (error) {
+        console.error("Error in callLoanCaculationFunctions:", error);
+        swalError("Error", "Something went wrong while loading calculation data.");
+    }
 }
 
 function getAutoGenLoanId(id) {
-    $.post('api/loan_entry_files/get_autoGen_loan_id.php', { id }, function (response) {
-        $('#loan_id_calc').val(response);
-    }, 'json');
+    return new Promise((resolve, reject) => {
+        $.post('api/loan_entry_files/get_autoGen_loan_id.php', { id }, function (response) {
+            $('#loan_id_calc').val(response);
+            resolve(response); // resolve when done
+        }, 'json').fail(reject); // reject on error
+    });
 }
+
 $('#customer_mapping').change(function () {
     let customer_mapping = $(this).val();
     getCustomerList(customer_mapping);
@@ -597,13 +661,13 @@ function getLoanCatDetails(id, profitType) {
     // Proceed with the AJAX request only if the ID is not empty
     $.post('api/loan_entry_files/getLoanCatDetails.php', { id, profitType }, function (response) {
         if (response && response.length > 0) {
-          //  $('#due_method_calc').val(response[0].due_method);
+            //  $('#due_method_calc').val(response[0].due_method);
             $('#due_method_calc').val(response[0].due_method).trigger('change');
             $('#profit_method_calc').val(response[0].benefit_method);
             $('#due_method_calc').prop('disabled', true);
             $('#profit_method_calc').prop('disabled', true);
             $('#proc_type').val(response[0].procrssing_fees_type);
-          
+
 
             var int_rate_upd = ($('#int_rate_upd').val()) ? $('#int_rate_upd').val() : '';
             var due_period_upd = ($('#due_period_upd').val()) ? $('#due_period_upd').val() : '';
@@ -622,15 +686,15 @@ function getLoanCatDetails(id, profitType) {
             $('.min-max-doc').text('* (' + response[0].doc_charge_min + '% - ' + response[0].doc_charge_max + '%) ');
             $('#doc_charge_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].doc_charge_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].doc_charge_min + `' && parseFloat($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `);
             $('#doc_charge_calc').val(doc_charge_upd);
-            if(response[0].procrssing_fees_type==='rupee'){
+            if (response[0].procrssing_fees_type === 'rupee') {
                 $('.min-max-proc').text('* (' + response[0].processing_fee_min + '₹ - ' + response[0].processing_fee_max + '₹) ');
                 $('#processing_fees_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].processing_fee_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].processing_fee_min + `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `);
                 $('#processing_fees_calc').val(proc_fee_upd);
             }
-            else{
-            $('.min-max-proc').text('* (' + response[0].processing_fee_min + '% - ' + response[0].processing_fee_max + '%) ');
-            $('#processing_fees_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].processing_fee_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].processing_fee_min + `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `);
-            $('#processing_fees_calc').val(proc_fee_upd);
+            else {
+                $('.min-max-proc').text('* (' + response[0].processing_fee_min + '% - ' + response[0].processing_fee_max + '%) ');
+                $('#processing_fees_calc').attr('onChange', `if( parseFloat($(this).val()) > '` + response[0].processing_fee_max + `' ){ alert("Enter Lesser Value"); $(this).val(""); }else if( parseFloat($(this).val()) < '` + response[0].processing_fee_min + `' && parseInt($(this).val()) != '' ){ alert("Enter Higher Value"); $(this).val(""); } `);
+                $('#processing_fees_calc').val(proc_fee_upd);
             }
 
             if (profitType == 2) {
@@ -711,12 +775,14 @@ function dueMethodScheme(id, profitType) {
 
 function CalculationMethod(scheme_id) {
     $.post('api/loan_entry_files/get_profit_method.php', { scheme_id }, function (response) {
-        // Set the values of the form fields based on the response
-        $('#due_method_calc').val(response[0].due_method).trigger('change');
-        $('#profit_method_calc').val(response[0].benefit_method);
-        $('#profit_type_calc_scheme').show(); // Ensure the scheme is shown if data is valid
-        $('#due_method_calc').prop('disabled', true);
-        $('#profit_method_calc').prop('disabled', true);
+        if (response.length > 0) {
+            // Set the values of the form fields based on the response
+            $('#due_method_calc').val(response[0].due_method).trigger('change');
+            $('#profit_method_calc').val(response[0].benefit_method);
+            $('#profit_type_calc_scheme').show(); // Ensure the scheme is shown if data is valid
+            $('#due_method_calc').prop('disabled', true);
+            $('#profit_method_calc').prop('disabled', true);
+        }
 
     }, 'json')
 }
@@ -758,146 +824,157 @@ function schemeCalAjax(id) {
     }
 }
 
-//To Get Loan Calculation for After Interest
-function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee,proc_fee_type) {
+function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee) {
 
-    $('#loan_amnt_calc').val(parseInt(loan_amt).toFixed(0)); //get loan amt from loan info card
-    $('#principal_amnt_calc').val(parseInt(loan_amt).toFixed(0)); // principal amt as same as loan amt for after interest
+    // Calculate Interest amount 
+    var interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
 
-    var interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period)).toFixed(0); //Calculate interest rate
-    $('#interest_amnt_calc').val(parseInt(interest_rate));
-
-    var tot_amt = parseInt(loan_amt) + parseFloat(interest_rate); //Calculate total amount from principal/loan amt and interest rate
-    $('#total_amnt_calc').val(parseInt(tot_amt).toFixed(0));
-
-    var due_amt = parseInt(tot_amt) / parseInt(due_period);//To calculate due amt by dividing total amount and due period given on loan info
-    let total_cus = $("#total_cus").val();
-    var individual_amount = parseInt(due_amt)/total_cus
-    var roundDue = Math.ceil(individual_amount / 5) * 5; //to increase Due Amt to nearest multiple of 5
-    if (roundDue < individual_amount) {
-        roundDue += 5;
-    }
-    let newDue = parseInt(roundDue)*(total_cus);
-    $('.due-diff').text('* (Difference: +' + parseInt(newDue - due_amt) + ')'); //To show the difference amount
-    $('#due_amnt_calc').val(parseInt(newDue).toFixed(0));
-
-    ////////////////////recalculation of total, principal, interest///////////////////
-    var new_tot = parseInt(newDue) * due_period;
-    $('#total_amnt_calc').val(new_tot)
-
-    //to get new interest rate using round due amt
-    let new_int = (newDue * due_period) - loan_amt;
-    var roundedInterest = Math.ceil(new_int / 5) * 5;
-    if (roundedInterest < new_int) {
-        roundedInterest += 5;
-    }
-
-    $('.int-diff').text('* (Difference: +' + parseInt(roundedInterest - interest_rate) + ')'); //To show the difference amount from old to new
-    $('#interest_amnt_calc').val(parseInt(roundedInterest));
-
-    var new_princ = parseInt(new_tot) - parseInt(roundedInterest);
-    $('#principal_amnt_calc').val(new_princ);
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-    var doc_charge = parseInt(loan_amt) * (parseFloat(doc_charge) / 100); //Get document charge from loan info and multiply with loan amt to get actual doc charge
-    var roundeddoccharge = Math.ceil(doc_charge / 5) * 5; //to increase document charge to nearest multiple of 5
-    if (roundeddoccharge < doc_charge) {
-        roundeddoccharge += 5;
-    }
-    $('.doc-diff').text('* (Difference: +' + parseInt(roundeddoccharge - doc_charge) + ')'); //To show the difference amount from old to new
-    $('#doc_charge_calculate').val(parseInt(roundeddoccharge));
-    if(proc_fee_type=='percentage'){
-    var proc_fee = parseInt(loan_amt) * (parseFloat(proc_fee) / 100);//Get processing fee from loan info and multiply with loan amt to get actual proc fee
-    var roundeprocfee = Math.ceil(proc_fee / 5) * 5; //to increase Processing fee to nearest multiple of 5
-    if (roundeprocfee < proc_fee) {
-        roundeprocfee += 5;
-    }
-    $('.proc-diff').text('* (Difference: +' + parseInt(roundeprocfee - proc_fee) + ')'); //To show the difference amount from old to new
-    $('#processing_fees_calculate').val(parseInt(roundeprocfee));
-}else{
-    var roundeprocfee =parseInt(proc_fee);
-    $('#processing_fees_calculate').val(parseInt(proc_fee));
-
-}
-    var net_cash = parseInt(loan_amt) - parseFloat(roundeddoccharge) - parseFloat(roundeprocfee); //Net cash will be calculated by subracting other charges
-    $('#net_cash_calc').val(parseInt(net_cash).toFixed(0));
-}
-function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee,proc_fee_type) {
-
-    // Principal Amount for Pre-Interest is the loan amount itself
-    $('#loan_amnt_calc').val(parseInt(loan_amt).toFixed(0)); // get loan amt from loan info card
-    $('#principal_amnt_calc').val(parseInt(loan_amt).toFixed(0)); // principal amt same as loan amt for pre-interest
-
-    // Calculate interest based on the loan amount and period
-    var interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period)).toFixed(0);
-    $('#interest_amnt_calc').val(parseInt(interest_rate));
-
-    // Calculate total amount: loan amount + interest
+    // Calculate Total amount 
     var tot_amt = parseInt(loan_amt) + parseFloat(interest_rate);
-    $('#total_amnt_calc').val(parseInt(tot_amt).toFixed(0));
 
-    // Calculate due amount by dividing the total amount by the due period
-    var due_amt = parseInt(tot_amt) / parseInt(due_period);//To calculate due amt by dividing total amount and due period given on loan info
-    let total_cus = $("#total_cus").val();
-    var individual_amount = parseInt(due_amt)/total_cus
-    var roundDue = Math.ceil(individual_amount / 5) * 5; //to increase Due Amt to nearest multiple of 5
-    if (roundDue < individual_amount) {
+    // Calculate Due amount 
+    var due_amt = parseInt(tot_amt) / parseInt(due_period);
+    var roundDue = Math.ceil(due_amt / 5) * 5;
+    if (roundDue < due_amt) {
         roundDue += 5;
     }
-    let newDue = parseInt(roundDue)*(total_cus);
-    $('.due-diff').text('* (Difference: +' + parseInt(newDue - due_amt) + ')'); //To show the difference amount
-    $('#due_amnt_calc').val(parseInt(newDue).toFixed(0));
+    let dueDiff = parseInt(roundDue - due_amt);
 
-    //////////////////// recalculation of total, interest, and principal /////////////////////
+    // Calculate New Total amount 
+    var new_tot = parseInt(roundDue) * due_period;
 
-    // New total amount based on rounded due amount
-    var new_tot = parseInt(newDue) * due_period;
-    $('#total_amnt_calc').val(new_tot);
-
-    // Recalculate interest based on the new total amount and rounded due
-    let new_int = (newDue * due_period) - loan_amt;
-    var roundedInterest = Math.ceil(new_int / 5) * 5;
+    // Calculate Interest amount 
+    let new_int = (roundDue * due_period) - loan_amt;
+    let roundedInterest = Math.ceil(new_int / 5) * 5;
     if (roundedInterest < new_int) {
         roundedInterest += 5;
     }
+    let interestDiff = parseInt(roundedInterest - interest_rate);
 
-    $('.int-diff').text('* (Difference: +' + parseInt(roundedInterest - interest_rate) + ')'); // show interest difference
-    $('#interest_amnt_calc').val(parseInt(roundedInterest));
+    // Calculate New Principal amount 
+    var new_princ = parseInt(new_tot) - parseInt(roundedInterest);
 
-    // Principal amount remains unchanged for Pre-Interest, so it's still the loan amount
-    var new_princ = loan_amt;
-    $('#principal_amnt_calc').val(new_princ);
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
-    // Calculate document charge based on loan amount
-    var doc_charge = parseInt(loan_amt) * (parseFloat(doc_charge) / 100);
-    var roundeddoccharge = Math.ceil(doc_charge / 5) * 5; // round to nearest multiple of 5
+    // Calculate Document charge 
+    var doc_type = $('.min-max-doc').text();
+    if (doc_type.includes('₹')) {
+        var doc_charge = parseInt(doc_charge);
+    } else if (doc_type.includes('%')) {
+        var doc_charge = parseInt(loan_amt) * (parseFloat(doc_charge) / 100);
+    }
+    var roundeddoccharge = Math.ceil(doc_charge / 5) * 5;
     if (roundeddoccharge < doc_charge) {
         roundeddoccharge += 5;
     }
-    $('.doc-diff').text('* (Difference: +' + parseInt(roundeddoccharge - doc_charge) + ')'); // show doc charge difference
-    $('#doc_charge_calculate').val(parseInt(roundeddoccharge));
-    
-if(proc_fee_type=='percentage'){
-    // Calculate processing fee based on loan amount
-    var proc_fee = parseInt(loan_amt) * (parseFloat(proc_fee) / 100);
-    var roundeprocfee = Math.ceil(proc_fee / 5) * 5; // round to nearest multiple of 5
+    let docDiff = parseInt(roundeddoccharge) - parseInt(doc_charge);
+
+    // Calculate Processing fee
+    var proc_type = $('.min-max-proc').text();
+    if (proc_type.includes('₹')) {
+        var proc_fee = parseInt(proc_fee);
+    } else if (proc_type.includes('%')) {
+        var proc_fee = parseInt(loan_amt) * (parseInt(proc_fee) / 100);
+    }
+    var roundeprocfee = Math.ceil(proc_fee / 5) * 5;
     if (roundeprocfee < proc_fee) {
         roundeprocfee += 5;
     }
-    $('.proc-diff').text('* (Difference: +' + parseInt(roundeprocfee - proc_fee) + ')'); // show proc fee difference
-    $('#processing_fees_calculate').val(parseInt(roundeprocfee));
-}else{
-    var roundeprocfee =parseInt(proc_fee);
-    $('#processing_fees_calculate').val(parseInt(proc_fee));
+    let procDiff = parseInt(roundeprocfee) - parseInt(proc_fee);
 
+    // Calculate Net Cash
+    var net_cash = parseInt(loan_amt) - parseFloat(roundeddoccharge) - parseFloat(roundeprocfee);
+
+    return {
+        loan: loan_amt,
+        principal: new_princ,
+        interest: roundedInterest,
+        total: new_tot,
+        due: roundDue,
+        dueDiff: dueDiff,
+        interestDiff: interestDiff,
+        doc: roundeddoccharge,
+        docDiff: docDiff,
+        proc: roundeprocfee,
+        procDiff: procDiff,
+        net: net_cash
+    };
 }
 
-    // Calculate net cash: loan amount - document charge - processing fee
-    var net_cash = parseInt(loan_amt) - parseFloat(roundeddoccharge) - parseFloat(roundeprocfee);
-    $('#net_cash_calc').val(parseInt(net_cash).toFixed(0));
+function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee) {
+
+    // Calculate Interest amount 
+    let interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+
+    // Calculate Principal amount 
+    let princ_amt = parseInt(loan_amt) - parseInt(interest_rate);
+
+    // Calculate Total amount 
+    let tot_amt = parseInt(princ_amt) + parseFloat(interest_rate);
+
+    // Calculate Due amount 
+    var due_amt = parseInt(tot_amt) / parseInt(due_period);
+    var roundDue = Math.ceil(due_amt / 5) * 5;
+    if (roundDue < due_amt) {
+        roundDue += 5;
+    }
+    let dueDiff = parseInt(roundDue - due_amt);
+
+    // Calculate New Total amount 
+    let new_tot = parseInt(roundDue) * due_period;
+
+    // Calculate Interest amount 
+    let new_int = (roundDue * due_period) - princ_amt;
+    let roundedInterest = Math.ceil(new_int / 5) * 5;
+    if (roundedInterest < new_int) {
+        roundedInterest += 5;
+    }
+    let interestDiff = parseInt(roundedInterest - interest_rate);
+
+    // Calculate New Principal amount 
+    let new_princ = parseInt(new_tot) - parseInt(roundedInterest);
+
+    // Calculate Document charge 
+    var doc_type = $('.min-max-doc').text();
+    if (doc_type.includes('₹')) {
+        var doc_charge = parseInt(doc_charge);
+    } else if (doc_type.includes('%')) {
+        var doc_charge = parseInt(loan_amt) * (parseFloat(doc_charge) / 100);
+    }
+    var roundeddoccharge = Math.ceil(doc_charge / 5) * 5;
+    if (roundeddoccharge < doc_charge) {
+        roundeddoccharge += 5;
+    }
+    let docDiff = roundeddoccharge - doc_charge;
+
+    // Calculate Processing fee
+    var proc_type = $('.min-max-proc').text();
+    if (proc_type.includes('₹')) {
+        var proc_fee = parseInt(proc_fee);
+    } else if (proc_type.includes('%')) {
+        var proc_fee = parseInt(loan_amt) * (parseInt(proc_fee) / 100);
+    }
+    var roundeprocfee = Math.ceil(proc_fee / 5) * 5;
+    if (roundeprocfee < proc_fee) {
+        roundeprocfee += 5;
+    }
+    let procDiff = parseInt(roundeprocfee - proc_fee);
+
+    // Calculate Net Cash
+    let net_cash = parseInt(princ_amt) - parseInt(roundeddoccharge) - parseInt(roundeprocfee);
+
+    return {
+        loan: loan_amt,
+        principal: new_princ,
+        interest: roundedInterest,
+        total: new_tot,
+        due: roundDue,
+        dueDiff: dueDiff,
+        interestDiff: interestDiff,
+        doc: roundeddoccharge,
+        docDiff: docDiff,
+        proc: roundeprocfee,
+        procDiff: procDiff,
+        net: net_cash
+    };
 }
 
 function resetValidation() {
@@ -917,23 +994,23 @@ function resetValidation() {
 function isFormDataValid(formData) {
     let isValid = true;
     const excludedFields = [
-        'loan_amnt_calc', 
-        'principal_amnt_calc', 
-        'interest_amnt_calc', 
+        'loan_amnt_calc',
+        'principal_amnt_calc',
+        'interest_amnt_calc',
         'total_amnt_calc',
-        'processing_fees_calculate', 
+        'processing_fees_calculate',
         'net_cash_calc',
-        'due_amnt_calc', 
+        'due_amnt_calc',
         'doc_charge_calculate',
-        'due_method_calc', 
+        'due_method_calc',
         'profit_method_calc',
         'scheme_date_calc',
         'scheme_day_calc',
         'scheme_name_calc',
-        'due_period_calc', 
-        'interest_rate_calc', 
-        'processing_fees_calc', 
-        'doc_charge_calc', 
+        'due_period_calc',
+        'interest_rate_calc',
+        'processing_fees_calc',
+        'doc_charge_calc',
         'id'
     ];
     // Validate all fields except the excluded ones
@@ -954,7 +1031,7 @@ function isFormDataValid(formData) {
             validateField(formData['doc_charge_calc'], 'doc_charge_calc'),
             validateField(formData['processing_fees_calc'], 'processing_fees_calc')
         ];
-        
+
     } else if (formData['profit_type_calc'] == '2') {
         var validationResults = [
             validateField(formData['due_method_calc'], 'due_method_calc'),
@@ -965,7 +1042,7 @@ function isFormDataValid(formData) {
             validateField(formData['doc_charge_calc'], 'doc_charge_calc'),
             validateField(formData['processing_fees_calc'], 'processing_fees_calc')
         ];
-        
+
     }
 
     if (formData['due_method_calc'] == '2') {
@@ -974,7 +1051,7 @@ function isFormDataValid(formData) {
     if (formData['due_method_calc'] == '1') {
         validationResults.push(validateField(formData['scheme_date_calc'], 'scheme_date_calc'));
     }
-    
+
     if (!validationResults.every(result => result)) {
         isValid = false;
     }
@@ -1014,27 +1091,32 @@ function getCustomerList(customer_mapping) {
         $('#add_customer').empty().append(cusOptn);
     }, 'json');
 }
-function getCusMapTable() {
-    let loan_id_calc = $('#loan_id_calc').val();
-    $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, function (response) {
-        let cusMapColumn = [
-            "sno",
-            "cus_id",
-            "map_id",
-            "first_name",
-            "customer_mapping",
-            "aadhar_number",
-            "mobile1",
-            "areaname",
-            "loan_amount",
-            "designation",
-            "action"
 
-        ]
-        appendDataToTable('#cus_mapping_table', response, cusMapColumn);
-        $('#cus_mapping_table').find('th:eq(2), td:nth-child(3)').hide();
-    }, 'json');
+function getCusMapTable() {
+    return new Promise((resolve, reject) => {
+        let loan_id_calc = $('#loan_id_calc').val();
+
+        $.post('api/loan_entry_files/get_cus_map_details.php', { loan_id_calc }, function (response) {
+            let cusMapColumn = [
+                "sno",
+                "cus_id",
+                "map_id",
+                "first_name",
+                "customer_mapping",
+                "aadhar_number",
+                "mobile1",
+                "areaname",
+                "loan_amount",
+                "designation",
+                "action"
+            ];
+            appendDataToTable('#cus_mapping_table', response, cusMapColumn);
+            $('#cus_mapping_table').find('th:eq(2), td:nth-child(3)').hide();
+            resolve(); // resolve after complete
+        }, 'json').fail(reject); // reject on error
+    });
 }
+
 function getCentreMapTable(id) {
     $.post('api/loan_entry_files/get_centre_map_details.php', { id }, function (response) {
         let cusMapColumn = [
@@ -1057,143 +1139,133 @@ function getCentreMapTable(id) {
 }
 // Function to remove row
 function removeCusMap(TableRowVal) {
-    // Find the row with the matching ID and remove it
-    let id = TableRowVal.id; // Extract the 'id' value
-    let loan_id = TableRowVal.laon_id;
-    let loan_status = TableRowVal.loan_status;
-    let profile_id = TableRowVal.profile_id;
-    let centre_id = $('#Centre_id').val();
-    var customerMappingData = [];
-    $('#cus_mapping_table tbody tr').each(function () {
-        var cus_id = $(this).find('td:nth-child(3)').text(); // Use .text() instead of .val() for non-input elements
-        var cus_mapping = $(this).find('td:nth-child(5)').text(); 
-        var designation = $(this).find('td:nth-child(10)').text();
-        customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation });
+    let { id, loan_id, loan_status, row } = TableRowVal;
+
+    row.remove(); // Remove the row directly
+    swalSuccess('Success', 'Customer mapping removed successfully.');
+
+    // Reindex remaining rows
+    $('#cus_mapping_table tbody tr').each(function (index) {
+        $(this).find('td:first').text(index + 1);
     });
-    // Add customer mapping data
-    $('#cus_mapping_table tbody tr').each(function () {
-        if (profile_id== $(this).find('td:nth-child(3)').text()) {
-            $(this).remove(); // Remove the row
-            swalSuccess('Success', 'Customer mapping removed successfully.');
-    
-            // Reindex the remaining rows
-            $('#cus_mapping_table tbody tr').each(function (index) {
-                $(this).find('td:first').text(index + 1); // Update the serial number (first column)
-            });
-    
-            return false; // Exit the loop once the row is removed
-        }
-    });
-    $.post('api/loan_entry_files/delete_cus_mapping.php', { id,loan_id,loan_status,'customer_mapping_data': customerMappingData,centre_id}, function (response) {
+
+    // API call
+    $.post('api/loan_entry_files/delete_cus_mapping.php', { id, loan_id, loan_status }, function (response) {
         if (response == 1) {
-            swalSuccess('Success', 'Customer mapping removed successfully.')
-            getCusMapTable();
-            getLoanEntryTable();
+            // Success message already shown above
         } else {
+            swalError('Warning', 'Customer mapping removed Faield.');
         }
     }, 'json');
 }
+
 
 function loanCalculationEdit(id) {
-    $.post('api/loan_entry_files/loan_calculation_data.php', { id }, function (response) {
-        if (response.length > 0) {
-            $('#loan_id_calc').val(response[0].loan_id);
-            $('#loan_category_calc').val(response[0].loan_category);
-            $('#loan_category_calc2').val(response[0].loan_category);
-            $('#Centre_id').val(response[0].centre_id);
-            $('#Centre_id_edit').val(response[0].centre_id);
-            $('#centre_no').val(response[0].centre_no);
-            $('#centre_name').val(response[0].centre_name);
-            $('#centre_mobile').val(response[0].mobile1);
-            $('#total_cus').val(response[0].total_customer);
-            $('#loan_amount_calc').val(response[0].loan_amount);
-            $('#profit_type_calc').val(response[0].profit_type);
-            $('#due_method_calc').val(response[0].due_method);
-            $('#profit_method_calc').val(response[0].benefit_method);
-            $('#scheme_name_edit').val(response[0].scheme_name);
-            $('#int_rate_upd').val(response[0].interest_rate);
-            $('#due_period_upd').val(response[0].due_period);
-            $('#doc_charge_upd').val(response[0].doc_charge);
-            $('#proc_fees_upd').val(response[0].processing_fees);
-            $('#loan_amnt_calc').val(response[0].loan_amount_calc);
-            $('#principal_amnt_calc').val(response[0].principal_amount_calc);
-            $('#interest_amnt_calc').val(response[0].intrest_amount_calc);
-            $('#total_amnt_calc').val(response[0].total_amount_calc);
-            $('#due_amnt_calc').val(response[0].due_amount_calc);
-            $('#doc_charge_calculate').val(response[0].document_charge_cal);
-            $('#processing_fees_calculate').val(response[0].processing_fees_cal);
-            $('#net_cash_calc').val(response[0].net_cash_calc);
-            $('#profit_type_calc_scheme').show();
-            let editDId = response[0].scheme_date;
+    return new Promise((resolve, reject) => {
+        $.post('api/loan_entry_files/loan_calculation_data.php', { id }, function (response) {
+            if (response.length > 0) {
+                // Populate all fields
+                $('#loan_id_calc').val(response[0].loan_id);
+                $('#loan_category_calc').val(response[0].loan_category);
+                $('#loan_category_calc2').val(response[0].loan_category);
+                $('#Centre_id').val(response[0].centre_id);
+                $('#Centre_id_edit').val(response[0].centre_id);
+                $('#centre_no').val(response[0].centre_no);
+                $('#centre_name').val(response[0].centre_name);
+                $('#centre_mobile').val(response[0].mobile1);
+                $('#total_cus').val(response[0].total_customer);
+                $('#loan_amount_calc').val(response[0].loan_amount);
+                $('#profit_type_calc').val(response[0].profit_type);
+                $('#due_method_calc').val(response[0].due_method);
+                $('#profit_method_calc').val(response[0].benefit_method);
+                $('#scheme_name_edit').val(response[0].scheme_name);
+                $('#int_rate_upd').val(response[0].interest_rate);
+                $('#due_period_upd').val(response[0].due_period);
+                $('#doc_charge_upd').val(response[0].doc_charge);
+                $('#proc_fees_upd').val(response[0].processing_fees);
+                $('#loan_amnt_calc').val(response[0].loan_amount_calc);
+                $('#principal_amnt_calc').val(response[0].principal_amount_calc);
+                $('#interest_amnt_calc').val(response[0].intrest_amount_calc);
+                $('#total_amnt_calc').val(response[0].total_amount_calc);
+                $('#due_amnt_calc').val(response[0].due_amount_calc);
+                $('#doc_charge_calculate').val(response[0].document_charge_cal);
+                $('#processing_fees_calculate').val(response[0].processing_fees_cal);
+                $('#net_cash_calc').val(response[0].net_cash_calc);
+                $('#profit_type_calc_scheme').show();
 
-            if (response[0].profit_type == '1') {//Loan Calculation
-                $('.calc').show();
-                $('.scheme').hide();
-                $('.scheme_day').hide();
-                getLoanCatDetails(response[0].loan_category, 1);
-            } else if (response[0].profit_type == '2') { //Scheme
-                dueMethodScheme(response[0].loan_category, 2)
-                $('.calc').show();
-                $('.scheme').show();
+                let editDId = response[0].scheme_date;
+
+                if (response[0].profit_type == '1') {
+                    $('.calc').show();
+                    $('.scheme').hide();
+                    $('.scheme_day').hide();
+                    getLoanCatDetails(response[0].loan_category, 1);
+                } else if (response[0].profit_type == '2') {
+                    dueMethodScheme(response[0].loan_category, 2);
+                    $('.calc').show();
+                    $('.scheme').show();
+                    setTimeout(() => {
+                        $('#scheme_name_calc').trigger('change');
+                    }, 500);
+                }
+
                 setTimeout(() => {
-                    $('#scheme_name_calc').trigger('change');
-                }, 500);
-
+                    $('#scheme_day_calc').val(response[0].scheme_day_calc);
+                    getDateDropDown(editDId);
+                    $('#scheme_date_calc').trigger('change');
+                    $('#due_startdate_calc').val(response[0].due_start);
+                    $('#maturity_date_calc').val(response[0].due_end);
+                    $('#total_cus').trigger('blur');
+                    getCusMapTable().then(() => {
+                        let totalCus = parseInt($('#total_cus').val()) || 0;
+                        let cusMappingtable = $('#cus_mapping_table tbody tr').length;
+                        if (totalCus > 0 && cusMappingtable > 0 && totalCus === cusMappingtable) {
+                            $('#refresh_cal').trigger('click');
+                        }
+                        getRepresentInfoTable(response[0].centre_id);
+                        resolve(); // Resolve after data and table setup
+                    });
+                }, 2000);
+            } else {
+                reject("No data returned");
             }
-            setTimeout(() => {
-                $('#scheme_day_calc').val(response[0].scheme_day_calc);
-                getDateDropDown(editDId);
-                $('#scheme_date_calc').trigger('change');
-                $('#refresh_cal').trigger('click');
-                $('#due_startdate_calc').val(response[0].due_start);
-                $('#maturity_date_calc').val(response[0].due_end);
-                $('#total_cus').trigger('blur');
-                // $('#loan_amount_per_cus').val(response[0].loan_amt_per_cus);
-                getCusMapTable();
-                getRepresentInfoTable(response[0].centre_id)
-            }, 2000);
-        }
-    }, 'json');
+        }, 'json').fail(reject);
+    });
 }
+
 function getCentreId() {
-    $.post("api/loan_entry_files/get_centre_id.php", function (response) {
-        let appendLoanCatOption = "";
-        appendLoanCatOption += '<option value=" ">Select Centre ID</option>';
+    return new Promise((resolve, reject) => {
+        $.post("api/loan_entry_files/get_centre_id.php", function (response) {
+            let appendLoanCatOption = "";
+            appendLoanCatOption += '<option value=" ">Select Centre ID</option>';
 
-        // Get the Centre_id_edit value to pre-select the correct option in edit mode
-        let Centre_id_edit = $("#Centre_id_edit").val();
-        let centreEditOptionAdded = false;
+            let Centre_id_edit = $("#Centre_id_edit").val();
+            let centreEditOptionAdded = false;
 
-        // Loop through each response item
-        $.each(response, function (index, val) {
-            let selected = "";
+            $.each(response, function (index, val) {
+                let selected = "";
 
-            // Check if the current value matches the Centre_id_edit, and if so, mark it as selected
-            if (val.centre_id == Centre_id_edit) {
-                selected = "selected";
-                centreEditOptionAdded = true; // Track that Centre_id_edit was added
+                if (val.centre_id == Centre_id_edit) {
+                    selected = "selected";
+                    centreEditOptionAdded = true;
+                }
+
+                if (val.centre_id == Centre_id_edit) {
+                    appendLoanCatOption += `<option value="${val.centre_id}" ${selected}>${val.centre_id}</option>`;
+                } else if (val.status === "can_show") {
+                    appendLoanCatOption += `<option value="${val.centre_id}">${val.centre_id}</option>`;
+                }
+            });
+
+            if (!centreEditOptionAdded && Centre_id_edit) {
+                appendLoanCatOption += `<option value="${Centre_id_edit}" selected>${Centre_id_edit}</option>`;
             }
 
-            // Append the Centre_id_edit option directly, bypassing validation for edit mode
-            if (val.centre_id == Centre_id_edit) {
-                appendLoanCatOption += `<option value="${val.centre_id}" ${selected}>${val.centre_id}</option>`;
-            } else if (val.status === "can_show" && !Centre_id_edit) {
-                // Only append the "can_show" centre_ids in normal mode (non-edit mode)
-                appendLoanCatOption += `<option value="${val.centre_id}">${val.centre_id}</option>`;
-            } else if (val.status === "can_show" && Centre_id_edit) {
-                // Ensure that can_show options are added in edit mode as well, but without re-adding the Centre_id_edit
-                appendLoanCatOption += `<option value="${val.centre_id}">${val.centre_id}</option>`;
-            }
-        });
+            $("#Centre_id").empty().append(appendLoanCatOption);
 
-        // If Centre_id_edit wasn't in the response, still add it manually
-        if (!centreEditOptionAdded && Centre_id_edit) {
-            appendLoanCatOption += `<option value="${Centre_id_edit}" selected>${Centre_id_edit}</option>`;
-        }
-
-        // Empty the dropdown and append the options
-        $("#Centre_id").empty().append(appendLoanCatOption);
-    }, "json");
+            resolve(); // Done
+        }, "json").fail(reject); // Error handling
+    });
 }
 
 

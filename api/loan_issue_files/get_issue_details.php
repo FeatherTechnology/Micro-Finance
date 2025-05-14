@@ -8,12 +8,15 @@ $response = array();
 $query = "SELECT
               lcm.id,
               lcm.loan_id,
+              lcm.centre_id,
+              lcm.loan_amount,
               cc.cus_id,
               lcm.issue_status,
               cc.first_name,
               lelc.net_cash_calc,
               lelc.total_customer,
               lelc.loan_date,
+              lelc.loan_status,
               lcm.net_cash,
                COALESCE(SUM(ls.issue_amount), 0) as issued_amount
           FROM loan_cus_mapping lcm
@@ -22,6 +25,7 @@ $query = "SELECT
           LEFT JOIN loan_issue ls ON lcm.id = ls.cus_mapping_id
           WHERE lcm.loan_id = '$loan_id' GROUP BY cc.cus_id";
 
+// echo $query; die;
 // Execute the query
 $result = $pdo->query($query);
 
