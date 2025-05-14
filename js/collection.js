@@ -182,9 +182,8 @@ $(document).ready(function () {
     $(document).on('click', '.Savings-chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
         var cus_id = $(this).attr('data-id'); // Capture data-id from the clicked element
-        var aadhar = $(this).attr('aadhar'); // Capture aadhar from the clicked element
         $('#Savings_chart_model').modal('show'); // Show the modal
-        savingsChartList(cus_id,aadhar);
+        savingsChartList(cus_id);
     });
     ///////////////////////////////////////////////Penalty cahrt End///////////////////////////////////////////
     //////////////////////////////////////////Due Chart start//////////////////////////////
@@ -368,7 +367,7 @@ function collectionCustomerList(loan_id) {
                     "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +
                     "<a href='#' class='due-chart' data-id='" + item.id + "'>Due Chart</a>" +
-                    "<a href='#' class='Savings-chart' data-id='" + item.cus_id + "' aadhar='" + item.aadhar_number + "'>Savings Chart</a>" +
+                    "<a href='#' class='Savings-chart' data-id='" + item.cus_id + "' >Savings Chart</a>" +
                     "<a href='#' class='fine-chart' data-id='" + item.id + "'>Fine Chart</a>" +
                     "</div>" +
                     "</div>";
