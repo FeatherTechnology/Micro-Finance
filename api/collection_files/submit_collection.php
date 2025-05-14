@@ -65,7 +65,7 @@ foreach ($collectionData as $data) {
     $qry2 = $pdo->query("INSERT INTO `fine_charges`(`cus_mapping_id`,`loan_id`, `paid_date`, `paid_amnt`) VALUES ('$cus_mapping_id','$loan_id','$coll_date','$collection_fine')");
   }
 
-  $customer_status = $obj->custStatus($cus_mapping_id, $loan_id);
+  $customer_status = $obj->custStatus($cus_mapping_id, $loan_id , '');
   
   $status = $customer_status['status'];  // Get the status
   $balanceAmount = $customer_status['balanceAmount'];  // Get the individual amount

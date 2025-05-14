@@ -8,7 +8,6 @@ $to_date = $_POST['params']['to_date'];
 
 $column = array(
     'lelc.loan_id',
-    'cc.first_name',
     'anc.areaname',
     'bc.branch_name',
     'cc.mobile1',
@@ -23,14 +22,12 @@ $column = array(
     'lelc.net_cash_calc'   
 );
 
-$query = "SELECT lcm.id, cc.first_name, anc.areaname, bc.branch_name , cc.mobile1, lc.loan_category, li.issue_date, lelc.loan_id, lelc.loan_amount, lelc.principal_amount_calc , lelc.intrest_amount_calc, lelc.document_charge_cal, lelc.processing_fees_cal, lelc.loan_date, lelc.due_month, lelc.due_start, lelc.scheme_date, lelc.scheme_day_calc, lelc.total_amount_calc,  lelc.net_cash_calc, cnt.centre_id, cnt.centre_no, cnt.centre_name FROM loan_issue li JOIN loan_cus_mapping lcm ON li.loan_id = lcm.loan_id JOIN customer_creation cc ON lcm.cus_id = cc.id JOIN loan_entry_loan_calculation lelc ON li.loan_id = lelc.loan_id JOIN area_name_creation anc ON cc.area = anc.id JOIN loan_category lc ON lc.id = lelc.loan_category JOIN centre_creation cnt ON cnt.centre_id = lelc.centre_id JOIN branch_creation bc ON cnt.branch = bc.id  WHERE li.issue_date BETWEEN '$from_date' AND '$to_date ' group by lelc.loan_id ";
+$query = "SELECT lcm.id, anc.areaname, bc.branch_name , cc.mobile1, lc.loan_category, li.issue_date,lelc.loan_id, lelc.loan_amount, lelc.principal_amount_calc , lelc.intrest_amount_calc, lelc.document_charge_cal, lelc.processing_fees_cal,lelc.loan_date,lelc.due_month,lelc.due_start,lelc.scheme_date,lelc.scheme_day_calc, lelc.total_amount_calc, lelc.net_cash_calc,cnt.centre_id,cnt.centre_no,cnt.centre_name FROM loan_issue li JOIN loan_cus_mapping lcm ON li.loan_id = lcm.loan_id JOIN customer_creation cc ON lcm.cus_id = cc.id JOIN loan_entry_loan_calculation lelc ON li.loan_id = lelc.loan_id JOIN area_name_creation anc ON cc.area = anc.id JOIN loan_category lc ON lc.id = lelc.loan_category JOIN centre_creation cnt ON cnt.centre_id = lelc.centre_id JOIN branch_creation bc ON cnt.branch = bc.id  WHERE li.issue_date BETWEEN '$from_date' AND '$to_date ' group by lelc.loan_id ";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];
         $query .=     " AND (lelc.loan_id LIKE '%" . $search . "%'
-        OR cc.first_name LIKE '%" . $search . "%'
         OR lelc.loan_id LIKE '%" . $search . "%'
-        OR anc.areaname LIKE '%" . $search . "%'
         OR anc.areaname LIKE '%" . $search . "%'
         OR bc.branch_name LIKE '%" . $search . "%'
         OR cc.mobile1 LIKE '%" . $search . "%' 
@@ -77,10 +74,9 @@ foreach ($result as $row) {
 
         $year = date('Y', strtotime($due_date));
         $month = date('m', strtotime($due_date));
-
         $date_day = date('d-m-Y', strtotime($scheme_day . '-' . $month . '-' . $year));
     }
-    else{
+     else {
         $daysOfWeek = [
             1 => 'Monday',
             2 => 'Tuesday',
@@ -93,7 +89,7 @@ foreach ($result as $row) {
         $scheme_day = $row['scheme_day_calc'];
         $date_day= $daysOfWeek[$scheme_day];
     }
- 
+
     $sub_array = array();
 
     $sub_array[] = $sno++;
@@ -113,7 +109,6 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['processing_fees_cal']) ? moneyFormatIndia($row['processing_fees_cal']) : '';
     $sub_array[] = isset($row['total_amount_calc']) ? moneyFormatIndia($row['total_amount_calc']) : '';
     $sub_array[] = isset($row['net_cash_calc']) ? moneyFormatIndia($row['net_cash_calc']) : '';
-    $sub_array[] = isset($row['first_name']) ? $row['first_name'] : '';
 
     $data[] = $sub_array;
 }

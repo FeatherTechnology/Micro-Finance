@@ -53,7 +53,7 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="loan_id_calc"> Loan ID</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" id="loan_id_calc" name="loan_id_calc" tabindex="1" value="L" readonly>
+                                    <input type="text" class="form-control" id="loan_id_calc" name="loan_id_calc" tabindex="1" value="" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
@@ -229,49 +229,49 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="loan_amnt_calc">Loan Amount</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="loan_amnt_calc" name="loan_amnt_calc" tabindex="21" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="loan_amnt_calc" name="loan_amnt_calc" tabindex="21" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="principal_amnt_calc">Principal Amount</label><span class="text-danger princ-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="principal_amnt_calc" name="principal_amnt_calc" tabindex="22" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="principal_amnt_calc" name="principal_amnt_calc" tabindex="22" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="interest_amnt_calc">Interest Amount</label><span class="text-danger int-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="interest_amnt_calc" name="interest_amnt_calc" tabindex="23" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="interest_amnt_calc" name="interest_amnt_calc" tabindex="23" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="total_amnt_calc">Total Amount</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="total_amnt_calc" name="total_amnt_calc" tabindex="24" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="total_amnt_calc" name="total_amnt_calc" tabindex="24" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="due_amnt_calc">Due Amount</label><span class="text-danger due-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="due_amnt_calc" name="due_amnt_calc" tabindex="25" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="due_amnt_calc" name="due_amnt_calc" tabindex="25" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="doc_charge_calculate">Document Charges</label><span class="text-danger doc-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="doc_charge_calculate" name="doc_charge_calculate" tabindex="26" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="doc_charge_calculate" name="doc_charge_calculate" tabindex="26" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="processing_fees_calculate">Processing Fees</label><span class="text-danger proc-diff">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="processing_fees_calculate" name="processing_fees_calculate" tabindex="27" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="processing_fees_calculate" name="processing_fees_calculate" tabindex="27" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="net_cash_calc">Net Cash</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control refresh_loan_calc" id="net_cash_calc" name="net_cash_calc" tabindex="28" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="net_cash_calc" name="net_cash_calc" tabindex="28" readonly>
                                 </div>
                             </div>
                         </div>

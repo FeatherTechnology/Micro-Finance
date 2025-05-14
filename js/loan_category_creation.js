@@ -606,6 +606,7 @@ function clearLoanCategoryCreationForm() {
     // Reset styles to default
     $('#loan_limit, #interest_rate_min, #interest_rate_max, #due_period_min, #due_period_max, #doc_charge_min, #doc_charge_max, #processing_fee_min, #processing_fee_max, #overdue_penalty').css('border', '1px solid #cecece');
     $('#loan_category_creation select').css('border', '1px solid #cecece');
+    $('#Scheme_validation input').css('border', '1px solid #cecece');
     $('#profit_type').closest('.choices').find('.choices__inner').css('border', '1px solid #cecece');
     $('#penalty_type_percent').prop('checked', true).closest('label').addClass('active');
     $('#penalty_type_rupee').prop('checked', false).closest('label').removeClass('active');

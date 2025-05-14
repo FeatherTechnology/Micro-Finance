@@ -148,6 +148,12 @@
         <input type="hidden" id="due_method_calc">
         <input type="hidden" id="scheme_due_method_calc">
         <input type="hidden" id="scheme_day_calc">
+        <input type="hidden" id="proc_type">
+        <input type="hidden" id="loan_amount_calc">
+        <input type="hidden" id="interest_rate_calc">
+        <input type="hidden" id="processing_fees_calc">
+        <input type="hidden" id="doc_charge_calc">
+
         <div class="row gutters">
             <div class="col-12">
 
@@ -196,14 +202,36 @@
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
+                                    <label for="loan_amount"> Loan Amount</label><span class="text-danger">*</span>
+                                    <input type="number" class="form-control" id="loan_amount" name="loan_amount" tabindex="7">
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="total_cus"> Total No Of Customer</label><span class="text-danger">*</span>
+                                    <input type="number" class="form-control" id="total_cus" name="total_cus" tabindex="7">
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 calc">
+                                <div class="form-group">
+                                    <label for="profit_method_calc">Benefit Method</label><span class="text-danger">*</span>
+                                    <select class="form-control " id="profit_method_calc" name="profit_method_calc" tabindex="12" disabled>
+                                        <option value="">Select Benefit Method</option>
+                                        <option value="1">Pre Benefit</option>
+                                        <option value="2">After Benefit</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
                                     <label for="area"> Area </label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control " id="area" name="area" tabindex="7" readonly>
+                                    <input type="text" class="form-control " id="area" name="area" tabindex="8" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="branch"> Branch </label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control " id="branch" name="branch" tabindex="8" readonly>
+                                    <input type="text" class="form-control " id="branch" name="branch" tabindex="9" readonly>
                                 </div>
                             </div>
                         </div>
@@ -215,55 +243,56 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">Loan Calculation</div>
+                        <input type="button" class="btn btn-outline-primary card-head-btn" id="refresh_cal" tabindex="19" value="Calculate">
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="loan_amnt_calc">Loan Amount</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control refresh_loan_calc" id="loan_amnt_calc" name="loan_amnt_calc" tabindex="7" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="loan_amnt_calc" name="loan_amnt_calc" tabindex="20" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="principal_amnt_calc">Principal Amount</label><span class="text-danger princ-diff">*</span>
-                                    <input type="text" class="form-control refresh_loan_calc" id="principal_amnt_calc" name="principal_amnt_calc" tabindex="8" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="principal_amnt_calc" name="principal_amnt_calc" tabindex="21" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="interest_amnt_calc">Interest Amount</label><span class="text-danger int-diff">*</span>
-                                    <input type="text" class="form-control refresh_loan_calc" id="interest_amnt_calc" name="interest_amnt_calc" tabindex="9" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="interest_amnt_calc" name="interest_amnt_calc" tabindex="22" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="total_amnt_calc">Total Amount</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control refresh_loan_calc" id="total_amnt_calc" name="total_amnt_calc" tabindex="10" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="total_amnt_calc" name="total_amnt_calc" tabindex="23" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="due_amnt_calc">Due Amount</label><span class="text-danger due-diff">*</span>
-                                    <input type="text" class="form-control refresh_loan_calc" id="due_amnt_calc" name="due_amnt_calc" tabindex="11" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="due_amnt_calc" name="due_amnt_calc" tabindex="24" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="doc_charge_calculate">Document Charges</label><span class="text-danger doc-diff">*</span>
-                                    <input type="text" class="form-control refresh_loan_calc" id="doc_charge_calculate" name="doc_charge_calculate" tabindex="12" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="doc_charge_calculate" name="doc_charge_calculate" tabindex="25" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="processing_fees_calculate">Processing Fees</label><span class="text-danger proc-diff">*</span>
-                                    <input type="text" class="form-control refresh_loan_calc" id="processing_fees_calculate" name="processing_fees_calculate" tabindex="13" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="processing_fees_calculate" name="processing_fees_calculate" tabindex="26" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="net_cash_calc">Net Cash</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control refresh_loan_calc" id="net_cash_calc" name="net_cash_calc" tabindex="14" readonly>
+                                    <input type="text" class="form-control refresh_loan_calc" id="net_cash_calc" name="net_cash_calc" tabindex="27" readonly>
                                 </div>
                             </div>
                         </div>
@@ -304,17 +333,51 @@
                 <!--- -------------------------------------- Issue Info START ------------------------------- -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Issue Info</div>
+                        <div class="card-title">Add Customer</div>
                     </div>
                     <div class="card-body">
                         <div class="row">
-
-                            <table id="issue_info_table" class="table custom-table">
-                                <thead>
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-3">
+                                <label for="customer_mapping">Customer Mapping <span class="text-danger">*</span></label>
+                                <select class="form-control" id="customer_mapping" name="customer_mapping">
+                                    <option value="">Select Customer Mapping</option>
+                                    <option value="1">New</option>
+                                    <option value="2">Renewal</option>
+                                    <option value="3">Additional</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-3">
+                                <label for="add_customer">Customer Name <span class="text-danger">*</span></label>
+                                <select class="form-control" id="add_customer" name="add_customer">
+                                    <option value="">Select Customer Name</option>
+                                </select>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-3">
+                                <label for="customer_amount">Amount <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="customer_amount" name="customer_amount">
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-3">
+                                <label for="designation">Designation</label>
+                                <input type="text" class="form-control" id="designation" name="designation">
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end">
+                            <button class="btn btn-primary" id="submit_cus_map" name="submit_cus_map">Add</button>
+                            <input type="hidden" id="customerLoanAmount">
+                            <input type="hidden" id="individualLoanAmount">
+                        </div>
+                        <div class="card-header">
+                            <div class="card-title" style="margin-left: -15px; margin-top:-30px">Issue Info</div>
+                        </div>
+                        <!-- Issue Info Table -->
+                        <div class="table-responsive">
+                            <table id="issue_info_table" class="table table-bordered table-striped text-center">
+                                <thead class="table-dark">
                                     <tr>
                                         <th>S.NO</th>
                                         <th>Customer ID</th>
                                         <th>Customer Name</th>
+                                        <th style="display: none;">Loan Amount</th>
                                         <th>Net Cash</th>
                                         <th>Issued Amount</th>
                                         <th>Payment Mode</th>

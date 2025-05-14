@@ -96,6 +96,7 @@ foreach ($result as $row) {
     $sub_array[] = $centre_status;
     $sub_array[] = $centre_sub_status[$row['closed_sub_status']];
     $sub_array[] = $collection_status;
+    $sub_array[] = "<button class='btn btn-primary closedViewBtn' data-loan-id='" . $row['loan_id'] . "' data-centre-id='" . $row['centre_id'] . "'>&nbsp;View</button>";
     $sub_array[] = "<button class='btn btn-primary closeledgerViewBtn' value='" . $row['loan_id'] . "'>&nbsp;Ledger View</button>";
     $data[] = $sub_array;
 }

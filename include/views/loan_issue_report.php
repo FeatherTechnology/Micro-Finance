@@ -29,7 +29,6 @@
                                 <th>Processing Fee</th>
                                 <th>Total Amount</th>
                                 <th>Net Cash</th>
-                                <th>Received By</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

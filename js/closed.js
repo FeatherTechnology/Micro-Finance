@@ -33,13 +33,12 @@ $(document).ready(function () {
     });
 // submit centre close
     $(document).on('click', '#submit_centre_closed', function () {
-        if ($("#sub_status").prop("disabled") && $("#centre_remarks").prop("readonly")) {
+        if ($("#sub_status").prop("disabled")) {
             submitCustomer();
         } else {
             let loan_id=$("#loan_id").val();
             let sub_status=$("#sub_status").val();
             let centre_id=$("#centre_id").val();
-            let remarks=$("#centre_remarks").val();
             let allValid = true;
             $('#closed_customer_table tbody tr').each(function() {
                 let selectBox = $(this).find('.sub_status'); 
@@ -51,7 +50,7 @@ $(document).ready(function () {
             })
             if(allValid && sub_status!=''){
                 submitCustomer();
-                submitLoanSubStatus(loan_id,sub_status,remarks,centre_id)
+                submitLoanSubStatus(loan_id,sub_status,centre_id)
             }
             else{
                 $('#sub_status').css('border', '1px solid rgb(255, 56, 56)');
@@ -319,7 +318,6 @@ function getCustomerList(loan_id){
                 
                 if (allClosed) {
                     $('#sub_status').prop('disabled', false);
-                    $('#centre_remarks').prop('readonly', false);
                 }
                 
             });
@@ -327,13 +325,13 @@ function getCustomerList(loan_id){
     })
 }
 
-function submitLoanSubStatus(loan_id,sub_status,remarks,centre_id){
+function submitLoanSubStatus(loan_id,sub_status,centre_id){
     $.ajax({
         url: 'api/closed_files/submit_loan_status.php',
         type: 'POST',
         dataType: 'json',
         data: {
-            loan_id: loan_id,sub_status:sub_status,remarks:remarks,centre_id:centre_id
+            loan_id: loan_id,sub_status:sub_status,centre_id:centre_id
         },
         success: function (response) {
             if(response==="0"){

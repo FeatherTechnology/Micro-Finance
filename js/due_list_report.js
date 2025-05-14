@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-  $("#due_type").change(function () {
+    $("#due_type").change(function () {
         if ($(this).val() == "2") {
             $("#week_days").show();
         } else {
@@ -10,12 +10,12 @@ $(document).ready(function () {
 
 
     $('#due_list_report_btn').click(function () {
-        let search_date=$('#search_date').val();
-        let due_type=$('#due_type').val();
-        let week_days=$('#week_days').val();
-        
+        let search_date = $('#search_date').val();
+        let due_type = $('#due_type').val();
+        let week_days = $('#week_days').val();
+
         if (search_date !== '' && due_type !== '' && (due_type != 2 || week_days !== '')) {
-            
+
             $('#due_list_report_table').DataTable().destroy();
             $('#due_list_report_table').DataTable({
                 "order": [
@@ -50,9 +50,9 @@ $(document).ready(function () {
                 ],
             });
         }
-        else{
+        else {
             swalError('Please Fill Dates!', 'Both Date and Due Method are Required.');
-    
+
         }
 
 
