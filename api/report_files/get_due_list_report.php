@@ -10,21 +10,21 @@ $due_type = $_POST['due_type'];
 $week_days = $_POST['week_days'];
 
 $column = array(
-    'lelc.loan_id',
-    'lelc.loan_id',
-    'lelc.loan_id',
+   'lelc.loan_id',
+    'lelc.scheme_date',
     'lelc.loan_id',
     'lelc.loan_date',
     'lelc.due_end',
     'cntr.centre_id',
+    'cntr.centre_no',
     'cntr.centre_name',
     'cc.cus_id',
     'cc.first_name',
     'cc.mobile1',
     'anc.areaname',
     'lelc.loan_amount_calc',
-    'lelc.loan_id',
-    'lelc.loan_id',
+    'lcm.due_amount',
+    'lelc.due_period',
     'lelc.loan_id',
     'lelc.loan_id',
     'lelc.loan_id',
@@ -82,11 +82,14 @@ if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $query .= " and (anc.areaname LIKE '%" . $_POST['search'] . "%' OR
             lelc.loan_id LIKE '%" . $_POST['search'] . "%' OR
+            lelc.loan_date LIKE '%" . $_POST['search'] . "%' OR
             cntr.centre_id LIKE '%" . $_POST['search'] . "%' OR
             cntr.centre_no LIKE '%" . $_POST['search'] . "%' OR
+            cntr.centre_name LIKE '%" . $_POST['search'] . "%' OR
             cc.mobile1 LIKE '%" . $_POST['search'] . "%' OR
             cc.first_name LIKE '%" . $_POST['search'] . "%' OR
             cc.cus_id LIKE '%" . $_POST['search'] . "%' OR
+            lc.loan_category LIKE '%" . $_POST['search'] . "%' OR
             lelc.due_end LIKE '%" . $_POST['search'] . "%' OR
             cl.closed_date LIKE '%" . $_POST['search'] . "%' ) ";
     }
@@ -211,7 +214,7 @@ foreach ($result as $row) {
         $pending = max((($pending_diff * $due_amount) - $totalPaidAmt), 0);
 
         // Step 5: Pending due count
-        $pending_due_count = ($due_amount > 0) ? number_format($pending / $due_amount, 2, '.', '') : 0;
+        $pending_due_count = ($due_amount > 0) ? number_format($pending / $due_amount, 2) : 0;
 
         // Step 6: Payable amount
         $payable_amount = max(($payable_diff * $due_amount) - $totalPaidTrack, 0);
