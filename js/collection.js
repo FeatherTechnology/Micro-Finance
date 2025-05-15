@@ -59,7 +59,6 @@ $(document).ready(function () {
                 let collectionFine = parseFloat(row.find('input.collection_fine').val()) || 0;
                 let totalCollection = parseFloat(row.find('input.total_collection').val()) || 0;
                 let aadhar_num = row.find('td:nth-child(16)').text()
-console.log("savings",collectionsavings);
                 // Skip this row if total_collection is empty or zero
                 if (totalCollection === 0) {
                     return; // Skip this iteration and move to the next row

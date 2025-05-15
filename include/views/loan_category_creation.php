@@ -215,35 +215,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- <div class="row">
-                                    <div class="col-md-3 col-sm-4">
-                                        <div class="form-group">
-                                            <label for="overdue_penalty">Overdue Penalty</label><span class="text-danger">*</span>
-                                            <input type="hidden" id="penalty_type" value="percent">
-                                            <div class="input-group int-grp-label-empty">
-                                                <div class="btn-group btn-group-toggle mb-1 radio-toggle-div-cls" data-toggle="buttons">
-                                                    <label class="btn btn-outline-primary active radio-toggle-label-cls calculation-type" id="label_calculation_percent">
-                                                        <input type="radio" class="form-control" name="penalty_type" id="penalty_type_percent" value="percent" tabindex="16" checked>%
-                                                    </label>
-                                                    <label class="btn btn-outline-primary radio-toggle-label-cls calculation-type" id="label_calculation_rupee">
-                                                        <input type="radio" class="form-control" name="penalty_type" id="penalty_type_rupee" value="rupee" tabindex="17"> ₹
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-4">
-                                        <div class="form-group">
-                                            <label for="overdue_penalty"> </label>
-                                            <div class="input-group int-grp-label-empty">
-                                                <input type="number" class="form-control form-group-label-emptywith-input" id="overdue_penalty" name="overdue_penalty" tabindex="18" placeholder="Enter Overdue Penalty">
-                                                <div class="input-group-append form-group-label-emptywith-input">
-                                                    <span class="input-group-text calculation-span-val">%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                         <!--- ---------------------- Loan Calculation END  ----------------------------- -->
