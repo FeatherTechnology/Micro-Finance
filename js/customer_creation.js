@@ -608,7 +608,7 @@ function existingCustmerProfile(aadhar_number) {
         $("#native_address").val("");
         $("#occupation").val("");
         $("#occ_detail").val("");
-        $("#multiple_loan").val("");
+        // $("#multiple_loan").val("");
         $(".cus_status_div").hide();
 
         getFamilyInfoTable();

@@ -74,6 +74,7 @@ $(document).ready(function () {
     let pic = $("#pic")[0].files[0];
     let per_pic = $("#per_pic").val();
     let customer_profile_id = $("#customer_profile_id").val();
+    let latlong = $("#latlong").val();
 
     let cusDetail = new FormData();
     cusDetail.append("cus_id", cus_id);
@@ -96,6 +97,7 @@ $(document).ready(function () {
     cusDetail.append("pic", pic);
     cusDetail.append("per_pic", per_pic);
     cusDetail.append("customer_profile_id", customer_profile_id);
+    cusDetail.append("latlong", latlong);
 
     var data = [
       "cus_id",
@@ -559,6 +561,7 @@ function getCustomerDetails(id) {
       $("#occupation").val(response[0].occupation);
       $("#occ_detail").val(response[0].occ_detail);
       $("#multiple_loan").val(response[0].multiple_loan);
+      $("#latlong").val(response[0].cus_location);
       if (response[0].whatsapp === response[0].mobile1) {
         $("#mobile1_radio").prop("checked", true);
         $("#selected_mobile_radio").val("mobile1");

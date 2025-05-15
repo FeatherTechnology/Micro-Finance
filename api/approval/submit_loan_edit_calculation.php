@@ -91,13 +91,12 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
             continue;
         }
 
-        // Check if the customer is already mapped to the same loan_id
-        $stmt = $pdo->query("SELECT COUNT(*) FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$cus_id' AND lcm.centre_id = '$Centre_id' and lcm.loan_id ='$loan_id_calc'");
-        $existing_mapping = $stmt->fetchColumn();
-
-        if ($existing_mapping > 0) {
-            // Customer is already mapped to the same loan_id, send warning
-            $response = ['result' => 4, 'message' => 'The customer is already mapped to this loan.'];
+        //Check if the customer is already mapped to the same loan_id
+        $stmt = $pdo->query("SELECT id FROM loan_cus_mapping lcm WHERE lcm.cus_id = '$cus_id' AND lcm.centre_id = '$Centre_id' and lcm.loan_id = '$loan_id_calc' ");
+        $customer_mapping_id = $stmt->fetchColumn();
+        if ($stmt->rowCount() > 0) {
+            // Perform update
+            $update_qry = $pdo->query("UPDATE loan_cus_mapping SET net_cash = '$net_cash', customer_mapping = '$cus_mapping', loan_amount = '$customer_loan_amount', intrest_amount = '$intrest_amount',principle_amount = '$principle', due_amount = '$due_amount', designation = '$designation', inserted_login_id = '$user_id', created_on = NOW() WHERE id = '$customer_mapping_id'");
         } else {
             // Insert the new customer mapping
             $qry = $pdo->query("INSERT INTO loan_cus_mapping (loan_id, centre_id, cus_id, net_cash , customer_mapping,loan_amount , `intrest_amount`, `principle_amount`, `due_amount`,  designation, inserted_login_id, created_on) 
@@ -110,9 +109,9 @@ if (isset($_POST['customer_mapping_data']) && is_array($_POST['customer_mapping_
                                  LEFT JOIN loan_entry_loan_calculation lelc 
                                  ON lcm.loan_id = lelc.loan_id 
                                  WHERE lelc.loan_status >= 1 AND lelc.loan_status < 8 and lcm.cus_id = '$cus_id'AND lcm.loan_id !='$loan_id_calc'");
-        
+
             $rowCount = $stmt->rowCount();
-        
+
             if ($rowCount == 0) {
                 $pdo->query("UPDATE customer_creation 
                              SET cus_data = 'Existing', cus_status = 'Renewal' 
@@ -136,9 +135,7 @@ $current_mapping_count = $mappingCountStmt->fetchColumn();
 if ($current_mapping_count > $total_cus) {
     echo json_encode(['result' => 3, 'message' => 'Remove The Customer Mapping Details']);
     exit;
-}
-
-else if($current_mapping_count == $total_cus){
+} else if ($current_mapping_count == $total_cus) {
     $qry = $pdo->query("UPDATE `loan_entry_loan_calculation` 
     SET 
         `centre_id` = '$Centre_id',
