@@ -13,6 +13,7 @@ $(document).ready(function () {
         $(".closed_table_content").hide();
         getCentreDetails(id);
         getCustomerList(loan_id);
+        $('#sub_status').css('border', '1px solid #cecece');
     });
 // click move  to move the loan to noc
     $(document).on('click', '.move-noc', function () {

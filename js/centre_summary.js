@@ -83,14 +83,20 @@ $(document).on('click', '.closedViewBtn', function (event) {
 
 //////////////////////////Ledger View/////////////////////////////
 //////////////////////////////////////////Due Chart start//////////////////////////////
-$(document).on('click', '.due-chart', function () {
-    var cus_mapping_id = $(this).attr('data-id');
-    let loan_id = $('#loan_id').val()
+
+$(document).on('click', '.due-chart', async function () {
+    const cus_mapping_id = $(this).data('id');
+    const loan_id = $('#loan_id').val();
+
     $('#due_chart_model').modal('show');
-    dueChartList(cus_mapping_id, loan_id); // To show Due Chart List.
-    setTimeout(() => {
-        $('.print_due_coll').click(function () {
+
+    try {
+        await dueChartList(cus_mapping_id, loan_id); // Wait for due chart to fully load
+
+        // Now bind the click event for print buttons
+        $('.print_due_coll').off('click').on('click', function () {
             var id = $(this).attr('value');
+
             Swal.fire({
                 title: 'Print',
                 text: 'Do you want to print this collection?',
@@ -108,19 +114,20 @@ $(document).on('click', '.due-chart', function () {
                     $.ajax({
                         url: 'api/collection_files/print_collection.php',
                         data: { 'coll_id': id },
-                        type: 'post',
+                        type: 'POST',
                         cache: false,
                         success: function (html) {
-                            $('#printcollection').html(html)
-                            // Get the content of the div element
-                            var content = $("#printcollection").html();
+                            $('#printcollection').html(html);
                         }
-                    })
+                    });
                 }
-            })
-        })
-    }, 1000)
+            });
+        });
+    } catch (err) {
+        console.error("Error in loading due chart or binding print:", err);
+    }
 });
+
 //////////////////////////Due Chart End/////////////////////////////////////////
 
 //////////////////////////////////////Document End
@@ -141,26 +148,40 @@ function getLedgerViewChart(loan_id) {
 
     });
 }
-function dueChartList(cus_mapping_id, loan_id) {
-    $.ajax({
-        url: 'api/collection_files/get_due_chart_list.php',
-        data: { 'cus_mapping_id': cus_mapping_id },
-        type: 'post',
-        cache: false,
-        success: function (response) {
-            $('#due_chart_table_div').empty();
-            $('#due_chart_table_div').html(response);
-        }
-    }).then(function () {
 
+async function dueChartList(cus_mapping_id, loan_id) {
+    // First request: get_due_chart_list.php
+    await new Promise((resolve, reject) => {
+        $.ajax({
+            url: 'api/collection_files/get_due_chart_list.php',
+            data: { 'cus_mapping_id': cus_mapping_id },
+            type: 'POST',
+            cache: false,
+            success: function (response) {
+                $('#due_chart_table_div').empty().html(response);
+                resolve();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error in get_due_chart_list:', error);
+                reject(error);
+            }
+        });
+    });
+
+    // Second request: get_due_method_name.php
+    await new Promise((resolve, reject) => {
         $.post('api/collection_files/get_due_method_name.php', { cus_mapping_id: cus_mapping_id }, function (response) {
             $('#dueChartTitle').text('Due Chart ( ' + response['due_month'] + ' - ' + response['loan_type'] + ' ) - Customer ID: '
                 + response['cus_id'] + ' - Customer Name: ' + response['cus_name'] + ' - Loan ID: ' + response['loan_id']
                 + ' - Centre ID: ' + response['centre_id'] + ' - Centre Name: ' + response['centre_name']);
-        }, 'json');
-    })
-
+            resolve();
+        }, 'json').fail((xhr, status, error) => {
+            console.error('Error in get_due_method_name:', error);
+            reject(error);
+        });
+    });
 }
+
 function closeChartsModal() {
     $('#due_chart_model').modal('hide');
 }

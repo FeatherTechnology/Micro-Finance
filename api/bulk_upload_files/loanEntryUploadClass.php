@@ -30,27 +30,26 @@ class loanEntryUploadClass
             'loan_category' => isset($Row[3]) ? $Row[3] : "",
             'loan_amount' => isset($Row[4]) ? $Row[4] : "",
             'total_customer' => isset($Row[5]) ? $Row[5] : "",
-            'loan_amt_per_cus' => isset($Row[6]) ? $Row[6] : "",
-            'profit_type' => isset($Row[7]) ? $Row[7] : "",
-            'due_method' => isset($Row[8]) ? $Row[8] : "",
-            'benefit_method' => isset($Row[9]) ? $Row[9] : "",
-            'date' => isset($Row[10]) ? $Row[10] : "",
-            'day' => isset($Row[11]) ? $Row[11] : "",
-            'scheme_name' => isset($Row[12]) ? $Row[12] : "",
-            'interest_rate' => isset($Row[13]) ? $Row[13] : "",
-            'due_period' => isset($Row[14]) ? $Row[14] : "",
-            'doc_charge' => isset($Row[15]) ? $Row[15] : "",
-            'processing_fees' => isset($Row[16]) ? $Row[16] : "",
-            'principal_amnt' => isset($Row[17]) ? $Row[17] : "",
-            'intreset_amnt' => isset($Row[18]) ? $Row[18] : "",
-            'total_amnt' => isset($Row[19]) ? $Row[19] : "",
-            'due_amnt' => isset($Row[20]) ? $Row[20] : "",
-            'doc_charge_cal' => isset($Row[21]) ? $Row[21] : "",
-            'proccessing_fees_cal' => isset($Row[22]) ? $Row[22] : "",
-            'net_cash' => isset($Row[23]) ? $Row[23] : "",
-            'due_start_date' => isset($Row[24]) ? $Row[24] : "",
-            'maturity_date' => isset($Row[25]) ? $Row[25] : "",
-            'centre_limit' => isset($Row[26]) ? $Row[26] : "",
+            'profit_type' => isset($Row[6]) ? $Row[6] : "",
+            'due_method' => isset($Row[7]) ? $Row[7] : "",
+            'benefit_method' => isset($Row[8]) ? $Row[8] : "",
+            'date' => isset($Row[9]) ? $Row[9] : "",
+            'day' => isset($Row[10]) ? $Row[10] : "",
+            'scheme_name' => isset($Row[11]) ? $Row[11] : "",
+            'interest_rate' => isset($Row[12]) ? $Row[12] : "",
+            'due_period' => isset($Row[13]) ? $Row[13] : "",
+            'doc_charge' => isset($Row[14]) ? $Row[14] : "",
+            'processing_fees' => isset($Row[15]) ? $Row[15] : "",
+            'principal_amnt' => isset($Row[16]) ? $Row[16] : "",
+            'intreset_amnt' => isset($Row[17]) ? $Row[17] : "",
+            'total_amnt' => isset($Row[18]) ? $Row[18] : "",
+            'due_amnt' => isset($Row[19]) ? $Row[19] : "",
+            'doc_charge_cal' => isset($Row[20]) ? $Row[20] : "",
+            'proccessing_fees_cal' => isset($Row[21]) ? $Row[21] : "",
+            'net_cash' => isset($Row[22]) ? $Row[22] : "",
+            'due_start_date' => isset($Row[23]) ? $Row[23] : "",
+            'maturity_date' => isset($Row[24]) ? $Row[24] : "",
+            'centre_limit' => isset($Row[25]) ? $Row[25] : "",
         );
 
         $profit_typeArray = ['Calculation' => '1', 'Scheme' => '2'];
@@ -142,13 +141,12 @@ class loanEntryUploadClass
         $che_query = "SELECT loan_id FROM loan_entry_loan_calculation WHERE  loan_id = '" . $data['loan_id'] . "'";
         $result2 = $pdo->query($che_query);
         if ($result2->rowCount() == 0) {
-            $insertQuery = "INSERT INTO `loan_entry_loan_calculation`( `centre_id`, `loan_id`,`loan_category`, `loan_amount`, `total_customer`, `loan_amt_per_cus`, `profit_type`, `due_month`, `benefit_method`,`scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`,  `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_status`, `insert_login_id`,`created_on`) VALUES (
+            $insertQuery = "INSERT INTO `loan_entry_loan_calculation`( `centre_id`, `loan_id`,`loan_category`, `loan_amount`, `total_customer`, `profit_type`, `due_month`, `benefit_method`,`scheme_day_calc`, `interest_rate`, `due_period`, `doc_charge`, `processing_fees`, `scheme_name`, `scheme_date`,  `loan_amount_calc`, `principal_amount_calc`, `intrest_amount_calc`, `total_amount_calc`, `due_amount_calc`, `document_charge_cal`, `processing_fees_cal`, `net_cash_calc`, `due_start`, `due_end`, `loan_status`, `insert_login_id`,`created_on`) VALUES (
           '" . strip_tags($data['centre_id']) . "',
             '" . strip_tags($data['loan_id']) . "',
              '" . strip_tags($data['loan_category_id']) . "',
              '" . strip_tags($data['loan_amount']) . "',
             '" . strip_tags($data['total_customer']) . "',
-        '" . strip_tags($data['loan_amt_per_cus']) . "',
         '" . strip_tags($data['profit_type']) . "',
             '" . strip_tags($data['due_method']) . "',
             '" . strip_tags($data['benefit_method']) . "',
@@ -208,9 +206,6 @@ class loanEntryUploadClass
         }
         if (!preg_match('/^[0-9]+$/', $data['total_customer'])) {
             $errcolumns[] = 'Total Customers';
-        }
-        if (!preg_match('/^\d+(\.\d{1,2})?$/', $data['loan_amt_per_cus'])) {
-            $errcolumns[] = 'Loan Amount per Customer';
         }
         if ($data['profit_type'] != 'Not Found') {
             // Subcondition 7.1
