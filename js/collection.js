@@ -48,19 +48,17 @@ $(document).ready(function () {
 
                 // Get values from the table for the current row
                 let rowId = row.find('input.total_collection').data('id');
-
+                let cus_id = row.find('td:nth-child(2)').text();
                 let individualAmount = row.find('td:nth-child(5)').text().replace(/,/g, '');
                 let pendingAmount = row.find('td:nth-child(6)').text().replace(/,/g, '');
                 let payableAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
-                // let penaltyAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
                 let fineChargeAmount = row.find('td:nth-child(8)').text().replace(/,/g, '');
                 let collectionDate = row.find('td:nth-child(9)').text()
                 let collectionDue = parseFloat(row.find('input.collection_due').val()) || 0;
                 let collectionsavings = parseFloat(row.find('input.collection_savings').val()) || 0;
                 let collectionFine = parseFloat(row.find('input.collection_fine').val()) || 0;
                 let totalCollection = parseFloat(row.find('input.total_collection').val()) || 0;
-                let aadhar_num = row.find('td:nth-child(15)').text()
-
+                let aadhar_num = row.find('td:nth-child(16)').text()
                 // Skip this row if total_collection is empty or zero
                 if (totalCollection === 0) {
                     return; // Skip this iteration and move to the next row

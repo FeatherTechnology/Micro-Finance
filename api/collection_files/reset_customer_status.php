@@ -59,7 +59,7 @@ class CollectStsClass
                 $current_date = date('Y-m-d');
                 if ($row['due_month'] == 1) {
                     $checkcollection = $this->pdo->query("
-                        SELECT SUM(due_amt_track) as totalPaidAmt,SUM(fine_charge_track) as fine_charge,SUM(penalty_track) as penalty_track
+                        SELECT SUM(due_amt_track) as totalPaidAmt,SUM(fine_charge_track) as fine_charge
                         FROM collection 
                         WHERE cus_mapping_id = $cus_mapping_id 
                         AND ((YEAR(coll_date) = YEAR('$current_date') AND MONTH(coll_date) <= MONTH('$current_date')) 
@@ -67,7 +67,7 @@ class CollectStsClass
                     ");
                 } else {
                     $checkcollection = $this->pdo->query("
-                        SELECT SUM(due_amt_track) as totalPaidAmt,SUM(fine_charge_track) as fine_charge,SUM(penalty_track) as penalty_track
+                        SELECT SUM(due_amt_track) as totalPaidAmt,SUM(fine_charge_track) as fine_charge
                         FROM collection 
                         WHERE cus_mapping_id = $cus_mapping_id 
                         AND ((YEAR(coll_date) = YEAR('$current_date') AND WEEK(coll_date) <= WEEK('$current_date')) 
@@ -78,10 +78,8 @@ class CollectStsClass
                 $checkrow = $checkcollection->fetch();
                 $totalPaidAmt = $checkrow['totalPaidAmt'] ?? 0;
                 $fine = $checkrow['fine_charge'] ?? 0;
-                $penalty_track = $checkrow['penalty_track'] ?? 0;
                 // Fine and penalty calculations
                 $fine_charge = $this->getFineCharge($cus_mapping_id,$fine);
-                // $penalty = $this->getPenalty($cus_mapping_id,$penalty_track);
                 // Calculate and update status based on the due period (monthly/weekly)
                 $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge);
 
@@ -126,15 +124,6 @@ class CollectStsClass
         $fine_cal = $fine_row['fine_charge'] ?? 0;
         $final_fine = $fine_cal - $fine;
         return $final_fine;
-    }
-
-    private function getPenalty($cus_mapping_id,$penalty_track)
-    {$current_date = date('Y-m-d');
-        $penalty_query = $this->pdo->query("SELECT SUM(penalty) as penalty FROM penalty_charges WHERE cus_mapping_id = $cus_mapping_id AND penalty_date <= '$current_date'");
-        $penalty_row = $penalty_query->fetch();
-        $pen_cal = $penalty_row['penalty'] ?? 0;
-        $final_penalty = $pen_cal - $penalty_track;
-        return $final_penalty;
     }
 
     private function calculateStatus($row, $totalPaidAmt, $fine_charge)

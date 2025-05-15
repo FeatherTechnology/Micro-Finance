@@ -787,53 +787,15 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
         $interval = new DateInterval('P1M'); // Create a one month interval
         //condition start
         $count = 0;
-        $loandate_tillnow = 0;
-        $countForPenalty = 0;
-
         $dueCharge = $due_amnt;
-        $start = DateTime::createFromFormat('Y-m', $due_start_from);
-        $current = DateTime::createFromFormat('Y-m', $current_date);
 
         $monthsElapsed = $start_date_obj->diff($current_date_obj)->m + ($start_date_obj->diff($current_date_obj)->y * 12) + 1;
         $toPayTillPrev = ($monthsElapsed - 1) * $dueCharge;
         $toPayTillNow = $monthsElapsed * $dueCharge;
 
-        while ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) { // To find loan date count till now from start date.
-            $penalty_checking_date  = $start_date_obj->format('Y-m-d'); // This format is for query.. month , year function accept only if (Y-m-d).
-            $penalty_date  = $start_date_obj->format('Y-m');
-            $start_date_obj->add($interval);
-
-            $checkcollection = $pdo->query("SELECT * FROM `collection` WHERE `cus_mapping_id` = '$cus_mapping_id' 
-            AND MONTH(coll_date) = MONTH('$penalty_checking_date') 
-            AND YEAR(coll_date) = YEAR('$penalty_checking_date')");
-            $collectioncount = $checkcollection->rowCount(); // Checking whether the collection are inserted on date or not by using penalty_raised_date.
-
-            if ($loan_arr['scheme_name'] == '' || $loan_arr['scheme_name'] == null) {
-                $result = $pdo->query("SELECT overdue_penalty AS overdue, penalty_type AS penal_type FROM loan_category_creation WHERE id = '" . $loan_arr['loan_category'] . "'");
-            } else {
-                $result = $pdo->query("SELECT overdue_penalty_percent AS overdue, scheme_penalty_type AS penal_type FROM scheme WHERE id = '" . $loan_arr['scheme_name'] . "'");
-            }
-            $row = $result->fetch();
-            $penalty_per = $row['overdue'];
-            $penalty_type = $row['penal_type'];
-
-            // Calculate penalty
-            if ($penalty_type == 'percent') {
-                $penalty = round(($dueCharge * $penalty_per) / 100);
-            } else {
-                $penalty = $penalty_per;
-            }
-
-            // if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
-            //     $checkPenalty = $pdo->query("SELECT * FROM penalty_charges WHERE penalty_date = '$penalty_date' AND `cus_mapping_id` = '$cus_mapping_id'");
-            //     if ($checkPenalty->rowCount() == 0) {
-            //     }
-            //     $countForPenalty++;
-            // }
-
+        if ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) { 
             $count++; //Count represents how many months are exceeded
         }
-        //condition END
 
         //this collection query for taking the paid amount until the looping date ($current_date) , to calculate dynamically for due chart
         $qry = $pdo->query("SELECT SUM(due_amt_track) as due_amt_track FROM `collection` 
@@ -850,27 +812,6 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             //if Due month exceeded due amount will be as pending with how many months are exceeded and subract pre closure amount if available
             $response['pending'] = max(0, round($toPayTillPrev - $tot_paid_tilldate));
 
-            // If due month exceeded
-            if (empty($loan_arr['scheme_name'])) {
-                $result = $pdo->query("SELECT overdue_penalty as overdue FROM `loan_category_creation` WHERE `id` = '" . $loan_arr['loan_category'] . "'");
-            } else {
-                $result = $pdo->query("SELECT overdue_penalty_percent as overdue FROM `scheme` WHERE `id` = '" . $loan_arr['scheme_name'] . "'");
-            }
-            $row = $result->fetch();
-            $penalty_per = number_format($row['overdue'] * $countForPenalty); //Count represents how many months are exceeded//Number format if percentage exeeded decimals then pernalty may increase
-
-            // to get overall penalty paid till now to show pending penalty amount
-            $result = $pdo->query("SELECT SUM(penalty_track) as penalty FROM `collection` WHERE `cus_mapping_id` = '$cus_mapping_id'");
-            $row = $result->fetch();
-            $total_penalty = ($row['penalty'] === null) ? 0 : $row['penalty'];
-
-            // Calculate total penalty raised till now
-            // $result1 = $pdo->query("SELECT SUM(penalty) as penalty FROM `penalty_charges` WHERE cus_mapping_id = '$cus_mapping_id'");
-            // $row1 = $result1->fetch();
-            // $penalty = ($row1['penalty'] === null) ? 0 : $row1['penalty'];
-
-            // Subtract penalty paid from total penalty
-            // $response['penalty'] = $penalty - $total_penalty;
 
             if ($response['pending']  > 0) {
                 $response['payable']  =   max(0, $response['pending']  + $response['due_amnt']);
@@ -885,9 +826,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             }
         } else {
             //If still current month is not ended, then pending will be same due amt // pending will be 0 if due date not exceeded
-            $response['pending'] = 0; // $response['due_amt'] - $response['total_paid'] - $response['pre_closure'] ;
-            //If still current month is not ended, then penalty will be 0
-            $response['penalty'] = 0;
+            $response['pending'] = 0;
             //If still current month is not ended, then payable will be due amt
             $response['payable'] = max(0, round($response['due_amnt'] - $tot_paid_tilldate));
         }
@@ -901,55 +840,16 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
         $end_date_obj = DateTime::createFromFormat('Y-m-d', $maturity_month);
         $current_date_obj = DateTime::createFromFormat('Y-m-d', $current_date);
 
-        $interval = new DateInterval('P1W'); // Create a one Week interval
-        //condition start
-        $count = 0;
-        $loandate_tillnow = 0;
-        $countForPenalty = 0;
-
         $dueCharge = $due_amnt;
         $weeksElapsed = floor($start_date_obj->diff($current_date_obj)->days / 7) + 1;
         $toPayTillPrev = ($weeksElapsed -1) * $dueCharge;
         $toPayTillNow = ($weeksElapsed) * $dueCharge;
 
         // Debugging logs
-
-        $penalty = 0;
         $count = 0;
 
-        while ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) { // To find loan date count till now from start date.
-
-            $penalty_checking_date  = $start_date_obj->format('Y-m-d'); // This format is for query.. month , year function accept only if (Y-m-d).
-            $start_date_obj->add($interval);
-
-            $checkcollection = $pdo->query("SELECT * FROM `collection` WHERE `cus_mapping_id` = '$cus_mapping_id' 
-            AND (WEEK(coll_date) = WEEK('$penalty_checking_date') AND YEAR(coll_date) = YEAR('$penalty_checking_date'))");
-            $collectioncount = $checkcollection->rowCount(); // Checking whether the collection are inserted on date or not by using penalty_raised_date.
-
-            if (empty($loan_arr['scheme_name'])) {
-                $result = $pdo->query("SELECT overdue_penalty AS overdue, penalty_type AS penal_type FROM loan_category_creation WHERE id = '" . $loan_arr['loan_category'] . "'");
-            } else {
-                $result = $pdo->query("SELECT overdue_penalty_percent AS overdue, scheme_penalty_type AS penal_type FROM scheme WHERE id = '" . $loan_arr['scheme_name'] . "'");
-            }
-            $row = $result->fetch();
-            $penalty_per = $row['overdue'];
-            $penalty_type = $row['penal_type'];
-
-            // Calculate penalty
-            if ($penalty_type == 'percent') {
-                $penalty = round(($dueCharge * $penalty_per) / 100);
-            } else {
-                $penalty = $penalty_per;
-            }
+        if ($start_date_obj < $end_date_obj && $start_date_obj < $current_date_obj) { // To find loan date count till now from start date.
             $count++;
-
-            // if ($totalPaidAmt < $toPayTillNow && $collectioncount == 0) {
-            //     $checkPenalty = $pdo->query("SELECT * from penalty_charges where penalty_date = '$penalty_checking_date' and cus_mapping_id = '$cus_mapping_id'");
-            //     if ($checkPenalty->rowCount() == 0) {
-            //         // Handle penalty charge here if needed
-            //     }
-            //     $countForPenalty++;
-            // }
         }
         //condition END
 
@@ -968,28 +868,6 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             //if Due month exceeded due amount will be as pending with how many months are exceeded and subract pre closure amount if available
             $response['pending'] = max(0, round($toPayTillPrev - $tot_paid_tilldate));
 
-            // If due month exceeded
-            if (empty($loan_arr['scheme_name'])) {
-                $result = $pdo->query("SELECT overdue_penalty AS overdue FROM `loan_category_creation` WHERE `id` = '" . $loan_arr['loan_category'] . "'");
-            } else {
-                $result = $pdo->query("SELECT overdue_penalty_percent AS overdue FROM `scheme` WHERE `id` = '" . $loan_arr['scheme_name'] . "'");
-            }
-            $row = $result->fetch();
-            $penalty_per = number_format($row['overdue'] * $countForPenalty);
-            //Count represents how many months are exceeded//Number format if percentage exeeded decimals then pernalty may increase
-
-            // to get overall penalty paid till now to show pending penalty amount
-            $result = $pdo->query("SELECT SUM(penalty_track) as penalty FROM `collection` WHERE cus_mapping_id = '$cus_mapping_id'");
-            $row = $result->fetch();
-            $row['penalty'] = $row['penalty'] ?? 0;
-
-            // $result1 = $pdo->query("SELECT SUM(penalty) as penalty FROM `penalty_charges` WHERE cus_mapping_id = '$cus_mapping_id'");
-            // $row1 = $result1->fetch();
-            // $penalty = $row1['penalty'] ?? 0;
-
-            // // Calculate pending penalty
-            // $response['penalty'] = $penalty - $row['penalty'];
-
             if ($response['pending']  > 0) {
                 $response['payable']  =   max(0, $response['pending']  + $response['due_amnt']);
             }else{
@@ -1003,9 +881,7 @@ function calculateOthers($loan_arr, $response, $date, $pdo)
             }
         } else {
             //If still current month is not ended, then pending will be same due amt // pending will be 0 if due date not exceeded
-            $response['pending'] = 0; // $response['due_amt'] - $response['total_paid'] - $response['pre_closure'] ;
-            //If still current month is not ended, then penalty will be 0
-            $response['penalty'] = 0;
+            $response['pending'] = 0; 
             //If still current month is not ended, then payable will be due amt
             $response['payable'] =  max(0, round($response['due_amnt'] - $tot_paid_tilldate - $preclose_tilldate));
         }

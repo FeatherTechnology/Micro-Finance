@@ -26,9 +26,8 @@ $cus_name = $row['first_name'];
 $area = $row['areaname'];
 
 $due_amt_track = intVal($due_amt_track != '' ? $due_amt_track : 0);
-$penalty_track = intVal($penalty_track != '' ? $penalty_track : 0);
 $fine_charge_track = intVal($fine_charge_track != '' ? $fine_charge_track : 0);
-$net_received = $due_amt_track + $penalty_track + $fine_charge_track;
+$net_received = $due_amt_track + $fine_charge_track;
 $due_balance = ($due_amnt - $due_amt_track) < 0 ? 0 : $due_amnt - $due_amt_track;
 $loan_balance = getBalance($pdo, $cus_mapping_id, $coll_date, $loan_id);
 ?>
@@ -98,7 +97,6 @@ $loan_balance = getBalance($pdo, $cus_mapping_id, $coll_date, $loan_id);
             <div>Time :</div>
             <div>Area :</div>
             <div>Due Amount :</div>
-            <div>Penalty :</div>
             <div>Fine :</div>
            <b> <div>Net Received :</div></b> 
            <b>  <div>Due Balance :</div>   </b>
@@ -115,7 +113,6 @@ $loan_balance = getBalance($pdo, $cus_mapping_id, $coll_date, $loan_id);
             <div><?php echo date('H:i A', strtotime($created_on)); ?></div>
             <div><?php echo $area; ?></div>
             <div><?php echo moneyFormatIndia($due_amt_track); ?></div>
-            <div><?php echo moneyFormatIndia($penalty_track); ?></div>
             <div><?php echo moneyFormatIndia($fine_charge_track); ?></div>
             <b>  <div><?php echo moneyFormatIndia($net_received); ?></div>  </b> 
             <b> <div><?php echo moneyFormatIndia($due_balance); ?></div>  </b>

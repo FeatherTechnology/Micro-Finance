@@ -173,10 +173,10 @@ function getCollectionCounts(branch_id) {
     { branch_id },
     function (response) {
       $("#tot_paid").text(response["total_paid"]);
-      $("#tot_penalty").text(response["total_penalty"]);
+      // $("#tot_penalty").text(response["total_penalty"]);
       $("#tot_fine").text(response["total_fine"]);
       $("#today_paid").text(response["today_paid"]);
-      $("#today_penalty").text(response["today_penalty"]);
+      // $("#today_penalty").text(response["today_penalty"]);
       $("#today_fine").text(response["today_fine"]);
     },
     "json"
@@ -218,12 +218,12 @@ function callCollectionChart() {
       let totPending = parseInt(response["pending_paid"]);
       let totOdCnt = parseInt(response["total_paid_od"]);
       let totOd = parseInt(response["od_paid"]);
-      let paidCnt = parseInt(response["total_penalty_current"]);
-      let penPaid = parseInt(response["current_penalty"]);
-      let PendingCnt = parseInt(response["total_penalty_pending"]);
-      let penPending = parseInt(response["pending_penalty"]);
-      let OdCnt = parseInt(response["total_penalty_od"]);
-      let penOd = parseInt(response["od_penalty"]);
+      // let paidCnt = parseInt(response["total_penalty_current"]);
+      // let penPaid = parseInt(response["current_penalty"]);
+      // let PendingCnt = parseInt(response["total_penalty_pending"]);
+      // let penPending = parseInt(response["pending_penalty"]);
+      // let OdCnt = parseInt(response["total_penalty_od"]);
+      // let penOd = parseInt(response["od_penalty"]);
       let finePaidCnt = parseInt(response["total_fine_current"]);
       let finePaid = parseInt(response["current_fine"]);
       let finePendingCnt = parseInt(response["total_fine_pending"]);
@@ -240,15 +240,15 @@ function callCollectionChart() {
         totOdCnt,
         "Total"
       );
-      getPendingDetails(
-        penPaid,
-        paidCnt,
-        penPending,
-        PendingCnt,
-        penOd,
-        OdCnt,
-        "Total"
-      );
+      // getPendingDetails(
+      //   penPaid,
+      //   paidCnt,
+      //   penPending,
+      //   PendingCnt,
+      //   penOd,
+      //   OdCnt,
+      //   "Total"
+      // );
       getOdDetails(
         finePaid,
         finePaidCnt,
@@ -276,12 +276,12 @@ function todayCollectionChart() {
       let todayPending = parseInt(response["pending_todaypaid"]);
       let todayOdCnt = parseInt(response["today_paid_od"]);
       let todayOd = parseInt(response["od_todaypaid"]);
-      let paidCnt = parseInt(response["today_penalty_current"]);
-      let penPaid = parseInt(response["current_todaypenalty"]);
-      let PendingCnt = parseInt(response["today_penalty_pending"]);
-      let penPending = parseInt(response["pending_todaypenalty"]);
-      let OdCnt = parseInt(response["today_penalty_od"]);
-      let penOd = parseInt(response["od_todaypenalty"]);
+      // let paidCnt = parseInt(response["today_penalty_current"]);
+      // let penPaid = parseInt(response["current_todaypenalty"]);
+      // let PendingCnt = parseInt(response["today_penalty_pending"]);
+      // let penPending = parseInt(response["pending_todaypenalty"]);
+      // let OdCnt = parseInt(response["today_penalty_od"]);
+      // let penOd = parseInt(response["od_todaypenalty"]);
       let finePaidCnt = parseInt(response["today_fine_current"]);
       let finePaid = parseInt(response["current_todayfine"]);
       let finePendingCnt = parseInt(response["today_fine_pending"]);
@@ -298,15 +298,15 @@ function todayCollectionChart() {
         todayOdCnt,
         "Today"
       );
-      getPendingDetails(
-        penPaid,
-        paidCnt,
-        penPending,
-        PendingCnt,
-        penOd,
-        OdCnt,
-        "Today"
-      );
+      // getPendingDetails(
+      //   penPaid,
+      //   paidCnt,
+      //   penPending,
+      //   PendingCnt,
+      //   penOd,
+      //   OdCnt,
+      //   "Today"
+      // );
       getOdDetails(
         finePaid,
         finePaidCnt,
@@ -358,43 +358,43 @@ function getPaidDetails(
   chart.draw(data, Options);
 }
 
-function getPendingDetails(
-  penPaid,
-  paidCnt,
-  penPending,
-  PendingCnt,
-  penOd,
-  OdCnt,
-  tit
-) {
-  //Total Pending
-  var data = google.visualization.arrayToDataTable([
-    ["Task", "Count"],
-    ["Current", penPaid],
-    ["Current Points", paidCnt],
-    ["Pending", penPending],
-    ["Pending Points", PendingCnt],
-    ["OD", penOd],
-    ["OD Points", OdCnt],
-  ]);
-  var Options = {
-    height: 400,
-    title: "Collection - " + tit + " Pending",
-    is3D: true, //3d chart
-    // pieHole: 0.4, //donut chart
-    pieSliceText: "value", //to show value instead of percentage
-    sliceVisibilityThreshold: 0, //to show task if its count is zero because if value is 0 then  it will not be shown in the donut chart
-    colors: ["#02bf33", "#619e71", "#FF69B4", "#f5057d", "#0091D5", "#6dbde3"],
-    tooltip: {
-      trigger: "selection",
-      text: "value",
-    }, // show only the value in the tooltip
-  };
-  var chart = new google.visualization.PieChart(
-    document.getElementById("collection_pending")
-  );
-  chart.draw(data, Options);
-}
+// function getPendingDetails(
+//   penPaid,
+//   paidCnt,
+//   penPending,
+//   PendingCnt,
+//   penOd,
+//   OdCnt,
+//   tit
+// ) {
+//   //Total Pending
+//   var data = google.visualization.arrayToDataTable([
+//     ["Task", "Count"],
+//     ["Current", penPaid],
+//     ["Current Points", paidCnt],
+//     ["Pending", penPending],
+//     ["Pending Points", PendingCnt],
+//     ["OD", penOd],
+//     ["OD Points", OdCnt],
+//   ]);
+//   var Options = {
+//     height: 400,
+//     title: "Collection - " + tit + " Pending",
+//     is3D: true, //3d chart
+//     // pieHole: 0.4, //donut chart
+//     pieSliceText: "value", //to show value instead of percentage
+//     sliceVisibilityThreshold: 0, //to show task if its count is zero because if value is 0 then  it will not be shown in the donut chart
+//     colors: ["#02bf33", "#619e71", "#FF69B4", "#f5057d", "#0091D5", "#6dbde3"],
+//     tooltip: {
+//       trigger: "selection",
+//       text: "value",
+//     }, // show only the value in the tooltip
+//   };
+//   var chart = new google.visualization.PieChart(
+//     document.getElementById("collection_pending")
+//   );
+//   chart.draw(data, Options);
+// }
 
 function getOdDetails(
   finePaid,
@@ -417,7 +417,7 @@ function getOdDetails(
   ]);
   var Options = {
     height: 400,
-    title: "Collection - " + tit + " OD",
+    title: "Collection - " + tit + " Fine",
     is3D: true, //3d chart
     // pieHole: 0.4, //donut chart
     pieSliceText: "value", //to show value instead of percentage

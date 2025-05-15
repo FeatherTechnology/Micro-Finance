@@ -34,11 +34,9 @@ class CustomerStatus
             c.cus_mapping_id,
             SUM(c.total_paid_track) AS total_paid_track,
             SUM(c.fine_charge_track) AS total_fine_charge_track,
-            SUM(c.penalty_track) AS total_penalty_track,
-            (SUM(c.due_amt_track) + SUM(c.fine_charge_track) + SUM(c.penalty_track)) AS total_paid,
+            (SUM(c.due_amt_track) + SUM(c.fine_charge_track) ) AS total_paid,
             IFNULL(f.total_fine_charge, 0) AS total_fine_charge,
-            IFNULL(p.total_penalty, 0) AS total_penalty,
-            (SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0) + IFNULL(p.total_penalty, 0)) AS payable_charge,
+            (SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0)) AS payable_charge,
             lelc.due_amount_calc,
             lelc.total_customer,
             lelc.due_month,
@@ -51,10 +49,6 @@ class CustomerStatus
         LEFT JOIN
             (SELECT cus_mapping_id, SUM(fine_charge) AS total_fine_charge FROM fine_charges GROUP BY cus_mapping_id) f
             ON f.cus_mapping_id = c.cus_mapping_id
-        LEFT JOIN
-
-            (SELECT cus_mapping_id, SUM(penalty) AS total_penalty FROM penalty_charges GROUP BY cus_mapping_id) p
-            ON p.cus_mapping_id = c.cus_mapping_id
         LEFT JOIN
             loan_entry_loan_calculation lelc ON lelc.loan_id = c.loan_id
         LEFT JOIN
@@ -91,7 +85,7 @@ class CustomerStatus
                 $current_date = date('Y-m-d');
                 if ($row['due_month'] == 1) {
                     $checkcollection = $this->pdo->query("
-                        SELECT SUM(due_amt_track) as totalPaidAmt,SUM(fine_charge_track) as fine_charge,SUM(penalty_track) as penalty_track
+                        SELECT SUM(due_amt_track) as totalPaidAmt,SUM(fine_charge_track) as fine_charge
                         FROM collection
                         WHERE cus_mapping_id = $cus_mapping_id
                         AND ((YEAR(coll_date) = YEAR('$current_date') AND MONTH(coll_date) <= MONTH('$current_date'))
@@ -100,7 +94,7 @@ class CustomerStatus
                 } else {
                     
                     $checkcollection = $this->pdo->query("
-                        SELECT SUM(due_amt_track) as totalPaidAmt,SUM(fine_charge_track) as fine_charge,SUM(penalty_track) as penalty_track
+                        SELECT SUM(due_amt_track) as totalPaidAmt,SUM(fine_charge_track) as fine_charge
                         FROM collection
                         WHERE cus_mapping_id = $cus_mapping_id
                         AND ((YEAR(coll_date) = YEAR('$current_date') AND WEEK(coll_date) <= WEEK('$current_date'))
@@ -110,10 +104,9 @@ class CustomerStatus
                 $checkrow = $checkcollection->fetch();
                 $totalPaidAmt = $checkrow['totalPaidAmt'] ?? 0;
                 $fine = $checkrow['fine_charge'] ?? 0;
-                $penalty_track = $checkrow['penalty_track'] ?? 0;
+                
                 // Fine and penalty calculations
                 $fine_charge = $this->getFineCharge($cus_mapping_id, $fine);
-                // $penalty = $this->getPenalty($cus_mapping_id,  $penalty_track);
                 // Calculate and update status based on the due period (monthly/weekly)
                 $status = $this->calculateStatus($row, $totalPaidAmt, $fine_charge);
                 $cus_status = $status['status'];
@@ -144,14 +137,7 @@ class CustomerStatus
         return $final_fine;
     }
 
-    // private function getPenalty($cus_mapping_id, $penalty_track)
-    // {
-    //     $penalty_query = $this->pdo->query("SELECT SUM(penalty) as penalty FROM penalty_charges WHERE cus_mapping_id = $cus_mapping_id AND penalty_date <= CURDATE()");
-    //     $penalty_row = $penalty_query->fetch();
-    //     $pen_cal = $penalty_row['penalty'] ?? 0;
-    //     $final_penalty = $pen_cal - $penalty_track;
-    //     return $final_penalty;
-    // }
+    
 
     private function calculateStatus($row, $totalPaidAmt, $fine_charge)
     {

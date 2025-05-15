@@ -40,29 +40,29 @@ foreach ($collectionData as $data) {
   } else {
     $coll_status = '2';
   }
-  
+  if ($collection_savings == '' || $collection_savings == 0) {
   $query =  $pdo->query("INSERT INTO `collection` (
                 `loan_id`, `cus_mapping_id`, `loan_total_amnt`, `loan_paid_amnt`, `loan_balance`, `loan_due_amnt`, 
                 `loan_pending_amnt`, `loan_payable_amnt`, `loan_fine`, `coll_status`,`status`,`sub_status`, `due_amnt`, 
                 `pending_amt`, `payable_amt`, `fine_charge`, `coll_date`, `due_amt_track`, 
-                `penalty_track`, `fine_charge_track`, `total_paid_track`, `insert_login_id`, 
+                `fine_charge_track`, `total_paid_track`, `insert_login_id`, 
                 `created_on`) 
               VALUES (
                 '$loan_id', '$cus_mapping_id', '$loanTotalAmnt', '$loanPaidAmnt', '$loanBalance', '$loanDueAmnt', 
                 '$loanPendingAmnt', '$loanPayableAmnt', '$loanFineAmnt', '$coll_status','$status','$sub_status', '$due_amnt', 
                 '$pending_amt', '$payable_amt', '$fine_charge', '$coll_date " . date(' H:i:s') . "', '$collection_due', 
-                '$collection_savings', '$collection_fine', '$total_collection', '$user_id', 
+                '$collection_fine', '$total_collection', '$user_id', 
                 CURRENT_TIMESTAMP())");
-  if ($query) {
+ 
+}else if($collection_savings != '' ||  $collection_savings > 0){
+ $query = $pdo->query("INSERT INTO `customer_savings`(`cus_id`,`aadhar_num` , `savings_amount`, `credit_debit`,`insert_login_id`,`paid_date`) VALUES ('$cus_id', '$aadhar_num' ,'$collection_savings' , '1', '$user_id','$coll_date') ");
+}
+
+ if ($query) {
     $response = 1;  // If both queries executed successfully
   } else {
     $response = 0;  // If any query failed
   }
-
-  if (($collection_savings != '' and $collection_savings > 0)) {
-    $qry1 = $pdo->query("INSERT INTO `customer_savings`(`cus_id`,`aadhar_num` , `savings_amount`, `credit_debit`,`insert_login_id`,`paid_date`) VALUES ('$cus_id', '$aadhar_num' ,'$collection_savings' , '1', '$user_id','$coll_date') ");
-  }
-
   if ($collection_fine != '' and $collection_fine > 0) {
     $qry2 = $pdo->query("INSERT INTO `fine_charges`(`cus_mapping_id`,`loan_id`, `paid_date`, `paid_amnt`) VALUES ('$cus_mapping_id','$loan_id','$coll_date','$collection_fine')");
   }

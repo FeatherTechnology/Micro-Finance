@@ -6,7 +6,7 @@ $obj = new overallClass();
 $cus_sts_arr = array();
 
 if ($loan_id!= '') {
-    $qry = $pdo->query("SELECT  cc.cus_id ,cc.first_name ,cm.id,cm.closed_sub_status,cm.closed_remarks from loan_cus_mapping cm
+    $qry = $pdo->query("SELECT  cc.cus_id ,cc.first_name , cm.id, cm.closed_sub_status, cm.closed_remarks from loan_cus_mapping cm
     left join  customer_creation cc ON cm.cus_id = cc.id  
     WHERE cm.loan_id='$loan_id'");
     if ($qry->rowCount() > 0) {
@@ -16,7 +16,7 @@ if ($loan_id!= '') {
             <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
            <div class='dropdown-content'>";
                 $action .= "<a href='#' class='cus_due_chart' value='" . $gcs_info['id'] . "'  title='Due Chart'>Due Chart</a>";
-                $action .= "<a href='#' class='cus_savings_chart' value='" . $gcs_info['id'] . "' title='Savings_chart'>Savings Chart</a>";
+                $action .= "<a href='#' class='cus_savings_chart' value='" . $gcs_info['cus_id'] . "' title='Savings_chart'>Savings Chart</a>";
                 $action .= "<a href='#' class='cus_fine_chart' value='" . $gcs_info['id']. "' title='Fine Chart'>Fine Chart</a>";
             $action .= "</div></div>";
             $gcs_info['chart'] = $action;

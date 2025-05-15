@@ -155,9 +155,9 @@ $(document).ready(function () {
     });
     $(document).on('click','.cus_savings_chart', function(e){
         e.preventDefault(); // Prevent default anchor behavior
-        var cus_mapping_id = $(this).attr('value'); // Capture data-id from the clicked element
+        var cus_id = $(this).attr('value'); // Capture data-id from the clicked element
         $('#savings_model').modal('show'); // Show the modal
-        SavingsChartList(cus_mapping_id); 
+        SavingsChartList(cus_id); 
     });
     $(document).on('click', '.cus_fine_chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
@@ -194,10 +194,10 @@ function dueChartList(cus_mapping_id, loan_id) {
 
 }
 //Penalty chart
-function SavingsChartList(cus_mapping_id){
+function SavingsChartList(cus_id){
     $.ajax({
         url: 'api/collection_files/get_savings_chart_list.php',
-        data: {'cus_mapping_id':cus_mapping_id},
+        data: {'cus_id':cus_id},
         type:'post',
         cache: false,
         success: function(response){
