@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 24, 2025 at 03:13 PM
+-- Generation Time: May 15, 2025 at 06:42 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -55,14 +55,6 @@ CREATE TABLE `area_creation` (
   `created_on` datetime NOT NULL DEFAULT current_timestamp(),
   `update_on` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `area_creation`
---
-
-INSERT INTO `area_creation` (`id`, `branch_id`, `area_id`, `status`, `insert_login_id`, `update_login_id`, `created_on`, `update_on`) VALUES
-(1, 1, '6,2,5,3,4,1', 1, 1, NULL, '2025-03-15 00:00:00', NULL),
-(2, 2, '8,12,7,13,10,11,9', 1, 1, NULL, '2025-03-15 00:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -132,14 +124,6 @@ CREATE TABLE `branch_creation` (
   `updated_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `branch_creation`
---
-
-INSERT INTO `branch_creation` (`id`, `company_name`, `branch_code`, `branch_name`, `address`, `state`, `district`, `taluk`, `place`, `pincode`, `email_id`, `mobile_number`, `whatsapp`, `landline_code`, `landline`, `insert_login_id`, `update_login_id`, `created_date`, `updated_date`) VALUES
-(1, 'Micro Finance', 'M-101', 'Vandavasi', 'Gandhi road', 1, 34, 278, 'Vandavasi', '604408', '', '8789875764', '', '', '', 1, NULL, '2025-03-15 00:00:00', NULL),
-(2, 'Micro Finance', 'M-102', 'Cheyyar', 'Arni X Road', 1, 34, 272, 'Cheyyar', '604407', '', '', '', '', '', 1, NULL, '2025-03-15 00:00:00', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -178,7 +162,6 @@ CREATE TABLE `closed_loan` (
   `loan_id` varchar(110) DEFAULT NULL,
   `centre_id` varchar(150) DEFAULT NULL,
   `closed_sub_status` int(11) DEFAULT NULL,
-  `closed_remarks` varchar(250) DEFAULT NULL,
   `closed_date` date DEFAULT NULL,
   `insert_login_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -225,11 +208,9 @@ CREATE TABLE `collection` (
   `due_amnt` int(11) NOT NULL,
   `pending_amt` varchar(255) DEFAULT NULL,
   `payable_amt` varchar(255) DEFAULT NULL,
-  `penalty` varchar(255) DEFAULT NULL,
   `fine_charge` varchar(255) DEFAULT NULL,
   `coll_date` datetime DEFAULT NULL,
   `due_amt_track` varchar(255) NOT NULL DEFAULT '0',
-  `penalty_track` varchar(255) NOT NULL DEFAULT '0',
   `fine_charge_track` varchar(255) NOT NULL DEFAULT '0',
   `total_paid_track` varchar(255) NOT NULL DEFAULT '0',
   `insert_login_id` varchar(255) DEFAULT NULL,
@@ -290,13 +271,6 @@ CREATE TABLE `company_document` (
   `document_name` varchar(250) DEFAULT NULL,
   `file` varchar(250) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `company_document`
---
-
-INSERT INTO `company_document` (`s_no`, `document_name`, `file`) VALUES
-(1, 'PAN ', '67d5619e9d5ad.webp');
 
 -- --------------------------------------------------------
 
@@ -589,8 +563,6 @@ CREATE TABLE `loan_category_creation` (
   `procrssing_fees_type` varchar(250) DEFAULT NULL,
   `processing_fee_min` varchar(50) DEFAULT NULL,
   `processing_fee_max` varchar(100) DEFAULT NULL,
-  `overdue_penalty` varchar(100) DEFAULT NULL,
-  `penalty_type` varchar(100) DEFAULT NULL,
   `scheme_name` varchar(150) NOT NULL,
   `status` int(11) NOT NULL,
   `insert_login_id` int(11) NOT NULL,
@@ -638,7 +610,6 @@ CREATE TABLE `loan_entry_loan_calculation` (
   `loan_category` int(11) NOT NULL,
   `loan_amount` int(11) DEFAULT NULL,
   `total_customer` int(11) DEFAULT NULL,
-  `loan_amt_per_cus` int(11) DEFAULT NULL,
   `profit_type` varchar(50) DEFAULT NULL,
   `due_month` varchar(50) DEFAULT NULL,
   `benefit_method` varchar(100) DEFAULT NULL,
@@ -849,8 +820,6 @@ CREATE TABLE `scheme` (
   `benefit_method` varchar(20) NOT NULL,
   `interest_rate_percent_min` varchar(10) NOT NULL,
   `due_period_percent_min` varchar(10) NOT NULL,
-  `overdue_penalty_percent` varchar(10) NOT NULL,
-  `scheme_penalty_type` varchar(10) NOT NULL,
   `doc_charge_min` varchar(10) NOT NULL,
   `doc_charge_max` varchar(10) NOT NULL,
   `processing_fee_min` varchar(10) NOT NULL,
@@ -1304,7 +1273,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `user_code`, `role`, `designation`, `address`, `place`, `email`, `mobile`, `user_name`, `password`, `branch`, `loan_category`, `centre_name`, `collection_access`, `download_access`, `account_access`, `screens`, `insert_login_id`, `update_login_id`, `created_on`, `updated_on`) VALUES
-(1, 'Super Admin', 'US-001', 3, 2, '', '', '', '', 'admin', '123', '1,2', '1,2,3', '1,2,3,4,5,6,7,8,9', 1, 1, '1,2,3,4,5', '1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27', '1', '1', '2024-06-13', '2025-04-17'),
+(1, 'Super Admin', 'US-001', 3, 2, '', '', '', '', 'admin', '123', '1,2', '1,2,3', '1,2,3,4,5,6,7', 1, 1, '1,2,3,4,5', '1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27', '1', '1', '2024-06-13', '2025-05-14'),
 (19, 'Test 1', 'US-002', 2, 3, 'Gandhi road', 'Vandavasi', '', '8789875764', 'Test', '123', '1,2', '1', '1,2,3,4,5', 1, 1, '1', '1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17', '1', '1', '2025-03-15', '2025-03-15');
 
 --
@@ -1571,7 +1540,7 @@ ALTER TABLE `accounts_collect_entry`
 -- AUTO_INCREMENT for table `area_creation`
 --
 ALTER TABLE `area_creation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `area_name_creation`
@@ -1589,7 +1558,7 @@ ALTER TABLE `bank_creation`
 -- AUTO_INCREMENT for table `branch_creation`
 --
 ALTER TABLE `branch_creation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `centre_creation`
@@ -1625,7 +1594,7 @@ ALTER TABLE `company_creation`
 -- AUTO_INCREMENT for table `company_document`
 --
 ALTER TABLE `company_document`
-  MODIFY `s_no` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `s_no` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `customer_creation`
