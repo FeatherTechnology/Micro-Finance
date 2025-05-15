@@ -35,7 +35,6 @@
                                 <th>Number Of Pending Due</th>
                                 <th>Payable Amount</th>
                                 <th>Status</th>
-                                <th>Sub Status</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

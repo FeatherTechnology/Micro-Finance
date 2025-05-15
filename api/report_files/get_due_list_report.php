@@ -55,6 +55,7 @@ $query = "SELECT
 FROM loan_entry_loan_calculation lelc
 JOIN centre_creation cntr ON cntr.centre_id = lelc.centre_id
 JOIN loan_cus_mapping lcm ON lcm.loan_id = lelc.loan_id
+JOIN customer_status cs ON cs.cus_map_id = lcm.id
 JOIN customer_creation cc ON cc.id = lcm.cus_id
 JOIN area_name_creation anc ON cntr.area = anc.id
 LEFT JOIN closed_loan cl ON cl.centre_id = cntr.centre_id
@@ -69,7 +70,8 @@ LEFT JOIN (
     GROUP BY loan_id, cus_mapping_id
 ) col ON col.loan_id = lelc.loan_id AND col.cus_mapping_id = lcm.id
 WHERE li.issue_date <= '$search_date'
-AND lelc.due_month = '$due_type'";
+AND ((cs.balance_amount = 0 AND cs.created_date > '$search_date')  OR (cs.balance_amount != 0))
+";
 
 if (isset($_POST['week_days'])) {
     $query .= " and lelc.scheme_day_calc='$week_days' GROUP by lcm.id";
@@ -164,28 +166,55 @@ foreach ($result as $row) {
         $estimated_pending = 0;
 
         if ($due_type == '1') { // Monthly
-            if ($start->format('Y-m') !== $end->format('Y-m')) {
-                $month_diff = ($diff->y * 12) + $diff->m;
-                if ($diff->d > 0 && $month_diff > 0) {
-                    $month_diff++;
-                }
-                $estimated_pending = $due_amount * max(($month_diff - 1), 0);
-            }
+        if (strtotime($row['due_end']) < strtotime($search_date)) {
+            $end = strtotime($row['due_end']);
+            $start = strtotime($row['due_start']);
+            $payable_diff = (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start)) + 1;
+
+            $pending_diff = (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start));
+                if (date('d', $end) >= date('d', $start) && date('m', $end) != date('m', $start)) {
+                     $pending_diffF += 1;
+                    }
+        
+        } else {
+                $start = strtotime($row['due_start']);
+                $end = strtotime($search_date);
+                $payable_diff = (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start)) + 1;
+                $pending_diff =  max(0, (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start)));
+
+        }
         } elseif ($due_type == '2') { // Weekly
-            $days = $diff->days;
-            $week_diff = intdiv($days, 7) + (($days % 7) > 0 ? 1 : 0);
-            $month_diff = $week_diff;
-            $estimated_pending = $due_amount * max(($week_diff - 1), 0);
+           if (strtotime($row['due_end']) < strtotime($search_date)) {
+        // Maturity date has passed
+                $start = strtotime($row['due_start']);
+                $end = strtotime($row['due_end']);
+
+                $days = ($end - $start) / (60 * 60 * 24); // Convert seconds to days
+                $payable_diff = intdiv($days, 7) + (($days % 7) > 0 ? 1 : 0); // Include partial weeks
+
+                $pending_week = max(($week_diff - 1), 0);
+                $pending_diff = $due_amount * $pending_week;
+            } else {
+        // Not yet matured; count till current date (or $to_date)
+                $start = strtotime($row['due_start']);
+                $end = strtotime(datetime: $search_date);
+
+                $days = ($end - $start) / (60 * 60 * 24); // Convert seconds to days
+                $payable_diff = intdiv($days, 7) + (($days % 7) > 0 ? 1 : 0); // Include partial weeks
+
+                $pending_week = max(($week_diff - 1), 0);
+                $pending_diff = $due_amount * $pending_week;
+            }
         }
 
         // Step 4: Final pending
-        $pending = max(($estimated_pending - $totalPaidAmt), 0);
+        $pending = max((($pending_diff * $due_amount) - $totalPaidAmt), 0);
 
         // Step 5: Pending due count
         $pending_due_count = ($due_amount > 0) ? number_format($pending / $due_amount, 2, '.', '') : 0;
 
         // Step 6: Payable amount
-        $payable_amount = max(($month_diff * $due_amount) - $totalPaidTrack, 0);
+        $payable_amount = max(($payable_diff * $due_amount) - $totalPaidTrack, 0);
     }
 
     $customer_status = $obj->custStatus($cus_mapping_id, $loan_id, $search_date);
