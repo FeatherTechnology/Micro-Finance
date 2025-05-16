@@ -43,11 +43,11 @@
                                         <td></td>
                                         <td></td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td><b>Penalty Charges</b></td>
                                         <td></td>
                                         <td></td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td><b>Fine</b></td>
                                         <td></td>
@@ -167,11 +167,11 @@
                                         <td></td>
                                         <td></td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td><b>Penalty</b></td>
                                         <td></td>
                                         <td></td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td><b>Fine</b></td>
                                         <td></td>
@@ -256,11 +256,11 @@
                                         <td></td>
                                         <td></td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td><b>Penalty</b></td>
                                         <td></td>
                                         <td></td>
-                                    </tr>
+                                    </tr> -->
                                     <tr>
                                         <td><b>Fine</b></td>
                                         <td></td>
