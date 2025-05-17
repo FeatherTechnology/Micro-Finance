@@ -308,12 +308,13 @@ $(document).ready(function () {
             var due_period = parseFloat($('#due_period_calc').val());
             let doc_charge = parseFloat($('#doc_charge_calc').val());
             let proc_fee = parseFloat($('#processing_fees_calc').val());
+            let profit_type_calc = $('#profit_type_calc').val();
 
             if (customer_amount && int_rate && due_period) {
                 let benefit_method = $('#profit_method_calc').val();
                 let result;
                 if (benefit_method == 1 || benefit_method === 'Pre Benefit') {
-                    result = getLoanPreInterest(customer_amount, int_rate, due_period, doc_charge, proc_fee, proc_type);
+                    result = getLoanPreInterest(customer_amount, int_rate, due_period, doc_charge, proc_fee, proc_type, profit_type_calc);
                 } else if (benefit_method == 2 || benefit_method === 'After Benefit') {
                     result = getLoanAfterInterest(customer_amount, int_rate, due_period, doc_charge, proc_fee, proc_type);
                 } else {
@@ -405,11 +406,12 @@ $(document).ready(function () {
 
         $('#issue_info_table tbody tr').each(function () {
             let loan_amt = parseFloat($(this).find('td:nth-child(4)').text()) || 0;
+            let profit_type_calc = $('#profit_type_calc').val();
             if (loan_amt && int_rate && due_period) {
                 let benefit_method = $('#profit_method_calc').val();
                 let result;
                 if (benefit_method == 1 || benefit_method === 'Pre Benefit') {
-                    result = getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type);
+                    result = getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type, profit_type_calc);
                 } else if (benefit_method == 2 || benefit_method === 'After Benefit') {
                     result = getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type);
                 } else {
@@ -694,10 +696,15 @@ function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_f
     };
 }
 
-function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type) {
-
-    // Calculate Interest amount 
-    let interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type ,profit_type_calc) {
+let interest_rate = 0;
+    // Calculate Interest amount if it is Calcualtion or scheme 
+    if(profit_type_calc == 1){
+         interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+    }
+    else{
+     interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100));
+    }
 
     // Calculate Principal amount 
     let princ_amt = parseInt(loan_amt) - parseInt(interest_rate);
