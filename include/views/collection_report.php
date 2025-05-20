@@ -28,6 +28,7 @@
                                 <th>Due Amount</th>
                                 <th>Principal Amount</th>
                                 <th>Interest Amount</th>
+                                <th>Fine</th>
                                 <th>Total Paid</th>
                                 <th>Status</th>
                                 <th>Sub Status</th>
@@ -41,7 +42,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td colspan="2"></td>
+                                <td></td>
                             </tr>
                         </tfoot>
                     </table>

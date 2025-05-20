@@ -316,7 +316,7 @@ $(document).ready(function () {
                 if (benefit_method == 1 || benefit_method === 'Pre Benefit') {
                     result = getLoanPreInterest(customer_amount, int_rate, due_period, doc_charge, proc_fee, proc_type, profit_type_calc);
                 } else if (benefit_method == 2 || benefit_method === 'After Benefit') {
-                    result = getLoanAfterInterest(customer_amount, int_rate, due_period, doc_charge, proc_fee, proc_type);
+                    result = getLoanAfterInterest(customer_amount, int_rate, due_period, doc_charge, proc_fee, proc_type, profit_type_calc);
                 } else {
                     swalError('Warning', 'Kindly fill the calculation fields.');
                     return;
@@ -413,7 +413,7 @@ $(document).ready(function () {
                 if (benefit_method == 1 || benefit_method === 'Pre Benefit') {
                     result = getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type, profit_type_calc);
                 } else if (benefit_method == 2 || benefit_method === 'After Benefit') {
-                    result = getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type);
+                    result = getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type, profit_type_calc);
                 } else {
                     swalError('Warning', 'Kindly fill the calculation fields.');
                     return;
@@ -627,10 +627,16 @@ function removeCusMap(TableRowVal) {
     }, 'json');
 }
 
-function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type) {
+function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, proc_type, profit_type_calc) {
 
-    // Calculate Interest amount 
-    var interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+   let interest_rate = 0;
+    // Calculate Interest amount if it is Calcualtion or scheme 
+    if(profit_type_calc == 1){
+         interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+    }
+    else{
+     interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100));
+    }
 
     // Calculate Total amount 
     var tot_amt = parseInt(loan_amt) + parseFloat(interest_rate);

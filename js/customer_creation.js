@@ -649,7 +649,7 @@ function existingCustmerProfile(aadhar_number) {
         }, 1000);
         $(".cus_status_div").show();
 
-        let path = "uploads/loan_entry/cus_pic/";
+        let path = "uploads/customer_creation/cus_pic/";
         $("#per_pic").val(response[0].pic);
         var img = $("#imgshow");
         img.attr("src", path + response[0].pic);

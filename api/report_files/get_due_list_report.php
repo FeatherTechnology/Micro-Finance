@@ -70,10 +70,9 @@ LEFT JOIN (
     GROUP BY loan_id, cus_mapping_id
 ) col ON col.loan_id = lelc.loan_id AND col.cus_mapping_id = lcm.id
 WHERE li.issue_date <= '$search_date'
-AND ((cs.balance_amount = 0 AND cs.created_date > '$search_date')  OR (cs.balance_amount != 0))
-";
+AND lelc.due_month='$due_type' AND  (cs.balance_amount != 0 OR cl.closed_date > '$search_date') ";
 
-if (isset($_POST['week_days'])) {
+if (isset($_POST['week_days']) && $_POST['week_days'] !='') {
     $query .= " and lelc.scheme_day_calc='$week_days' GROUP by lcm.id";
 } else {
     $query .= " GROUP by lcm.id";
@@ -176,13 +175,14 @@ foreach ($result as $row) {
 
             $pending_diff = (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start));
                 if (date('d', $end) >= date('d', $start) && date('m', $end) != date('m', $start)) {
-                     $pending_diffF += 1;
+                     $pending_diff += 1;
                     }
         
         } else {
                 $start = strtotime($row['due_start']);
                 $end = strtotime($search_date);
-                $payable_diff = (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start)) + 1;
+                $month_diff = max(0, date('m', $end) - date('m', $start));
+                $payable_diff = (date('Y', $end) - date('Y', $start)) * 12 + $month_diff  + 1;
                 $pending_diff =  max(0, (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start)));
 
         }
@@ -193,9 +193,9 @@ foreach ($result as $row) {
                 $end = strtotime($row['due_end']);
 
                 $days = ($end - $start) / (60 * 60 * 24); // Convert seconds to days
-                $payable_diff = intdiv($days, 7) + (($days % 7) > 0 ? 1 : 0); // Include partial weeks
+                $payable_diff = intdiv($days, 7) + (($days % 7) >= 0 ? 1 : 0); // Include partial weeks
 
-                $pending_week = max(($week_diff - 1), 0);
+                $pending_week = max(($payable_diff - 1), 0);
                 $pending_diff = $due_amount * $pending_week;
             } else {
         // Not yet matured; count till current date (or $to_date)
@@ -203,9 +203,9 @@ foreach ($result as $row) {
                 $end = strtotime(datetime: $search_date);
 
                 $days = ($end - $start) / (60 * 60 * 24); // Convert seconds to days
-                $payable_diff = intdiv($days, 7) + (($days % 7) > 0 ? 1 : 0); // Include partial weeks
+                $payable_diff = intdiv($days, 7) + (($days % 7) >= 0 ? 1 : 0); // Include partial weeks
 
-                $pending_week = max(($week_diff - 1), 0);
+                $pending_week = max(($payable_diff - 1), 0);
                 $pending_diff = $due_amount * $pending_week;
             }
         }
