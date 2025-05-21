@@ -15,7 +15,7 @@ $result = $pdo->query($query);
 // Fetch result and prepare the response
 if ($result->rowCount() > 0) {
     $data = $result->fetch(PDO::FETCH_ASSOC);
-    $response = ['download_access' => $data['download_access']];
+    $response = ['download_access' => intVal($data['download_access'])];
 } else {
     $response = ['download_access' => 0]; // Default to no access if user not found
 }
