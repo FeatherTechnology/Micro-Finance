@@ -5,6 +5,7 @@ $(document).ready(function () {
             $("#week_days").show();
         } else {
             $("#week_days").hide();
+            $("#week_days").val("");
         }
     });
 
@@ -58,21 +59,5 @@ $(document).ready(function () {
 
 
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 });

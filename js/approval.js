@@ -341,13 +341,14 @@ $(document).ready(function () {
 
     $('#cus_mapping_table tbody tr').each(function () {
       let loan_amt = parseFloat($(this).find('td:nth-child(9)').text()) || 0;
+      let profit_type_calc = $('#profit_type_calc').val();
       if (loan_amt && int_rate && due_period) {
         let benefit_method = $('#profit_method_calc').val();
         let result;
         if (benefit_method == 1 || benefit_method === 'Pre Benefit') {
-          result = getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee);
+          result = getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, profit_type_calc);
         } else if (benefit_method == 2 || benefit_method === 'After Benefit') {
-          result = getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee);
+          result = getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee ,profit_type_calc);
         } else {
           swalError('Warning', 'Kindly fill the calculation fields.');
           return;
@@ -475,14 +476,15 @@ $(document).ready(function () {
       var cus_mapping = $(this).find('td:nth-child(5)').text();
       var designation = $(this).find('td:nth-child(10)').text();
       var customer_loan_amount = $(this).find('td:nth-child(9)').text();
+      let profit_type_calc = $('#profit_type_calc').val();
       if (customer_loan_amount) {
         let benefit_method = $('#profit_method_calc').val();
         let result;
 
         if (benefit_method == 1 || benefit_method == 'Pre Benefit') {
-          result = getLoanPreInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee);
+          result = getLoanPreInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee,profit_type_calc);
         } else if (benefit_method == 2 || benefit_method == 'After Benefit') {
-          result = getLoanAfterInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee);
+          result = getLoanAfterInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee,profit_type_calc);
         }
 
         // Accumulate
@@ -1113,10 +1115,15 @@ function schemeCalAjax(id) {
 
 
 //To Get Loan Calculation for After Interest
-function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee) {
-
-  // Calculate Interest amount 
-  var interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee , profit_type_calc) {
+    let interest_rate = 0;
+    // Calculate Interest amount if it is Calcualtion or scheme 
+    if(profit_type_calc == 1){
+         interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+    }
+    else{
+     interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100));
+    }
 
   // Calculate Total amount 
   var tot_amt = parseInt(loan_amt) + parseFloat(interest_rate);
@@ -1188,10 +1195,15 @@ function getLoanAfterInterest(loan_amt, int_rate, due_period, doc_charge, proc_f
   };
 }
 
-function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee) {
-
-  // Calculate Interest amount 
-  let interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+function getLoanPreInterest(loan_amt, int_rate, due_period, doc_charge, proc_fee, profit_type_calc) {
+  let interest_rate = 0;
+    // Calculate Interest amount if it is Calcualtion or scheme 
+    if(profit_type_calc == 1){
+         interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100) * parseInt(due_period));
+    }
+    else{
+     interest_rate = (parseInt(loan_amt) * (parseFloat(int_rate) / 100));
+    }
 
   // Calculate Principal amount 
   let princ_amt = parseInt(loan_amt) - parseInt(interest_rate);

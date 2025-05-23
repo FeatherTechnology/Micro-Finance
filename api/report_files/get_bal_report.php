@@ -26,7 +26,7 @@ $query = "SELECT
     c.loan_due_amnt,
     c.coll_date,
     lelc.due_period,
-    SUM(c.due_amt_track) AS total_paid,
+    SUM(c.due_amt_track)AS  due_amt_track ,
     lelc.principal_amount_calc,
     lelc.intrest_amount_calc,
     lelc.total_amount_calc,
@@ -46,10 +46,14 @@ JOIN customer_creation cc ON
     cc.id = lcm.cus_id
 JOIN loan_category lc ON
     lc.id = lelc.loan_category
+left join customer_status cs on 
+    cs.cus_map_id = lcm.id
+left join closed_loan cl on 
+    cl.loan_id = lelc.loan_id
 JOIN users u ON
     u.id = c.insert_login_id
     WHERE
- c.coll_date <= '$dateTime'
+ c.coll_date <= '$dateTime' AND  (cs.balance_amount != 0 OR cl.closed_date > '$dateTime')
 GROUP BY
     lelc.loan_id
 ";
@@ -90,7 +94,7 @@ $sno = 1;
 
 foreach ($result as $row) {
     $sub_array = [];
-    $balance_amt = intVal($row['total_amount_calc']) - intVal($row['total_paid']);
+    $balance_amt = intVal($row['total_amount_calc']) - intVal($row['due_amt_track']);
 
     $princ_amt = intVal($row['principal_amount_calc']) / $row['due_period'];
     $int_amt = intVal($row['intrest_amount_calc']) / $row['due_period'];
@@ -146,8 +150,8 @@ foreach ($result as $row) {
     $sub_array[] = isset($row['due_period']) ? $row['due_period'] : '';
     $sub_array[] = moneyFormatIndia($row['total_amount_calc']);
     $sub_array[] = moneyFormatIndia($balance_amt);
-    $sub_array[] = moneyFormatIndia($row['principal_amount_calc']);
-    $sub_array[] = moneyFormatIndia($row['intrest_amount_calc']);
+    $sub_array[] = moneyFormatIndia($response['principal_paid']);
+    $sub_array[] = moneyFormatIndia($response['interest_paid']);
     $sub_array[] = $bal_due;
     $sub_array[] = isset($row['status']) ? $row['status'] : '';
     $sub_array[] = isset($row['sub_status']) ? $row['sub_status'] : '';
