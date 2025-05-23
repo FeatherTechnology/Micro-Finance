@@ -7,12 +7,14 @@ $current_date = date('Y-m-d');
 $cash_type = ["1" => 'Hand Cash', "2" => 'Bank Cash'];
 $crdr = ["1" => 'Credit', "2" => 'Debit'];
 $trans_list_arr = array();
-$qry = $pdo->query("SELECT * FROM `customer_savings` WHERE `insert_login_id` = '$user_id' ");
+$qry = $pdo->query("SELECT cus_id,id,cus_name , aadhar_num, SUM(CASE WHEN credit_debit = 1 THEN savings_amount ELSE 0 END) AS total_credit, SUM(CASE WHEN credit_debit = 2 THEN savings_amount ELSE 0 END) AS total_debit
+    FROM customer_savings GROUP BY cus_id");
 if ($qry->rowCount() > 0) {
     while ($result = $qry->fetch()) {
-        $result['savings_amount'] = moneyFormatIndia($result['savings_amount']);
-        $result['credit_debit'] = ($result['credit_debit'] == 1) ? 'Credit' : (($result['credit_debit'] == 2) ? 'Debit' : '');
-        $result['action'] = "<span class='icon-trash-2 savingsDeleteBtn' value='" . $result['id'] . "'></span>";
+        $result['total_credit'] = (int)$result['total_credit'];
+        $result['total_debit'] = (int)$result['total_debit'];
+        $result['balance'] = moneyFormatIndia($result['total_credit'] - $result['total_debit']);
+        $result['action'] = "<button class='btn btn-primary Savings-chart' value='" . $result['cus_id'] . "'> Savings Chart </button>";
         $trans_list_arr[] = $result;
     }
 }

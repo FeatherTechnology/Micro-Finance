@@ -49,6 +49,7 @@ $(document).ready(function () {
                 // Get values from the table for the current row
                 let rowId = row.find('input.total_collection').data('id');
                 let cus_id = row.find('td:nth-child(2)').text();
+                let cus_name = row.find('td:nth-child(3)').text();
                 let individualAmount = row.find('td:nth-child(5)').text().replace(/,/g, '');
                 let pendingAmount = row.find('td:nth-child(6)').text().replace(/,/g, '');
                 let payableAmount = row.find('td:nth-child(7)').text().replace(/,/g, '');
@@ -71,6 +72,7 @@ $(document).ready(function () {
                     pending: pendingAmount,
                     payable: payableAmount,
                     cus_id: cus_id,
+                    cus_name: cus_name,
                     fine_charge: fineChargeAmount,
                     collection_date: collectionDate,
                     collection_due: collectionDue,
@@ -514,11 +516,11 @@ function fineChartList(cus_mapping_id) {
         }
     });//Ajax End.
 }
-//Penalty chart
-function savingsChartList(cus_id,aadhar) {
+//Savings chart
+function savingsChartList(cus_id) {
     $.ajax({
         url: 'api/collection_files/get_savings_chart_list.php',
-        data: { 'cus_id': cus_id ,'aadhar':aadhar},
+        data: { 'cus_id': cus_id},
         type: 'post',
         cache: false,
         success: function (response) {

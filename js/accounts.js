@@ -150,7 +150,7 @@ $(document).ready(function(){
     $(document).on('click', '.exp-clse', function(){
         expensesTable('#accounts_expenses_table');
     });
-    $(document).on('click', '.sav-clse', function(){
+    $(document).on('click', '.sav-clse, .exp-clse', function(){
         savingsTable('#customer_savings_table');
     });
 
@@ -340,14 +340,36 @@ $(document).ready(function(){
             });
         }, 'json');
     });
-    
+    $("#aadhar_number").on("blur", function () {
+        let aadhar_number = $("#aadhar_number").val().trim().replace(/\s/g, "");
+        existingCustmerProfile(aadhar_number);
+    });
     $('#submit_savings_creation').click(function(event){
         event.preventDefault();
+        let cus_id = $('#cus_id').val();
+        let cat_type =  $('#catType').val();
+        let aadhar_num = $('#aadhar_number').val().replace(/\D/g, "");
+        let savings_amount = $('#savings_amnt').val();
+        let cus_name = $('#cus_name').val();
+       getCusPreAmt(cus_id, function(amounts, error) {
+        if (error) {
+            alert(error); // or use Swal.fire(error); for SweetAlert
+            return;
+        }
+
+        let creditAmount = amounts.credit;
+        let debitAmount = amounts.debit;
+        let difference = creditAmount - debitAmount; 
+        if (cat_type === '2' && difference < savings_amount) {
+                swalError('Warning', 'Insufficient  balance');
+                return;
+        }
         let savingsData = {
-            'aadhar_number' : $('#aadhar_number').val().replace(/\D/g, ""),
-            'cus_id' : $('#cus_id').val(),
-            'savings_amnt' : $('#savings_amnt').val(),
-            'cat_type' : $('#catType').val()
+            'aadhar_number' : aadhar_num ,
+            'cus_id' : cus_id,
+            'savings_amnt' : savings_amount,
+            'cat_type' : cat_type,
+            'cus_name' : cus_name
         }
         if (Savingsvalidation(savingsData)) {
 
@@ -365,18 +387,19 @@ $(document).ready(function(){
         else {
             swalError('Warning', 'Please fill required fields.');
         }
-        
+        })    
     });
     
     $(document).on('click', '.transDeleteBtn', function () {
         let id = $(this).attr('value');
         swalConfirm('Delete', 'Are you sure you want to delete this Other Transaction?', deleteTrans, id);
     });
-    $(document).on('click', '.savingsDeleteBtn', function () {
-        let id = $(this).attr('value');
-        swalConfirm('Delete', 'Are you sure you want to delete this Savings?', deletesavings, id);
+     $(document).on('click', '.Savings-chart', function (e) {
+        e.preventDefault(); // Prevent default anchor behavior
+        var cus_id = $(this).attr('value'); // Capture data-id from the clicked element
+        $('#Savings_chart_model').modal('show'); // Show the modal
+        savingsChartList(cus_id);
     });
-
 
     //Balance sheet
     
@@ -689,10 +712,9 @@ function savingsTable(tableId){
         let expensesColumn = [
             'sno',
             'cus_id',
+            'cus_name',
             'aadhar_num',
-            'paid_date',
-            'savings_amount',
-            'credit_debit',
+            'balance',
             'action'
         ];
 
@@ -714,6 +736,7 @@ function clearsavingsForm(){
     $('#cus_id').val('');
     $('#savings_amnt').val('');
     $('#catType').val('');
+    $('#cus_name').val('');
 }
 
 function deleteTrans(id) {
@@ -722,18 +745,6 @@ function deleteTrans(id) {
             swalSuccess('success', 'Other Transaction Deleted Successfully');
             otherTransTable('#other_transaction_table');
             otherTransTable('#accounts_other_trans_table');
-            getClosingBal();
-        } else {
-            swalError('Alert', 'Delete Failed')
-        }
-    }, 'json');
-}
-function deletesavings(id) {
-    $.post('api/accounts_files/accounts/delete_customer_savings.php', { id }, function (response) {
-        if (response == '1') {
-            swalSuccess('success', 'Savings Deleted Successfully');
-            savingsTable('#customer_savings_table_list');
-            savingsTable('#customer_savings_table');
             getClosingBal();
         } else {
             swalError('Alert', 'Delete Failed')
@@ -788,4 +799,57 @@ function Savingsvalidation(data){
         }    
     }
     return true;
+}
+function existingCustmerProfile(aadhar_number) {
+  $.post(
+    "api/customer_creation_files/customer_profile_existing.php",
+    { aadhar_number },
+    function (response) {
+      if (response === "New") {
+        $("#cus_id").val("");
+        $("#cus_name").val("");
+      }
+      else{
+        $("#cus_id").val(response[0].cus_id); 
+        $("#cus_name").val(response[0].first_name); 
+      }
+    },
+  "json" )
+}
+function getCusPreAmt(cus_id, callback) {
+  $.post(
+    "api/accounts_files/accounts/get_customer_debit_credit.php",
+    { cus_id },
+    function (response) {
+      if (response === 0) {
+        // Indicates an error
+        callback(null, "Error retrieving data.");
+      } else {
+        let credit = response[0].total_credit || 0;
+        let debit = response[0].total_debit || 0;
+        callback({ credit, debit }, null);
+      }
+    },
+    "json"
+  ).fail(function () {
+    // Network or server error
+    callback(null, "Server error occurred.");
+  });
+}
+function savingsChartList(cus_id) {
+    $.ajax({
+        url: 'api/collection_files/get_savings_chart_list.php',
+        data: { 'cus_id': cus_id },
+        type: 'post',
+        cache: false,
+        success: function (response) {
+            $('#savings_chart_table_div').empty()
+            $('#savings_chart_table_div').html(response)
+        }
+    });//Ajax End.
+}
+function closeChartsModal() {
+    $('#due_chart_model').modal('hide');
+    $('#Savings_chart_model').modal('hide');
+    $('#fine_model').modal('hide');
 }
