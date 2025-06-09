@@ -16,7 +16,9 @@
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="aadhar_no">Aadhar Number</label><span class="text-danger">*</span>
-                                            <input type="number" class="form-control" id="aadhar_no" name="aadhar_no" placeholder="Enter Aadhar Number" tabindex="1" maxlength="12">
+                                            <!-- <input type="number" class="form-control" id="aadhar_no" name="aadhar_no" placeholder="Enter Aadhar Number" tabindex="1" maxlength="12"> -->
+                                            <input type="text" class="form-control" name="aadhar_no" id="aadhar_no" tabindex="1" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
+
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-6">

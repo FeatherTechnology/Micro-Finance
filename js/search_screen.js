@@ -2,7 +2,8 @@ $(document).ready(function () {
   $("#submit_search").click(function (event) {
     event.preventDefault();
 
-    let aadhar_no = $("#aadhar_no").val();
+    // let aadhar_no = $("#aadhar_no").val();
+    let aadhar_no = $('#aadhar_no').val().replace(/\D/g, "")
     let cus_name = $("#cust_name").val();
     let centre_no = $("#centre_no").val();
     let mobile = $("#mobile").val();
@@ -29,6 +30,16 @@ $(document).ready(function () {
     }
   });
 
+   $('input[data-type="adhaar-number"]').keyup(function () {
+    var value = $(this).val();
+    value = value
+      .replace(/\D/g, "")
+      .split(/(?:([\d]{4}))/g)
+      .filter((s) => s.length > 0)
+      .join(" ");
+    $(this).val(value);
+  });
+  
   $("input[name=search_type]").click(function () {
     let search_type = $(this).val();
     if (search_type == "customer_details") {
@@ -117,7 +128,8 @@ $(document).ready(function () {
 function validate() {
   let response = true;
 
-  let aadhar_no = $("#aadhar_no").val().trim();
+  // let aadhar_no = $("#aadhar_no").val().trim();
+  let aadhar_no = $('#aadhar_no').val().replace(/\D/g, "")
   let cus_name = $("#cust_name").val().trim();
   let centre_no = $("#centre_no").val().trim();
   let mobile = $("#mobile").val().trim();
@@ -205,7 +217,8 @@ function getSearchTable(data) {
 function getcentreList() {
   event.preventDefault();
 
-  let aadhar_no = $("#aadhar_no").val();
+  // let aadhar_no = $("#aadhar_no").val();
+  let aadhar_no = $('#aadhar_no').val().replace(/\D/g, "")
   let cus_name = $("#cust_name").val();
   let centre_no = $("#centre_no").val();
   let mobile = $("#mobile").val();

@@ -12,7 +12,21 @@ $(document).ready(function () {
     $(".document_table_content").hide();
     getcustomerlist();
   });
+    $(document).on('click', '.savings_chart_back', function (e) {
+      $('#Savings_chart_model').modal('hide'); // Show the modal
+    });
 
+    
+    $(document).on('click', '.savings_chart', function (e) {
+        e.preventDefault(); // Prevent default anchor behavior
+        var cus_id = $(this).attr('value');
+        var centre_id = $(this).attr('centre_id');
+
+        $('#Savings_chart_model').modal('show');
+      
+
+        savingsChartList(cus_id, centre_id);
+    });
   $("input[name=customer_data]").click(function () {
     let customerDataType = $(this).val();
 
@@ -873,6 +887,18 @@ function dueChartList(cus_mapping_id, loan_id) {
         }, 'json');
     })
 
+}
+function savingsChartList(cus_id,centre_id) {
+    $.ajax({
+        url: 'api/collection_files/get_savings_chart_list.php',
+        data: { 'cus_id': cus_id , 'centre_id':centre_id },
+        type: 'post',
+        cache: false,
+        success: function (response) {
+            $('#savings_chart_table_div').empty()
+            $('#savings_chart_table_div').html(response)
+        }
+    });//Ajax End.
 }
 
 

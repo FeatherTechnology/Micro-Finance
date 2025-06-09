@@ -1,9 +1,10 @@
 <?php
 //Format number in Indian Format
-function moneyFormatIndia($num1) {
-    if($num1 < 0){
-        $num = str_replace("-","",$num1);
-    }else{
+function moneyFormatIndia($num1)
+{
+    if ($num1 < 0) {
+        $num = str_replace("-", "", $num1);
+    } else {
         $num = $num1;
     }
     $explrestunits = "";
@@ -24,7 +25,7 @@ function moneyFormatIndia($num1) {
         $thecash = $num;
     }
 
-    if($num1 < 0 && $num1 != ''){
+    if ($num1 < 0 && $num1 != '') {
         $thecash = "-" . $thecash;
     }
 
@@ -157,12 +158,12 @@ function moneyFormatIndia($num1) {
                     <div class="col-sm-3 col-md-3 col-lg-3"></div>
                     <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12">
                         <div class="form-group">
-                            <input type="radio" id="coll_hand_cash" name="coll_cash_type" value='1'/>&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
+                            <input type="radio" id="coll_hand_cash" name="coll_cash_type" value='1' />&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
                         </div>
                     </div>
                     <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12" style="display: none;">
                         <div class="form-group">
-                            <input type="radio" id="coll_bank_cash" name="coll_cash_type" value='2'/>&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
+                            <input type="radio" id="coll_bank_cash" name="coll_cash_type" value='2' />&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
                         </div>
                     </div>
                     <div class="col-sm-2 col-md-2 col-lg-2" style="display: none;">
@@ -207,12 +208,12 @@ function moneyFormatIndia($num1) {
                             <div class="col-sm-3 col-md-3 col-lg-3"></div>
                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12">
                                 <div class="form-group">
-                                    <input type="radio" id="loan_issue_hand_cash" name="issue_cash_type" value='1'/>&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
+                                    <input type="radio" id="loan_issue_hand_cash" name="issue_cash_type" value='1' />&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
                                 </div>
                             </div>
                             <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12" style="display:none;">
                                 <div class="form-group">
-                                    <input type="radio" id="loan_issue_bank_cash" name="issue_cash_type" value='2'/>&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
+                                    <input type="radio" id="loan_issue_bank_cash" name="issue_cash_type" value='2' />&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
                                 </div>
                             </div>
                             <div class="col-sm-2 col-md-2 col-lg-2" style="display:none;">
@@ -284,7 +285,7 @@ function moneyFormatIndia($num1) {
             <div class="card-header">
                 <h3 class="card-title">Other Transaction</h3>
                 <div class="text-right">
-                    <button type="button" name="blnc_sheet_btn" id="blnc_sheet_btn" class="btn btn-primary" data-toggle='modal' data-target='.blncModal' >Balance Sheet</button>
+                    <button type="button" name="blnc_sheet_btn" id="blnc_sheet_btn" class="btn btn-primary" data-toggle='modal' data-target='.blncModal'>Balance Sheet</button>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_other_transaction_modal" id="other_trans_add" style="padding: 5px 35px;" tabindex='30'><span class="icon-add"></span></button>
                 </div>
             </div>
@@ -294,7 +295,7 @@ function moneyFormatIndia($num1) {
                         <table id="accounts_other_trans_table" class="table custom-table">
                             <thead>
                                 <tr>
-                                    <th width ='20'>S.NO</th>
+                                    <th width='20'>S.NO</th>
                                     <th>Coll Mode</th>
                                     <!-- <th>Bank Name</th> -->
                                     <th>Transaction Category</th>
@@ -317,34 +318,233 @@ function moneyFormatIndia($num1) {
         <!----------------------------- OTHER TRANSACTION CARD END ------------------------------>
         <!----------------------------- savings CARD START ------------------------------>
         <div class="card" id="customer_savings_card" style="display: none;">
-            <div class="card-header">
-                <h3 class="card-title">Savings</h3>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_savings_modal" id="savings_add" style="padding: 5px 35px; float: right;" tabindex='30'><span class="icon-add"></span></button>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12 table-responsive">
-                        <table id="customer_savings_table" class="table custom-table">
-                            <thead>
-                                <tr>
-                                    <th>S.NO</th>
-                                    <th>Customer ID</th>
-                                    <th>Customer Name</th>
-                                    <th>Aadhar Number</th>
-                                    <th>Amount</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+            <input type="hidden" id="savings_chart_hidden_id">
+            <div class="coll-radio-container mb-5">
+                <div class="selector">
+                    <div class="pr-5">
+                        <input type="radio" id="customer_based" name="savings_type" class="selector-item_radio" value="1">
+                        <label for="customer_based" class="selector-item_label">Customer Based</label>
+                    </div>
 
+                    <div>
+                        <input type="radio" id="centre_based" name="savings_type" class="selector-item_radio" value="2">
+                        <label for="centre_based" class="selector-item_label">Centre Based</label>
                     </div>
                 </div>
             </div>
+
+            <div class="Customer_based" style="display: none;">
+                <div class="container-fluid mb-3">
+                    <form id="savings_form">
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="centre_id">Centre ID</label><span class="text-danger">*</span>
+                                    <select class="form-control" name="centre_id" id="centre_id" tabindex="5">
+                                        <option value="">Select Centre ID</option>
+                                    </select>
+                                </div>
+                            </div>
+                             <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="cus_id">Customer ID</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control" name="cus_id" id="cus_id" tabindex="2" placeholder="Customer ID" readonly>
+                                </div>
+                            </div> -->
+                             <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="cus_id">Customer ID</label><span class="text-danger">*</span>
+                                      <select class="form-control" name="cus_id" id="cus_id" tabindex="5">
+                                        <option value="">Select Customer ID</option>
+                                    </select>
+                                </div>
+                            </div> -->
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="aadhar_number">Aadhar Number</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control" name="aadhar_number" id="aadhar_number" tabindex="1" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="cus_id">Customer ID</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control" name="cus_id" id="cus_id" tabindex="2" placeholder="Customer ID" readonly>
+                                </div>
+                            </div>
+                           
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="cus_name">Customer Name</label><span class="text-danger">*</span>
+                                    <input type="text" class="form-control" name="cus_name" id="cus_name" tabindex="3" placeholder="Customer Name" readonly>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="savings_amnt">Amount</label><span class="text-danger">*</span>
+                                    <input type="number" class="form-control" name="savings_amnt" id="savings_amnt" tabindex="4">
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label for="catType">Type</label><span class="text-danger">*</span>
+                                    <select class="form-control" name="catType" id="catType" tabindex="5">
+                                        <option value="">Select Type</option>
+                                        <option value="1">Credit</option>
+                                        <option value="2">Debit</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group" style="float: right;">
+                                    <button name="submit_savings_creation" id="submit_savings_creation" class="btn btn-primary" tabindex="6" style="margin-top: 18px;"><span class="icon-check"></span>&nbsp;Submit</button>
+                                    <button type="reset" id="clear_savings_form" class="btn btn-outline-secondary" style="margin-top: 18px;" tabindex="7">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 table-responsive">
+                            <table id="customer_savings_table" class="table custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.NO</th>
+                                        <th>Customer ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Aadhar Number</th>
+                                        <th>Savings Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="centre_based" style="display: none;">
+                <div class="card-body centre_based_div">
+                    <div class="row">
+                        <div class="col-12 table-responsive" id="centre_based_table">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div id="customer_details_div" style="display: none;">
+                    <!-- /////////////////////////////////////////////////// centre Info  START ///////////////////////////////////////// -->
+                    <div class="card p-4 m-4" >
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">Center Info</h5>
+                            <button class="btn btn-secondary centre_info_back">Back</button>
+
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                            <div class="form-group">
+                                                <label for="centreId"> Centre ID</label>
+                                                <input type="text" class="form-control" id="centreId" name="centreId" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                            <div class="form-group">
+                                                <label for="centre_no">Centre No</label>
+                                                <input type="number" class="form-control " id="centre_no" name="centre_no" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                            <div class="form-group">
+                                                <label for="centre_name">Centre Name</label>
+                                                <input type="text" class="form-control" id="centre_name" name="centre_name" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                            <div class="form-group">
+                                                <label for="mobile1"> Mobile Number 1</label>
+                                                <input type="number" class="form-control" id="mobile1" name="mobile1" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                            <div class="form-group">
+                                                <label for="mobile2"> Mobile Number 2</label>
+                                                <input type="number" class="form-control" id="mobile2" name="mobile2" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                            <div class="form-group">
+                                                <label for="area">Area</label>
+                                                <input type="text" class="form-control" id="area" name="area" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                            <div class="form-group">
+                                                <label for="branch">Branch</label>
+                                                <input type="text" class="form-control" id="branch" name="branch" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                            <div class="form-group">
+                                                <label for="latlong">Location</label>
+                                                <input type="text" class="form-control" name="latlong" id="latlong" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-header ">
+                            <h5 class="card-title">Customer List</h5>
+
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class=" table custom-table customer_list">
+                                        <thead>
+                                            <tr>
+                                                <th width="50">S.No.</th>
+                                                <th>Customer ID</th>
+                                                <th>Customer Name</th>
+                                                <th>Credited Amount</th>
+                                                <th>Debited Amount</th>
+                                                <th>Balance Amount</th>
+                                                <th>Savings Date</th>
+                                                <th>Credit / Debit</th>
+                                                <th>Amount</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Submit Button Start -->
+                        <div class="col-md-12 ">
+                            <div class="text-right">
+                                <button type="submit" name="submit_savings" id="submit_savings" class="btn btn-primary" value="Submit" tabindex='8'><span class="icon-check"></span>&nbsp;Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit Button End -->
+            </div>
+
         </div>
-        <!----------------------------- savings CARD END ------------------------------>
 
     </div>
+    <!----------------------------- savings CARD END ------------------------------>
+
+</div>
 </div>
 
 
@@ -361,26 +561,14 @@ function moneyFormatIndia($num1) {
             <div class="modal-body">
                 <div class="container-fluid">
                     <form id="expenses_form">
-                        
+
                         <div class="row">
                             <div class="col-sm-1 col-md-1 col-lg-1"></div>
                             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
                                 <div class="form-group">
-                                    <input type="radio" id="expenses_hand_cash" name="expenses_cash_type" tabindex="2" value='1'/>&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
+                                    <input type="radio" id="expenses_hand_cash" name="expenses_cash_type" tabindex="2" value='1' />&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
                                 </div>
                             </div>
-                            <!-- <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
-                                <div class="form-group">
-                                    <input type="radio" id="expenses_bank_cash" name="expenses_cash_type" tabindex="3" value='2'/>&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
-                                </div>
-                            </div>
-                            <div class="col-sm-3 col-md-3 col-lg-3">
-                                <div class="form-group">
-                                    <select class="form-control" name="expenses_bank_name" id="expenses_bank_name" tabindex="4" disabled>
-                                        <option value="">Select Bank</option>
-                                    </select>
-                                </div>
-                            </div> -->
                         </div></br>
 
                         <div class="row">
@@ -433,12 +621,6 @@ function moneyFormatIndia($num1) {
                                     <input type="number" class="form-control" name="expenses_amnt" id="expenses_amnt" tabindex="12">
                                 </div>
                             </div>
-                            <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 exp_trans_div" style="display: none;">
-                                <div class="form-group">
-                                    <label for="expenses_trans_id">Transaction ID</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" name="expenses_trans_id" id="expenses_trans_id" tabindex="13">
-                                </div>
-                            </div> -->
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <button name="submit_expenses_creation" id="submit_expenses_creation" class="btn btn-primary" tabindex="14" style="margin-top: 18px;"><span class="icon-check"></span>&nbsp;Submit</button>
@@ -492,26 +674,14 @@ function moneyFormatIndia($num1) {
             <div class="modal-body">
                 <div class="container-fluid">
                     <form id="other_transaction_form">
-                        
+
                         <div class="row">
                             <div class="col-sm-1 col-md-1 col-lg-1"></div>
                             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
                                 <div class="form-group">
-                                    <input type="radio" id="othertransaction_hand_cash" name="othertransaction_cash_type" tabindex="2" value='1'/>&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
+                                    <input type="radio" id="othertransaction_hand_cash" name="othertransaction_cash_type" tabindex="2" value='1' />&emsp;<label class='radio-style'>Hand Cash</label>&emsp;
                                 </div>
                             </div>
-                            <!-- <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
-                                <div class="form-group">
-                                    <input type="radio" id="othertransaction_bank_cash" name="othertransaction_cash_type" tabindex="3" value='2'/>&emsp;<label class='radio-style'>Bank Cash</label>&emsp;
-                                </div>
-                            </div> -->
-                            <!-- <div class="col-sm-3 col-md-3 col-lg-3">
-                                <div class="form-group">
-                                    <select class="form-control" name="othertransaction_bank_name" id="othertransaction_bank_name" tabindex="4" disabled>
-                                        <option value="">Select Bank Name</option>
-                                    </select>
-                                </div>
-                            </div> -->
                         </div></br>
 
                         <div class="row">
@@ -561,7 +731,7 @@ function moneyFormatIndia($num1) {
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 other_trans_div" style="display: none;">
                                 <div class="form-group">
                                     <label for="other_trans_id">Transaction ID</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" name="other_trans_id" id="other_trans_id" tabindex="10" >
+                                    <input type="number" class="form-control" name="other_trans_id" id="other_trans_id" tabindex="10">
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
@@ -625,7 +795,7 @@ function moneyFormatIndia($num1) {
         <div class="modal-content" style="background-color: white">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Add Name</h5>
-                <button type="button" class="close name_close" data-dismiss="modal" tabindex="1" >
+                <button type="button" class="close name_close" data-dismiss="modal" tabindex="1">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -679,7 +849,7 @@ function moneyFormatIndia($num1) {
 
 <!-- /////////////////////////////////////////////////////////////////// Balance Sheet Modal START ////////////////////////////////////////////////////////////////////// -->
 <div class="modal fade blncModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    
+
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="background-color: white">
             <div class="modal-header">
@@ -688,54 +858,48 @@ function moneyFormatIndia($num1) {
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-			
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="row">
-							<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
-								<div class="form-group">
-									<label for='IDE_type'>Balance Sheet type</label>
-									<select class="form-control" id='IDE_type' name='IDE_type' >
-										<option value=''>Select Sheet type</option>
-										<option value='1'>Deposit</option>
-										<option value='3'>EL</option>
-										<option value='4'>Exchange</option>
-									</select>
-								</div>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12" >
-								<div class="form-group">
-									<label for='IDE_view_type'>View</label>
-									<select class="form-control" id='IDE_view_type' name='IDE_view_type' >
-										<option value=''>Select Sheet type</option>
-										<option value='1'>Overall</option>
-										<option value='2'>Individual</option>
-									</select>
-								</div>
-							</div>
-							<div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 IDE_nameDiv" style="display:none">
-								<div class="form-group">
-									<label for='IDE_name_list'>Name</label>
-									<select class="form-control" id='IDE_name_list' name='IDE_name_list' >
-										<option value=''>Select Name</option>
-									</select>
-								</div>
-							</div>
-							<!-- <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 IDE_nameDiv" style="display:none">
-								<div class="form-group">
-									<label for='IDE_name_area'>Area</label>
-									<input type='text' class="form-control" id='IDE_name_area' name='IDE_name_area' readonly placeholder='Please Select Name'>
-								</div>
-							</div> -->
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-body">
-				<div id="blncSheetDiv">
-				</div>
-			</div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+                                <div class="form-group">
+                                    <label for='IDE_type'>Balance Sheet type</label>
+                                    <select class="form-control" id='IDE_type' name='IDE_type'>
+                                        <option value=''>Select Sheet type</option>
+                                        <option value='1'>Deposit</option>
+                                        <option value='3'>EL</option>
+                                        <option value='4'>Exchange</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+                                <div class="form-group">
+                                    <label for='IDE_view_type'>View</label>
+                                    <select class="form-control" id='IDE_view_type' name='IDE_view_type'>
+                                        <option value=''>Select Sheet type</option>
+                                        <option value='1'>Overall</option>
+                                        <option value='2'>Individual</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 IDE_nameDiv" style="display:none">
+                                <div class="form-group">
+                                    <label for='IDE_name_list'>Name</label>
+                                    <select class="form-control" id='IDE_name_list' name='IDE_name_list'>
+                                        <option value=''>Select Name</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="blncSheetDiv">
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" id='' data-dismiss="modal" onclick="resetBlncSheet()">Close</button>
             </div>
@@ -743,78 +907,29 @@ function moneyFormatIndia($num1) {
     </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////// Balance Sheet Modal END ////////////////////////////////////////////////////////////////////// -->
- 
-<!-- /////////////////////////////////////////////////////////////////// savings Sheet Modal START ////////////////////////////////////////////////////////////////////// -->
-<div class="modal fade" id="add_savings_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+<div class="modal fade" id="cntr_bsd_cus_savings" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content" style="background-color: white">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add Savings</h5>
-                <button type="button" class="close exp-clse" data-dismiss="modal" tabindex="1" aria-label="Close">
+                <h5 class="modal-title" id="exampleModalLongTitle">Centre List</h5>
+                <button type="button" class="close cus-clse" data-dismiss="modal" tabindex="1" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="container-fluid">
-                    <form id="savings_form">
-                        
-
-                        <div class="row">
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="aadhar_number">Aadhar Number</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="aadhar_number" id="aadhar_number" tabindex="1" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="cus_id">Customer ID</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="cus_id" id="cus_id" tabindex="2" placeholder="Customer ID" readonly>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="cus_name">Customer Name</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="cus_name" id="cus_name" tabindex="3" placeholder="Customer Name" readonly>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="savings_amnt">Amount</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" name="savings_amnt" id="savings_amnt" tabindex="4">
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="catType">Type</label><span class="text-danger">*</span>
-                                    <select class="form-control" name="catType" id="catType" tabindex="5">
-                                        <option value="">Select Type</option>
-                                        <option value="1">Credit</option>
-                                        <option value="2">Debit</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <button name="submit_savings_creation" id="submit_savings_creation" class="btn btn-primary" tabindex="6" style="margin-top: 18px;"><span class="icon-check"></span>&nbsp;Submit</button>
-                                    <button type="reset" id="clear_savings_form" class="btn btn-outline-secondary" style="margin-top: 18px;" tabindex="7">Clear</button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
                 <div class="row">
-                    <div class="col-12 overflow-x-cls">
-                        <table id="customer_savings_table_list" class="table custom-table">
+                    <div class="col-12 overflow-x-cls" id="customer_savings_centre_list">
+                        <!-- <table id="customer_savings_table_list" class="table custom-table"> -->
+                        <table id="" class="table custom-table">
                             <thead>
-                            <tr><th>S.NO</th>
-                                    <th>Customer ID</th>
-                                    <th>Customer Name</th>
-                                    <th>Aadhar Number</th>
-                                    <th>Amount</th>
-                                    <th>Action</th>
+                                <tr>
+                                    <th width='20'> S.No </th>
+                                    <th> Centre ID </th>
+                                    <th>Centre Name</th>
+                                    <th>Centre Number</th>
+                                    <th> Total Savings </th>
+                                    <th> Action </th>
                                 </tr>
                             </thead>
                             <tbody> </tbody>
@@ -823,19 +938,19 @@ function moneyFormatIndia($num1) {
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary sav-clse" data-dismiss="modal" tabindex="8">Close</button>
+                <button class="btn btn-secondary cus-savings" data-dismiss="modal" tabindex="8">Close</button>
             </div>
         </div>
     </div>
 </div>
 <!-- /////////////////////////////////////////////////////////////////// savings Sheet Modal END ////////////////////////////////////////////////////////////////////// -->
- <!-- ////////////////////////////////////////////////////////////////// Savings Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
+<!-- ////////////////////////////////////////////////////////////////// Savings Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
 <div class="modal fade" id="Savings_chart_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg " role="document">
         <div class="modal-content" style="background-color: white">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Savings Chart</h5>
-                <button type="button" class="close" data-dismiss="modal" tabindex="1" aria-label="Close" onclick="closeChartsModal()">
+                <button type="button" class="close savings_chart_back" data-dismiss="modal" tabindex="1" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -852,7 +967,7 @@ function moneyFormatIndia($num1) {
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-secondary" data-dismiss="modal" onclick="closeChartsModal()" tabindex="4">Close</button>
+                <button class="btn btn-secondary savings_chart_back" data-dismiss="modal" tabindex="4">Back</button>
             </div>
         </div>
     </div>

@@ -37,6 +37,7 @@ function moneyFormatIndia($num)
 
         <?php
         $cus_id = $_POST['cus_id'];
+        $centre_id = $_POST['centre_id'];
         $run = $pdo->query("SELECT cs.id, cs.cus_id, cs.paid_date, cs.credit_debit, cs.savings_amount,
        ( SELECT GREATEST(
                     SUM(
@@ -49,12 +50,14 @@ function moneyFormatIndia($num)
                 )
          FROM customer_savings cs2
          WHERE cs2.cus_id = cs.cus_id
+           AND cs2.centre_id = cs.centre_id  
            AND (cs2.paid_date < cs.paid_date 
-                OR (cs2.paid_date = cs.paid_date AND cs2.id < cs.id))
+                OR (cs2.paid_date = cs.paid_date AND cs2.id <= cs.id))
        ) AS total_savings
-        FROM customer_savings cs
-        WHERE cs.cus_id = '$cus_id'
-        ORDER BY cs.paid_date, cs.id;");
+FROM customer_savings cs
+WHERE cs.cus_id = '$cus_id ' AND cs.centre_id = '$centre_id'
+ORDER BY cs.paid_date, cs.id;
+");
 
         $i = 1;
         $totalsavings = 0;
@@ -78,9 +81,3 @@ function moneyFormatIndia($num)
 
 </tbody>
 </table>
-
-<script type="text/javascript">
-    $(function() {
-        setdtable('#savingsListTable');
-    });
-</script>
