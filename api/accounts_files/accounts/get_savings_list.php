@@ -4,17 +4,29 @@ require "../../../ajaxconfig.php";
 $user_id = $_SESSION['user_id'];
 $current_date = date('Y-m-d');
 
-$cash_type = ["1" => 'Hand Cash', "2" => 'Bank Cash'];
 $crdr = ["1" => 'Credit', "2" => 'Debit'];
 $trans_list_arr = array();
-$qry = $pdo->query("SELECT cus_id,id,cus_name , aadhar_num, SUM(CASE WHEN credit_debit = 1 THEN savings_amount ELSE 0 END) AS total_credit, SUM(CASE WHEN credit_debit = 2 THEN savings_amount ELSE 0 END) AS total_debit
-    FROM customer_savings GROUP BY cus_id");
+$qry = $pdo->query("SELECT 
+    cus_id,
+    MIN(id) AS id,
+    MIN(cus_name) AS cus_name,
+    MIN(aadhar_num) AS aadhar_num,
+    SUM(CASE WHEN credit_debit = 1 THEN savings_amount ELSE 0 END) AS total_credit,
+    SUM(CASE WHEN credit_debit = 2 THEN savings_amount ELSE 0 END) AS total_debit
+FROM 
+    customer_savings
+GROUP BY 
+    cus_id
+HAVING 
+    SUM(CASE WHEN credit_debit = 1 THEN savings_amount ELSE 0 END) -
+    SUM(CASE WHEN credit_debit = 2 THEN savings_amount ELSE 0 END) > 0 ");
+    
 if ($qry->rowCount() > 0) {
     while ($result = $qry->fetch()) {
         $result['total_credit'] = (int)$result['total_credit'];
         $result['total_debit'] = (int)$result['total_debit'];
         $result['balance'] = moneyFormatIndia($result['total_credit'] - $result['total_debit']);
-        $result['action'] = "<button class='btn btn-primary Savings-chart' value='" . $result['cus_id'] . "'> Savings Chart </button>";
+        $result['action'] = "<button class='btn btn-primary View_centre' value='" . $result['cus_id'] . "'> View </button>";
         $trans_list_arr[] = $result;
     }
 }

@@ -724,3 +724,32 @@
         </div>
     </div>
 </div>
+<!-- ////////////////////////////////////////////////////////////////// Savings Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
+<div class="modal fade" id="Savings_chart_model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg " role="document">
+        <div class="modal-content" style="background-color: white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Savings Chart</h5>
+                <button type="button" class="close savings_chart_back" data-dismiss="modal" tabindex="1" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body overflow-x-cls" id="savings_chart_table_div">
+                <table class="table custom-table">
+                    <thead>
+                        <th>S No.</th>
+                        <th>Date</th>
+                        <th>Credit / Debit</th>
+                        <th>Savings</th>
+                        <th>Total Savings</th>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary savings_chart_back" data-dismiss="modal" tabindex="2">Back</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /////////////////////////////////////////////////////////////////// Savings Chart Modal END ////////////////////////////////////////////////////////////////////// -->

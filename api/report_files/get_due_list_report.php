@@ -173,10 +173,8 @@ foreach ($result as $row) {
             $start = strtotime($row['due_start']);
             $payable_diff = (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start)) + 1;
 
-            $pending_diff = (date('Y', $end) - date('Y', $start)) * 12 + (date('m', $end) - date('m', $start));
-                if (date('d', $end) >= date('d', $start) && date('m', $end) != date('m', $start)) {
-                     $pending_diff += 1;
-                    }
+            $pending_diff = $payable_diff;
+                
         
         } else {
                 $start = strtotime($row['due_start']);
@@ -195,8 +193,7 @@ foreach ($result as $row) {
                 $days = ($end - $start) / (60 * 60 * 24); // Convert seconds to days
                 $payable_diff = intdiv($days, 7) + (($days % 7) >= 0 ? 1 : 0); // Include partial weeks
 
-                $pending_week = max(($payable_diff - 1), 0);
-                $pending_diff = $due_amount * $pending_week;
+                $pending_week = $payable_diff;
             } else {
         // Not yet matured; count till current date (or $to_date)
                 $start = strtotime($row['due_start']);
@@ -206,7 +203,6 @@ foreach ($result as $row) {
                 $payable_diff = intdiv($days, 7) + (($days % 7) >= 0 ? 1 : 0); // Include partial weeks
 
                 $pending_week = max(($payable_diff - 1), 0);
-                $pending_diff = $due_amount * $pending_week;
             }
         }
 

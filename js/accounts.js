@@ -16,13 +16,117 @@ $(document).ready(function(){
         }
         else if (accountsType == '5') { //Other Transaction
             $('#coll_card').hide(); $('#loan_issued_card').hide(); $('#expenses_card').hide(); $('#other_transaction_card').hide();$('#customer_savings_card').show();
-            savingsTable('#customer_savings_table');
+            $("input[name='savings_type'][value='1']").prop('checked', true).trigger('click');
         }
+    });
+
+    $('input[name=savings_type]').click(function () {
+        let savings_type = $(this).val();
+        if(savings_type === '1'){
+            savingsTable('#customer_savings_table');
+            getCentreId();
+            $('.Customer_based').show();
+            $('.centre_based').hide();
+        }else if(savings_type === '2'){
+            $(".centre_based_div").show();
+            $("#customer_details_div").hide();
+            centrelist("")
+            $('.Customer_based').hide();
+            $('.centre_based').show();
+        }
+    });
+  
+    $(document).on('click', '.View_centre', function (e) {
+        console.log("hlo");
+        $('#cntr_bsd_cus_savings').modal('show');
+        let cus_id = $(this).val();
+        centrelist(cus_id);
+    });
+
+    $(document).on('click', '.centre_info_back', function (e) {
+        $(".centre_based_div").show();
+        $("#customer_details_div").hide();
+    });
+
+    $(document).on('click', '#submit_savings', function (e) {
+        let centre_id=$('#centreId').val();
+        let savingsData = [];
+        $('.customer_list tbody tr').each(function () {
+                var row = $(this); // Get current row
+                // let balance_amount = row.find('td:nth-child(6)').text();
+                let aadhar_num = row.find('td:nth-child(11)').text();
+                let cus_id = row.find('td:nth-child(2)').text();
+                let cus_name = row.find('td:nth-child(3)').text();
+                let credit_debit = row.find('select.credit_debit').val();
+                // let savings_amount = row.find('input.savings_amount').val();
+                let balance_amount = parseFloat(row.find('td:nth-child(6)').text()) || 0;
+                let savings_amount = parseFloat(row.find('input.savings_amount').val()) || 0;
+
+
+                if (!savings_amount || isNaN(savings_amount) || savings_amount <= 0) {
+                    return; // Continue to next row
+                }
+
+                if (!credit_debit) {
+                    return; // Continue to next row
+                }
+                 
+                if (credit_debit === "2" && savings_amount > balance_amount) {
+                    return; // Continue to next row
+                }
+
+                savingsData.push({
+                    credit_debit: credit_debit,
+                    savings_amount: savings_amount,
+                    aadhar_num: aadhar_num,
+                    cus_id: cus_id,
+                    cus_name: cus_name
+                });   
+            });
+        if(savingsData.length > 0){
+            $.ajax({
+                url: 'api/accounts_files/accounts/submit_savings.php',
+                method: 'POST',
+                data: {
+                    centre_id: centre_id,
+                    savingsData: savingsData
+                },
+                success: function (response) {
+                    response = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (response == 1) {
+                        swalSuccess('Success', "Savings Added Successfully");
+                        centreBasedCusList(centre_id)
+                    } else {
+                        swalError('Warning', 'Failed to save the collection details');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error: ' + status + error);
+                }
+            });
+
+        }else{
+            swalError('Warning', 'Please Fill The Savings Details ');
+        }
+    });
+
+    $(document).on('click', '.savings_chart_back', function (e) {
+        let value=$('#savings_chart_hidden_id').val();
+                $('#Savings_chart_model').modal('hide'); // Show the modal
+            if(value === '1'){
+                $('#cntr_bsd_cus_savings').modal('show');
+            }   
+    });
+
+    $(document).on('click', '.centre_view', function (e) {
+        $("#customer_details_div").show();
+        $(".centre_based_div").hide();
+        let centre_id = $(this).val();
+        centreBasedCusList(centre_id);
     });
 
     $("input[name='coll_cash_type']").click(function(){
         let collCashType = $(this).val();
-
         if (collCashType == '2') {
             $('#coll_bank_name').val('').attr('disabled', false);
             $('#accounts_collection_table').DataTable().destroy();
@@ -53,7 +157,6 @@ $(document).ready(function(){
     
     $("input[name='issue_cash_type']").click(function(){
         let collCashType = $(this).val();
-
         if (collCashType == '2') {
             $('#issue_bank_name').val('').attr('disabled', false);
             $('#accounts_loanissue_table').DataTable().destroy();
@@ -69,20 +172,13 @@ $(document).ready(function(){
     });
 
     $('#expenses_add').click(function(){
-        // getBankName('#expenses_bank_name');
         getInvoiceNo();
         getBranchList();
         expensesTable('#expenses_creation_table');
     });
-    $('#savings_add').click(function(){
-        // getInvoiceID();
-        savingsTable('#customer_savings_table_list');
-    });
     
     $("input[name='expenses_cash_type']").click(function(){
         let expCashType = $(this).val();
-        // $('#expenses_trans_id').val('');
-
         if (expCashType == '2') {
             $('#expenses_bank_name').val('').attr('disabled', false);
             $('.exp_trans_div').show();
@@ -150,11 +246,10 @@ $(document).ready(function(){
     $(document).on('click', '.exp-clse', function(){
         expensesTable('#accounts_expenses_table');
     });
-    $(document).on('click', '.sav-clse, .exp-clse', function(){
-        savingsTable('#customer_savings_table');
+
+    $(document).on('click', '.cus-savings ,.cus-clse', function(){
+        $('#cntr_bsd_cus_savings').modal('hide');
     });
-
-
     
     $('#other_trans_add').click(function(){
         otherTransTable('#other_transaction_table');
@@ -256,7 +351,6 @@ $(document).ready(function(){
             'cat_type' : $('#cat_type :selected').val(),
             'other_ref_id' : $('#other_ref_id').val(),
             'other_trans_id' : $('#other_trans_id').val(),
-            // 'other_user_name' : $('#other_user_name :selected').val(),
             'other_amnt' : $('#other_amnt').val(),
             'other_remark' : $('#other_remark').val()
         }
@@ -340,18 +434,21 @@ $(document).ready(function(){
             });
         }, 'json');
     });
+
     $("#aadhar_number").on("blur", function () {
         let aadhar_number = $("#aadhar_number").val().trim().replace(/\s/g, "");
         existingCustmerProfile(aadhar_number);
     });
+
     $('#submit_savings_creation').click(function(event){
         event.preventDefault();
+        let centre_id = $('#centre_id').val();
         let cus_id = $('#cus_id').val();
         let cat_type =  $('#catType').val();
         let aadhar_num = $('#aadhar_number').val().replace(/\D/g, "");
         let savings_amount = $('#savings_amnt').val();
         let cus_name = $('#cus_name').val();
-       getCusPreAmt(cus_id, function(amounts, error) {
+       getCusPreAmt(cus_id, centre_id, function(amounts, error) {
         if (error) {
             alert(error); // or use Swal.fire(error); for SweetAlert
             return;
@@ -367,6 +464,7 @@ $(document).ready(function(){
         let savingsData = {
             'aadhar_number' : aadhar_num ,
             'cus_id' : cus_id,
+            'centre_id' : centre_id,
             'savings_amnt' : savings_amount,
             'cat_type' : cat_type,
             'cus_name' : cus_name
@@ -376,7 +474,7 @@ $(document).ready(function(){
             $.post('api/accounts_files/accounts/submit_savings.php', savingsData, function (response) {
                 if (response == '1') {
                     swalSuccess('Success', 'Savings added successfully.');
-                    savingsTable('#customer_savings_table_list');
+                    savingsTable('#customer_savings_table');
                     // getInvoiceID()
                     getClosingBal();
                 } else {
@@ -394,11 +492,23 @@ $(document).ready(function(){
         let id = $(this).attr('value');
         swalConfirm('Delete', 'Are you sure you want to delete this Other Transaction?', deleteTrans, id);
     });
-     $(document).on('click', '.Savings-chart', function (e) {
+
+    $(document).on('click', '.Savings-chart, #Savings-chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
-        var cus_id = $(this).attr('value'); // Capture data-id from the clicked element
-        $('#Savings_chart_model').modal('show'); // Show the modal
-        savingsChartList(cus_id);
+    
+    // Set hidden value based on the clicked element
+        if ($(this).hasClass('Savings-chart')) {
+            $('#savings_chart_hidden_id').val('1');
+        } else if ($(this).attr('id') === 'Savings-chart') {
+            $('#savings_chart_hidden_id').val('2');
+        }
+        var cus_id = $(this).attr('value');
+        var centre_id = $(this).attr('centre_id');
+
+        $('#Savings_chart_model').modal('show');
+        $('#cntr_bsd_cus_savings').modal('hide');
+
+        savingsChartList(cus_id, centre_id);
     });
 
     //Balance sheet
@@ -458,6 +568,7 @@ $(function(){
     getOpeningBal();
     getAccountAccess();
 });
+
 function getAccountAccess() {
     $.post('api/accounts_files/accounts/account_access.php', function(response) {
         if (Array.isArray(response) && response.length > 0) {
@@ -737,6 +848,7 @@ function clearsavingsForm(){
     $('#savings_amnt').val('');
     $('#catType').val('');
     $('#cus_name').val('');
+    $('#centre_id').val('');
 }
 
 function deleteTrans(id) {
@@ -792,6 +904,7 @@ function resetBlncSheet() {
     $('#IDE_view_type').val('');
     $('#IDE_name_list').val('');
 }
+
 function Savingsvalidation(data){
     for(key in data){
         if(data[key] =='' || data[key] ==null || data[key] ==undefined){
@@ -800,6 +913,7 @@ function Savingsvalidation(data){
     }
     return true;
 }
+
 function existingCustmerProfile(aadhar_number) {
   $.post(
     "api/customer_creation_files/customer_profile_existing.php",
@@ -816,10 +930,10 @@ function existingCustmerProfile(aadhar_number) {
     },
   "json" )
 }
-function getCusPreAmt(cus_id, callback) {
-  $.post(
-    "api/accounts_files/accounts/get_customer_debit_credit.php",
-    { cus_id },
+
+function getCusPreAmt(cus_id, centre_id,callback) {
+  $.post("api/accounts_files/accounts/get_customer_debit_credit.php",
+    { cus_id ,centre_id },
     function (response) {
       if (response === 0) {
         // Indicates an error
@@ -836,10 +950,11 @@ function getCusPreAmt(cus_id, callback) {
     callback(null, "Server error occurred.");
   });
 }
-function savingsChartList(cus_id) {
+
+function savingsChartList(cus_id,centre_id) {
     $.ajax({
         url: 'api/collection_files/get_savings_chart_list.php',
-        data: { 'cus_id': cus_id },
+        data: { 'cus_id': cus_id , 'centre_id':centre_id },
         type: 'post',
         cache: false,
         success: function (response) {
@@ -848,8 +963,91 @@ function savingsChartList(cus_id) {
         }
     });//Ajax End.
 }
-function closeChartsModal() {
-    $('#due_chart_model').modal('hide');
-    $('#Savings_chart_model').modal('hide');
-    $('#fine_model').modal('hide');
+function centrelist(cus_id) {
+    $.ajax({
+        url: 'api/accounts_files/accounts/get_centre_list.php',
+        data: { 'cus_id': cus_id },
+        type: 'post',
+        cache: false,
+        success: function (response) {
+            if(cus_id !=""){
+            $('#customer_savings_centre_list').empty()
+            $('#customer_savings_centre_list').html(response)
+            }else{
+                $('#centre_based_table').empty()
+            $('#centre_based_table').html(response)
+            }
+           
+        }
+    });//Ajax End.
+}
+
+function getCentreId(){
+    $.post('api/accounts_files/accounts/get_centre_id.php'," ",function(response){
+        let centre_id='';
+            centre_id +="<option value=''>Select Centre ID</option>";
+            $.each(response, function(index, val){
+                centre_id += "<option value='"+val.centre_id+"'>"+val.centre_id+"</option>";
+            });
+        $('#centre_id').empty().append(centre_id);
+    },'json');
+}
+
+function centreBasedCusList(centre_id){
+     $.ajax({
+        url: 'api/accounts_files/accounts/get_centre_based_cus_list.php',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            centre_id: centre_id,
+        },
+        success: function (response) {
+            var tbody = $('.customer_list tbody');
+            tbody.empty();
+            $("#centreId").val(response[0].centre_id);
+            $("#centre_no").val(response[0].centre_no);
+            $("#centre_name").val(response[0].centre_name);
+            $("#mobile1").val(response[0].mobile1);
+            $("#mobile2").val(response[0].mobile2);
+            $("#area").val(response[0].areaname);
+            $("#branch").val(response[0].branch_name);
+            $("#latlong").val(response[0].latlong);
+            var hasRows = false;
+            var serialNo = 1;
+            $.each(response, function (index, item) {
+                var formattedDate = '';
+                var currentDate = new Date();
+                var day = ("0" + currentDate.getDate()).slice(-2); // Get day and pad with 0 if needed
+                var month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // Get month and pad with 0 if needed
+                var year = currentDate.getFullYear(); // Get the year
+                var formattedDate = day + '-' + month + '-' + year; // Format as dd-mm-yyyy
+
+               var dropdownSelect = "<select class='form-control credit_debit'>" +
+                                    "<option value=''>Select Credit / Debit</option>" +
+                                    "<option value='1'>Credit</option>" +
+                                    "<option value='2'>Debit</option>" +
+                                    "</select>";
+                var action = "<button class='btn btn-primary' id='Savings-chart' value='" + item.cus_id + "'  centre_id='" + item.centre_id + "'>Savings Chart</button>";
+
+
+                var row = '<tr>' +
+                    '<td>' + serialNo  + '</td>' +
+                    '<td>' + item.cus_id + '</td>' +
+                    '<td>' + item.first_name + '</td>' +
+                    '<td>' + item.total_credit + '</td>' +
+                    '<td>' + item.total_debit + '</td>' +
+                    '<td>' + item.balance + '</td>' +
+                    '<td>' + formattedDate + '</td>' +
+                    '<td>' + dropdownSelect + '</td>' +
+                    '<td><input type="number" class="form-control savings_amount"></td>' +
+                    '<td>' + action + '</td>' +
+                    '<td style="display:none">' + item.aadhar_number + '</td>' +
+                    '</tr>';
+
+                tbody.append(row);
+                serialNo++;
+                hasRows = true;
+            })
+            }
+        })
 }

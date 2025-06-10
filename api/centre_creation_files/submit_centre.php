@@ -34,7 +34,16 @@ if ($centre_create_id != '') {
     $qry = $pdo->query("UPDATE `centre_creation` SET `centre_id`='$centre_id', `centre_no`='$centre_no',`centre_name`='$centre_name', `mobile1`='$mobile1', `mobile2`='$mobile2', `area`='$area', `branch`='$branch',`latlong`='$latlong', `pic`='$picture',`update_login_id`='$user_id', updated_on = '$current_date' WHERE `id`='$centre_create_id'");
     $result = 0; // Update
 } else {
-    $qry = $pdo->query("INSERT INTO `centre_creation`(`centre_id`, `centre_no`,`centre_name`,`mobile1`, `mobile2`, `area`, `branch`,`latlong`,`pic`, `insert_login_id`, `created_on`) VALUES ('$centre_id', '$centre_no','$centre_name','$mobile1', '$mobile2', '$area', '$branch','$latlong', '$picture', '$user_id', '$current_date')");
+      $qry = $pdo->query("SELECT centre_id FROM centre_creation WHERE centre_id !='' ORDER BY id DESC ");
+    if ($qry->rowCount() > 0) {
+        $qry_info = $qry->fetch(); //LID-101
+        $l_no = ltrim(strstr($qry_info['centre_id'], '-'), '-'); 
+        $l_no = $l_no+1;
+        $cus_ID_final = "M-"."$l_no";
+    } else {
+        $cus_ID_final = "M-" . "101";
+    }
+    $qry = $pdo->query("INSERT INTO `centre_creation`(`centre_id`, `centre_no`,`centre_name`,`mobile1`, `mobile2`, `area`, `branch`,`latlong`,`pic`, `insert_login_id`, `created_on`) VALUES ('$cus_ID_final', '$centre_no','$centre_name','$mobile1', '$mobile2', '$area', '$branch','$latlong', '$picture', '$user_id', '$current_date')");
     $result = 1; // Insert
 }
 

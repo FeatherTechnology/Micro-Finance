@@ -21,7 +21,7 @@ $column = array(
     'lelc.id',
     'lelc.id'
 );
-$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, bc.branch_name,lelc.loan_status,lelc.loan_amount,lcm.id
+$query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_no, cc.centre_name, bc.branch_name,lelc.loan_status,lelc.loan_amount,lcm.id,c.cus_id
           FROM loan_entry_loan_calculation lelc
           LEFT JOIN loan_category_creation lcc ON lelc.loan_category = lcc.id
           LEFT JOIN loan_category lc ON lcc.loan_category = lc.id
@@ -31,7 +31,7 @@ $query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_
           LEFT JOIN branch_creation bc ON cc.branch = bc.id
  	JOIN users us ON FIND_IN_SET(lelc.loan_category, us.loan_category)
     WHERE us.id = '$user_id' 
-  AND (CURDATE() > lelc.due_end OR lelc.loan_status >= 8) AND c.cus_id='$cus_id'";
+  AND (CURDATE() > lelc.due_end OR lelc.loan_status >= 8) AND c.cus_id = '$cus_id'";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];
@@ -101,7 +101,13 @@ foreach ($result as $row) {
     $sub_array[] = $centre_status;
     $sub_array[] = $collection_status;
     $sub_array[] = $status;
-    $sub_array[] = "<button class='btn btn-primary closed_due_chart' value='" . $row['id'] . "'  loan_id='" . $row['loan_id'] . "'>&nbsp;Due Chart</button>";
+     $action = "<div class='dropdown'>
+    <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
+    <div class='dropdown-content'>
+    <a href='#' class='due_chart' value='" . $row['id'] . "' loan_id='" . $row['loan_id'] . "'>Due Chart</a>
+    <a href='#' class='savings_chart' value='" . $row['cus_id'] . "' centre_id='" . $row['centre_id'] . "'>Savings Chart</a>
+    </div></div>";
+    $sub_array[] = $action;
     $data[] = $sub_array;
 }
 function count_all_data($pdo)

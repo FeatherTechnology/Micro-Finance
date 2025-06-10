@@ -16,7 +16,7 @@
                                     <div class="col-md-4 col-sm-6">
                                         <div class="form-group">
                                             <label for="aadhar_no">Aadhar Number</label><span class="text-danger">*</span>
-                                            <input type="number" class="form-control" id="aadhar_no" name="aadhar_no" placeholder="Enter Aadhar Number" tabindex="1" maxlength="12">
+                                            <input type="text" class="form-control" name="aadhar_no" id="aadhar_no" tabindex="1" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-6">
@@ -61,10 +61,6 @@
             </form>
         </div>
 
-
-
-
-
         <div id="search_content" style="display: none;">
             <br>
             <div class="radio-container">
@@ -79,10 +75,7 @@
                     </div>
                 </div>
             </div>
-
-
             <br>
-
 
             <div class="card" id="custome_list_content" style="display:none">
                 <div class="card-header">
@@ -109,7 +102,6 @@
 
             </div>
 
-
             <div class="card" id="centre_list_content" style="display:none">
                 <div class="card-header">
                     <h5 class="card-title">Centre List</h5>
@@ -135,7 +127,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <div class="card" id="customer_loan_content" style="display:none">
@@ -178,13 +169,10 @@
                 </table>
             </div>
         </div>
-
-
-
-
     </div>
 </div>
 <div id="printcollection" style="display: none"></div>
+
 <!-- /////////////////////////////////////////////////////////////////// Due Chart Modal Start ////////////////////////////////////////////////////////////////////// -->
 <div class="modal fade bd-example-modal-lg" id="due_chart_model" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg " role="document" style="max-width: 70% !important">
