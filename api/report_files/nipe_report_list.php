@@ -71,7 +71,7 @@ LEFT JOIN (
     GROUP BY loan_id, cus_mapping_id
 ) col ON col.loan_id = lelc.loan_id AND col.cus_mapping_id = lcm.id
 WHERE li.issue_date <= '$search_date'
-and lelc.due_month ='$due_type' and lcm.cus_status= 12  GROUP by lcm.id ";
+and lelc.due_month ='$due_type' and lcm.cus_status = 12  GROUP by lcm.id ";
 
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {

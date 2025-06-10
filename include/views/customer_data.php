@@ -747,7 +747,7 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-secondary savings_chart_back" data-dismiss="modal" tabindex="4">Back</button>
+                <button class="btn btn-secondary savings_chart_back" data-dismiss="modal" tabindex="2">Back</button>
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@ $(document).ready(function () {
     $(".document_table_content").hide();
     getcustomerlist();
   });
+  
     $(document).on('click', '.savings_chart_back', function (e) {
       $('#Savings_chart_model').modal('hide'); // Show the modal
     });
@@ -27,9 +28,9 @@ $(document).ready(function () {
 
         savingsChartList(cus_id, centre_id);
     });
+
   $("input[name=customer_data]").click(function () {
     let customerDataType = $(this).val();
-
     if (customerDataType == "customer_info") {
       let cus_id = $("#cus_id_upd").val();
       $(".customer_info_table_content").show();
@@ -53,6 +54,7 @@ $(document).ready(function () {
       addDocumentation();
     }
   });
+
   $(document).on("click", ".customerActionBtn", function () {
     var cus_id = $(this).attr("value");
     $("#cus_id_upd").val(cus_id);
@@ -63,10 +65,9 @@ $(document).ready(function () {
        $("#customer_info").trigger("click");
     getCustomerDetails(cus_id);
   });
+
   $("#submit_cus_creation").click(function (event) {
     event.preventDefault();
-
-    // Validation
 
     let cus_id = $("#cus_id").val();
     let aadhar_number = $("#aadhar_number").val().replace(/\s/g, "");
@@ -159,6 +160,7 @@ $(document).ready(function () {
       });
     }
   });
+
   $("#submit_family").click(function (event) {
     event.preventDefault();
     // Validation
@@ -206,6 +208,7 @@ $(document).ready(function () {
       );
     }
   });
+
   $(document).on("click", ".familyActionBtn", function () {
     var id = $(this).attr("value"); // Get value attribute
     $.post(
@@ -234,6 +237,7 @@ $(document).ready(function () {
     );
     return;
   });
+
   $("#dob").on("change", function () {
     var dob = new Date($(this).val());
     var today = new Date();
@@ -244,6 +248,7 @@ $(document).ready(function () {
     }
     $("#age").val(age);
   });
+  
   $('input[name="mobile_whatsapp"]').on("change", function () {
     let selectedValue = $(this).val();
     let mobileNumber;
@@ -256,12 +261,14 @@ $(document).ready(function () {
 
     $("#whatsapp").val(mobileNumber);
   });
+
   $("#pic").change(function () {
     let pic = $("#pic")[0];
     let img = $("#imgshow");
     img.attr("src", URL.createObjectURL(pic.files[0]));
     checkInputFileSize(this, 200, img);
   });
+
   $('input[data-type="adhaar-number"]').keyup(function () {
     var value = $(this).val();
     value = value
@@ -279,9 +286,11 @@ $(document).ready(function () {
       swalError("Warning", "Kindly Enter Valid Aadhaar Number");
     }
   });
+
   $("#mobile1, #mobile2, #whatsapp, #fam_mobile").change(function () {
     checkMobileNo($(this).val(), $(this).attr("id"));
   });
+
   $("#clear_fam_form").click(function (event) {
     event.preventDefault();
     $("#family_id").val("");
@@ -307,34 +316,34 @@ $(document).ready(function () {
 
 
     }
-})
-$(document).on("click", ".addDocument", function () {
-  event.preventDefault();
-  var cus_id = $(this).attr("value");
-  $('#documentation_form').show();
-  $('.document_table_content').hide();
-  getDocumentDetails(cus_id);
-  getCustomerList(cus_id);
-  getAutoGenDocId('')
-});
+  })
 
+  $(document).on("click", ".addDocument", function () {
+    event.preventDefault();
+    var cus_id = $(this).attr("value");
+    $('#documentation_form').show();
+    $('.document_table_content').hide();
+    getDocumentDetails(cus_id);
+    getCustomerList(cus_id);
+    getAutoGenDocId('')
+  });
 
-$('#submit_doc_info').click(function (event) {
-  event.preventDefault();
-  let loan_id = $('#loan_id').val();
-  let doc_id = $('#doc_id').val();
-  let customer_name = $('#customer_name').val();
-  let doc_name = $('#doc_name').val();
-  let doc_type = $('#doc_type').val();
-  let doc_count = $('#doc_count').val();
-  let remark = $('#remark').val();
-  let doc_upload = $('#doc_upload')[0].files[0];
-  let doc_upload_edit = $('#doc_upload_edit').val();
+ $('#submit_doc_info').click(function (event) {
+    event.preventDefault();
+    let loan_id = $('#loan_id').val();
+    let doc_id = $('#doc_id').val();
+    let customer_name = $('#customer_name').val();
+    let doc_name = $('#doc_name').val();
+    let doc_type = $('#doc_type').val();
+    let doc_count = $('#doc_count').val();
+    let remark = $('#remark').val();
+    let doc_upload = $('#doc_upload')[0].files[0];
+    let doc_upload_edit = $('#doc_upload_edit').val();
 
-  var data = ['doc_name', 'doc_type', 'doc_id', 'customer_name', 'doc_count']
+    var data = ['doc_name', 'doc_type', 'doc_id', 'customer_name', 'doc_count']
 
-  var isValid = true;
-  data.forEach(function (entry) {
+    var isValid = true;
+    data.forEach(function (entry) {
       var fieldIsValid = validateField($('#' + entry).val(), entry);
       if (!fieldIsValid) {
           isValid = false;
@@ -367,182 +376,185 @@ $('#submit_doc_info').click(function (event) {
                   swalError('Alert', 'Failed')
               }
               $(".addDocument").trigger("click");
-
           }
       });
-  }
-});
-$(document).on('click', '.docDeleteBtn', function () {
-  let id = $(this).attr('value');
-  swalConfirm('Delete', 'Are you sure you want to delete this document?', deleteDocInfo, id);
-});
-$(document).on('click','.due_chart', function(){
-  var cus_mapping_id = $(this).attr('value');
-  var loan_id = $(this).attr('loan_id');
+    }
+  });
+
+  $(document).on('click', '.docDeleteBtn', function () {
+    let id = $(this).attr('value');
+    swalConfirm('Delete', 'Are you sure you want to delete this document?', deleteDocInfo, id);
+  });
+
+  $(document).on('click','.due_chart', function(){
+    var cus_mapping_id = $(this).attr('value');
+    var loan_id = $(this).attr('loan_id');
   
-  $('#due_chart_model').modal('show');
-  dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
-  setTimeout(()=>{
-      $('.print_due_coll').click(function(){
-          var id = $(this).attr('value');
-          Swal.fire({
-              title: 'Print',
-              text: 'Do you want to print this collection?',
-              imageUrl: 'img/printer.png',
-              imageWidth: 300,
-              imageHeight: 210,
-              imageAlt: 'Custom image',
-              showCancelButton: true,
-              confirmButtonColor: '#009688',
-              cancelButtonColor: '#d33',
-              cancelButtonText: 'No',
-              confirmButtonText: 'Yes'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  $.ajax({
-                      url:'api/collection_files/print_collection.php',
-                      data:{'coll_id':id},
-                      type:'post',
-                      cache:false,
-                      success:function(html){
-                          $('#printcollection').html(html)
-                          // Get the content of the div element
-                          var content = $("#printcollection").html();
-                      }
-                  })
-              }
-          })
-      })
-  },1000)
-});
-$(document).on('click','.closed_due_chart', function(){
-  var cus_mapping_id = $(this).attr('value');
-  var loan_id = $(this).attr('loan_id');
-  
-  $('#due_chart_model').modal('show');
-  dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
-  setTimeout(()=>{
-      $('.print_due_coll').click(function(){
-          var id = $(this).attr('value');
-          Swal.fire({
-              title: 'Print',
-              text: 'Do you want to print this collection?',
-              imageUrl: 'img/printer.png',
-              imageWidth: 300,
-              imageHeight: 210,
-              imageAlt: 'Custom image',
-              showCancelButton: true,
-              confirmButtonColor: '#009688',
-              cancelButtonColor: '#d33',
-              cancelButtonText: 'No',
-              confirmButtonText: 'Yes'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  $.ajax({
-                      url:'api/collection_files/print_collection.php',
-                      data:{'coll_id':id},
-                      type:'post',
-                      cache:false,
-                      success:function(html){
-                          $('#printcollection').html(html)
-                          // Get the content of the div element
-                          var content = $("#printcollection").html();
-                      }
-                  })
-              }
-          })
-      })
-  },1000)
-});
+    $('#due_chart_model').modal('show');
+    dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
+    setTimeout(()=>{
+        $('.print_due_coll').click(function(){
+            var id = $(this).attr('value');
+            Swal.fire({
+                title: 'Print',
+                text: 'Do you want to print this collection?',
+                imageUrl: 'img/printer.png',
+                imageWidth: 300,
+                imageHeight: 210,
+                imageAlt: 'Custom image',
+                showCancelButton: true,
+                confirmButtonColor: '#009688',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'No',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url:'api/collection_files/print_collection.php',
+                        data:{'coll_id':id},
+                        type:'post',
+                        cache:false,
+                        success:function(html){
+                            $('#printcollection').html(html)
+                            // Get the content of the div element
+                            var content = $("#printcollection").html();
+                        }
+                    })
+                }
+            })
+        })
+    },1000)
+  });
 
-$(document).on("click", "#cancel_btn", function () {
-  $("#documentation").trigger("click");
+  $(document).on('click','.closed_due_chart', function(){
+    var cus_mapping_id = $(this).attr('value');
+    var loan_id = $(this).attr('loan_id');
+    
+    $('#due_chart_model').modal('show');
+    dueChartList(cus_mapping_id,loan_id); // To show Due Chart List.
+    setTimeout(()=>{
+        $('.print_due_coll').click(function(){
+            var id = $(this).attr('value');
+            Swal.fire({
+                title: 'Print',
+                text: 'Do you want to print this collection?',
+                imageUrl: 'img/printer.png',
+                imageWidth: 300,
+                imageHeight: 210,
+                imageAlt: 'Custom image',
+                showCancelButton: true,
+                confirmButtonColor: '#009688',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'No',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url:'api/collection_files/print_collection.php',
+                        data:{'coll_id':id},
+                        type:'post',
+                        cache:false,
+                        success:function(html){
+                            $('#printcollection').html(html)
+                            // Get the content of the div element
+                            var content = $("#printcollection").html();
+                        }
+                    })
+                }
+            })
+        })
+    },1000)
+  });
 
-})
+  $(document).on("click", "#cancel_btn", function () {
+    $("#documentation").trigger("click");
+  })
 
-$(document).on("click", "#kycInfoBtn", function () {
-  let lable = $("#kyc_lable").val();
-  let Details = $("#kyc_details").val();
-  let upload = $("#upload")[0].files[0];
-  let upload_files = $("#upload_files").val();
-  let KycID = $("#kycID").val();
-  var isValid = true;
-  if (lable === "") {
-    isValid = false;
-    $("#kyc_lable").css("border", "1px solid #ff0000");
-    $("#lableCheck").show();
-  } else if (Details === "") {
-    isValid = false;
-    $("#kyc_details").css("border", "1px solid #ff0000");
-    $("#detailCheck").show();
-  } else {
-    $("#doc_name").css("border", "1px solid #cecece");
-  }
-  if (upload === undefined && upload_files === "") {
-    let isUploadValid = validateField("", "upload");
-    if (!isUploadValid) {
+  $(document).on("click", "#kycInfoBtn", function () {
+    let lable = $("#kyc_lable").val();
+    let Details = $("#kyc_details").val();
+    let upload = $("#upload")[0].files[0];
+    let upload_files = $("#upload_files").val();
+    let KycID = $("#kycID").val();
+    var isValid = true;
+    if (lable === "") {
       isValid = false;
+      $("#kyc_lable").css("border", "1px solid #ff0000");
+      $("#lableCheck").show();
+    } else if (Details === "") {
+      isValid = false;
+      $("#kyc_details").css("border", "1px solid #ff0000");
+      $("#detailCheck").show();
+    } else {
+      $("#doc_name").css("border", "1px solid #cecece");
+    }
+    if (upload === undefined && upload_files === "") {
+      let isUploadValid = validateField("", "upload");
+      if (!isUploadValid) {
+        isValid = false;
+      } else {
+        $("#upload").css("border", "1px solid #cecece");
+      }
     } else {
       $("#upload").css("border", "1px solid #cecece");
     }
-  } else {
-    $("#upload").css("border", "1px solid #cecece");
-  }
-  if (isValid) {
-    let cus_id = $("#cus_id").val();
-    var formData = new FormData();
-    formData.append("lable", lable);
-    formData.append("Details", Details);
-    formData.append("upload", upload);
-    formData.append("cus_id", cus_id);
-    formData.append("kycID", KycID);
-    formData.append("upload_files", upload_files);
+    if (isValid) {
+      let cus_id = $("#cus_id").val();
+      var formData = new FormData();
+      formData.append("lable", lable);
+      formData.append("Details", Details);
+      formData.append("upload", upload);
+      formData.append("cus_id", cus_id);
+      formData.append("kycID", KycID);
+      formData.append("upload_files", upload_files);
 
-    submitkyc(formData)
-      .then(() => {
-        kyctable(cus_id);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
-});
-$(document).on("click", ".kycedit", function () {
-  var id = $(this).attr("value");
-  $.post(
-    "api/customer_creation_files/get_kyc_details.php",
-    { id: id },
-    function (response) {
-      if (response) {
-        $("#kycID").val(response[0].id);
-        $("#kyc_lable").val(response[0].label);
-        $("#kyc_details").val(response[0].details);
-        $("#upload_files").val(response[0].upload);
-      }
-    },
-    "json"
-  );
-});
-
-$(document).on("click", ".kycdelet", function () {
-  var id = $(this).attr("value");
-  let cus_id = $("#cus_id").val();
-
-  swalConfirm(
-    "Delete",
-    "Do you want to Delete this KYC?",
-    (id) => {
-      deletekyc(id)
+      submitkyc(formData)
         .then(() => {
-          kyctable(cus_id); // Run only after deletekyc completes
+          kyctable(cus_id);
         })
         .catch((error) => {
           console.error("Error:", error);
         });
-    },
-    id
-  );
-});
+    }
+  });
+
+  $(document).on("click", ".kycedit", function () {
+    var id = $(this).attr("value");
+    $.post(
+      "api/customer_creation_files/get_kyc_details.php",
+      { id: id },
+      function (response) {
+        if (response) {
+          $("#kycID").val(response[0].id);
+          $("#kyc_lable").val(response[0].label);
+          $("#kyc_details").val(response[0].details);
+          $("#upload_files").val(response[0].upload);
+        }
+      },
+      "json"
+    );
+  });
+
+  $(document).on("click", ".kycdelet", function () {
+    var id = $(this).attr("value");
+    let cus_id = $("#cus_id").val();
+
+    swalConfirm(
+      "Delete",
+      "Do you want to Delete this KYC?",
+      (id) => {
+        deletekyc(id)
+          .then(() => {
+            kyctable(cus_id); // Run only after deletekyc completes
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      },
+      id
+    );
+  });
+
 });
 
 function getcustomerlist() {

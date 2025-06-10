@@ -340,54 +340,40 @@ function moneyFormatIndia($num1)
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="centre_id">Centre ID</label><span class="text-danger">*</span>
-                                    <select class="form-control" name="centre_id" id="centre_id" tabindex="5">
+                                    <select class="form-control" name="centre_id" id="centre_id" tabindex="1">
                                         <option value="">Select Centre ID</option>
                                     </select>
                                 </div>
                             </div>
-                             <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="cus_id">Customer ID</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="cus_id" id="cus_id" tabindex="2" placeholder="Customer ID" readonly>
-                                </div>
-                            </div> -->
-                             <!-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label for="cus_id">Customer ID</label><span class="text-danger">*</span>
-                                      <select class="form-control" name="cus_id" id="cus_id" tabindex="5">
-                                        <option value="">Select Customer ID</option>
-                                    </select>
-                                </div>
-                            </div> -->
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="aadhar_number">Aadhar Number</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="aadhar_number" id="aadhar_number" tabindex="1" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
+                                    <input type="text" class="form-control" name="aadhar_number" id="aadhar_number" tabindex="2" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="cus_id">Customer ID</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="cus_id" id="cus_id" tabindex="2" placeholder="Customer ID" readonly>
+                                    <input type="text" class="form-control" name="cus_id" id="cus_id" tabindex="3" placeholder="Customer ID" readonly>
                                 </div>
                             </div>
                            
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="cus_name">Customer Name</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="cus_name" id="cus_name" tabindex="3" placeholder="Customer Name" readonly>
+                                    <input type="text" class="form-control" name="cus_name" id="cus_name" tabindex="4" placeholder="Customer Name" readonly>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="savings_amnt">Amount</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control" name="savings_amnt" id="savings_amnt" tabindex="4">
+                                    <input type="number" class="form-control" name="savings_amnt" id="savings_amnt" tabindex="5">
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="catType">Type</label><span class="text-danger">*</span>
-                                    <select class="form-control" name="catType" id="catType" tabindex="5">
+                                    <select class="form-control" name="catType" id="catType" tabindex="6">
                                         <option value="">Select Type</option>
                                         <option value="1">Credit</option>
                                         <option value="2">Debit</option>
@@ -397,8 +383,8 @@ function moneyFormatIndia($num1)
 
                             <div class="col-12">
                                 <div class="form-group" style="float: right;">
-                                    <button name="submit_savings_creation" id="submit_savings_creation" class="btn btn-primary" tabindex="6" style="margin-top: 18px;"><span class="icon-check"></span>&nbsp;Submit</button>
-                                    <button type="reset" id="clear_savings_form" class="btn btn-outline-secondary" style="margin-top: 18px;" tabindex="7">Clear</button>
+                                    <button name="submit_savings_creation" id="submit_savings_creation" class="btn btn-primary" tabindex="7" style="margin-top: 18px;"><span class="icon-check"></span>&nbsp;Submit</button>
+                                    <button type="reset" id="clear_savings_form" class="btn btn-outline-secondary" style="margin-top: 18px;" tabindex="8">Clear</button>
                                 </div>
                             </div>
                         </div>
@@ -437,7 +423,6 @@ function moneyFormatIndia($num1)
                 </div>
 
                 <div id="customer_details_div" style="display: none;">
-                    <!-- /////////////////////////////////////////////////// centre Info  START ///////////////////////////////////////// -->
                     <div class="card p-4 m-4" >
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">Center Info</h5>
@@ -538,15 +523,10 @@ function moneyFormatIndia($num1)
                 </div>
                 <!-- Submit Button End -->
             </div>
-
         </div>
-
     </div>
-    <!----------------------------- savings CARD END ------------------------------>
-
 </div>
 </div>
-
 
 <!--Expenses Modal Start-->
 <div class="modal fade" id="add_expenses_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -967,7 +947,7 @@ function moneyFormatIndia($num1)
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-secondary savings_chart_back" data-dismiss="modal" tabindex="4">Back</button>
+                <button class="btn btn-secondary savings_chart_back" data-dismiss="modal" tabindex="2">Back</button>
             </div>
         </div>
     </div>

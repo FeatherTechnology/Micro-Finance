@@ -4,7 +4,6 @@ require "../../../ajaxconfig.php";
 $user_id = $_SESSION['user_id'];
 $current_date = date('Y-m-d');
 
-$cash_type = ["1" => 'Hand Cash', "2" => 'Bank Cash'];
 $crdr = ["1" => 'Credit', "2" => 'Debit'];
 $trans_list_arr = array();
 $qry = $pdo->query("SELECT 
@@ -20,8 +19,8 @@ GROUP BY
     cus_id
 HAVING 
     SUM(CASE WHEN credit_debit = 1 THEN savings_amount ELSE 0 END) -
-    SUM(CASE WHEN credit_debit = 2 THEN savings_amount ELSE 0 END) > 0
-");
+    SUM(CASE WHEN credit_debit = 2 THEN savings_amount ELSE 0 END) > 0 ");
+    
 if ($qry->rowCount() > 0) {
     while ($result = $qry->fetch()) {
         $result['total_credit'] = (int)$result['total_credit'];

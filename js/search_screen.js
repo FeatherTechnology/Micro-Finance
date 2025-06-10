@@ -2,7 +2,6 @@ $(document).ready(function () {
   $("#submit_search").click(function (event) {
     event.preventDefault();
 
-    // let aadhar_no = $("#aadhar_no").val();
     let aadhar_no = $('#aadhar_no').val().replace(/\D/g, "")
     let cus_name = $("#cust_name").val();
     let centre_no = $("#centre_no").val();
@@ -198,7 +197,6 @@ function validate() {
 function getSearchTable(data) {
   // Assuming response is in JSON format and contains customer data
   let response = JSON.parse(data);
-  // if (response && response.length > 0) {
   var columnMapping = [
     "sno",
     "cus_id",
@@ -212,12 +210,10 @@ function getSearchTable(data) {
   appendDataToTable("#customer_list", response, columnMapping);
   setdtable("#customer_list");
 
-  // }
 }
 function getcentreList() {
   event.preventDefault();
 
-  // let aadhar_no = $("#aadhar_no").val();
   let aadhar_no = $('#aadhar_no').val().replace(/\D/g, "")
   let cus_name = $("#cust_name").val();
   let centre_no = $("#centre_no").val();

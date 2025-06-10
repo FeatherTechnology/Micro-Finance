@@ -7,7 +7,7 @@ $current_date_time = date('Y-m-d');
 
 $result = 2; // default fail
 
-if (isset($_POST['savingsData'])) {
+if (isset($_POST['savingsData']) ) {
     foreach ($_POST['savingsData'] as $data) {
         $cus_id = $data['cus_id'];
         $cus_name = $data['cus_name'];

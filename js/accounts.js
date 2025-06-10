@@ -43,11 +43,6 @@ $(document).ready(function(){
         centrelist(cus_id);
     });
 
-//    $('#centre_id').change(function(){
-//         let centre_id = $('#centre_id').val();
-//         getCustomerID(centre_id);
-//     });
-
     $(document).on('click', '.centre_info_back', function (e) {
         $(".centre_based_div").show();
         $("#customer_details_div").hide();
@@ -56,7 +51,6 @@ $(document).ready(function(){
     $(document).on('click', '#submit_savings', function (e) {
         let centre_id=$('#centreId').val();
         let savingsData = [];
-        let isValid = true;
         $('.customer_list tbody tr').each(function () {
                 var row = $(this); // Get current row
                 // let balance_amount = row.find('td:nth-child(6)').text();
@@ -78,8 +72,7 @@ $(document).ready(function(){
                 }
                  
                 if (credit_debit === "2" && savings_amount > balance_amount) {
-                    // alert('The amount must be less than or equal to Balance Amount (' + balance_amount + ').');
-                    return; 
+                    return; // Continue to next row
                 }
 
                 savingsData.push({
@@ -88,12 +81,10 @@ $(document).ready(function(){
                     aadhar_num: aadhar_num,
                     cus_id: cus_id,
                     cus_name: cus_name
-                });
-                
-                //  if (!isValid) return;
-        });
+                });   
+            });
         if(savingsData.length > 0){
-              $.ajax({
+            $.ajax({
                 url: 'api/accounts_files/accounts/submit_savings.php',
                 method: 'POST',
                 data: {
@@ -112,12 +103,11 @@ $(document).ready(function(){
                 error: function (xhr, status, error) {
                     console.error('AJAX Error: ' + status + error);
                 }
-        });
+            });
 
         }else{
             swalError('Warning', 'Please Fill The Savings Details ');
         }
-      
     });
 
     $(document).on('click', '.savings_chart_back', function (e) {
@@ -1049,7 +1039,6 @@ function centreBasedCusList(centre_id){
                     '<td>' + item.balance + '</td>' +
                     '<td>' + formattedDate + '</td>' +
                     '<td>' + dropdownSelect + '</td>' +
-                    
                     '<td><input type="number" class="form-control savings_amount"></td>' +
                     '<td>' + action + '</td>' +
                     '<td style="display:none">' + item.aadhar_number + '</td>' +

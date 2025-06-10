@@ -31,7 +31,7 @@ $query = "SELECT lelc.id as loan_calc_id, lelc.loan_id, cc.centre_id, cc.centre_
           LEFT JOIN branch_creation bc ON cc.branch = bc.id
  	JOIN users us ON FIND_IN_SET(lelc.loan_category, us.loan_category)
     WHERE us.id = '$user_id' 
-  AND (CURDATE() > lelc.due_end OR lelc.loan_status >= 8) AND c.cus_id='$cus_id'";
+  AND (CURDATE() > lelc.due_end OR lelc.loan_status >= 8) AND c.cus_id = '$cus_id'";
 if (isset($_POST['search'])) {
     if ($_POST['search'] != "") {
         $search = $_POST['search'];
@@ -103,10 +103,10 @@ foreach ($result as $row) {
     $sub_array[] = $status;
      $action = "<div class='dropdown'>
     <button class='btn btn-outline-secondary'><i class='fa'>&#xf107;</i></button>
-    <div class='dropdown-content'>";
-    $action .= "<a href='#' class='due_chart' value='" . $row['id'] . "' loan_id='" . $row['loan_id'] . "'>Due Chart</a>";
-    $action .= "<a href='#' class='savings_chart' value='" . $row['cus_id'] . "' centre_id='" . $row['centre_id'] . "'>Savings Chart</a>";
-    $action .= "</div></div>";
+    <div class='dropdown-content'>
+    <a href='#' class='due_chart' value='" . $row['id'] . "' loan_id='" . $row['loan_id'] . "'>Due Chart</a>
+    <a href='#' class='savings_chart' value='" . $row['cus_id'] . "' centre_id='" . $row['centre_id'] . "'>Savings Chart</a>
+    </div></div>";
     $sub_array[] = $action;
     $data[] = $sub_array;
 }
