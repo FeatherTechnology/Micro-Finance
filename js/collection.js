@@ -23,7 +23,8 @@ $(document).ready(function () {
         let centre_name = dataParts[2];
         let sub_status = dataParts[3];
         let status = dataParts[4];
-        $('#loan_id').val(loan_id)
+        $('#loan_id').val(loan_id);
+        $('#hidden_centre_id').val(centre_id);
         $('#pageHeaderName').text(` - Collection - Loan ID: ${loan_id}, Centre ID: ${centre_id}, Centre Name: ${centre_name}`);
         collectionCustomerList(loan_id)
         collectionLoanDetails(loan_id)
@@ -40,6 +41,7 @@ $(document).ready(function () {
             let loanDueAmnt = $('#due_amt').val().replace(/,/g, '');
             let loanPendingAmnt = $('#pending_amt').val().replace(/,/g, '');
             let loanPayableAmnt = $('#payable_amt').val().replace(/,/g, '');
+            let centre_id =$('#hidden_centre_id').val();
             // let loanPenaltyAmnt = $('#penalty').val().replace(/,/g, ''); // Round off payable amount
             let loanFineAmnt = $('#fine_charge').val().replace(/,/g, ''); // Round off chit amount
             // Loop through each row in the customer list table
@@ -106,7 +108,8 @@ $(document).ready(function () {
                     loanPendingAmnt: loanPendingAmnt,
                     // loanPenaltyAmnt: loanPenaltyAmnt,
                     loanFineAmnt: loanFineAmnt,
-                    collectionData: collectionData
+                    collectionData: collectionData,
+                    centre_id: centre_id
                 },
                 success: function (response) {
                     // Ensure the response is parsed correctly
@@ -182,8 +185,9 @@ $(document).ready(function () {
     $(document).on('click', '.Savings-chart', function (e) {
         e.preventDefault(); // Prevent default anchor behavior
         var cus_id = $(this).attr('data-id'); // Capture data-id from the clicked element
+        var centre_id = $(this).attr('centre_id'); 
         $('#Savings_chart_model').modal('show'); // Show the modal
-        savingsChartList(cus_id);
+        savingsChartList(cus_id , centre_id);
     });
     ///////////////////////////////////////////////Penalty cahrt End///////////////////////////////////////////
     //////////////////////////////////////////Due Chart start//////////////////////////////
@@ -356,7 +360,7 @@ function collectionCustomerList(loan_id) {
             var hasRows = false;
             var serialNo = 1;
             $.each(response, function (index, item) {
-                var isReadOnly = (!item.issue_status || item.issue_status === "" || item.cus_status === 12) ? "disabled" : "";
+                var isReadOnly = (!item.issue_status || item.issue_status === "" || item.cus_status === '12') ? "disabled" : "";
                 var individual_amount = item.individual_amount ? item.individual_amount : 0;
                 var pending = item.pending ? item.pending : 0;
                 var payable = item.payable ? item.payable : 0;
@@ -367,7 +371,7 @@ function collectionCustomerList(loan_id) {
                     "<button class='btn btn-outline-secondary' " + (isReadOnly ? "disabled" : "") + "><i class='fa'>&#xf107;</i></button>" +
                     "<div class='dropdown-content'>" +
                     "<a href='#' class='due-chart' data-id='" + item.id + "'>Due Chart</a>" +
-                    "<a href='#' class='Savings-chart' data-id='" + item.cus_id + "' >Savings Chart</a>" +
+                    "<a href='#' class='Savings-chart' data-id='" + item.cus_id + "' centre_id='" + item.centre_id + "' >Savings Chart</a>" +
                     "<a href='#' class='fine-chart' data-id='" + item.id + "'>Fine Chart</a>" +
                     "</div>" +
                     "</div>";
@@ -517,10 +521,10 @@ function fineChartList(cus_mapping_id) {
     });//Ajax End.
 }
 //Savings chart
-function savingsChartList(cus_id) {
+function savingsChartList(cus_id , centre_id) {
     $.ajax({
         url: 'api/collection_files/get_savings_chart_list.php',
-        data: { 'cus_id': cus_id},
+        data: { 'cus_id': cus_id , 'centre_id' : centre_id},
         type: 'post',
         cache: false,
         success: function (response) {

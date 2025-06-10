@@ -95,7 +95,8 @@ $(document).ready(function(){
                     response = typeof response === 'string' ? JSON.parse(response) : response;
                     if (response == 1) {
                         swalSuccess('Success', "Savings Added Successfully");
-                        centreBasedCusList(centre_id)
+                        centreBasedCusList(centre_id);
+                        getClosingBal();
                     } else {
                         swalError('Warning', 'Failed to save the collection details');
                     }
@@ -435,9 +436,17 @@ $(document).ready(function(){
         }, 'json');
     });
 
-    $("#aadhar_number").on("blur", function () {
-        let aadhar_number = $("#aadhar_number").val().trim().replace(/\s/g, "");
-        existingCustmerProfile(aadhar_number);
+    $('#aadhar_num').change(function(){
+        let aadhar_num = $("#aadhar_num").val();
+        console.log("aadhar ",aadhar_num);
+        existingCustmerProfile(aadhar_num);
+    });
+     $('#centre_id').change(function(){
+        let centre_id = $('#centre_id').val();
+        $('#aadhar_num').val("");
+        $('#cus_name').val("");
+        getCustomerID(centre_id);
+
     });
 
     $('#submit_savings_creation').click(function(event){
@@ -445,7 +454,7 @@ $(document).ready(function(){
         let centre_id = $('#centre_id').val();
         let cus_id = $('#cus_id').val();
         let cat_type =  $('#catType').val();
-        let aadhar_num = $('#aadhar_number').val().replace(/\D/g, "");
+        let aadhar_num = $('#aadhar_num').val();
         let savings_amount = $('#savings_amnt').val();
         let cus_name = $('#cus_name').val();
        getCusPreAmt(cus_id, centre_id, function(amounts, error) {
@@ -543,25 +552,7 @@ $(document).ready(function(){
             getIDEBalanceSheet();
         }
     });
-    $('input[data-type="adhaar-number"]').keyup(function () {
-        var value = $(this).val();
-        value = value
-          .replace(/\D/g, "")
-          .split(/(?:([\d]{4}))/g)
-          .filter((s) => s.length > 0)
-          .join(" ");
-        $(this).val(value);
-      });
-    
-      $('input[data-type="adhaar-number"]').change(function () {
-        let len = $(this).val().length;
-        if (len < 14) {
-          $(this).val("");
-          swalError("Warning", "Kindly Enter Valid Aadhaar Number");
-        }
-      });
-
-
+   
 });  /////Document END.
 
 $(function(){
@@ -843,7 +834,7 @@ function clearTransForm(){
     $('#other_transaction_form textarea').val('');
 }
 function clearsavingsForm(){
-    $('#aadhar_number').val('');
+    $('#aadhar_num').val('');
     $('#cus_id').val('');
     $('#savings_amnt').val('');
     $('#catType').val('');
@@ -914,10 +905,10 @@ function Savingsvalidation(data){
     return true;
 }
 
-function existingCustmerProfile(aadhar_number) {
+function existingCustmerProfile(aadhar_num) {
   $.post(
-    "api/customer_creation_files/customer_profile_existing.php",
-    { aadhar_number },
+    "api/accounts_files/accounts/get_customer_id.php",
+    { aadhar_num },
     function (response) {
       if (response === "New") {
         $("#cus_id").val("");
@@ -929,6 +920,17 @@ function existingCustmerProfile(aadhar_number) {
       }
     },
   "json" )
+}
+function getCustomerID(centre_id) {
+    console.log("centre_id ",centre_id);
+  $.post('api/accounts_files/accounts/get_customer_id.php', {centre_id } ,function(response){
+        let aadhar_number='';
+            aadhar_number +="<option value=''>Select Centre ID</option>";
+            $.each(response, function(index, val){
+                aadhar_number += "<option value='"+val.aadhar_number+"'>"+val.aadhar_number+"</option>";
+            });
+        $('#aadhar_num').empty().append(aadhar_number);
+    },'json');
 }
 
 function getCusPreAmt(cus_id, centre_id,callback) {

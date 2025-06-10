@@ -10,6 +10,7 @@ $response = array();
               lcm.id,
               lcm.loan_id,
               lcm.cus_status,
+              lcm.centre_id,
               cc.cus_id,
               cc.aadhar_number,
               lelc.due_amount_calc,

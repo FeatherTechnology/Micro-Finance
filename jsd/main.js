@@ -593,53 +593,53 @@ function getUserAccess(callback) {
 
 ///////////////////////////////////////////////////////////////////// Session Logut Time Start /////////////////////////////////////////////////////////////////////////////
 
-        let warningTimeout, logoutTimeout;
-        let swalOpen = false;
-        const idleTime = 30 * 10 * 1000; // 5 minutes
-        const warningDuration = 10 * 1000; // 10 seconds warning
-        function startTimers() {
-            clearTimeout(warningTimeout);
-            clearTimeout(logoutTimeout);
-            // Start warning 10 seconds before logout
-            warningTimeout = setTimeout(showWarning, idleTime - warningDuration);
-        }
+        // let warningTimeout, logoutTimeout;
+        // let swalOpen = false;
+        // const idleTime = 30 * 10 * 1000; // 5 minutes
+        // const warningDuration = 10 * 1000; // 10 seconds warning
+        // function startTimers() {
+        //     clearTimeout(warningTimeout);
+        //     clearTimeout(logoutTimeout);
+        //     // Start warning 10 seconds before logout
+        //     warningTimeout = setTimeout(showWarning, idleTime - warningDuration);
+        // }
 
-        function resetTimers() {
-            // If user interacts during warning period, cancel logout
-            if (swalOpen) {
-                hideWarning(); // this sets swalOpen = false and closes alert
-            }
-            clearTimeout(warningTimeout);
-            clearTimeout(logoutTimeout);
-            startTimers();
-        }
+        // function resetTimers() {
+        //     // If user interacts during warning period, cancel logout
+        //     if (swalOpen) {
+        //         hideWarning(); // this sets swalOpen = false and closes alert
+        //     }
+        //     clearTimeout(warningTimeout);
+        //     clearTimeout(logoutTimeout);
+        //     startTimers();
+        // }
 
-        function showWarning() {
-            swalOpen = true;
-            swalError('Warning', 'Session will expire in 10 seconds due to inactivity');
-            logoutTimeout = setTimeout(() => {
-                if (swalOpen) {
-                    window.location.href = 'logout.php';
-                }
-            }, warningDuration);
-        }
+        // function showWarning() {
+        //     swalOpen = true;
+        //     swalError('Warning', 'Session will expire in 10 seconds due to inactivity');
+        //     logoutTimeout = setTimeout(() => {
+        //         if (swalOpen) {
+        //             window.location.href = 'logout.php';
+        //         }
+        //     }, warningDuration);
+        // }
 
-        function hideWarning() {
-            swalOpen = false;
-            Swal.close();
-        }
-        // Detect all user activity
-        window.onload = startTimers;
-        // Mouse, scroll, click
-        ['mousemove', 'click', 'scroll'].forEach(evt => {
-            window.addEventListener(evt, resetTimers);
-        });
-        // Keys (handled through a unified function)
-        function handleKeyEvent(e) {
-            resetTimers();
-        }
-        ['keydown', 'keypress', 'keyup'].forEach(evt => {
-            window.addEventListener(evt, handleKeyEvent);
-        });
+        // function hideWarning() {
+        //     swalOpen = false;
+        //     Swal.close();
+        // }
+        // // Detect all user activity
+        // window.onload = startTimers;
+        // // Mouse, scroll, click
+        // ['mousemove', 'click', 'scroll'].forEach(evt => {
+        //     window.addEventListener(evt, resetTimers);
+        // });
+        // // Keys (handled through a unified function)
+        // function handleKeyEvent(e) {
+        //     resetTimers();
+        // }
+        // ['keydown', 'keypress', 'keyup'].forEach(evt => {
+        //     window.addEventListener(evt, handleKeyEvent);
+        // });
 
     //////////////////////////////////////////////////////////// Session Logut Time End ////////////////////////////////////////////////////////////////////////////////////

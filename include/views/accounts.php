@@ -347,8 +347,11 @@ function moneyFormatIndia($num1)
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    <label for="aadhar_number">Aadhar Number</label><span class="text-danger">*</span>
-                                    <input type="text" class="form-control" name="aadhar_number" id="aadhar_number" tabindex="2" maxlength="14" data-type="adhaar-number" placeholder="Enter Aadhar Number">
+                                    
+                                     <label for="aadhar_num">Aadhar Number</label><span class="text-danger">*</span>
+                                    <select class="form-control" name="aadhar_num" id="aadhar_num" tabindex="2">
+                                        <option value="">Select Aadhar Number </option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
@@ -357,6 +360,7 @@ function moneyFormatIndia($num1)
                                     <input type="text" class="form-control" name="cus_id" id="cus_id" tabindex="3" placeholder="Customer ID" readonly>
                                 </div>
                             </div>
+                            
                            
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
