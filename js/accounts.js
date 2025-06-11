@@ -30,7 +30,7 @@ $(document).ready(function(){
         }else if(savings_type === '2'){
             $(".centre_based_div").show();
             $("#customer_details_div").hide();
-            centrelist("")
+            centreBasedlist()
             $('.Customer_based').hide();
             $('.centre_based').show();
         }
@@ -972,14 +972,21 @@ function centrelist(cus_id) {
         type: 'post',
         cache: false,
         success: function (response) {
-            if(cus_id !=""){
             $('#customer_savings_centre_list').empty()
             $('#customer_savings_centre_list').html(response)
-            }else{
-                $('#centre_based_table').empty()
-            $('#centre_based_table').html(response)
-            }
            
+        }
+    });//Ajax End.
+}
+function centreBasedlist() {
+    $.ajax({
+        url: 'api/accounts_files/accounts/get_centres.php',
+        data: { },
+        type: 'post',
+        cache: false,
+        success: function (response) {
+            $('#centre_based_table').empty();
+            $('#centre_based_table').html(response);
         }
     });//Ajax End.
 }
