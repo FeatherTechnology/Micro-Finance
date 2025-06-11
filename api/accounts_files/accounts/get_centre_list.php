@@ -39,13 +39,7 @@ function moneyFormatIndia($num)
 
         <?php
        
-        if (isset($_POST['cus_id']) && $_POST['cus_id'] !='') {
         $cus_id = $_POST['cus_id'];
-        $where = "WHERE cs.cus_id = '$cus_id' GROUP BY cs.centre_id, cs.cus_id" ;
-        }
-        else{
-        $where = " GROUP BY cs.centre_id";
-        }
         $run = $pdo->query("SELECT 
                 cc.centre_name,
                 cc.centre_no,
@@ -57,7 +51,7 @@ function moneyFormatIndia($num)
                 SUM(CASE WHEN cs.credit_debit = 2 THEN savings_amount ELSE 0 END) AS total_debit
             FROM customer_savings cs 
             LEFT JOIN centre_creation cc ON cc.centre_id = cs.centre_id 
-            $where 
+            WHERE cs.cus_id = '$cus_id' GROUP BY cs.centre_id, cs.cus_id
             HAVING 
                   SUM(CASE WHEN cs.credit_debit = 1 THEN savings_amount ELSE 0 END) - 
                   SUM(CASE WHEN cs.credit_debit = 2 THEN savings_amount ELSE 0 END) > 0 ");

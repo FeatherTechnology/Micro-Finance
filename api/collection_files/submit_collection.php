@@ -7,6 +7,7 @@ $obj = new CustomerStatus($pdo);
 $user_id = $_SESSION['user_id'];
 
 // Get the data from the AJAX request
+$centre_id = $_POST['centre_id'];
 $loan_id = $_POST['loan_id'];
 $sub_status = $_POST['sub_status'];
 $status = $_POST['status'];
@@ -56,7 +57,7 @@ foreach ($collectionData as $data) {
                 CURRENT_TIMESTAMP())");
  
 }else if($collection_savings != '' ||  $collection_savings > 0){
- $query = $pdo->query("INSERT INTO `customer_savings`(`cus_id`,`cus_name`,`aadhar_num` , `savings_amount`, `credit_debit`,`insert_login_id`,`paid_date`) VALUES ('$cus_id','$cus_name','$aadhar_num' ,'$collection_savings' , '1', '$user_id','$coll_date') ");
+ $query = $pdo->query("INSERT INTO `customer_savings`(`centre_id`,`cus_id`,`cus_name`,`aadhar_num` , `savings_amount`, `credit_debit`,`insert_login_id`,`paid_date`) VALUES ('$centre_id','$cus_id','$cus_name','$aadhar_num' ,'$collection_savings' , '1', '$user_id','$coll_date') ");
 }
 
  if ($query) {

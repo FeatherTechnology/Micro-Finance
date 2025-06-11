@@ -46,6 +46,7 @@
                 <input type="hidden" name="loan_id" id="loan_id">
                 <input type="hidden" name="status" id="status">
                 <input type="hidden" name="sub_status" id="sub_status">
+                <input type="hidden" name="hidden_centre_id" id="hidden_centre_id">
 
                 <div class="card-body">
                     <div class="row">
