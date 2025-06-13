@@ -102,4 +102,5 @@ if ($check_query->rowCount() > 0) {
     echo "Error: " . $e->getMessage();
     exit;
 }
+$pdo = null; //Close Connection
   echo json_encode($result);

@@ -15,4 +15,5 @@ if ($qry->rowCount() > 0) {
     }
 }
 
+$pdo = null; //Close connection.
 echo json_encode($response);

@@ -145,11 +145,9 @@ jQuery(function ($) {
 			$('.logo').css('visibility', 'hidden');
 			$("#sidebar").off('hover').hover(
 				function () {
-					// console.log("mouseenter");
 					$(".page-wrapper").addClass("sidebar-hovered");
 				},
 				function () {
-					// console.log("mouseout");
 					$(".page-wrapper").removeClass("sidebar-hovered");
 				}
 			)
@@ -159,12 +157,10 @@ jQuery(function ($) {
 	$(function () {
 		$("#sidebar").hover(
 			function () {
-				// console.log("mouseenter");
 				$(".page-wrapper").addClass("sidebar-hovered");
 				$(".page-wrapper").hasClass("pinned") ? $('.logo').css('visibility', 'visible') : '';
 			},
 			function () {
-				// console.log("mouseout");
 				$(".page-wrapper").removeClass("sidebar-hovered");
 				$(".page-wrapper").hasClass("pinned") ? $('.logo').css('visibility', 'hidden') : '';
 			}

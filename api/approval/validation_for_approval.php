@@ -23,6 +23,7 @@ if(isset($loan_cat_id[0]['loan_id'])) {
     else if($current_mapping_count<$total_cus){
         $result= "2";
     }
+    $pdo = null; //Close connection.
     echo json_encode( $result);
 
 

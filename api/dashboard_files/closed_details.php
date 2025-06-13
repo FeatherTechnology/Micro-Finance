@@ -58,4 +58,5 @@ $response['today_consider'] = $qry->fetch()['today_consider'];
 $qry = $pdo->query($today_bal);
 $response['today_rejected'] = $qry->fetch()['today_rejected'];
 
+$pdo = null; //Close Connection
 echo json_encode($response);

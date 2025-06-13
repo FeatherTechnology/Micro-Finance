@@ -42,5 +42,6 @@ $response['loan_id'] = $loan_id;
 $response['centre_id'] = $centre_id;
 $response['centre_name'] = $centre_name;
 
+$pdo = null; //Close connection.
 echo json_encode($response);
 ?>

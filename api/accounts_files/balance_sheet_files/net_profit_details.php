@@ -136,4 +136,5 @@ $result[0]['oicr'] = $oicr;
 
 $result[0]['expdr']  = $expdr;
 
+$pdo = null; //Close connection.
 echo json_encode($result);

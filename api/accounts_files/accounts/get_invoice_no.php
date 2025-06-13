@@ -11,4 +11,5 @@ if ($qry->rowCount() > 0) {
 } else {
     $invoice_no_final = date('y') . date('m') . "001";
 }
+$pdo = null; //Close connection.
 echo json_encode($invoice_no_final);

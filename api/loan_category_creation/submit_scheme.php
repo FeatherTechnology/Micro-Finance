@@ -44,4 +44,5 @@ if ($id != '0' && $id != '') {
         }
     }
 }
+$pdo = null; //Close Connection
 echo json_encode($result);

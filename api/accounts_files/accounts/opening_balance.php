@@ -95,4 +95,5 @@ $op_data[0]['hand_cash'] = intval($hand_cr) - intval($hand_dr);
 $op_data[0]['bank_cash'] = intval($bank_cr) - intval($bank_dr);
 $op_data[0]['opening_balance'] = $op_data[0]['hand_cash'] + $op_data[0]['bank_cash'];
 
+$pdo = null; //Close connection.
 echo json_encode($op_data);

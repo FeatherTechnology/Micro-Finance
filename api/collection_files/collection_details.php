@@ -186,5 +186,6 @@ if ($result->rowCount() > 0) {
 
 $response['success'] = true; // Set success to true after all data is fetched
 
+$pdo = null; //Close connection.
 // Return the final response as JSON
 echo json_encode($response);

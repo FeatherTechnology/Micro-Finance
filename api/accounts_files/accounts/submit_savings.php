@@ -34,5 +34,5 @@ if (isset($_POST['savingsData']) ) {
     $qry = $pdo->query($sql);
     if ($qry) $result = 1;
 }
-
+$pdo = null; //Close connection.
 echo json_encode($result);

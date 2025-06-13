@@ -20,5 +20,6 @@ if ($family_id != '') {
     $result = 1; // Insert
 }
 
+$pdo = null; //Close Connection
 echo json_encode($result);
 ?>

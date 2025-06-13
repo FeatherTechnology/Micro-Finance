@@ -18,5 +18,6 @@ if ($id != '0' && $id != '') {
         $loan_ID_final = "D-" . "101";
     }
 }
+$pdo = null; //Close Connection
 echo json_encode($loan_ID_final);
 ?>

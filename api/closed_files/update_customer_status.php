@@ -13,3 +13,4 @@ if (isset($_POST['customers'])) {
 } else {
     echo json_encode(['success' => false, 'message' => 'No data received']);
 }
+$pdo = null; //Close connection.

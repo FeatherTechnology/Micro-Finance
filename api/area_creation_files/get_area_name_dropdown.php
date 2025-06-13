@@ -19,4 +19,5 @@ while ($row = $result->fetch()) {
     $areaname_arr[] = array("id" => $id, "areaname" => $areaname, "disabled" => $disabled);
 }
 
+$pdo = null; //Close connection.
 echo json_encode($areaname_arr);

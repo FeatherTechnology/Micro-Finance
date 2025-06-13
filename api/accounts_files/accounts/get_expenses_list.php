@@ -17,7 +17,7 @@ if ($qry->rowCount() > 0) {
         $exp_list_arr[] = $result;
     }
 }
-
+$pdo = null; //Close connection.
 echo json_encode($exp_list_arr);
 
 //Format number in Indian Format

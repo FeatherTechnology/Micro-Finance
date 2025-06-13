@@ -55,4 +55,5 @@ $response['today_paid'] = $qry->fetch()['today_paid'];
 $qry = $pdo->query($today_fine);
 $response['today_fine'] = $qry->fetch()['today_fine'];
 
+$pdo = null; //Close Connection
 echo json_encode($response);

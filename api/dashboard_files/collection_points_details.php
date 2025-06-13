@@ -89,4 +89,5 @@ $row5 = $qry5->fetch();
 $response['total_fine_od'] = $row5['total_fine_od'];
 $response['od_fine'] = $row5['od_fine'];
 
+$pdo = null; //Close Connection
 echo json_encode($response);

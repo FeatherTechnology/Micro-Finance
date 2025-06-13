@@ -44,4 +44,5 @@ if ($result->rowCount() > 0) {
     }
 }
 
+$pdo = null; //Close Connection
 echo json_encode($response);  // Return the response as JSON

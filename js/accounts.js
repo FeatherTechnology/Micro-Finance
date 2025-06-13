@@ -30,14 +30,13 @@ $(document).ready(function(){
         }else if(savings_type === '2'){
             $(".centre_based_div").show();
             $("#customer_details_div").hide();
-            centreBasedlist()
+            centreBasedlist('#centre_table')
             $('.Customer_based').hide();
             $('.centre_based').show();
         }
     });
   
     $(document).on('click', '.View_centre', function (e) {
-        console.log("hlo");
         $('#cntr_bsd_cus_savings').modal('show');
         let cus_id = $(this).val();
         centrelist(cus_id);
@@ -438,7 +437,6 @@ $(document).ready(function(){
 
     $('#aadhar_num').change(function(){
         let aadhar_num = $("#aadhar_num").val();
-        console.log("aadhar ",aadhar_num);
         existingCustmerProfile(aadhar_num);
     });
      $('#centre_id').change(function(){
@@ -922,16 +920,16 @@ function existingCustmerProfile(aadhar_num) {
   "json" )
 }
 function getCustomerID(centre_id) {
-    console.log("centre_id ",centre_id);
-  $.post('api/accounts_files/accounts/get_customer_id.php', {centre_id } ,function(response){
-        let aadhar_number='';
-            aadhar_number +="<option value=''>Select Centre ID</option>";
-            $.each(response, function(index, val){
-                aadhar_number += "<option value='"+val.aadhar_number+"'>"+val.aadhar_number+"</option>";
-            });
-        $('#aadhar_num').empty().append(aadhar_number);
-    },'json');
+  $.post('api/accounts_files/accounts/get_customer_id.php', { centre_id }, function(response) {
+    let aadhar_number = '';
+    aadhar_number += "<option value=''>Select Aadhar Number</option>"; // Updated label
+    $.each(response, function(index, val) {
+      aadhar_number += "<option value='" + val.aadhar_number + "'>" + val.first_name + " - " + val.aadhar_number + "</option>";
+    });
+    $('#aadhar_num').empty().append(aadhar_number);
+  }, 'json');
 }
+
 
 function getCusPreAmt(cus_id, centre_id,callback) {
   $.post("api/accounts_files/accounts/get_customer_debit_credit.php",
@@ -978,17 +976,21 @@ function centrelist(cus_id) {
         }
     });//Ajax End.
 }
-function centreBasedlist() {
-    $.ajax({
-        url: 'api/accounts_files/accounts/get_centres.php',
-        data: { },
-        type: 'post',
-        cache: false,
-        success: function (response) {
-            $('#centre_based_table').empty();
-            $('#centre_based_table').html(response);
-        }
-    });//Ajax End.
+function centreBasedlist(tableId) {
+     $.post('api/accounts_files/accounts/get_centres.php',function(response){
+        let expensesColumn = [
+            'sno',
+            'centre_id',
+            'centre_name',
+            'centre_no',
+            'balance',
+            'action'
+        ];
+
+        appendDataToTable(tableId, response, expensesColumn);
+        setdtable(tableId);
+    },'json');
+
 }
 
 function getCentreId(){

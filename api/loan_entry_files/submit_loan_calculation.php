@@ -223,4 +223,5 @@ try {
     echo "Error: " . $e->getMessage();
     exit;
 }
+$pdo = null; //Close Connection
 echo json_encode(['result' => $result, 'last_id' => $last_id]);

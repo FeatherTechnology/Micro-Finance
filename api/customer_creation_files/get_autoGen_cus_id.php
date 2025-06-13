@@ -17,5 +17,6 @@ if ($id != '0' && $id != '') {
         $cus_ID_final = "C-" . "101";
     }
 }
+$pdo = null; //Close Connection
 echo json_encode($cus_ID_final);
 ?>

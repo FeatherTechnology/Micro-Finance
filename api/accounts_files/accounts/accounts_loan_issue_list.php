@@ -26,7 +26,7 @@ if ($qry->rowCount() > 0) {
         $loan_issue_list_arr[] = $data;
     }
 }
-
+$pdo = null; //Close connection.
 echo json_encode($loan_issue_list_arr);
 
 //Format number in Indian Format

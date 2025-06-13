@@ -11,4 +11,5 @@ if ($checkQry->rowCount() > 0) {
     $result = 1; // Deleted.
 }
 
+$pdo = null; //Close connection.
 echo json_encode($result);

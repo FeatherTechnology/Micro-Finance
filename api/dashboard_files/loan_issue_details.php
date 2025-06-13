@@ -55,4 +55,5 @@ $response['today_loan_issued'] = $qry->fetch()['today_issued'];
 $qry = $pdo->query($today_bal);
 $response['today_loan_balance'] = $qry->fetch()['today_balance'];
 
+$pdo = null; //Close Connection
 echo json_encode($response);
