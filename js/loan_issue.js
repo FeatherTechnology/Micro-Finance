@@ -122,13 +122,20 @@ $(document).ready(function () {
             isValid = false;
         }
 
-        // Customer Mapping Count validation
+        let customerLoanAmount = parseFloat($('#customerLoanAmount').val()) || 0;
+        let loan_amounts = parseFloat($('#loan_amount').val()) || 0;
         let submitCurrentCustomerCount = $('#issue_info_table tbody tr').length;
-        let total_cus = parseInt($('#total_cus').val() || 0); // Assuming total_cus is in an input field
+        let total_cus = parseInt($('#total_cus').val()) || 0;
 
-        if (submitCurrentCustomerCount < total_cus) {
-            swalError('Warning', 'The Number of Mapped Customers Is Less Than The Total Number Of Customers.');
-            return; // Stop the process if mapping count is insufficient
+        // Combined validation
+        if (customerLoanAmount !== loan_amounts) {
+            swalError('Warning', 'Customer loan amount must exactly match the loan amount.');
+            return;
+        }
+
+        if (submitCurrentCustomerCount !== total_cus) {
+            swalError('Warning', 'The number of mapped customers must exactly match the total number of customers.');
+            return;
         }
 
         // Loop through all the rows in the issue info table to collect loan issue data
@@ -795,8 +802,10 @@ async function loanInfo() {
             if (response[0].loan_date !== '' && response[0].loan_date !== null) {
                 $('#due_startdate_calc').prop('readonly', true);
                 $('#maturity_date_calc').prop('readonly', true);
+                $('#loan_amount').prop('readonly', true);
             } else {
                 $('#due_startdate_calc').prop('readonly', false);
+                $('#loan_amount').prop('readonly', false);
             }
 
             $('#due_startdate_calc').val(response[0].due_start);

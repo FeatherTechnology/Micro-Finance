@@ -171,7 +171,7 @@ else if($current_mapping_count == $total_cus){
     WHERE `id` = '$id'");
 }
 // Check if the query was successful
-if ($qry && $qry1 ) {
+if ($qry) {
     $result = 1;
 } else {
     $result = 0; // Failure

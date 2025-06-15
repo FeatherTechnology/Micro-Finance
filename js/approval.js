@@ -176,20 +176,20 @@ $(document).ready(function () {
     }
   });
 
-    // Event listener for delete button click
-    $(document).on('click', '.cusMapDeleteBtn', function () {
-        let btn = $(this); 
-        let id = btn.attr('value');
-        let loan_id = btn.attr('loan_id');
+  // Event listener for delete button click
+  $(document).on('click', '.cusMapDeleteBtn', function () {
+    let btn = $(this);
+    let id = btn.attr('value');
+    let loan_id = btn.attr('loan_id');
 
-        let TableRowVal = {
-            id: id,
-            loan_id: loan_id,
-            row: btn.closest('tr') 
-        };
+    let TableRowVal = {
+      id: id,
+      loan_id: loan_id,
+      row: btn.closest('tr')
+    };
 
-        swalConfirm('Delete', 'Do you want to remove this customer mapping?', removeCusMap, TableRowVal, '');
-    });
+    swalConfirm('Delete', 'Do you want to remove this customer mapping?', removeCusMap, TableRowVal, '');
+  });
 
   /////////////////////////////////////////////////////////Submit Customer Mapping End//////////////////////////////////////////////////
   $("#profit_type_calc").change(function () {
@@ -249,41 +249,41 @@ $(document).ready(function () {
 
   //  Modify due_method_calc change handler
   $('#due_method_calc').change(function () {
-        let schemeDueMethod = $(this).val();
-        let profitType = $('#profit_type_calc').val(); // Get the current profit type value
+    let schemeDueMethod = $(this).val();
+    let profitType = $('#profit_type_calc').val(); // Get the current profit type value
 
-        // Handle showing/hiding .scheme_day and .scheme_date based on profitType and schemeDueMethod
-        if (profitType == '2' && schemeDueMethod == '2') {
-            // Profit Type 2 and Scheme Due Method 2 (weekly)
-            $('.scheme_day').show();
-            $('.scheme_date').hide();
-            $('.scheme_date_calc').val('');
-        } else if (profitType == '1' && schemeDueMethod == '2') {
-            // Profit Type 1 and Scheme Due Method 2 (weekly)
-            $('.scheme_day').show();
-            $('.scheme_date').hide();
-            $('.scheme_date_calc').val('');
-        } else if (profitType == '2' && schemeDueMethod == '1') {
-            // Profit Type 2 and Scheme Due Method 1 (monthly)
-            $('.scheme_day').hide();
-            $('.scheme_date').show();
-            getDateDropDown(); // Call getDateDropDown function
-        } else if (profitType == '1' && schemeDueMethod == '1') {
-            // Profit Type 1 and Scheme Due Method 1 (monthly)
-            $('.scheme_day').hide();
-            $('.scheme_date').show();
-            getDateDropDown(); // Call getDateDropDown function
-        } else {
-            // Default case if none of the above conditions are met
-            $('.scheme_day').hide();
-            $('.scheme_date').hide();
-            $('.scheme_date_calc').val('');
-        }
+    // Handle showing/hiding .scheme_day and .scheme_date based on profitType and schemeDueMethod
+    if (profitType == '2' && schemeDueMethod == '2') {
+      // Profit Type 2 and Scheme Due Method 2 (weekly)
+      $('.scheme_day').show();
+      $('.scheme_date').hide();
+      $('.scheme_date_calc').val('');
+    } else if (profitType == '1' && schemeDueMethod == '2') {
+      // Profit Type 1 and Scheme Due Method 2 (weekly)
+      $('.scheme_day').show();
+      $('.scheme_date').hide();
+      $('.scheme_date_calc').val('');
+    } else if (profitType == '2' && schemeDueMethod == '1') {
+      // Profit Type 2 and Scheme Due Method 1 (monthly)
+      $('.scheme_day').hide();
+      $('.scheme_date').show();
+      getDateDropDown(); // Call getDateDropDown function
+    } else if (profitType == '1' && schemeDueMethod == '1') {
+      // Profit Type 1 and Scheme Due Method 1 (monthly)
+      $('.scheme_day').hide();
+      $('.scheme_date').show();
+      getDateDropDown(); // Call getDateDropDown function
+    } else {
+      // Default case if none of the above conditions are met
+      $('.scheme_day').hide();
+      $('.scheme_date').hide();
+      $('.scheme_date_calc').val('');
+    }
 
-        // Clear the start date and maturity date fields
-        $('#due_startdate_calc').val('');
-        $('#maturity_date_calc').val('');
-    });
+    // Clear the start date and maturity date fields
+    $('#due_startdate_calc').val('');
+    $('#maturity_date_calc').val('');
+  });
 
   $("#scheme_name_calc").change(function () {
     //Scheme Name change event
@@ -464,32 +464,37 @@ $(document).ready(function () {
       totalCustomerAmount += cus_mapping;
     });
 
-if (totalCustomerAmount != loanAmountCalc) {
-    swalError('Warning', 'Total Customer Amount does not match Loan Amount Calculation!');
-    return; 
-}
-var customerMappingData = [];
-$('#cus_mapping_table tbody tr').each(function () {
-  // var cus_id = $(this).text(); // Retrieve the customer.id from data-id attribute
-  var cus_id = $(this).find('td:nth-child(3)').text(); 
-  var cus_mapping = $(this).find('td:nth-child(5)').text(); 
-  var designation = $(this).find('td:nth-child(10)').text(); 
-  var customer_loan_amount = $(this).find('td:nth-child(9)').text(); 
-    
-  var intrest_amount = (customer_loan_amount * (intrest_rate / 100)) * due_period;
-  var dueAmount = (parseFloat(customer_loan_amount) + parseFloat(intrest_amount)) / due_period;
-  var roundeddue = Math.ceil(dueAmount / 5) * 5;
-  if (roundeddue < dueAmount) {
-      roundeddue += 5;
-  }
-  
-  var principle = customer_loan_amount ;
-  var processingfees = Math.ceil((customer_loan_amount / loanAmountCalc) * processing_fees);
-  var documentcharge =Math.ceil((customer_loan_amount / loanAmountCalc) * document_fees); 
-  var net_cash = Math.ceil(customer_loan_amount - ( processingfees + documentcharge));
-      
-      customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation,intrest_amount:intrest_amount,principle:principle,due_amount:roundeddue,customer_loan_amount:customer_loan_amount,net_cash:net_cash});
-  });
+    if (totalCustomerAmount != loanAmountCalc) {
+      swalError('Warning', 'Total Customer Amount does not match Loan Amount Calculation!');
+      return;
+    }
+    var customerMappingData = [];
+    $('#cus_mapping_table tbody tr').each(function () {
+      // var cus_id = $(this).text(); // Retrieve the customer.id from data-id attribute
+      var cus_id = $(this).find('td:nth-child(3)').text();
+      var cus_mapping = $(this).find('td:nth-child(5)').text();
+      var designation = $(this).find('td:nth-child(10)').text();
+      var customer_loan_amount = $(this).find('td:nth-child(9)').text();
+      if (customer_loan_amount) {
+        let benefit_method = $('#profit_method_calc').val();
+        let result;
+
+        if (benefit_method == 1 || benefit_method == 'Pre Benefit') {
+          result = getLoanPreInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee);
+        } else if (benefit_method == 2 || benefit_method == 'After Benefit') {
+          result = getLoanAfterInterest(customer_loan_amount, int_rate, due_period, doc_charge, proc_fee);
+        }
+
+        // Accumulate
+        customer_loan_amount = result.loan;
+        principle = result.principal;
+        intrest_amount = result.interest;
+        due_amount = result.due;
+        net_cash = result.net;
+      }
+
+      customerMappingData.push({ cus_id: cus_id, cus_mapping: cus_mapping, designation: designation, intrest_amount: intrest_amount, principle: principle, due_amount: due_amount, customer_loan_amount: customer_loan_amount, net_cash: net_cash });
+    });
 
 
     let formData = {
@@ -571,16 +576,17 @@ $('#cus_mapping_table tbody tr').each(function () {
 
   $(document).on("click", ".approval-approve", function () {
     let loan_id = $(this).attr("value");
-    let loan_amount = $(this).attr("loan_amount");
-    let centre_limit = $(this).attr("centre_limit");
+    let loan_amount = parseInt($(this).attr("loan_amount")) || 0;
+    let centre_limit = parseInt($(this).attr("centre_limit")) || 0;
+
     let total_cus = $("#total_cus").val();
-  
-     // Check if cus_limit is empty
-     if (centre_limit==='0'|| !centre_limit ) {
-         // Prevent approval and show an alert or message
-         swalError('Warning', 'Kindly Enter the centre Limit');
-         return; // Stop further execution
-     }else if(loan_amount > centre_limit){
+
+    // Check if cus_limit is empty
+    if (centre_limit === '0' || !centre_limit) {
+      // Prevent approval and show an alert or message
+      swalError('Warning', 'Kindly Enter the centre Limit');
+      return; // Stop further execution
+    } else if (loan_amount > centre_limit) {
       swalError('Warning', 'Centre limit is less than the loan amount. Please update either the centre limit or the loan amount.');
       return;
     }
@@ -718,7 +724,7 @@ function submitCentre_limit(centre_id) {
 
   let remarks = $("#remarks").val();
   let centre_limit = $('#approval_centre_limit').val().replace(/,/g, '')
-  
+
   if (centre_limit === '' || centre_limit === '0') {
     swalError("Warning", "Please fill Centre Limit.");
     $("#approval_centre_limit").css("border", "1px solid #ff2020");
@@ -1437,24 +1443,24 @@ function getCusMapTable() {
 
 // Function to remove row
 function removeCusMap(TableRowVal) {
-    let { id, loan_id, row } = TableRowVal;
+  let { id, loan_id, row } = TableRowVal;
 
-    row.remove(); // Remove the row directly
-    swalSuccess('Success', 'Customer mapping removed successfully.');
+  row.remove(); // Remove the row directly
+  swalSuccess('Success', 'Customer mapping removed successfully.');
 
-    // Reindex remaining rows
-    $('#cus_mapping_table tbody tr').each(function (index) {
-        $(this).find('td:first').text(index + 1);
-    });
+  // Reindex remaining rows
+  $('#cus_mapping_table tbody tr').each(function (index) {
+    $(this).find('td:first').text(index + 1);
+  });
 
-    // API call
-    $.post('api/loan_entry_files/delete_cus_mapping.php', { id, loan_id }, function (response) {
-        if (response == 1) {
-            // Success message already shown above
-        } else {
-            swalError('Warning', 'Customer mapping removed Faield.');
-        }
-    }, 'json');
+  // API call
+  $.post('api/approval/delete_cus_mappings.php', { id, loan_id }, function (response) {
+    if (response == 1) {
+      // Success message already shown above
+    } else {
+      swalError('Warning', 'Customer mapping removed Faield.');
+    }
+  }, 'json');
 }
 
 function loanCalculationEdit(id) {
