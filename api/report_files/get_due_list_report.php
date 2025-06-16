@@ -103,7 +103,8 @@ $query1 = "";
 if ($_POST['length'] != -1) {
     $query1 = " LIMIT " . $_POST['start'] . ", " . $_POST['length'];
 }
-
+echo $query;
+die;
 $statement = $pdo->prepare($query);
 
 $statement->execute();
@@ -193,7 +194,7 @@ foreach ($result as $row) {
                 $days = ($end - $start) / (60 * 60 * 24); // Convert seconds to days
                 $payable_diff = intdiv($days, 7) + (($days % 7) >= 0 ? 1 : 0); // Include partial weeks
 
-                $pending_week = $payable_diff;
+                $pending_diff = $payable_diff;
             } else {
         // Not yet matured; count till current date (or $to_date)
                 $start = strtotime($row['due_start']);
@@ -202,7 +203,7 @@ foreach ($result as $row) {
                 $days = ($end - $start) / (60 * 60 * 24); // Convert seconds to days
                 $payable_diff = intdiv($days, 7) + (($days % 7) >= 0 ? 1 : 0); // Include partial weeks
 
-                $pending_week = max(($payable_diff - 1), 0);
+                $pending_diff = max(($payable_diff - 1), 0);
             }
         }
 
