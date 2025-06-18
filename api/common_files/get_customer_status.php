@@ -24,39 +24,45 @@ class CustomerStatus
             $total_paid += intval($coll_row['due_amt_track']);
         }
 
-        $whereClause = "WHERE c.cus_mapping_id = $cus_mapping_id AND c.loan_id = $loan_id";
+        $search_date_filter = '';
         if (!empty($search_date)) {
             $search_date = $this->pdo->quote($search_date);
-            $whereClause .= " AND DATE(c.coll_date) <= $search_date";
+            $search_date_filter = "AND DATE(c.coll_date) <= $search_date";
         }
         
         $query = "SELECT
-            c.cus_mapping_id,
-            SUM(c.total_paid_track) AS total_paid_track,
-            SUM(c.fine_charge_track) AS total_fine_charge_track,
-            (SUM(c.due_amt_track) + SUM(c.fine_charge_track) ) AS total_paid,
-            IFNULL(f.total_fine_charge, 0) AS total_fine_charge,
-            (SUM(c.total_paid_track) + IFNULL(f.total_fine_charge, 0)) AS payable_charge,
-            lelc.due_amount_calc,
-            lelc.total_customer,
-            lelc.due_month,
-            lelc.due_start,
-            lelc.due_end,
-            lcm.due_amount,
-            lelc.due_period
-        FROM
-            collection c
-        LEFT JOIN
-            (SELECT cus_mapping_id, SUM(fine_charge) AS total_fine_charge FROM fine_charges GROUP BY cus_mapping_id) f
-            ON f.cus_mapping_id = c.cus_mapping_id
-        LEFT JOIN
-            loan_entry_loan_calculation lelc ON lelc.loan_id = c.loan_id
-        LEFT JOIN
-            loan_cus_mapping lcm ON c.cus_mapping_id = lcm.id
-        $whereClause
-
-        GROUP BY
-        c.cus_mapping_id ";
+                lcm.id AS cus_mapping_id,
+                IFNULL(SUM(c.total_paid_track), 0) AS total_paid_track,
+                IFNULL(SUM(c.fine_charge_track), 0) AS total_fine_charge_track,
+                (IFNULL(SUM(c.due_amt_track), 0) + IFNULL(SUM(c.fine_charge_track), 0)) AS total_paid,
+                IFNULL(f.total_fine_charge, 0) AS total_fine_charge,
+                (IFNULL(SUM(c.total_paid_track), 0) + IFNULL(f.total_fine_charge, 0)) AS payable_charge,
+                lelc.due_amount_calc,
+                lelc.total_customer,
+                lelc.due_month,
+                lelc.due_start,
+                lelc.due_end,
+                lcm.due_amount,
+                lelc.due_period
+                FROM
+                    loan_cus_mapping lcm
+                LEFT JOIN
+                    collection c 
+                    ON c.cus_mapping_id = lcm.id 
+                    AND c.loan_id = $loan_id 
+                    $search_date_filter
+                LEFT JOIN
+                    (
+                        SELECT cus_mapping_id, SUM(fine_charge) AS total_fine_charge 
+                        FROM fine_charges 
+                        GROUP BY cus_mapping_id
+                    ) f ON f.cus_mapping_id = lcm.id
+                LEFT JOIN
+                    loan_entry_loan_calculation lelc ON lelc.loan_id = $loan_id
+                WHERE
+                    lcm.id = $cus_mapping_id
+                GROUP BY
+                    lcm.id";
 
         $result = $this->pdo->query($query);
 

@@ -38,7 +38,10 @@ $(document).ready(function () {
                 dom: 'lBfrtip',
                 buttons: [{
                     extend: 'excel',
-                    title: "Closed Report List"
+                    title: "Closed Report List",
+                    exportOptions: {
+        			columns: ':visible' 
+    			}
                 },
                 {
                     extend: 'colvis',
