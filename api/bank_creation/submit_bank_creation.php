@@ -37,4 +37,5 @@ try {
 } catch (PDOException $e) {
     error_log("Database error: " . $e->getMessage());
 }
+$pdo = null; //Close connection.
 echo json_encode($response);

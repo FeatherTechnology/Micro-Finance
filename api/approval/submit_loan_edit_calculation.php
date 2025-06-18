@@ -174,4 +174,5 @@ if ($qry) {
     $result = 0; // Failure
 }
 
+$pdo = null; //Close connection.
 echo json_encode(['result' => $result]);

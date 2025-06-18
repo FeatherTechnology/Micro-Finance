@@ -19,4 +19,5 @@ if ($current_page != '') {
     }
 }
 
+$pdo = null; //Close connection.
 echo $response;

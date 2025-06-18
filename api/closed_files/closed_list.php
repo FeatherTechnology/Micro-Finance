@@ -132,5 +132,5 @@ $output = array(
     'recordsFiltered' => $number_filter_row,
     'data' => $data
 );
-
+$pdo = null; //Close connection.
 echo json_encode($output);

@@ -56,4 +56,5 @@ if ($qry->rowCount() > 0) {
     }
 }
 $result = array('status'=>$status, 'last_id'=> $last_id);
+$pdo = null; //Close Connection
 echo json_encode($result);

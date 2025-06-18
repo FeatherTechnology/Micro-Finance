@@ -33,6 +33,7 @@ try {
     $response['error'] = $e->getMessage();
 }
 
+$pdo = null; //Close connection.
     // Return the response as JSON
     echo json_encode($response);
 ?>

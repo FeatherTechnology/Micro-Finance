@@ -19,5 +19,6 @@ if ($user_creation_id != '0' && $user_creation_id != '') {
         $user_code_final = "US-" . "001";
     }
 }
+$pdo = null; //Close Connection
 echo json_encode($user_code_final);
 ?>

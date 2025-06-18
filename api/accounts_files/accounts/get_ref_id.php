@@ -14,4 +14,5 @@ if ($qry->rowCount() > 0) {
 } else {
     $ref_id = $trans . '-101';
 }
+$pdo = null; //Close connection.
 echo json_encode($ref_id);

@@ -9,7 +9,10 @@ $centre_id = $_POST['centre_id'];
 
 if(isset($_POST['centre_id'])){
 $row = array();
-$qry = $pdo->query("SELECT cc.aadhar_number FROM `loan_cus_mapping`lcm LEFT join customer_creation cc on cc.id = lcm.cus_id WHERE lcm.`centre_id`='$centre_id' GROUP by lcm.cus_id");
+$qry = $pdo->query("SELECT DISTINCT lcm.cus_id, cc.first_name, cc.aadhar_number FROM loan_cus_mapping lcm
+JOIN loan_entry_loan_calculation lelc  ON lcm.loan_id = lelc.loan_id 
+JOIN customer_creation cc ON lcm.cus_id = cc.id
+WHERE lcm.centre_id = '$centre_id' AND lelc.loan_status IN (4 ,7, 8)");
 
 if ($qry->rowCount() > 0) {
     $row = $qry->fetchAll(PDO::FETCH_ASSOC);

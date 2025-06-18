@@ -79,7 +79,7 @@ if ($qry->rowCount() > 0) {
         $collection_list_arr[] = $data;
     }
 }
-
+$pdo = null; //Close connection.
 echo json_encode($collection_list_arr);
 
 //Format number in Indian Format

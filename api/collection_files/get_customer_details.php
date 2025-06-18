@@ -154,4 +154,5 @@ if ($result->rowCount() > 0) {
     }
 }
 
+$pdo = null; //Close connection.
 echo json_encode($response);

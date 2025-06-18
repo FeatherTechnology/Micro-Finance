@@ -18,5 +18,6 @@ if ($qry->rowCount() > 0) {
     }
 }
 
+$pdo = null; //Close connection.
 echo json_encode($property_list_arr);
-$pdo = null; // Close Connection
+

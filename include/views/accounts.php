@@ -347,8 +347,8 @@ function moneyFormatIndia($num1)
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
-                                    
-                                     <label for="aadhar_num">Aadhar Number</label><span class="text-danger">*</span>
+
+                                    <label for="aadhar_num">Aadhar Number</label><span class="text-danger">*</span>
                                     <select class="form-control" name="aadhar_num" id="aadhar_num" tabindex="2">
                                         <option value="">Select Aadhar Number </option>
                                     </select>
@@ -360,8 +360,8 @@ function moneyFormatIndia($num1)
                                     <input type="text" class="form-control" name="cus_id" id="cus_id" tabindex="3" placeholder="Customer ID" readonly>
                                 </div>
                             </div>
-                            
-                           
+
+
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div class="form-group">
                                     <label for="cus_name">Customer Name</label><span class="text-danger">*</span>
@@ -421,13 +421,26 @@ function moneyFormatIndia($num1)
                 <div class="card-body centre_based_div">
                     <div class="row">
                         <div class="col-12 table-responsive" id="centre_based_table">
+                            <table id="centre_table" class="table custom-table">
+                                <thead>
+                                    <tr>
+                                        <th width='20'> S.No </th>
+                                        <th> Centre ID </th>
+                                        <th>Centre Name</th>
+                                        <th> Centre Number</th>
+                                        <th> Total Savings</th>
+                                        <th> Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
 
                         </div>
                     </div>
                 </div>
 
                 <div id="customer_details_div" style="display: none;">
-                    <div class="card p-4 m-4" >
+                    <div class="card p-4 m-4">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title">Center Info</h5>
                             <button class="btn btn-secondary centre_info_back">Back</button>

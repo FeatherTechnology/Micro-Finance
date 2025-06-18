@@ -17,5 +17,5 @@ if ($qry) {
 } else {
     $result = 2;
 }
-
+$pdo = null; //Close connection.
 echo json_encode($result);

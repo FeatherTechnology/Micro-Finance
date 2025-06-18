@@ -18,5 +18,5 @@ if ($idExists > 0) {
 } else {
     $result = 2; // Failure to delete mapping
 }
-
+$pdo = null; //Close connection.
 echo json_encode($result);

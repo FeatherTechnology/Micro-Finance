@@ -95,6 +95,6 @@ foreach ($collectionData as $data) {
     }
   }
 
-
+$pdo = null; //Close connection.
 // Return response to the client
 echo json_encode($response);

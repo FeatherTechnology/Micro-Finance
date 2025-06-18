@@ -15,4 +15,5 @@ if ($id != '0') {
     $result = 1; //Insert
 }
 
+$pdo = null; //Close connection.
 echo json_encode($result);

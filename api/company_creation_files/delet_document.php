@@ -8,4 +8,5 @@ if($qry){
 }else{
     $result = 1; // Failed.
 }
+$pdo = null; //Close Connection
 echo json_encode($result);

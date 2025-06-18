@@ -14,6 +14,7 @@ if ($qry->rowCount() > 0) {
         $kyc_list[] = $data;
     }
 }
+$pdo = null; //Close Connection
 echo json_encode($kyc_list);
 
 ?>

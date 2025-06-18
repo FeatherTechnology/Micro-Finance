@@ -23,4 +23,5 @@ if ($result->rowCount() > 0) {
     $response = $result->fetchAll(PDO::FETCH_ASSOC);
 }
 
+$pdo = null; //Close connection.
 echo json_encode($response);  // Return the response as JSON

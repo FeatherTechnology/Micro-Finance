@@ -121,5 +121,5 @@ $result[0]['expdr'] = $expdr;
 
 $result[0]['due'] = $due;
 $result[0]['fine'] = $fine;
-
+$pdo = null; //Close connection.
 echo json_encode($result);

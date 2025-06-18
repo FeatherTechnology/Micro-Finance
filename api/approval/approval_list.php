@@ -125,4 +125,5 @@ $output = array(
     'data' => $data
 );
 
+$pdo = null; //Close connection.
 echo json_encode($output);

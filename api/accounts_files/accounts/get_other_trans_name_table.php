@@ -13,6 +13,6 @@ if($qry->rowCount()>0){
         $name_list_arr[] = $result;
     }
 }
-
+$pdo = null; //Close connection.
 echo json_encode($name_list_arr);
 ?>

@@ -84,4 +84,5 @@ $row14 = $qry14->fetch();
 $response['today_fine_od'] = $row14['today_fine_od'];
 $response['od_todayfine'] = $row14['od_todayfine'];
 
+$pdo = null; //Close Connection
 echo json_encode($response);

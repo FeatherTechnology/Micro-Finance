@@ -30,5 +30,6 @@ if($branchid !='0' && $branchid !=''){
     $result = 1; //Insert
 }
 
+$pdo = null; //Close connection.
 echo json_encode($result);
 ?>
